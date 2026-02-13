@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISCS India - Software & Tools</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Print Styles for Invoice */
+        @media print {
+            .no-print, nav, footer, .ad-banner, .sidebar { display: none !important; }
+            .print-full { width: 100% !important; grid-column: span 3 !important; }
+            .tool-container { box-shadow: none !important; border: none !important; padding: 0 !important; }
+            body { background: white; }
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .hidden-page { display: none; }
+    </style>
+</head>
+<body class="bg-white text-slate-900 flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer" onclick="navigateTo('home')">
+                    <i data-lucide="cpu" class="h-8 w-8 text-blue-400 mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight">BISCS <span class="text-blue-400">India</span></span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="navigateTo('home')" class="text-gray-300 hover:text-white transition font-medium nav-btn" id="nav-home">Home</button>
+                    <button onclick="navigateTo('store')" class="text-gray-300 hover:text-white transition font-medium nav-btn" id="nav-store">Software Store</button>
+                    <button onclick="navigateTo('tools')" class="text-gray-300 hover:text-white transition font-medium nav-btn" id="nav-tools">Free Tools</button>
+                </div>
+
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-700">Home</button>
+                <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-700">Software Store</button>
+                <button onclick="navigateTo('tools'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-700">Free Tools</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow fade-in" id="main-content">
+        
+        <!-- HOME PAGE -->
+        <div id="page-home" class="page-section">
+            <!-- Hero -->
+            <div class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-20 px-4">
+                <div class="max-w-7xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                        Manage Teams Efficiently with <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">DomeBox</span>
+                    </h1>
+                    <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                        India's premier Team Task Management System. Streamline operations, boost productivity, and access our suite of free business tools.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="navigateTo('store')" class="px-8 py-4 bg-blue-500 hover:bg-blue-600 rounded-lg font-bold shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-1 flex items-center justify-center">
+                            Get DomeBox <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                        </button>
+                        <button onclick="navigateTo('tools')" class="px-8 py-4 bg-slate-700 hover:bg-slate-600 border border-slate-500 rounded-lg font-bold transition transform hover:-translate-y-1 flex items-center justify-center">
+                            Use Free Tools <i data-lucide="zap" class="ml-2 h-5 w-5 text-yellow-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insert Store Section Content Here via JS or duplicating HTML -->
+            <div id="home-store-placeholder"></div>
+            
+            <div class="bg-slate-50 border-t border-slate-200">
+                 <!-- Insert Tools Dashboard Content Here via JS or duplicating HTML -->
+                 <div id="home-tools-placeholder"></div>
+            </div>
+        </div>
+
+        <!-- STORE PAGE -->
+        <div id="page-store" class="page-section hidden-page">
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Our Premium Solutions</h2>
+                    <p class="text-slate-600 mt-4 text-lg">Enterprise-grade software designed to scale your business.</p>
+                </div>
+
+                <!-- DomeBox Card -->
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl overflow-hidden shadow-2xl text-white mb-16">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                        <div class="space-y-6">
+                            <div class="inline-flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border border-white/20">
+                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <span>Flagship Product</span>
+                            </div>
+                            <h3 class="text-4xl md:text-5xl font-extrabold tracking-tight">DomeBox</h3>
+                            <p class="text-blue-100 text-lg leading-relaxed font-light">
+                                The ultimate <strong>Team Task Management System</strong> for Indian businesses. Assign tasks, track progress in real-time, and streamline collaboration across your entire organization.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div class="flex items-center space-x-3"><div class="bg-blue-500/30 p-2 rounded-lg"><i data-lucide="check-square" class="h-5 w-5"></i></div><span class="font-medium">Task Tracking</span></div>
+                                <div class="flex items-center space-x-3"><div class="bg-blue-500/30 p-2 rounded-lg"><i data-lucide="users" class="h-5 w-5"></i></div><span class="font-medium">Team Collab</span></div>
+                                <div class="flex items-center space-x-3"><div class="bg-blue-500/30 p-2 rounded-lg"><i data-lucide="bar-chart" class="h-5 w-5"></i></div><span class="font-medium">Analytics</span></div>
+                                <div class="flex items-center space-x-3"><div class="bg-blue-500/30 p-2 rounded-lg"><i data-lucide="shield" class="h-5 w-5"></i></div><span class="font-medium">Secure Cloud</span></div>
+                            </div>
+                            <div class="pt-6">
+                                <a href="https://www.domebox.in" target="_blank" class="inline-flex items-center bg-white text-blue-700 px-8 py-4 rounded-xl font-bold hover:bg-blue-50 transition shadow-lg transform hover:-translate-y-1 w-full sm:w-auto justify-center">
+                                    Visit DomeBox.in <i data-lucide="globe" class="ml-2 h-5 w-5"></i>
+                                </a>
+                                <p class="mt-3 text-sm text-blue-200 opacity-80">Boost your team's productivity today.</p>
+                            </div>
+                        </div>
+                        <!-- Graphic -->
+                        <div class="relative h-64 md:h-96 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/10 shadow-inner">
+                            <div class="absolute top-4 right-4 text-white/20"><i data-lucide="layout" class="h-16 w-16"></i></div>
+                            <div class="text-center p-8 z-10">
+                                <div class="flex justify-center mb-6 relative">
+                                    <div class="absolute inset-0 bg-blue-400 blur-3xl opacity-30 rounded-full"></div>
+                                    <div class="bg-white p-4 rounded-2xl shadow-xl relative z-10"><i data-lucide="bar-chart" class="h-20 w-20 text-blue-600"></i></div>
+                                </div>
+                                <h4 class="text-2xl font-bold mb-2">Visualize Success</h4>
+                                <p class="text-blue-100">Take control of your projects with DomeBox's intuitive dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600"><i data-lucide="check-circle" class="h-6 w-6"></i></div>
+                        <h4 class="font-bold text-lg text-slate-800 mb-2">Easy to Use</h4>
+                        <p class="text-slate-600 text-sm">Designed with simplicity in mind so your team can start working immediately.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600"><i data-lucide="zap" class="h-6 w-6"></i></div>
+                        <h4 class="font-bold text-lg text-slate-800 mb-2">Fast Performance</h4>
+                        <p class="text-slate-600 text-sm">Lightning fast load times ensure you never lose momentum.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600"><i data-lucide="smartphone" class="h-6 w-6"></i></div>
+                        <h4 class="font-bold text-lg text-slate-800 mb-2">Mobile Ready</h4>
+                        <p class="text-slate-600 text-sm">Manage your team from anywhere with our fully responsive design.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOLS PAGE (Dashboard) -->
+        <div id="page-tools" class="page-section hidden-page">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800">Free Online Tools</h2>
+                    <p class="text-slate-600 mt-2">Simple, powerful utilities for your daily tasks.</p>
+                </div>
+                
+                <div id="tools-grid-container" class="space-y-12">
+                    <!-- Tools will be injected here by JS -->
+                </div>
+                
+                <!-- Ad Banner -->
+                <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-24 sm:h-32 animate-pulse no-print">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-center">Google Ad Space (Footer)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- INDIVIDUAL TOOLS SECTIONS -->
+
+        <!-- 1. GST Calculator -->
+        <div id="tool-gst" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                            <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">GST Calculator</h1>
+                            <div class="space-y-4">
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Amount (₹)</label><input type="number" id="gst-amount" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter amount" oninput="calculateGST()"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">GST Rate (%)</label>
+                                    <select id="gst-rate" class="w-full p-3 border rounded-lg outline-none" onchange="calculateGST()">
+                                        <option value="3">3%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option>
+                                    </select>
+                                </div>
+                                <div class="flex space-x-4">
+                                    <button onclick="setGstType('exclusive')" id="btn-exclusive" class="flex-1 py-2 rounded-lg font-medium transition bg-blue-600 text-white">GST Exclusive</button>
+                                    <button onclick="setGstType('inclusive')" id="btn-inclusive" class="flex-1 py-2 rounded-lg font-medium transition bg-slate-100 text-slate-600">GST Inclusive</button>
+                                </div>
+                                <div class="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                    <div class="flex justify-between"><span>Net Amount:</span> <span class="font-bold" id="gst-net">₹0.00</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>GST Amount:</span> <span class="font-bold" id="gst-val">₹0.00</span></div>
+                                    <div class="flex justify-between text-xl font-bold border-t pt-2 mt-2"><span>Total:</span> <span id="gst-total">₹0.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sidebar -->
+                    <div class="lg:col-span-1 no-print">
+                        <div class="sticky top-24">
+                            <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                            <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                                <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                                <p class="text-sm text-blue-700 mb-4">Streamline your team's workflow.</p>
+                                <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. EMI Calculator -->
+        <div id="tool-emi" class="tool-view hidden-page">
+             <div class="max-w-4xl mx-auto px-4 py-8">
+                <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                            <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Loan / EMI Calculator</h1>
+                            <div class="space-y-4">
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Loan Amount (₹)</label><input type="number" id="emi-p" value="100000" class="w-full p-3 border rounded-lg outline-none" oninput="calculateEMI()"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Interest Rate (% p.a)</label><input type="number" id="emi-r" value="10" class="w-full p-3 border rounded-lg outline-none" oninput="calculateEMI()"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Tenure (Months)</label><input type="number" id="emi-t" value="12" class="w-full p-3 border rounded-lg outline-none" oninput="calculateEMI()"></div>
+                                <div class="mt-6 grid grid-cols-2 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-sm text-blue-600 font-bold uppercase">Monthly EMI</div><div class="text-2xl font-bold text-slate-800" id="emi-val">₹0</div></div>
+                                    <div class="bg-green-50 p-4 rounded-lg text-center"><div class="text-sm text-green-600 font-bold uppercase">Total Interest</div><div class="text-2xl font-bold text-slate-800" id="emi-interest">₹0</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="lg:col-span-1 no-print">
+                         <div class="sticky top-24">
+                            <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                            <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                                <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                                <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                            </div>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Discount Calculator -->
+        <div id="tool-discount" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                           <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Discount Calculator</h1>
+                           <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                   <div>
+                                      <label class="block text-sm font-medium text-slate-700 mb-1">Original Price</label>
+                                      <input type="number" id="disc-price" class="w-full p-3 border rounded-lg outline-none" placeholder="0.00" oninput="calculateDiscount()">
+                                   </div>
+                                   <div>
+                                      <label class="block text-sm font-medium text-slate-700 mb-1">Discount (%)</label>
+                                      <input type="number" id="disc-percent" class="w-full p-3 border rounded-lg outline-none" placeholder="0" oninput="calculateDiscount()">
+                                   </div>
+                                </div>
+                                <div class="bg-slate-800 text-white p-6 rounded-xl mt-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-slate-400">You Save</span>
+                                        <span class="font-bold text-green-400" id="disc-saved">₹0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-2xl font-bold border-t border-slate-700 pt-4">
+                                        <span>Payable</span>
+                                        <span id="disc-final">₹0.00</span>
+                                    </div>
+                                </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 4. Invoice Generator -->
+        <div id="tool-invoice" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 print-full">
+                        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100 tool-container">
+                            <!-- Invoice Header -->
+                            <div class="flex flex-col md:flex-row justify-between mb-8 border-b pb-6 gap-6">
+                                <div class="space-y-2 flex-1">
+                                    <h2 class="text-3xl font-bold text-slate-800">INVOICE</h2>
+                                    <div class="flex items-center space-x-2"><i data-lucide="user" class="h-4 w-4 text-slate-400"></i><input class="font-bold text-lg text-slate-700 border-b border-dashed border-slate-300 focus:border-blue-500 outline-none bg-transparent w-full" value="Your Company Name"></div>
+                                    <div class="flex items-center space-x-2"><i data-lucide="file-badge" class="h-4 w-4 text-slate-400"></i><input class="text-sm text-slate-500 border-b border-dashed border-slate-300 focus:border-blue-500 outline-none bg-transparent w-full" value="GSTIN: XXXXXX"></div>
+                                </div>
+                                <div class="text-right space-y-2 flex-1">
+                                    <div class="flex items-center justify-end space-x-2"><span class="text-sm text-slate-400">Invoice #:</span><input class="font-bold text-slate-700 border-b border-dashed border-slate-300 focus:border-blue-500 outline-none bg-transparent w-32 text-right" value="INV-2024-001"></div>
+                                    <div class="flex items-center justify-end space-x-2"><span class="text-sm text-slate-400">Date:</span><input type="date" class="text-slate-600 border-b border-dashed border-slate-300 focus:border-blue-500 outline-none bg-transparent w-32 text-right"></div>
+                                    <div class="flex items-center justify-end space-x-2 pt-2"><span class="text-sm text-slate-400">Bill To:</span><input class="font-bold text-slate-700 border-b border-dashed border-slate-300 focus:border-blue-500 outline-none bg-transparent w-48 text-right" value="Client Name"></div>
+                                </div>
+                            </div>
+                            <!-- Items -->
+                            <div class="space-y-2 mb-6">
+                                <div class="flex gap-4 font-bold text-slate-600 border-b pb-2 mb-2 text-sm">
+                                    <div class="flex-grow">Description</div>
+                                    <div class="w-24 text-right">Cost</div>
+                                    <div class="w-16 text-center">Qty</div>
+                                    <div class="w-24 text-right">Total</div>
+                                </div>
+                                <div id="invoice-items">
+                                    <!-- Items injected here -->
+                                </div>
+                                <button onclick="addInvoiceItem()" class="text-sm text-blue-600 hover:underline pt-2 no-print">+ Add Item Line</button>
+                            </div>
+                            <!-- Totals -->
+                            <div class="flex justify-end border-t pt-4">
+                                <div class="text-right w-1/2">
+                                    <div class="flex justify-between mb-2"><span class="text-slate-500">Subtotal:</span><span class="font-bold" id="inv-total">₹0.00</span></div>
+                                    <div class="flex justify-between border-t border-slate-800 pt-2 text-xl font-bold text-slate-900"><span>Total Due:</span><span id="inv-grand-total">₹0.00</span></div>
+                                </div>
+                            </div>
+                            <button onclick="window.print()" class="mt-8 w-full bg-slate-900 text-white py-3 rounded-lg flex items-center justify-center hover:bg-slate-800 no-print shadow-lg"><i data-lucide="printer" class="mr-2 h-4 w-4"></i> Print / Download PDF</button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1 no-print">
+                        <div class="sticky top-24">
+                           <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                           <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                               <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                               <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Password Generator -->
+        <div id="tool-password" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                           <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Secure Password Generator</h1>
+                           <div class="space-y-6">
+                               <div class="relative">
+                                   <input readonly id="pass-output" class="w-full p-4 bg-slate-100 rounded-lg text-lg font-mono text-center tracking-wider border" placeholder="Click Generate">
+                                   <button onclick="copyPassword()" class="absolute right-2 top-2 p-2 text-slate-500 hover:text-blue-600"><i data-lucide="copy" class="h-5 w-5"></i></button>
+                               </div>
+                               <div><label class="block text-sm font-medium mb-2" id="pass-len-label">Length: 12</label><input type="range" min="6" max="32" value="12" id="pass-len" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="updatePassLen()"></div>
+                               <div class="grid grid-cols-2 gap-4">
+                                   <label class="flex items-center space-x-2"><input type="checkbox" id="chk-upper" checked class="rounded text-blue-600"> <span>Uppercase</span></label>
+                                   <label class="flex items-center space-x-2"><input type="checkbox" id="chk-lower" checked class="rounded text-blue-600"> <span>Lowercase</span></label>
+                                   <label class="flex items-center space-x-2"><input type="checkbox" id="chk-num" checked class="rounded text-blue-600"> <span>Numbers</span></label>
+                                   <label class="flex items-center space-x-2"><input type="checkbox" id="chk-sym" checked class="rounded text-blue-600"> <span>Symbols</span></label>
+                               </div>
+                               <button onclick="generatePassword()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center"><i data-lucide="refresh-cw" class="mr-2 h-5 w-5"></i> Generate Password</button>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 6. QR Code Generator -->
+        <div id="tool-qr" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                            <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">QR Code Generator</h1>
+                            <div class="space-y-4">
+                                <input type="text" id="qr-text" class="w-full p-3 border rounded-lg outline-none" placeholder="Enter URL or Text">
+                                <button onclick="generateQR()" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Generate QR Code</button>
+                                <div id="qr-result" class="hidden flex-col items-center mt-6 p-4 bg-white border rounded-lg">
+                                    <img id="qr-img" src="" alt="QR Code" class="mb-4">
+                                    <button onclick="downloadQR()" class="text-blue-600 text-sm hover:underline flex items-center font-bold"><i data-lucide="download" class="h-4 w-4 mr-1"></i> Download Image</button>
+                                </div>
+                            </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+        
+        <!-- 7. Base64 Tool -->
+        <div id="tool-base64" class="tool-view hidden-page">
+             <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                           <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Base64 Encoder/Decoder</h1>
+                           <div class="space-y-4">
+                                <textarea id="b64-input" class="w-full p-3 border rounded-lg h-32 font-mono text-sm" placeholder="Paste text here..."></textarea>
+                                <div class="flex gap-4">
+                                   <button onclick="b64Encode()" class="flex-1 bg-blue-600 text-white py-2 rounded font-medium hover:bg-blue-700">Encode</button>
+                                   <button onclick="b64Decode()" class="flex-1 bg-slate-700 text-white py-2 rounded font-medium hover:bg-slate-800">Decode</button>
+                                </div>
+                                <textarea id="b64-output" readonly class="w-full p-3 bg-slate-50 border rounded-lg h-32 font-mono text-sm" placeholder="Result will appear here..."></textarea>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 8. JSON Formatter -->
+        <div id="tool-json" class="tool-view hidden-page">
+             <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                           <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">JSON Formatter</h1>
+                           <div class="space-y-4">
+                                <textarea id="json-input" class="w-full p-3 border rounded-lg h-48 font-mono text-sm" placeholder="Paste messy JSON here..."></textarea>
+                                <button onclick="formatJson()" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Beautify JSON</button>
+                                <textarea id="json-output" readonly class="w-full p-3 bg-slate-50 border rounded-lg h-48 font-mono text-sm text-slate-800" placeholder="Formatted JSON will appear here..."></textarea>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 9. Word Counter -->
+        <div id="tool-word-count" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                            <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Word & Character Counter</h1>
+                            <div class="grid grid-cols-3 gap-4 mb-4 text-center">
+                                <div class="bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600" id="wc-words">0</div><div class="text-xs text-slate-500 uppercase">Words</div></div>
+                                <div class="bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600" id="wc-chars">0</div><div class="text-xs text-slate-500 uppercase">Chars</div></div>
+                                <div class="bg-purple-50 p-3 rounded-lg"><div class="text-2xl font-bold text-purple-600" id="wc-ns">0</div><div class="text-xs text-slate-500 uppercase">No Space</div></div>
+                            </div>
+                            <textarea id="wc-input" class="w-full h-64 p-4 border rounded-xl outline-none resize-none focus:ring-2 focus:ring-blue-200" placeholder="Start typing or paste your text here..." oninput="countWords()"></textarea>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 10. Image Tools -->
+        <div id="tool-img-tools" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+               <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div class="lg:col-span-2">
+                       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+                           <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Image Resizer & Converter</h1>
+                           <div class="space-y-6">
+                                <div id="img-upload-area" class="border-2 border-dashed border-slate-300 rounded-xl p-10 text-center hover:bg-slate-50 relative">
+                                   <input type="file" accept="image/*" onchange="handleImageToolFile(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                   <i data-lucide="image" class="h-10 w-10 text-slate-400 mx-auto mb-2"></i>
+                                   <p class="font-medium text-slate-600">Click to Upload Image</p>
+                                </div>
+                                
+                                <div id="img-controls" class="hidden text-center">
+                                    <img id="img-preview" class="max-h-64 mx-auto rounded-lg shadow mb-4" />
+                                    <button onclick="resetImgTool()" class="text-sm text-red-500 hover:underline mb-6">Remove Image</button>
+
+                                    <div class="grid grid-cols-2 gap-4 text-left">
+                                        <div><label class="text-xs font-bold text-slate-500">Width</label><input type="number" id="img-width" class="w-full p-2 border rounded" oninput="updateImgDims('w')"></div>
+                                        <div><label class="text-xs font-bold text-slate-500">Height</label><input type="number" id="img-height" class="w-full p-2 border rounded" oninput="updateImgDims('h')"></div>
+                                        <div class="col-span-2 flex items-center"><input type="checkbox" id="img-ratio" checked class="mr-2 rounded text-blue-600"> <span class="text-sm">Maintain Aspect Ratio</span></div>
+                                        <div class="col-span-2">
+                                            <label class="block text-sm mb-2 font-bold text-slate-500">Convert Format:</label>
+                                            <select id="img-format" class="w-full p-3 border rounded">
+                                               <option value="image/png">PNG</option>
+                                               <option value="image/jpeg">JPEG</option>
+                                               <option value="image/webp">WebP</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button onclick="processAndDownloadImage()" class="w-full mt-6 py-3 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700 transition">Process & Download</button>
+                                </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- 11. Generic PDF Tool (Word/Excel/OCR) -->
+        <div id="tool-pdf-generic" class="tool-view hidden-page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <button onclick="navigateTo('tools')" class="text-slate-500 hover:text-slate-800 mb-6 flex items-center transition no-print"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Back to Tools</button>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100 text-center">
+                            <h1 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4" id="pdf-tool-title">PDF Tool</h1>
+                            
+                            <div id="pdf-idle">
+                                <div class="border-2 border-dashed border-slate-300 rounded-xl p-10 text-center hover:bg-slate-50 transition relative">
+                                    <input type="file" accept=".pdf" onchange="handlePdfFile(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                    <i data-lucide="upload" class="h-12 w-12 text-slate-400 mx-auto mb-4"></i>
+                                    <p class="text-lg font-medium text-slate-700" id="pdf-filename">Click to Upload PDF</p>
+                                </div>
+                                <button onclick="startPdfConversion()" id="pdf-convert-btn" disabled class="w-full mt-6 py-4 rounded-lg font-bold text-lg transition bg-slate-200 text-slate-400 cursor-not-allowed">Select a File First</button>
+                            </div>
+
+                            <div id="pdf-processing" class="hidden py-10">
+                                <div class="w-full bg-slate-200 rounded-full h-4 mb-4 overflow-hidden">
+                                    <div id="pdf-progress" class="bg-blue-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                                <p class="text-slate-600 animate-pulse font-medium">Processing file...</p>
+                            </div>
+
+                            <div id="pdf-done" class="hidden py-8 bg-green-50 rounded-xl border border-green-100">
+                                <i data-lucide="check-circle" class="h-16 w-16 text-green-500 mx-auto mb-4"></i>
+                                <h3 class="text-xl font-bold text-green-800 mb-2">Success!</h3>
+                                <button onclick="downloadPdfResult()" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 shadow-lg flex items-center justify-center mx-auto"><i data-lucide="download" class="h-5 w-5 mr-2"></i> Download</button>
+                                <button onclick="resetPdfTool()" class="mt-4 text-sm text-slate-500 underline">Convert Another</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1 no-print">
+                       <div class="sticky top-24">
+                          <div class="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 my-6 flex flex-col items-center justify-center text-gray-400 h-32 animate-pulse"><span class="text-xs font-bold text-slate-400">Google Ad Space</span></div>
+                          <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl mb-6">
+                              <h4 class="font-bold text-blue-900 mb-2">Try DomeBox Today</h4>
+                              <button onclick="navigateTo('store')" class="text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded uppercase w-full">View Software</button>
+                          </div>
+                       </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 no-print">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center text-white mb-4">
+                   <i data-lucide="cpu" class="h-6 w-6 text-blue-400 mr-2"></i>
+                   <span class="font-bold text-lg">BISCS India</span>
+                </div>
+                <p class="text-sm mb-4">Empowering businesses with premium software and free daily tools.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Software</h4>
+                <ul class="space-y-2 text-sm">
+                    <li class="hover:text-white cursor-pointer" onclick="navigateTo('store')">DomeBox</li>
+                    <li class="hover:text-white cursor-pointer" onclick="navigateTo('store')">Task Management</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Tools</h4>
+                <ul class="space-y-2 text-sm">
+                    <li class="hover:text-white cursor-pointer" onclick="navigateTo('tool-gst')">GST Calculator</li>
+                    <li class="hover:text-white cursor-pointer" onclick="loadPdfTool('PDF to Word')">PDF to Word</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li class="hover:text-white cursor-pointer">Privacy Policy</li>
+                    <li class="hover:text-white cursor-pointer">Terms of Service</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-slate-800 text-center text-xs">
+            &copy; 2024 BISCS India. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Navigation Logic ---
+        function navigateTo(pageId) {
+            // Hide all pages/tools
+            document.querySelectorAll('.page-section, .tool-view').forEach(el => el.classList.add('hidden-page'));
+            
+            // Show specific page or tool
+            if (pageId.startsWith('tool-')) {
+                const el = document.getElementById(pageId);
+                if(el) el.classList.remove('hidden-page');
+            } else {
+                const el = document.getElementById('page-' + pageId);
+                if(el) el.classList.remove('hidden-page');
+                
+                // Update specific Home components (simulating reuse)
+                if(pageId === 'home') {
+                    document.getElementById('home-store-placeholder').innerHTML = document.getElementById('page-store').innerHTML;
+                    document.getElementById('home-tools-placeholder').innerHTML = document.getElementById('page-tools').innerHTML;
+                    lucide.createIcons(); // Re-init icons for injected HTML
+                }
+            }
+            
+            // Scroll top
+            window.scrollTo(0,0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- Tools Dashboard Injection ---
+        const toolsData = [
+            { id: 'tool-gst', name: 'GST Calculator', icon: 'calculator', color: 'bg-orange-50' },
+            { id: 'tool-emi', name: 'EMI Calculator', icon: 'credit-card', color: 'bg-green-50' },
+            { id: 'tool-discount', name: 'Discount Calc', icon: 'percent', color: 'bg-purple-50' },
+            { id: 'tool-invoice', name: 'Invoice Generator', icon: 'file-text', color: 'bg-blue-50' },
+            { id: 'tool-password', name: 'Password Gen', icon: 'lock', color: 'bg-red-50' },
+            { id: 'tool-qr', name: 'QR Code Gen', icon: 'qr-code', color: 'bg-slate-100' },
+            { id: 'tool-base64', name: 'Base64 Tool', icon: 'code', color: 'bg-indigo-50' },
+            { id: 'tool-json', name: 'JSON Formatter', icon: 'braces', color: 'bg-yellow-50' },
+            { id: 'tool-word-count', name: 'Word Counter', icon: 'type', color: 'bg-emerald-50' },
+            { id: 'tool-img-tools', name: 'Image Tools', icon: 'image', color: 'bg-pink-50' },
+            { id: 'pdf-word', name: 'PDF to Word', icon: 'file-text', color: 'bg-blue-50', isPdf: true },
+            { id: 'pdf-excel', name: 'PDF to Excel', icon: 'file-spreadsheet', color: 'bg-green-50', isPdf: true },
+            { id: 'pdf-ocr', name: 'PDF OCR', icon: 'scan-line', color: 'bg-indigo-50', isPdf: true },
+        ];
+
+        const toolsGrid = document.getElementById('tools-grid-container');
+        toolsGrid.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${toolsData.map(tool => `
+                <div onclick="${tool.isPdf ? `loadPdfTool('${tool.name}')` : `MapsTo('${tool.id}')`}" 
+                     class="p-4 border rounded-xl transition cursor-pointer hover:shadow-lg flex items-center space-x-4 ${tool.color} bg-opacity-40">
+                    <div class="p-2 bg-white rounded-lg shadow-sm"><i data-lucide="${tool.icon}" class="text-slate-700"></i></div>
+                    <span class="font-bold text-slate-800 text-sm">${tool.name}</span>
+                </div>
+            `).join('')}
+        </div>`;
+        lucide.createIcons();
+
+        // --- GST Calculator Logic ---
+        let gstType = 'exclusive';
+        function setGstType(type) {
+            gstType = type;
+            document.getElementById('btn-exclusive').className = type === 'exclusive' ? "flex-1 py-2 rounded-lg font-medium transition bg-blue-600 text-white" : "flex-1 py-2 rounded-lg font-medium transition bg-slate-100 text-slate-600";
+            document.getElementById('btn-inclusive').className = type === 'inclusive' ? "flex-1 py-2 rounded-lg font-medium transition bg-blue-600 text-white" : "flex-1 py-2 rounded-lg font-medium transition bg-slate-100 text-slate-600";
+            calculateGST();
+        }
+
+        function calculateGST() {
+            const amount = parseFloat(document.getElementById('gst-amount').value) || 0;
+            const rate = parseFloat(document.getElementById('gst-rate').value) || 18;
+            
+            let gstVal = 0, net = 0, total = 0;
+            
+            if (gstType === 'exclusive') {
+                gstVal = (amount * rate) / 100;
+                net = amount;
+                total = amount + gstVal;
+            } else {
+                gstVal = amount - (amount * (100 / (100 + rate)));
+                net = amount - gstVal;
+                total = amount;
+            }
+            
+            document.getElementById('gst-net').innerText = `₹${net.toFixed(2)}`;
+            document.getElementById('gst-val').innerText = `₹${gstVal.toFixed(2)}`;
+            document.getElementById('gst-total').innerText = `₹${total.toFixed(2)}`;
+        }
+
+        // --- EMI Calculator Logic ---
+        function calculateEMI() {
+            const p = parseFloat(document.getElementById('emi-p').value) || 0;
+            const r = parseFloat(document.getElementById('emi-r').value) || 0;
+            const t = parseFloat(document.getElementById('emi-t').value) || 0;
+            
+            let emi = 0;
+            if (r > 0) {
+                const monthlyR = r / 12 / 100;
+                emi = p * monthlyR * (Math.pow(1 + monthlyR, t) / (Math.pow(1 + monthlyR, t) - 1));
+            } else if (t > 0) {
+                emi = p / t;
+            }
+            
+            const totalPay = emi * t;
+            const interest = totalPay - p;
+            
+            document.getElementById('emi-val').innerText = `₹${emi.toFixed(0)}`;
+            document.getElementById('emi-interest').innerText = `₹${interest.toFixed(0)}`;
+        }
+
+        // --- Discount Calculator Logic ---
+        function calculateDiscount() {
+            const price = parseFloat(document.getElementById('disc-price').value) || 0;
+            const pct = parseFloat(document.getElementById('disc-percent').value) || 0;
+            const saved = (price * pct) / 100;
+            const final = price - saved;
+            
+            document.getElementById('disc-saved').innerText = `₹${saved.toFixed(2)}`;
+            document.getElementById('disc-final').innerText = `₹${final.toFixed(2)}`;
+        }
+
+        // --- Invoice Generator Logic ---
+        let invoiceItems = [{ desc: 'Consulting Services', cost: 1000, qty: 1 }];
+        
+        function renderInvoiceItems() {
+            const container = document.getElementById('invoice-items');
+            let html = '';
+            let total = 0;
+            
+            invoiceItems.forEach((item, index) => {
+                const lineTotal = item.cost * item.qty;
+                total += lineTotal;
+                html += `
+                <div class="flex gap-4 items-center mb-2">
+                    <input class="flex-grow p-2 border border-slate-200 rounded outline-none" value="${item.desc}" oninput="updateInvItem(${index}, 'desc', this.value)">
+                    <input type="number" class="w-24 p-2 border border-slate-200 rounded text-right outline-none" value="${item.cost}" oninput="updateInvItem(${index}, 'cost', this.value)">
+                    <input type="number" class="w-16 p-2 border border-slate-200 rounded text-center outline-none" value="${item.qty}" oninput="updateInvItem(${index}, 'qty', this.value)">
+                    <div class="w-24 text-right font-medium text-slate-700">₹${lineTotal.toFixed(2)}</div>
+                </div>`;
+            });
+            container.innerHTML = html;
+            document.getElementById('inv-total').innerText = `₹${total.toFixed(2)}`;
+            document.getElementById('inv-grand-total').innerText = `₹${total.toFixed(2)}`;
+        }
+
+        function addInvoiceItem() {
+            invoiceItems.push({ desc: '', cost: 0, qty: 1 });
+            renderInvoiceItems();
+        }
+
+        function updateInvItem(index, field, val) {
+            invoiceItems[index][field] = field === 'desc' ? val : parseFloat(val) || 0;
+            renderInvoiceItems(); 
+        }
+        
+        // Initial Render
+        renderInvoiceItems();
+
+        // --- Password Generator ---
+        function updatePassLen() {
+            document.getElementById('pass-len-label').innerText = 'Length: ' + document.getElementById('pass-len').value;
+        }
+        
+        function generatePassword() {
+            const len = document.getElementById('pass-len').value;
+            const upper = document.getElementById('chk-upper').checked;
+            const lower = document.getElementById('chk-lower').checked;
+            const num = document.getElementById('chk-num').checked;
+            const sym = document.getElementById('chk-sym').checked;
+            
+            const chars = {
+                upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lower: 'abcdefghijklmnopqrstuvwxyz',
+                num: '0123456789',
+                sym: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+            
+            let valid = '';
+            if(upper) valid += chars.upper;
+            if(lower) valid += chars.lower;
+            if(num) valid += chars.num;
+            if(sym) valid += chars.sym;
+            
+            if(!valid) return;
+            
+            let pass = '';
+            for(let i=0; i<len; i++) {
+                pass += valid.charAt(Math.floor(Math.random() * valid.length));
+            }
+            document.getElementById('pass-output').value = pass;
+        }
+
+        function copyPassword() {
+            const pass = document.getElementById('pass-output').value;
+            if(pass) navigator.clipboard.writeText(pass);
+        }
+
+        // --- QR Code ---
+        function generateQR() {
+            const text = document.getElementById('qr-text').value;
+            if(!text) return;
+            const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+            document.getElementById('qr-img').src = url;
+            document.getElementById('qr-result').classList.remove('hidden');
+            document.getElementById('qr-result').classList.add('flex');
+        }
+
+        async function downloadQR() {
+            const src = document.getElementById('qr-img').src;
+            try {
+                const response = await fetch(src);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'qrcode.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) { alert("Right click image to save."); }
+        }
+
+        // --- Base64 Tool Logic ---
+        function b64Encode() {
+            const input = document.getElementById('b64-input').value;
+            try {
+                document.getElementById('b64-output').value = btoa(input);
+            } catch(e) {
+                document.getElementById('b64-output').value = "Error: Invalid input for Base64 encoding.";
+            }
+        }
+        function b64Decode() {
+            const input = document.getElementById('b64-input').value;
+            try {
+                document.getElementById('b64-output').value = atob(input);
+            } catch(e) {
+                document.getElementById('b64-output').value = "Error: Invalid Base64 string.";
+            }
+        }
+
+        // --- JSON Formatter Logic ---
+        function formatJson() {
+            const input = document.getElementById('json-input').value;
+            try {
+                const obj = JSON.parse(input);
+                document.getElementById('json-output').value = JSON.stringify(obj, null, 2);
+                document.getElementById('json-output').classList.remove('text-red-600');
+            } catch(e) {
+                document.getElementById('json-output').value = "Invalid JSON";
+                document.getElementById('json-output').classList.add('text-red-600');
+            }
+        }
+
+        // --- Word Counter Logic ---
+        function countWords() {
+            const text = document.getElementById('wc-input').value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            const chars = text.length;
+            const ns = text.replace(/\s/g, '').length;
+            
+            document.getElementById('wc-words').innerText = words;
+            document.getElementById('wc-chars').innerText = chars;
+            document.getElementById('wc-ns').innerText = ns;
+        }
+
+        // --- Image Tools Logic ---
+        let currentImg = null;
+        let originalImgName = 'image';
+
+        function handleImageToolFile(input) {
+            if(input.files && input.files[0]) {
+                const file = input.files[0];
+                originalImgName = file.name.split('.')[0];
+                const url = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = () => {
+                    currentImg = img;
+                    document.getElementById('img-width').value = img.width;
+                    document.getElementById('img-height').value = img.height;
+                    document.getElementById('img-preview').src = url;
+                    document.getElementById('img-controls').classList.remove('hidden');
+                    document.getElementById('img-upload-area').classList.add('hidden');
+                };
+                img.src = url;
+            }
+        }
+
+        function updateImgDims(source) {
+            if(!currentImg) return;
+            const ratio = document.getElementById('img-ratio').checked;
+            const wInput = document.getElementById('img-width');
+            const hInput = document.getElementById('img-height');
+            
+            if(ratio) {
+                const aspect = currentImg.width / currentImg.height;
+                if(source === 'w') {
+                    hInput.value = Math.round(wInput.value / aspect);
+                } else {
+                    wInput.value = Math.round(hInput.value * aspect);
+                }
+            }
+        }
+
+        function processAndDownloadImage() {
+            if(!currentImg) return;
+            const canvas = document.createElement('canvas');
+            const w = parseInt(document.getElementById('img-width').value);
+            const h = parseInt(document.getElementById('img-height').value);
+            const format = document.getElementById('img-format').value;
+            
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(currentImg, 0, 0, w, h);
+            
+            const url = canvas.toDataURL(format);
+            const link = document.createElement('a');
+            link.download = `${originalImgName}-processed.${format.split('/')[1]}`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetImgTool() {
+            currentImg = null;
+            document.getElementById('img-controls').classList.add('hidden');
+            document.getElementById('img-upload-area').classList.remove('hidden');
+        }
+
+        // --- PDF Tools (Simulation) ---
+        let pdfFile = null;
+        function loadPdfTool(title) {
+            document.getElementById('pdf-tool-title').innerText = title;
+            resetPdfTool();
+            navigateTo('tool-pdf-generic');
+        }
+
+        function handlePdfFile(input) {
+            if(input.files && input.files[0]) {
+                pdfFile = input.files[0];
+                document.getElementById('pdf-filename').innerText = pdfFile.name;
+                const btn = document.getElementById('pdf-convert-btn');
+                btn.disabled = false;
+                btn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+                btn.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+                btn.innerText = "Convert Now";
+            }
+        }
+
+        function startPdfConversion() {
+            document.getElementById('pdf-idle').classList.add('hidden');
+            document.getElementById('pdf-processing').classList.remove('hidden');
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 5;
+                document.getElementById('pdf-progress').style.width = width + '%';
+                if(width >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('pdf-processing').classList.add('hidden');
+                    document.getElementById('pdf-done').classList.remove('hidden');
+                }
+            }, 100);
+        }
+
+        function downloadPdfResult() {
+            const dummy = "Simulated Converted File Content";
+            const blob = new Blob([dummy], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.download = `converted_${Date.now()}.txt`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetPdfTool() {
+            pdfFile = null;
+            document.getElementById('pdf-idle').classList.remove('hidden');
+            document.getElementById('pdf-processing').classList.add('hidden');
+            document.getElementById('pdf-done').classList.add('hidden');
+            document.getElementById('pdf-filename').innerText = "Click to Upload PDF";
+            const btn = document.getElementById('pdf-convert-btn');
+            btn.disabled = true;
+            btn.className = "w-full mt-6 py-4 rounded-lg font-bold text-lg transition bg-slate-200 text-slate-400 cursor-not-allowed";
+            btn.innerText = "Select a File First";
+            document.getElementById('pdf-progress').style.width = '0%';
+        }
+        
+        // --- Init ---
+        // Load Home content initially to duplicate content
+        navigateTo('home');
+
+    </script>
+</body>
+</html> 
