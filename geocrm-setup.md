@@ -132,7 +132,9 @@ The request is sent as `text/plain` on purpose: it stops the browser from firing
 
 ## Notes & limits
 
-- **Auth is solid for a small team, not a bank.** Credentials are verified server-side, hashed at rest, and every data call requires a session token. Remaining limits: tokens live in `localStorage` and don't expire on a timer (only on logout or a new login).
+- **Auth is solid for a small team, not a bank.** Credentials are verified server-side, hashed at rest, and every data call requires a session token. Remaining limits: tokens live in `localStorage` and don't expire on a timer (only on logout or a new login), and there's no login rate-limiting — use at least an 8-character password in practice, not the enforced 4-character minimum.
+- **Ownership is enforced server-side for leads, properties, and tasks.** An Agent's token is rejected (not just hidden in the UI) for any write to a lead, property, or task that isn't theirs/assigned to them — verified with a dedicated permission test suite that mocks the Apps Script APIs directly.
+- **Sheet values are sanitized against formula injection.** Any free-text field (lead name, requirement, etc.) that happens to start with `=`, `+`, `-`, or `@` is stored as literal text, not as a live formula — otherwise a value like `=IMPORTXML(...)` submitted through any form or Excel import could execute when an Admin opens the spreadsheet.
 - **Concurrency:** Apps Script serializes calls per user; fine for a small team, not a high-throughput database.
 - **Scale:** Kanban columns render the first 50 cards each (search reaches everything, counts always show real totals); the property panel lists the first 100 with the first 300 map pins; bulk writes use single-batch Sheet calls so imports of thousands of rows complete in seconds.
 - **Writes are optimistic:** the UI updates immediately, then syncs. If a sync fails you'll see an error toast and the change reconciles on the next reload.
