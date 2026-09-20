@@ -76,6 +76,29 @@
   #holdBreathBtn.active{ background:rgba(57,255,156,0.25); box-shadow:0 0 18px rgba(57,255,156,0.4); }
   #fireBtn{ width:80px; height:80px; font-size:12px; letter-spacing:1px; border-color:var(--red); color:var(--red); box-shadow:0 0 18px rgba(255,77,77,0.3); }
   #fireBtn:active{ background:rgba(255,77,77,0.2); }
+  #fireBtn:disabled{ opacity:0.3; }
+
+  #scopeBtn{
+    position:fixed; left:50%; bottom:calc(30px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+    width:96px; height:44px; border-radius:22px; z-index:6;
+    background:rgba(3,15,9,0.75); border:1px solid var(--emerald); color:var(--emerald);
+    font-family:inherit; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    box-shadow:0 0 16px rgba(57,255,156,0.3);
+  }
+  #scopeBtn:active{ background:rgba(57,255,156,0.2); }
+  #unscopeBtn{
+    position:fixed; top:calc(64px + env(safe-area-inset-top)); left:14px; z-index:6;
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(3,15,9,0.65); border:1px solid var(--emerald-dim); color:var(--emerald);
+    font-family:inherit; font-size:16px;
+  }
+  #unscopeBtn:active{ background:rgba(57,255,156,0.15); }
+  #tapPrompt{
+    position:fixed; left:0; right:0; bottom:calc(90px + env(safe-area-inset-bottom)); text-align:center; z-index:5;
+    font-size:10px; letter-spacing:3px; opacity:0.6; text-transform:uppercase; pointer-events:none;
+    animation:promptPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes promptPulse{ 0%,100%{ opacity:0.35; } 50%{ opacity:0.8; } }
 
   /* debrief */
   .statRow{ display:flex; gap:20px; margin-bottom:8px; flex-wrap:wrap; justify-content:center; }
@@ -130,6 +153,9 @@
   <button class="ctlBtn" id="holdBreathBtn">HOLD<br>BREATH</button>
   <button class="ctlBtn" id="fireBtn">FIRE</button>
 </div>
+<button id="scopeBtn" class="hidden">Scope In</button>
+<button id="unscopeBtn" class="hidden">✕</button>
+<div id="tapPrompt" class="hidden">Tap Scope In to aim</div>
 
 <!-- DEBRIEF -->
 <div id="debriefScreen" class="screen hidden">
@@ -210,6 +236,9 @@
   var controls = document.getElementById('controls');
   var holdBreathBtn = document.getElementById('holdBreathBtn');
   var fireBtn = document.getElementById('fireBtn');
+  var scopeBtn = document.getElementById('scopeBtn');
+  var unscopeBtn = document.getElementById('unscopeBtn');
+  var tapPrompt = document.getElementById('tapPrompt');
 
   var debriefTitle = document.getElementById('debriefTitle');
   var debriefResult = document.getElementById('debriefResult');
@@ -280,6 +309,8 @@
   var breath = { holding:false, stamina:100 };
   var time = 0;
   var VIEW_RANGE = 260; // world units visible radius at center
+  var scoped = false;
+  var scopeTransition = 0; // 0..1 zoom-in progress for the scope transition animation
 
   function computeBallistics(m){
     var dropAmt = Math.pow(m.distance/100, 1.6) * 5.2;
@@ -300,6 +331,7 @@
       };
     });
 
+    SKYLINE = null;
     missionState = 'running';
     shotsLeft = mission.shots;
     score = 0; hitsCount = 0; civilianHit = false;
@@ -307,6 +339,7 @@
     aim.x = 0; aim.y = 0;
     breath.holding = false; breath.stamina = 100;
     time = 0;
+    scoped = false; scopeTransition = 0;
 
     distValEl.textContent = mission.distance + 'm';
     windArrowEl.textContent = mission.wind===0 ? '·' : (mission.windDir>0 ? '→' : '←');
@@ -314,9 +347,29 @@
     renderShots();
     scoreValEl.textContent = '0';
 
-    showEl(hud); showEl(windBadge); showEl(shotsRow); showEl(breathWrap); showEl(controls);
-    flashMissionMsg('CONTRACT START', 1100);
+    showEl(hud); showEl(windBadge); showEl(shotsRow);
+    hideEl(breathWrap); hideEl(controls); hideEl(unscopeBtn);
+    showEl(scopeBtn); showEl(tapPrompt);
+    fireBtn.disabled = true;
+    flashMissionMsg(mission.id===0 ? 'LINE UP THE CROSSHAIRS' : 'CONTRACT START', 1400);
   }
+
+  function enterScope(){
+    if(scoped || missionState!=='running') return;
+    scoped = true;
+    hideEl(scopeBtn); hideEl(tapPrompt);
+    showEl(breathWrap); showEl(controls); showEl(unscopeBtn);
+    fireBtn.disabled = false;
+  }
+  function exitScope(){
+    if(!scoped || missionState!=='running') return;
+    scoped = false;
+    showEl(scopeBtn); showEl(tapPrompt);
+    hideEl(breathWrap); hideEl(controls); hideEl(unscopeBtn);
+    fireBtn.disabled = true;
+  }
+  scopeBtn.addEventListener('click', enterScope);
+  unscopeBtn.addEventListener('click', exitScope);
 
   function renderShots(){
     shotsRow.innerHTML = '';
@@ -337,7 +390,7 @@
   var dragging=false, lastX=0, lastY=0;
   function pointerDown(e){ var t=e.touches?e.touches[0]:e; dragging=true; lastX=t.clientX; lastY=t.clientY; }
   function pointerMove(e){
-    if(!dragging || missionState!=='running') return;
+    if(!dragging || missionState!=='running' || !scoped) return;
     var t=e.touches?e.touches[0]:e;
     var dx=t.clientX-lastX, dy=t.clientY-lastY;
     lastX=t.clientX; lastY=t.clientY;
@@ -378,7 +431,7 @@
 
   // ---------- fire ----------
   function fire(){
-    if(missionState!=='running' || shotsLeft<=0 || bulletAnim) return;
+    if(missionState!=='running' || !scoped || shotsLeft<=0 || bulletAnim) return;
     shotsLeft -= 1; renderShots();
     playShot();
 
@@ -464,6 +517,7 @@
 
     setTimeout(function(){
       hideEl(hud); hideEl(windBadge); hideEl(shotsRow); hideEl(breathWrap); hideEl(controls);
+      hideEl(scopeBtn); hideEl(tapPrompt); hideEl(unscopeBtn);
       debriefTitle.textContent = mission.name.toUpperCase();
       debriefResult.textContent = success ? 'CONTRACT COMPLETE' : 'MISSION FAILED';
       debriefResult.className = 'subtitle ' + (success?'success':'fail');
@@ -517,6 +571,20 @@
   }
 
   // ---------- drawing scene ----------
+  var SKYLINE = null;
+  function buildSkyline(){
+    var seed = mission ? mission.id : 0;
+    var blocks = [];
+    var x = -20;
+    var rand2 = (function(s){ var v=s*9301+49297; return function(){ v=(v*9301+49297)%233280; return v/233280; }; })(seed+1);
+    while(x < W+40){
+      var w = rand2()*46+34;
+      var h = rand2()*(H*0.22)+H*0.06;
+      blocks.push({x:x, w:w, h:h});
+      x += w + rand2()*10+4;
+    }
+    SKYLINE = blocks;
+  }
   function drawBackdrop(){
     var sky = ctx.createLinearGradient(0,0,0,H*0.55);
     sky.addColorStop(0,'#040f0a'); sky.addColorStop(1,'#0d2416');
@@ -525,13 +593,57 @@
     ground.addColorStop(0,'#12281a'); ground.addColorStop(1,'#050c07');
     ctx.fillStyle = ground; ctx.fillRect(0,H*0.55,W,H*0.45);
 
-    ctx.strokeStyle='rgba(57,255,156,0.06)'; ctx.lineWidth=1;
-    for(var x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-    for(var y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    if(!SKYLINE) buildSkyline();
+    ctx.fillStyle = 'rgba(4,12,8,0.95)';
+    var baseY = H*0.52;
+    SKYLINE.forEach(function(b){ ctx.fillRect(b.x, baseY-b.h, b.w, b.h); });
+    ctx.fillStyle='rgba(57,255,156,0.12)';
+    SKYLINE.forEach(function(b){
+      for(var wy=baseY-b.h+8; wy<baseY-6; wy+=12){
+        for(var wx=b.x+5; wx<b.x+b.w-5; wx+=10){
+          if(((wx+wy)|0)%23<3) ctx.fillRect(wx,wy,3,4);
+        }
+      }
+    });
 
-    // silhouette rooftops / buildings hint
+    ctx.strokeStyle='rgba(57,255,156,0.06)'; ctx.lineWidth=1;
+    for(var x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,baseY); ctx.lineTo(x,H); ctx.stroke(); }
+    for(var y=baseY;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
     ctx.fillStyle = 'rgba(5,15,10,0.9)';
-    ctx.fillRect(0, H*0.5, W, 10);
+    ctx.fillRect(0, baseY, W, 10);
+  }
+
+  function drawGunOverlay(){
+    ctx.save();
+    var gx = W*0.62, gy = H*0.98;
+    // forearm / sleeve
+    ctx.fillStyle = '#2c2620';
+    ctx.beginPath();
+    ctx.moveTo(gx-40, H);
+    ctx.lineTo(gx+10, gy-70);
+    ctx.lineTo(gx+120, gy-95);
+    ctx.lineTo(gx+150, H);
+    ctx.closePath();
+    ctx.fill();
+    // hand
+    ctx.fillStyle = '#8a6a4f';
+    ctx.beginPath();
+    ctx.ellipse(gx+70, gy-88, 30, 16, -0.35, 0, Math.PI*2);
+    ctx.fill();
+    // rifle body
+    ctx.save();
+    ctx.translate(gx+40, gy-140);
+    ctx.rotate(-0.28);
+    ctx.fillStyle = '#1c1c1c';
+    ctx.fillRect(-10, -14, 260, 30);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(180, -34, 90, 22);
+    ctx.fillRect(210, -50, 40, 60);
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(-20, 14, 40, 46);
+    ctx.restore();
+    ctx.restore();
   }
 
   function silhouettePath(cx, cy, s){
@@ -607,6 +719,28 @@
     var b = mission ? mission._ballistics : {drop:0, wind:0};
     var ix = ax + b.wind*SCALE;
     var iy = ay + b.drop*SCALE;
+
+    // compensation arrow from reticle center to impact preview (drop/wind cue)
+    var ddx = ix-ax, ddy = iy-ay;
+    var dlen = Math.hypot(ddx,ddy);
+    if(dlen > 14){
+      var ux = ddx/dlen, uy = ddy/dlen;
+      var startR = 22;
+      var sxp = ax+ux*startR, syp = ay+uy*startR;
+      var exp_ = ix-ux*11, eyp = iy-uy*11;
+      ctx.save();
+      ctx.strokeStyle = '#ff4d4d'; ctx.fillStyle = '#ff4d4d'; ctx.globalAlpha=0.9; ctx.lineWidth=2;
+      ctx.shadowColor='rgba(255,77,77,0.7)'; ctx.shadowBlur=6;
+      ctx.beginPath(); ctx.moveTo(sxp,syp); ctx.lineTo(exp_,eyp); ctx.stroke();
+      var ang = Math.atan2(eyp-syp, exp_-sxp);
+      ctx.beginPath();
+      ctx.moveTo(exp_, eyp);
+      ctx.lineTo(exp_ - 9*Math.cos(ang-0.4), eyp - 9*Math.sin(ang-0.4));
+      ctx.lineTo(exp_ - 9*Math.cos(ang+0.4), eyp - 9*Math.sin(ang+0.4));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
     ctx.save();
     ctx.strokeStyle = '#ff4d4d'; ctx.setLineDash([3,3]); ctx.lineWidth=1.3; ctx.globalAlpha=0.85;
     ctx.beginPath(); ctx.arc(ix,iy,9,0,Math.PI*2); ctx.stroke();
@@ -638,26 +772,34 @@
 
     if(missionState==='running' || missionState==='ended'){
       time += dt;
-      drawBackdrop();
 
-      // breath stamina
+      var targetTransition = scoped ? 1 : 0;
+      scopeTransition += (targetTransition - scopeTransition) * Math.min(1, dt*8);
+
+      // moving targets always animate, even while unscoped, so the range feels alive
+      targets.forEach(function(t){
+        if(!t.moving || !t.alive) return;
+        t.x = t.baseX + Math.sin(time*(t.speed/60))*t.range;
+      });
+
       if(missionState==='running'){
-        if(breath.holding){ breath.stamina = Math.max(0, breath.stamina - 30*dt); }
+        if(breath.holding && scoped){ breath.stamina = Math.max(0, breath.stamina - 30*dt); }
         else { breath.stamina = Math.min(100, breath.stamina + 20*dt); }
         breathFill.style.width = breath.stamina + '%';
-
-        var calm = breath.holding ? 0.15 : 1;
-        jitter.x = Math.sin(time*2.3)*6*calm + Math.sin(time*0.7)*3*calm;
-        jitter.y = Math.cos(time*1.9)*5*calm + Math.cos(time*0.5)*2.5*calm;
-
-        // moving targets
-        targets.forEach(function(t){
-          if(!t.moving || !t.alive) return;
-          t.x = t.baseX + Math.sin(time*(t.speed/60))*t.range;
-        });
       }
+      var calm = (breath.holding && scoped) ? 0.15 : 1;
+      jitter.x = Math.sin(time*2.3)*6*calm + Math.sin(time*0.7)*3*calm;
+      jitter.y = Math.cos(time*1.9)*5*calm + Math.cos(time*0.5)*2.5*calm;
 
+      // scoping in zooms the world mapping itself, so targets and the reticle
+      // stay perfectly aligned (both read the same SCALE for world->screen)
+      SCALE = 1 + scopeTransition*0.9;
+      drawBackdrop();
       drawTargets();
+
+      if(!scoped && scopeTransition < 0.05){
+        drawGunOverlay();
+      }
 
       if(bulletAnim){
         bulletAnim.t += dt;
@@ -667,9 +809,12 @@
           bulletAnim = null;
           resolveImpact(impactWX, impactWY);
         }
-      } else {
+      } else if(scopeTransition > 0.05){
+        ctx.save();
+        ctx.globalAlpha = scopeTransition;
         drawScope();
         drawAimReticle();
+        ctx.restore();
       }
     }
 
