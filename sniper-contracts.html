@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Sniper Contracts</title>
+<style>
+  :root{
+    --emerald:#39ff9c; --emerald-dim:#0f5c3b; --emerald-glow:rgba(57,255,156,0.55);
+    --amber:#ffcf5c; --red:#ff4d4d; --blue:#5cc8ff; --hud-text:#c9ffe2;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%; background:#000; overflow:hidden;
+    font-family:'Courier New', ui-monospace, Menlo, monospace; color:var(--hud-text);
+    touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  #gameCanvas{ display:block; width:100vw; height:100vh; background:#000; }
+  .screen{ position:fixed; inset:0; z-index:15; display:flex; flex-direction:column; align-items:center; overflow-y:auto; padding:calc(24px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); background:#040a06; }
+  .hidden{ display:none !important; }
+  h1.title{ font-size:24px; letter-spacing:6px; color:var(--emerald); text-shadow:0 0 20px var(--emerald-glow); margin:6px 0 4px; text-align:center; }
+  .subtitle{ font-size:10px; letter-spacing:3px; opacity:0.55; margin-bottom:22px; text-transform:uppercase; }
+
+  .contractCard{
+    width:100%; max-width:360px; background:rgba(10,25,16,0.7); border:1px solid var(--emerald-dim);
+    border-radius:8px; padding:14px 16px; margin-bottom:12px; text-align:left; position:relative;
+  }
+  .contractCard.locked{ opacity:0.4; }
+  .cName{ font-size:14px; letter-spacing:2px; color:var(--emerald); text-transform:uppercase; margin-bottom:4px; }
+  .cMeta{ font-size:10px; letter-spacing:1px; opacity:0.65; line-height:1.6; }
+  .cStars{ position:absolute; top:14px; right:16px; font-size:14px; letter-spacing:2px; color:var(--amber); }
+  .cBtn{
+    margin-top:10px; width:100%; background:transparent; border:1px solid var(--emerald); color:var(--emerald);
+    padding:9px; font-size:11px; letter-spacing:2px; text-transform:uppercase; border-radius:4px; font-family:inherit;
+  }
+  .cBtn:disabled{ border-color:#333; color:#555; }
+  .cBtn:active:not(:disabled){ background:rgba(57,255,156,0.15); }
+
+  #briefingBody{ width:100%; max-width:360px; }
+  .briefRow{ display:flex; justify-content:space-between; border-bottom:1px solid rgba(57,255,156,0.15); padding:9px 2px; font-size:11px; letter-spacing:1px; }
+  .briefRow span:last-child{ color:var(--emerald); }
+  #startMissionBtn, #backHomeBtn{
+    margin-top:22px; width:100%; max-width:360px; background:transparent; border:1px solid var(--emerald); color:var(--emerald);
+    padding:13px; font-size:12px; letter-spacing:3px; text-transform:uppercase; border-radius:4px; font-family:inherit;
+  }
+  #startMissionBtn:active, #backHomeBtn:active{ background:rgba(57,255,156,0.15); }
+
+  /* ---------- in-mission HUD ---------- */
+  #hud{ position:fixed; top:0; left:0; right:0; display:flex; justify-content:space-between; padding:calc(10px + env(safe-area-inset-top)) 14px 0; pointer-events:none; z-index:5; }
+  .hud-block{ background:rgba(3,15,9,0.6); border:1px solid var(--emerald-dim); border-radius:6px; padding:6px 10px; min-width:64px; }
+  .hud-label{ font-size:9px; letter-spacing:2px; opacity:0.65; text-transform:uppercase; }
+  .hud-value{ font-size:17px; font-weight:bold; color:var(--emerald); text-shadow:0 0 8px var(--emerald-glow); }
+
+  #windBadge{ position:fixed; top:calc(64px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); z-index:5; text-align:center; }
+  #windArrow{ font-size:20px; color:var(--amber); text-shadow:0 0 8px rgba(255,207,92,0.6); display:inline-block; }
+  #windSpeedTxt{ font-size:10px; letter-spacing:2px; opacity:0.7; margin-top:2px; }
+
+  #shotsRow{ position:fixed; top:calc(64px + env(safe-area-inset-top)); right:14px; z-index:5; display:flex; gap:4px; flex-direction:row-reverse; }
+  .bulletDot{ width:8px; height:14px; border-radius:2px; background:var(--amber); box-shadow:0 0 6px rgba(255,207,92,0.6); }
+  .bulletDot.spent{ background:rgba(255,207,92,0.12); box-shadow:none; }
+
+  #missionMsg{
+    position:fixed; top:38%; left:0; right:0; text-align:center; z-index:8; pointer-events:none;
+    font-size:13px; letter-spacing:4px; text-transform:uppercase; opacity:0; transition:opacity 0.3s;
+  }
+  #missionMsg.show{ opacity:1; }
+
+  #breathWrap{ position:fixed; left:0; right:0; bottom:calc(96px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; align-items:center; z-index:6; }
+  #breathBar{ width:200px; height:7px; background:rgba(57,255,156,0.08); border:1px solid var(--emerald-dim); border-radius:4px; overflow:hidden; margin-top:5px; }
+  #breathFill{ height:100%; width:100%; background:linear-gradient(90deg, var(--emerald-dim), var(--emerald)); box-shadow:0 0 8px var(--emerald-glow); }
+  #breathLabel{ font-size:9px; letter-spacing:2px; opacity:0.6; text-transform:uppercase; }
+
+  #controls{ position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:center; align-items:center; gap:20px; padding:0 20px calc(20px + env(safe-area-inset-bottom)); z-index:6; }
+  .ctlBtn{ background:rgba(3,15,9,0.65); border:1px solid var(--emerald-dim); color:var(--emerald); border-radius:50%; font-family:inherit; text-transform:uppercase; }
+  #holdBreathBtn{ width:70px; height:70px; font-size:9px; letter-spacing:0.5px; line-height:1.2; }
+  #holdBreathBtn.active{ background:rgba(57,255,156,0.25); box-shadow:0 0 18px rgba(57,255,156,0.4); }
+  #fireBtn{ width:80px; height:80px; font-size:12px; letter-spacing:1px; border-color:var(--red); color:var(--red); box-shadow:0 0 18px rgba(255,77,77,0.3); }
+  #fireBtn:active{ background:rgba(255,77,77,0.2); }
+
+  /* debrief */
+  .statRow{ display:flex; gap:20px; margin-bottom:8px; flex-wrap:wrap; justify-content:center; }
+  .statBox{ min-width:88px; }
+  .statBox .n{ font-size:24px; color:var(--emerald); text-shadow:0 0 10px var(--emerald-glow); font-weight:bold; }
+  .statBox .l{ font-size:9px; letter-spacing:2px; opacity:0.6; text-transform:uppercase; margin-top:2px; }
+  #debriefStars{ font-size:30px; letter-spacing:8px; color:var(--amber); margin:14px 0; text-shadow:0 0 14px rgba(255,207,92,0.6); }
+  #debriefResult{ font-size:15px; letter-spacing:5px; text-transform:uppercase; margin-top:4px; }
+  #debriefResult.success{ color:var(--emerald); text-shadow:0 0 12px var(--emerald-glow); }
+  #debriefResult.fail{ color:var(--red); text-shadow:0 0 12px rgba(255,77,77,0.7); }
+  .debriefBtns{ display:flex; gap:12px; margin-top:22px; width:100%; max-width:360px; }
+  .debriefBtns button{ flex:1; background:transparent; border:1px solid var(--emerald); color:var(--emerald); padding:12px 4px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; border-radius:4px; font-family:inherit; }
+  .debriefBtns button:active{ background:rgba(57,255,156,0.15); }
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<!-- HOME / CONTRACT SELECT -->
+<div id="homeScreen" class="screen">
+  <h1 class="title">SNIPER CONTRACTS</h1>
+  <div class="subtitle">Select a contract</div>
+  <div id="contractList" style="width:100%;max-width:360px;"></div>
+</div>
+
+<!-- BRIEFING -->
+<div id="briefingScreen" class="screen hidden">
+  <h1 class="title" id="briefTitle">CONTRACT</h1>
+  <div class="subtitle">Mission Briefing</div>
+  <div id="briefingBody"></div>
+  <button id="startMissionBtn">Deploy</button>
+  <button id="backHomeBtn">Back to Contracts</button>
+</div>
+
+<!-- IN MISSION HUD -->
+<div id="hud" class="hidden">
+  <div class="hud-block"><div class="hud-label">Score</div><div class="hud-value" id="scoreVal">0</div></div>
+  <div class="hud-block" style="text-align:right;"><div class="hud-label">Distance</div><div class="hud-value" id="distVal">0m</div></div>
+</div>
+<div id="windBadge" class="hidden">
+  <div id="windArrow">→</div>
+  <div id="windSpeedTxt">0 KT</div>
+</div>
+<div id="shotsRow" class="hidden"></div>
+<div id="missionMsg"></div>
+<div id="breathWrap" class="hidden">
+  <div id="breathLabel">Breath Stabilizer</div>
+  <div id="breathBar"><div id="breathFill"></div></div>
+</div>
+<div id="controls" class="hidden">
+  <button class="ctlBtn" id="holdBreathBtn">HOLD<br>BREATH</button>
+  <button class="ctlBtn" id="fireBtn">FIRE</button>
+</div>
+
+<!-- DEBRIEF -->
+<div id="debriefScreen" class="screen hidden">
+  <h1 class="title" id="debriefTitle">CONTRACT</h1>
+  <div id="debriefResult" class="subtitle">RESULT</div>
+  <div id="debriefStars">☆☆☆</div>
+  <div class="statRow">
+    <div class="statBox"><div class="n" id="debHits">0</div><div class="l">Targets Down</div></div>
+    <div class="statBox"><div class="n" id="debShots">0</div><div class="l">Shots Fired</div></div>
+    <div class="statBox"><div class="n" id="debScore">0</div><div class="l">Score</div></div>
+  </div>
+  <div class="debriefBtns">
+    <button id="retryMissionBtn">Retry</button>
+    <button id="nextMissionBtn">Next</button>
+    <button id="contractsBtn">Contracts</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var canvas = document.getElementById('gameCanvas');
+  var ctx = canvas.getContext('2d');
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var W=0,H=0;
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------- persistence ----------
+  var SAVE_KEY = 'sniperContracts_progress';
+  var save = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+  if(!save.unlocked) save.unlocked = 1;
+  if(!save.stars) save.stars = {};
+  if(!save.totalScore) save.totalScore = 0;
+  function persist(){ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
+
+  // ---------- mission definitions ----------
+  var MISSIONS = [
+    { id:0, name:'First Blood', distance:250, wind:0, windDir:1, shots:2,
+      targets:[ {ox:0, oy:0, hostile:true, moving:false} ] },
+    { id:1, name:'Crosswind', distance:450, wind:6, windDir:1, shots:2,
+      targets:[ {ox:-40, oy:0, hostile:true, moving:false}, {ox:60, oy:10, hostile:false, moving:false} ] },
+    { id:2, name:'Twin Threat', distance:600, wind:-9, windDir:-1, shots:3,
+      targets:[ {ox:-70, oy:-10, hostile:true, moving:false}, {ox:70, oy:15, hostile:true, moving:false} ] },
+    { id:3, name:'Moving Target', distance:750, wind:4, windDir:1, shots:3,
+      targets:[ {ox:0, oy:0, hostile:true, moving:true, range:110, speed:55}, {ox:-100, oy:20, hostile:false, moving:false} ] },
+    { id:4, name:'Final Contract', distance:900, wind:12, windDir:-1, shots:4,
+      targets:[ {ox:-60, oy:-15, hostile:true, moving:true, range:90, speed:65}, {ox:80, oy:10, hostile:true, moving:false}, {ox:0, oy:25, hostile:false, moving:false} ] }
+  ];
+
+  // ---------- DOM refs ----------
+  var homeScreen = document.getElementById('homeScreen');
+  var briefingScreen = document.getElementById('briefingScreen');
+  var debriefScreen = document.getElementById('debriefScreen');
+  var contractList = document.getElementById('contractList');
+  var briefTitle = document.getElementById('briefTitle');
+  var briefingBody = document.getElementById('briefingBody');
+  var startMissionBtn = document.getElementById('startMissionBtn');
+  var backHomeBtn = document.getElementById('backHomeBtn');
+
+  var hud = document.getElementById('hud');
+  var scoreValEl = document.getElementById('scoreVal');
+  var distValEl = document.getElementById('distVal');
+  var windBadge = document.getElementById('windBadge');
+  var windArrowEl = document.getElementById('windArrow');
+  var windSpeedTxtEl = document.getElementById('windSpeedTxt');
+  var shotsRow = document.getElementById('shotsRow');
+  var missionMsg = document.getElementById('missionMsg');
+  var breathWrap = document.getElementById('breathWrap');
+  var breathFill = document.getElementById('breathFill');
+  var controls = document.getElementById('controls');
+  var holdBreathBtn = document.getElementById('holdBreathBtn');
+  var fireBtn = document.getElementById('fireBtn');
+
+  var debriefTitle = document.getElementById('debriefTitle');
+  var debriefResult = document.getElementById('debriefResult');
+  var debriefStars = document.getElementById('debriefStars');
+  var debHits = document.getElementById('debHits');
+  var debShots = document.getElementById('debShots');
+  var debScore = document.getElementById('debScore');
+  var retryMissionBtn = document.getElementById('retryMissionBtn');
+  var nextMissionBtn = document.getElementById('nextMissionBtn');
+  var contractsBtn = document.getElementById('contractsBtn');
+
+  function rand(a,b){ return Math.random()*(b-a)+a; }
+  function showEl(el){ el.classList.remove('hidden'); }
+  function hideEl(el){ el.classList.add('hidden'); }
+
+  // ---------- HOME screen ----------
+  function renderHome(){
+    contractList.innerHTML = '';
+    MISSIONS.forEach(function(m, i){
+      var locked = i > 0 && !(save.unlocked > i);
+      var stars = save.stars[m.id] || 0;
+      var card = document.createElement('div');
+      card.className = 'contractCard' + (locked ? ' locked' : '');
+      card.innerHTML =
+        '<div class="cName">' + (i+1) + '. ' + m.name + '</div>' +
+        '<div class="cMeta">Distance: ' + m.distance + 'm &nbsp;|&nbsp; Wind: ' + Math.abs(m.wind) + ' kt' + (m.wind===0?'':(m.windDir>0?' →':' ←')) + '<br>Targets: ' + m.targets.filter(function(t){return t.hostile;}).length + ' hostile, ' + m.targets.filter(function(t){return !t.hostile;}).length + ' civilian &nbsp;|&nbsp; Shots: ' + m.shots + '</div>' +
+        '<div class="cStars">' + (locked ? '🔒' : ('★'.repeat(stars) + '☆'.repeat(3-stars))) + '</div>' +
+        '<button class="cBtn" ' + (locked?'disabled':'') + '>' + (locked ? 'Locked' : 'View Briefing') + '</button>';
+      if(!locked){
+        card.querySelector('.cBtn').addEventListener('click', function(){ openBriefing(i); });
+      }
+      contractList.appendChild(card);
+    });
+  }
+
+  var currentMissionIndex = 0;
+
+  function openBriefing(i){
+    currentMissionIndex = i;
+    var m = MISSIONS[i];
+    briefTitle.textContent = m.name.toUpperCase();
+    briefingBody.innerHTML =
+      row('Target Distance', m.distance + ' m') +
+      row('Wind Speed', Math.abs(m.wind) + ' kt ' + (m.wind===0?'(calm)':(m.windDir>0?'(left → right)':'(right → left)'))) +
+      row('Hostiles', m.targets.filter(function(t){return t.hostile;}).length) +
+      row('Civilians Nearby', m.targets.filter(function(t){return !t.hostile;}).length) +
+      row('Rounds Issued', m.shots) +
+      row('Rule of Engagement', 'No civilian casualties');
+    hideEl(homeScreen); showEl(briefingScreen);
+  }
+  function row(a,b){ return '<div class="briefRow"><span>'+a+'</span><span>'+b+'</span></div>'; }
+
+  backHomeBtn.addEventListener('click', function(){ hideEl(briefingScreen); renderHome(); showEl(homeScreen); });
+  startMissionBtn.addEventListener('click', function(){ hideEl(briefingScreen); startMission(currentMissionIndex); });
+
+  // ---------- MISSION runtime state ----------
+  var mission = null;
+  var targets = [];
+  var missionState = 'idle'; // idle, running, ended
+  var shotsLeft = 0;
+  var score = 0;
+  var hitsCount = 0;
+  var civilianHit = false;
+  var particles = [], flashes = [];
+  var bulletAnim = null; // {t, dur, from:{x,y}, to:{x,y}}
+  var aim = { x:0, y:0 }; // world offset from center
+  var jitter = { x:0, y:0 };
+  var breath = { holding:false, stamina:100 };
+  var time = 0;
+  var VIEW_RANGE = 260; // world units visible radius at center
+
+  function computeBallistics(m){
+    var dropAmt = Math.pow(m.distance/100, 1.6) * 5.2;
+    var windAmt = m.wind * m.windDir * (m.distance/100) * 2.1;
+    return { drop: dropAmt, wind: windAmt, travelTime: Math.min(1.4, m.distance/650) };
+  }
+
+  function startMission(i){
+    mission = MISSIONS[i];
+    var ballistics = computeBallistics(mission);
+    mission._ballistics = ballistics;
+
+    targets = mission.targets.map(function(t){
+      return {
+        baseX: t.ox, baseY: t.oy, x:t.ox, y:t.oy,
+        hostile: t.hostile, moving: !!t.moving, range: t.range||0, speed: t.speed||0,
+        alive:true, phase:0
+      };
+    });
+
+    missionState = 'running';
+    shotsLeft = mission.shots;
+    score = 0; hitsCount = 0; civilianHit = false;
+    particles.length = 0; flashes.length = 0; bulletAnim = null;
+    aim.x = 0; aim.y = 0;
+    breath.holding = false; breath.stamina = 100;
+    time = 0;
+
+    distValEl.textContent = mission.distance + 'm';
+    windArrowEl.textContent = mission.wind===0 ? '·' : (mission.windDir>0 ? '→' : '←');
+    windSpeedTxtEl.textContent = Math.abs(mission.wind) + ' KT';
+    renderShots();
+    scoreValEl.textContent = '0';
+
+    showEl(hud); showEl(windBadge); showEl(shotsRow); showEl(breathWrap); showEl(controls);
+    flashMissionMsg('CONTRACT START', 1100);
+  }
+
+  function renderShots(){
+    shotsRow.innerHTML = '';
+    for(var i=0;i<mission.shots;i++){
+      var b = document.createElement('div');
+      b.className = 'bulletDot' + (i < shotsLeft ? '' : ' spent');
+      shotsRow.appendChild(b);
+    }
+  }
+
+  function flashMissionMsg(text, dur){
+    missionMsg.textContent = text;
+    missionMsg.classList.add('show');
+    setTimeout(function(){ missionMsg.classList.remove('show'); }, dur);
+  }
+
+  // ---------- input ----------
+  var dragging=false, lastX=0, lastY=0;
+  function pointerDown(e){ var t=e.touches?e.touches[0]:e; dragging=true; lastX=t.clientX; lastY=t.clientY; }
+  function pointerMove(e){
+    if(!dragging || missionState!=='running') return;
+    var t=e.touches?e.touches[0]:e;
+    var dx=t.clientX-lastX, dy=t.clientY-lastY;
+    lastX=t.clientX; lastY=t.clientY;
+    var sens = 0.9;
+    aim.x = Math.max(-VIEW_RANGE, Math.min(VIEW_RANGE, aim.x + dx*sens));
+    aim.y = Math.max(-VIEW_RANGE, Math.min(VIEW_RANGE, aim.y + dy*sens));
+  }
+  function pointerUp(){ dragging=false; }
+  canvas.addEventListener('touchstart', pointerDown, {passive:true});
+  canvas.addEventListener('touchmove', function(e){ e.preventDefault(); pointerMove(e); }, {passive:false});
+  canvas.addEventListener('touchend', pointerUp, {passive:true});
+  canvas.addEventListener('mousedown', pointerDown);
+  window.addEventListener('mousemove', pointerMove);
+  window.addEventListener('mouseup', pointerUp);
+
+  holdBreathBtn.addEventListener('touchstart', function(e){ e.preventDefault(); breath.holding=true; holdBreathBtn.classList.add('active'); }, {passive:false});
+  holdBreathBtn.addEventListener('touchend', function(e){ e.preventDefault(); breath.holding=false; holdBreathBtn.classList.remove('active'); }, {passive:false});
+  holdBreathBtn.addEventListener('mousedown', function(){ breath.holding=true; holdBreathBtn.classList.add('active'); });
+  window.addEventListener('mouseup', function(){ breath.holding=false; holdBreathBtn.classList.remove('active'); });
+
+  fireBtn.addEventListener('click', fire);
+
+  // ---------- audio ----------
+  var actx=null;
+  function playShot(){
+    try{
+      if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+      var dur=0.16;
+      var buf = actx.createBuffer(1, actx.sampleRate*dur, actx.sampleRate);
+      var data = buf.getChannelData(0);
+      for(var i=0;i<data.length;i++){ data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,2.4); }
+      var src = actx.createBufferSource(); src.buffer=buf;
+      var gain = actx.createGain(); gain.gain.value=0.55;
+      var filt = actx.createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=2400;
+      src.connect(filt); filt.connect(gain); gain.connect(actx.destination); src.start();
+    }catch(e){}
+  }
+
+  // ---------- fire ----------
+  function fire(){
+    if(missionState!=='running' || shotsLeft<=0 || bulletAnim) return;
+    shotsLeft -= 1; renderShots();
+    playShot();
+
+    var b = mission._ballistics;
+    var totalAimX = aim.x + jitter.x;
+    var totalAimY = aim.y + jitter.y;
+    var impactX = totalAimX + b.wind;
+    var impactY = totalAimY + b.drop;
+
+    var fromScreen = { x: W/2, y: H-40 };
+    var impactScreen = worldToScreen(impactX, impactY);
+
+    bulletAnim = {
+      t:0, dur: b.travelTime,
+      fromX: fromScreen.x, fromY: fromScreen.y,
+      toX: impactScreen.x, toY: impactScreen.y,
+      impactWX: impactX, impactWY: impactY
+    };
+  }
+
+  function resolveImpact(impactWX, impactWY){
+    var best=null, bestZone=null, bestDist=Infinity;
+    for(var i=0;i<targets.length;i++){
+      var t = targets[i];
+      if(!t.alive) continue;
+      var s = 1.0;
+      var headCX = t.x, headCY = t.y - 46;
+      var torsoCX = t.x, torsoCY = t.y;
+      var dHead = Math.hypot(impactWX-headCX, impactWY-headCY);
+      var dTorso = Math.hypot(impactWX-torsoCX, impactWY-torsoCY);
+      var zone=null, eff=Infinity;
+      if(dHead<=14){ zone='head'; eff=dHead; }
+      else if(dTorso<=32){ zone='torso'; eff=dTorso*0.6; }
+      else if(dTorso<=50){ zone='limb'; eff=dTorso; }
+      if(zone && eff<bestDist){ bestDist=eff; best=t; bestZone=zone; }
+    }
+
+    var screenCenter = worldToScreen(impactWX, impactWY);
+
+    if(best){
+      best.alive = false;
+      if(best.hostile){
+        var pts = bestZone==='head'?20:(bestZone==='torso'?10:4);
+        score += pts; hitsCount += 1;
+        triggerImpact(screenCenter.x, screenCenter.y, bestZone==='head'?'#ffffff':'#39ff9c');
+        flashMissionMsg(bestZone==='head'?'HEADSHOT':'TARGET DOWN', 900);
+      } else {
+        civilianHit = true;
+        triggerImpact(screenCenter.x, screenCenter.y, '#5cc8ff');
+        flashMissionMsg('CIVILIAN CASUALTY', 1200);
+      }
+    } else {
+      triggerImpact(screenCenter.x, screenCenter.y, '#ff4d4d', true);
+      flashMissionMsg('SHOT MISSED', 800);
+    }
+    scoreValEl.textContent = score;
+    checkMissionEnd();
+  }
+
+  function checkMissionEnd(){
+    if(civilianHit){ endMission(false); return; }
+    var hostilesLeft = targets.filter(function(t){return t.hostile && t.alive;}).length;
+    if(hostilesLeft === 0){ endMission(true); return; }
+    if(shotsLeft <= 0){ endMission(false); return; }
+  }
+
+  function endMission(success){
+    missionState = 'ended';
+    var stars = 0;
+    if(success){
+      var used = mission.shots - shotsLeft;
+      var hostileCount = targets.filter(function(t){return t.hostile;}).length;
+      if(used <= hostileCount) stars = 3;
+      else if(used <= hostileCount+1) stars = 2;
+      else stars = 1;
+    }
+    if(success){
+      save.stars[mission.id] = Math.max(save.stars[mission.id]||0, stars);
+      save.unlocked = Math.max(save.unlocked, mission.id+2);
+      save.totalScore += score;
+      persist();
+    }
+
+    setTimeout(function(){
+      hideEl(hud); hideEl(windBadge); hideEl(shotsRow); hideEl(breathWrap); hideEl(controls);
+      debriefTitle.textContent = mission.name.toUpperCase();
+      debriefResult.textContent = success ? 'CONTRACT COMPLETE' : 'MISSION FAILED';
+      debriefResult.className = 'subtitle ' + (success?'success':'fail');
+      debriefStars.textContent = '★'.repeat(stars) + '☆'.repeat(3-stars);
+      debHits.textContent = hitsCount;
+      debShots.textContent = mission.shots - shotsLeft;
+      debScore.textContent = score;
+      nextMissionBtn.style.display = (success && mission.id < MISSIONS.length-1) ? 'block' : 'none';
+      showEl(debriefScreen);
+    }, 700);
+  }
+
+  retryMissionBtn.addEventListener('click', function(){ hideEl(debriefScreen); startMission(mission.id); });
+  nextMissionBtn.addEventListener('click', function(){ hideEl(debriefScreen); startMission(mission.id+1); });
+  contractsBtn.addEventListener('click', function(){ hideEl(debriefScreen); renderHome(); showEl(homeScreen); });
+
+  // ---------- fx ----------
+  function triggerImpact(sx,sy,color,small){
+    flashes.push({x:sx,y:sy,r:2,maxR:small?24:50,alpha:1,color:color});
+    var count = small?6:16;
+    for(var i=0;i<count;i++){
+      var ang=Math.random()*Math.PI*2, spd=rand(40,small?90:230);
+      particles.push({x:sx,y:sy,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:1,decay:rand(1.2,2.2),color:color});
+    }
+  }
+  function updateFx(dt){
+    for(var i=particles.length-1;i>=0;i--){
+      var p=particles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=0.9; p.vy*=0.9; p.life-=p.decay*dt;
+      if(p.life<=0) particles.splice(i,1);
+    }
+    for(var j=flashes.length-1;j>=0;j--){
+      var f=flashes[j]; f.r+=(f.maxR-f.r)*0.25; f.alpha-=dt*3.0;
+      if(f.alpha<=0) flashes.splice(j,1);
+    }
+  }
+  function drawFx(){
+    particles.forEach(function(p){
+      ctx.save(); ctx.globalAlpha=Math.max(p.life,0); ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=8;
+      ctx.beginPath(); ctx.arc(p.x,p.y,2.4,0,Math.PI*2); ctx.fill(); ctx.restore();
+    });
+    flashes.forEach(function(f){
+      ctx.save(); ctx.globalAlpha=Math.max(f.alpha,0); ctx.strokeStyle=f.color; ctx.shadowColor=f.color; ctx.shadowBlur=16; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.stroke(); ctx.restore();
+    });
+  }
+
+  // ---------- world/screen mapping ----------
+  var SCALE = 1;
+  function worldToScreen(wx, wy){
+    return { x: W/2 + wx*SCALE, y: H/2 + wy*SCALE };
+  }
+
+  // ---------- drawing scene ----------
+  function drawBackdrop(){
+    var sky = ctx.createLinearGradient(0,0,0,H*0.55);
+    sky.addColorStop(0,'#040f0a'); sky.addColorStop(1,'#0d2416');
+    ctx.fillStyle = sky; ctx.fillRect(0,0,W,H*0.6);
+    var ground = ctx.createLinearGradient(0,H*0.55,0,H);
+    ground.addColorStop(0,'#12281a'); ground.addColorStop(1,'#050c07');
+    ctx.fillStyle = ground; ctx.fillRect(0,H*0.55,W,H*0.45);
+
+    ctx.strokeStyle='rgba(57,255,156,0.06)'; ctx.lineWidth=1;
+    for(var x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(var y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // silhouette rooftops / buildings hint
+    ctx.fillStyle = 'rgba(5,15,10,0.9)';
+    ctx.fillRect(0, H*0.5, W, 10);
+  }
+
+  function silhouettePath(cx, cy, s){
+    ctx.beginPath();
+    ctx.arc(cx, cy-46*s, 14*s, 0, Math.PI*2);
+    ctx.moveTo(cx-20*s, cy-30*s);
+    ctx.lineTo(cx+20*s, cy-30*s);
+    ctx.lineTo(cx+24*s, cy+35*s);
+    ctx.lineTo(cx+10*s, cy+36*s);
+    ctx.lineTo(cx+10*s, cy+90*s);
+    ctx.lineTo(cx+2*s, cy+90*s);
+    ctx.lineTo(cx+2*s, cy+38*s);
+    ctx.lineTo(cx-2*s, cy+38*s);
+    ctx.lineTo(cx-2*s, cy+90*s);
+    ctx.lineTo(cx-10*s, cy+90*s);
+    ctx.lineTo(cx-10*s, cy+36*s);
+    ctx.lineTo(cx-24*s, cy+35*s);
+    ctx.closePath();
+  }
+
+  function drawTargets(){
+    targets.forEach(function(t){
+      if(!t.alive) return;
+      var sc = worldToScreen(t.x, t.y);
+      ctx.save();
+      ctx.fillStyle = t.hostile ? '#161616' : '#123a52';
+      silhouettePath(sc.x, sc.y, 1.1);
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = t.hostile ? '#ff4d4d' : '#5cc8ff';
+      ctx.beginPath(); ctx.arc(sc.x, sc.y-64, 4, 0, Math.PI*2); ctx.fill();
+    });
+  }
+
+  function drawScope(){
+    // vignette
+    ctx.save();
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.rect(0,0,W,H);
+    var r = Math.min(W,H)*0.46;
+    ctx.moveTo(W/2+r,H/2);
+    ctx.arc(W/2,H/2,r,0,Math.PI*2,true);
+    ctx.fill('evenodd');
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle='rgba(57,255,156,0.8)'; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.arc(W/2,H/2,r,0,Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawAimReticle(){
+    var ax = W/2 + (aim.x+jitter.x)*SCALE;
+    var ay = H/2 + (aim.y+jitter.y)*SCALE;
+    ctx.save();
+    ctx.strokeStyle = '#39ff9c'; ctx.lineWidth=1.4; ctx.shadowColor='rgba(57,255,156,0.8)'; ctx.shadowBlur=6;
+    var rr=18;
+    ctx.beginPath();
+    ctx.moveTo(ax-rr,ay); ctx.lineTo(ax-6,ay);
+    ctx.moveTo(ax+6,ay); ctx.lineTo(ax+rr,ay);
+    ctx.moveTo(ax,ay-rr); ctx.lineTo(ax,ay-6);
+    ctx.moveTo(ax,ay+6); ctx.lineTo(ax,ay+rr);
+    ctx.stroke();
+    // holdover hash marks below center (ballistic drop reference)
+    ctx.globalAlpha=0.55;
+    for(var i=1;i<=4;i++){
+      var yy = ay + i*20;
+      ctx.beginPath(); ctx.moveTo(ax-10,yy); ctx.lineTo(ax+10,yy); ctx.stroke();
+    }
+    ctx.restore();
+
+    // impact preview (where the bullet will actually land from this aim point)
+    var b = mission ? mission._ballistics : {drop:0, wind:0};
+    var ix = ax + b.wind*SCALE;
+    var iy = ay + b.drop*SCALE;
+    ctx.save();
+    ctx.strokeStyle = '#ff4d4d'; ctx.setLineDash([3,3]); ctx.lineWidth=1.3; ctx.globalAlpha=0.85;
+    ctx.beginPath(); ctx.arc(ix,iy,9,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ix-4,iy); ctx.lineTo(ix+4,iy);
+    ctx.moveTo(ix,iy-4); ctx.lineTo(ix,iy+4); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawBulletTrail(){
+    if(!bulletAnim) return;
+    var p = bulletAnim.t/bulletAnim.dur;
+    var cx = bulletAnim.fromX + (bulletAnim.toX-bulletAnim.fromX)*p;
+    var cy = bulletAnim.fromY + (bulletAnim.toY-bulletAnim.fromY)*p - Math.sin(p*Math.PI)*40;
+    ctx.save();
+    ctx.strokeStyle='rgba(255,230,150,0.5)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(bulletAnim.fromX, bulletAnim.fromY); ctx.lineTo(cx,cy); ctx.stroke();
+    ctx.fillStyle='#ffe696'; ctx.shadowColor='#ffe696'; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.arc(cx,cy,3,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // ---------- main loop ----------
+  var lastTs=0;
+  function frame(ts){
+    if(!lastTs) lastTs = ts;
+    var dt = Math.min((ts-lastTs)/1000, 0.05);
+    lastTs = ts;
+    ctx.clearRect(0,0,W,H);
+
+    if(missionState==='running' || missionState==='ended'){
+      time += dt;
+      drawBackdrop();
+
+      // breath stamina
+      if(missionState==='running'){
+        if(breath.holding){ breath.stamina = Math.max(0, breath.stamina - 30*dt); }
+        else { breath.stamina = Math.min(100, breath.stamina + 20*dt); }
+        breathFill.style.width = breath.stamina + '%';
+
+        var calm = breath.holding ? 0.15 : 1;
+        jitter.x = Math.sin(time*2.3)*6*calm + Math.sin(time*0.7)*3*calm;
+        jitter.y = Math.cos(time*1.9)*5*calm + Math.cos(time*0.5)*2.5*calm;
+
+        // moving targets
+        targets.forEach(function(t){
+          if(!t.moving || !t.alive) return;
+          t.x = t.baseX + Math.sin(time*(t.speed/60))*t.range;
+        });
+      }
+
+      drawTargets();
+
+      if(bulletAnim){
+        bulletAnim.t += dt;
+        drawBulletTrail();
+        if(bulletAnim.t >= bulletAnim.dur){
+          var impactWX = bulletAnim.impactWX, impactWY = bulletAnim.impactWY;
+          bulletAnim = null;
+          resolveImpact(impactWX, impactWY);
+        }
+      } else {
+        drawScope();
+        drawAimReticle();
+      }
+    }
+
+    updateFx(dt);
+    drawFx();
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  document.body.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+
+  renderHome();
+})();
+</script>
+</body>
+</html>
