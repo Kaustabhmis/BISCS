@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Room | Hotel Laxmi, Chinar Park</title>
+    <meta name="description" content="Book a room at Hotel Laxmi, Chinar Park, Kolkata. Choose your dates and room, then confirm by phone or WhatsApp.">
+    <meta name="theme-color" content="#7d1416">
+    <meta property="og:title" content="Book a Room | Hotel Laxmi, Chinar Park">
+    <meta property="og:description" content="Book a room at Hotel Laxmi, Chinar Park, Kolkata. Choose your dates and room, then confirm by phone or WhatsApp.">
+    <meta property="og:image" content="images/hero.jpg">
+    <link rel="icon" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8s-.39-.12-.56.12-.64.8-.78.97-.29.18-.54.06a6.7 6.7 0 0 1-3.3-2.9c-.25-.43.25-.4.71-1.33a.45.45 0 0 0-.02-.42c-.06-.12-.56-1.34-.76-1.84s-.4-.42-.56-.43h-.48a.92.92 0 0 0-.67.31 2.8 2.8 0 0 0-.87 2.08 4.9 4.9 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.27 3.77c1.6.69 2.22.75 3.02.63a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .15-1.2c-.06-.1-.23-.17-.48-.29z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.6a10 10 0 0 1 14 0M8.5 16.1a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0"/><circle cx="12" cy="20" r=".8"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1 19.1 4.9M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M3 18h18M5 18a7 7 0 0 1 14 0M12 8V6M10 6h4"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+    <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 22v-7M8 15h8l-3-4h2l-3-4h1l-1-5-1 5h1L9 11h2z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8z"/></symbol>
+</svg>
+
+    <div class="topbar">
+        <div class="container">
+            <span class="hide-sm"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>Chinar Park, Rajarhat, Kolkata</span>
+            <span class="hide-sm"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Front desk open for bookings</span>
+            <a data-call href="#"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-phone></span></a>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <a class="logo" href="index.html" aria-label="Hotel Laxmi home">
+                <span class="logo-mark">L</span>
+                <span class="logo-text"><strong>HOTEL LAXMI</strong><small>Comfort &middot; Cleanliness &middot; Hospitality</small></span>
+            </a>
+            <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="index.html#rooms">Rooms</a>
+                <a href="booking.html" class="active" aria-current="page">Book a Room</a>
+                <a href="contact.html">Contact</a>
+                <a class="btn btn-call" data-call href="#"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Call to Book</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-hero">
+            <div class="container">
+                <div class="crumbs"><a href="index.html">Home</a> / Book a Room</div>
+                <h1>Book Your Stay</h1>
+                <p>Send a booking request in under a minute. We confirm by phone or WhatsApp.</p>
+            </div>
+        </div>
+
+        <section class="bg-cream" style="padding-top:56px">
+            <div class="container">
+                <div class="steps">
+                    <div class="step on"><b>1</b><span>Your details</span></div>
+                    <div class="step"><b>2</b><span>Send request</span></div>
+                    <div class="step"><b>3</b><span>We confirm</span></div>
+                </div>
+
+                <div class="booking">
+                    <div class="panel">
+                        <form id="booking-form" novalidate>
+                            <h3>Choose your room</h3>
+                            <p class="panel-sub">Prices are per room per night. Taxes extra.</p>
+                            <div id="room-picker" class="room-picker" role="radiogroup" aria-label="Room type"></div>
+
+                            <h3 style="margin-top:32px">Stay details</h3>
+                            <div class="fields">
+                                <div class="field"><label for="b-in">Check-in</label><input id="b-in" name="checkin" type="date" required></div>
+                                <div class="field"><label for="b-out">Check-out</label><input id="b-out" name="checkout" type="date" required></div>
+                                <div class="field"><label for="b-rooms">Rooms</label>
+                                    <select id="b-rooms" name="rooms"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+                                <div class="field"><label for="b-guests">Guests</label>
+                                    <select id="b-guests" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+                            </div>
+
+                            <h3 style="margin-top:32px">Guest details</h3>
+                            <div class="fields">
+                                <div class="field"><label for="b-name">Full name</label><input id="b-name" name="name" autocomplete="name" required></div>
+                                <div class="field"><label for="b-phone">Mobile number</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
+                                <div class="field full"><label for="b-notes">Special requests <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+                                    <textarea id="b-notes" name="notes" rows="3" placeholder="Early check-in, extra bed, arrival time..."></textarea></div>
+                            </div>
+
+                            <p id="booking-error" class="error hidden" role="alert"></p>
+                            <button class="btn btn-primary btn-block" type="submit" style="margin-top:24px">Continue <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                        </form>
+
+                        <div id="booking-confirm" class="confirm hidden">
+                            <div class="tick"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div>
+                            <h3>Your request is ready</h3>
+                            <p class="panel-sub" style="margin-bottom:6px">Your booking reference</p>
+                            <div id="confirm-ref" class="ref"></div>
+                            <table id="confirm-table"></table>
+                            <p class="panel-sub">Send it to the hotel to reserve your room. We'll reply with confirmation.</p>
+                            <div class="actions">
+                                <a id="confirm-wa" class="btn btn-wa" target="_blank" rel="noopener" href="#"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>Send on WhatsApp</a>
+                                <a class="btn btn-call" data-call href="#"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Call to Confirm</a>
+                            </div>
+                            <p><button id="confirm-edit" class="btn btn-link" type="button">Edit details</button></p>
+                        </div>
+                    </div>
+
+                    <aside class="panel summary" aria-label="Booking summary">
+                        <div id="sum-img" class="ph"></div>
+                        <div class="summary-body">
+                            <span class="eyebrow" style="color:var(--maroon);margin-bottom:6px">Your stay</span>
+                            <h3 id="sum-room"></h3>
+                            <dl>
+                                <dt>Check-in</dt><dd id="sum-in"></dd>
+                                <dt>Check-out</dt><dd id="sum-out"></dd>
+                                <dt>Duration</dt><dd id="sum-nights"></dd>
+                                <dt>Rooms</dt><dd id="sum-rooms"></dd>
+                                <dt>Guests</dt><dd id="sum-guests"></dd>
+                            </dl>
+                            <div class="total"><span>Estimated total</span><b id="sum-total"></b></div>
+                            <small>Taxes extra. Final tariff confirmed by the hotel.</small>
+                            <div class="help">Prefer to talk? <a data-call href="#"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-phone></span></a></div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a class="logo" href="index.html" style="margin-bottom:18px">
+                        <span class="logo-mark">L</span>
+                        <span class="logo-text"><strong>HOTEL LAXMI</strong><small>Chinar Park, Kolkata</small></span>
+                    </a>
+                    <p>Comfortable, affordable rooms in Chinar Park, Rajarhat, minutes from Kolkata Airport and New Town.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#rooms">Rooms</a></li>
+                        <li><a href="booking.html">Book a Room</a></li>
+                        <li><a href="contact.html">Contact &amp; Location</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Follow</h4>
+                    <ul>
+                        <!-- Replace # with the hotel's real profile links -->
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Tripadvisor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Call us to book</h4>
+                    <p><a class="phone-big" data-call href="#" data-phone></a></p>
+                    <p>12, Biswa Bangla Sarani, Chinar Park,<br>Rajarhat, Kolkata, West Bengal</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <span data-year></span> Hotel Laxmi, Chinar Park. All rights reserved.</span>
+                <span>Website by BISCS India</span>
+            </div>
+        </div>
+    </footer>
+
+    <a class="float-wa" data-whatsapp href="#" aria-label="Chat on WhatsApp"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg></a>
+    <div class="call-bar">
+        <a class="btn btn-call" data-call href="#"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Call to Book</a>
+        <a class="btn btn-wa" data-whatsapp href="#"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+    </div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>
