@@ -3,421 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Laxmi - Comfortable Stay</title>
-    <meta name="description" content="Hotel Laxmi - clean, comfortable and affordable rooms. Book directly for the best rates.">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Leaflet (map, OpenStreetMap tiles - no API key needed) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-display { font-family: 'Playfair Display', serif; }
-        html { scroll-behavior: smooth; }
-        section { scroll-margin-top: 4rem; }
-
-        /* Shown when a photo file is missing */
-        .img-fallback { background: linear-gradient(135deg, #7c2d12, #b45309 55%, #f59e0b); }
-
-        .hero-bg {
-            background-image: linear-gradient(rgba(15, 23, 42, .55), rgba(15, 23, 42, .65)), var(--hero-img), linear-gradient(135deg, #7c2d12, #b45309);
-            background-size: cover;
-            background-position: center;
-        }
-        #map { height: 100%; min-height: 320px; z-index: 0; }
-    </style>
+    <title>Hotel Laxmi, Chinar Park - Hotel near Kolkata Airport</title>
+    <meta name="description" content="Hotel Laxmi, Chinar Park, Rajarhat: comfortable, affordable AC rooms near Kolkata Airport. Call +91 93396 91217 to book.">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white text-slate-800">
+<body>
 
-    <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <a href="#home" class="flex items-center">
-                    <i data-lucide="hotel" class="h-7 w-7 text-amber-700 mr-2"></i>
-                    <span class="font-display font-bold text-xl text-slate-900" data-cfg="name"></span>
-                </a>
-
-                <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
-                    <a href="#rooms" class="hover:text-amber-700 transition">Rooms</a>
-                    <a href="#amenities" class="hover:text-amber-700 transition">Amenities</a>
-                    <a href="#gallery" class="hover:text-amber-700 transition">Gallery</a>
-                    <a href="#reviews" class="hover:text-amber-700 transition">Reviews</a>
-                    <a href="#contact" class="hover:text-amber-700 transition">Contact</a>
-                    <a href="#book" class="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition">Book Now</a>
-                </div>
-
-                <button class="md:hidden" onclick="toggleMobileMenu()" aria-label="Menu">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t bg-white">
-            <div class="px-4 py-3 space-y-1 font-medium" onclick="toggleMobileMenu()">
-                <a href="#rooms" class="block py-2">Rooms</a>
-                <a href="#amenities" class="block py-2">Amenities</a>
-                <a href="#gallery" class="block py-2">Gallery</a>
-                <a href="#reviews" class="block py-2">Reviews</a>
-                <a href="#contact" class="block py-2">Contact</a>
-                <a href="#book" class="block py-2 text-amber-700">Book Now</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero -->
-    <section id="home" class="hero-bg text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40 text-center">
-            <p class="uppercase tracking-widest text-amber-300 text-sm mb-4" data-cfg="city"></p>
-            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6" data-cfg="name"></h1>
-            <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-10" data-cfg="tagline"></p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#book" class="bg-amber-600 hover:bg-amber-700 px-8 py-3 rounded-lg font-semibold transition">Check Availability</a>
-                <a id="hero-call" href="#" class="bg-white/10 hover:bg-white/20 border border-white/40 px-8 py-3 rounded-lg font-semibold transition inline-flex items-center justify-center">
-                    <i data-lucide="phone" class="h-4 w-4 mr-2"></i><span data-cfg="phone"></span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Highlights strip -->
-    <section class="bg-amber-50 border-b border-amber-100">
-        <div id="highlights" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm"></div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-6">Welcome to <span data-cfg="name"></span></h2>
-            <p class="text-slate-600 leading-relaxed mb-4" data-cfg="about"></p>
-            <ul id="nearby" class="space-y-2 text-slate-700"></ul>
-        </div>
-        <div class="rounded-2xl overflow-hidden shadow-xl aspect-[4/3] img-fallback">
-            <img data-img="about" alt="Hotel exterior" class="w-full h-full object-cover" onerror="this.remove()">
-        </div>
-    </section>
-
-    <!-- Rooms -->
-    <section id="rooms" class="bg-slate-50 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-3">Our Rooms</h2>
-                <p class="text-slate-600">Clean, air-conditioned rooms for families, couples and business travellers.</p>
-            </div>
-            <div id="room-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-            <p class="text-center text-xs text-slate-500 mt-6">Tariff per night. Taxes as applicable. Rates may vary on festivals and weekends.</p>
-        </div>
-    </section>
-
-    <!-- Amenities -->
-    <section id="amenities" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div class="text-center mb-12">
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-3">Amenities</h2>
-            <p class="text-slate-600">Everything you need for a hassle-free stay.</p>
-        </div>
-        <div id="amenity-list" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
-    </section>
-
-    <!-- Gallery -->
-    <section id="gallery" class="bg-slate-50 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-12 text-center">Gallery</h2>
-            <div id="gallery-list" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
-        </div>
-    </section>
-
-    <!-- Reviews -->
-    <section id="reviews" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-12 text-center">What Guests Say</h2>
-        <div id="review-list" class="grid md:grid-cols-3 gap-6"></div>
-    </section>
-
-    <!-- Booking -->
-    <section id="book" class="bg-slate-900 text-white py-20">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
-                <h2 class="font-display text-3xl md:text-4xl font-bold mb-3">Book Your Stay</h2>
-                <p class="text-slate-300">Send us your dates. We confirm availability on WhatsApp within minutes.</p>
-            </div>
-            <form id="booking-form" class="bg-white text-slate-800 rounded-2xl p-6 md:p-8 shadow-xl grid sm:grid-cols-2 gap-4" onsubmit="submitBooking(event)">
-                <label class="block">
-                    <span class="text-sm font-medium">Full Name</span>
-                    <input name="name" required class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium">Mobile Number</span>
-                    <input name="phone" type="tel" required pattern="[0-9+\s-]{10,15}" class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium">Check-in</span>
-                    <input name="checkin" type="date" required class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium">Check-out</span>
-                    <input name="checkout" type="date" required class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium">Room Type</span>
-                    <select name="room" id="room-select" class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"></select>
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium">Guests</span>
-                    <select name="guests" class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                        <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option>
-                    </select>
-                </label>
-                <label class="block sm:col-span-2">
-                    <span class="text-sm font-medium">Special Requests (optional)</span>
-                    <textarea name="notes" rows="2" class="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-                </label>
-                <div id="booking-estimate" class="sm:col-span-2 text-sm text-slate-600"></div>
-                <p id="booking-error" class="sm:col-span-2 text-sm text-red-600 hidden"></p>
-                <button class="sm:col-span-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition inline-flex items-center justify-center">
-                    <i data-lucide="message-circle" class="h-5 w-5 mr-2"></i>Send Booking Request on WhatsApp
-                </button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Contact & Map -->
-    <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid md:grid-cols-2 gap-10">
-        <div>
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-8">Contact &amp; Location</h2>
-            <ul class="space-y-5 text-slate-700">
-                <li class="flex"><i data-lucide="map-pin" class="h-5 w-5 text-amber-700 mr-3 mt-0.5 shrink-0"></i><span data-cfg="address"></span></li>
-                <li class="flex"><i data-lucide="phone" class="h-5 w-5 text-amber-700 mr-3 mt-0.5 shrink-0"></i><a id="contact-phone" class="hover:text-amber-700"><span data-cfg="phone"></span></a></li>
-                <li class="flex"><i data-lucide="mail" class="h-5 w-5 text-amber-700 mr-3 mt-0.5 shrink-0"></i><a id="contact-email" class="hover:text-amber-700"><span data-cfg="email"></span></a></li>
-                <li class="flex"><i data-lucide="clock" class="h-5 w-5 text-amber-700 mr-3 mt-0.5 shrink-0"></i><span>Check-in <span data-cfg="checkIn"></span> &middot; Check-out <span data-cfg="checkOut"></span></span></li>
-            </ul>
-            <a id="directions" target="_blank" rel="noopener" class="inline-flex items-center mt-8 bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-lg font-semibold transition">
-                <i data-lucide="navigation" class="h-4 w-4 mr-2"></i>Get Directions
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">
+                <img src="images/logo.png" alt="" onerror="this.remove()">
+                <span class="brand-text">HOTEL <span>LAXMI</span></span>
             </a>
+            <button class="menu-btn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav">
+                <a href="index.html" class="active" aria-current="page">Home</a>
+                <a href="rooms.html">Rooms &amp; Booking</a>
+                <a href="contact.html">Contact</a>
+                <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call Us</a>
+            </nav>
         </div>
-        <div class="rounded-2xl overflow-hidden shadow-lg border">
-            <div id="map"></div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="tagline">Comfort &bull; Cleanliness &bull; Hospitality</p>
+            <h1>Hotel Laxmi</h1>
+            <p>Comfortable and affordable AC rooms in Chinar Park, Rajarhat, close to Kolkata Airport and New Town.</p>
+            <div class="address">&#128205; 12, Biswa Bangla Sarani, Chinar Park, Kolkata</div>
+            <div class="hero-actions">
+                <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call Us: <span data-phone></span></a>
+                <a class="btn btn-outline" href="rooms.html#book">Book a Room Online</a>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 text-slate-400 text-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row justify-between gap-4">
-            <p>&copy; <span id="year"></span> <span data-cfg="name"></span>. All rights reserved.</p>
-            <p>Website by BISCS India</p>
+    <section>
+        <div class="container">
+            <div class="section-head">
+                <h2>Welcome</h2>
+                <hr class="divider">
+                <p>Comfortable rooms for a relaxing stay</p>
+            </div>
+            <div class="grid grid-2">
+                <div class="card"><div class="card-body">
+                    <h3>Comfortable Rooms</h3>
+                    <p>Discover comfortable and affordable rooms at Hotel Laxmi, Chinar Park. Our well-appointed rooms are designed for both business and leisure travellers, with essential amenities including air conditioning, Wi-Fi, housekeeping and room service. Whether you're visiting Kolkata for a short trip or an extended stay, enjoy a convenient and welcoming stay in Rajarhat.</p>
+                    <a href="rooms.html">See rooms &amp; prices &rarr;</a>
+                </div></div>
+                <div class="card"><div class="card-body">
+                    <h3>Great Location</h3>
+                    <p>Stay at Hotel Laxmi in Chinar Park, Rajarhat, with convenient access to Kolkata Airport and key destinations across New Town and Kolkata. Our location makes it a practical choice for business travellers, families and visitors looking for an affordable hotel near Kolkata Airport and the Chinar Park area.</p>
+                    <a href="contact.html">View on map &rarr;</a>
+                </div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-soft">
+        <div class="container">
+            <div class="section-head">
+                <h2>Amenities</h2>
+                <hr class="divider">
+            </div>
+            <div class="grid grid-4">
+                <div class="card feature"><div class="icon">&#10052;&#65039;</div><h3>Air Conditioning</h3></div>
+                <div class="card feature"><div class="icon">&#128246;</div><h3>Free Wi-Fi</h3></div>
+                <div class="card feature"><div class="icon">&#129529;</div><h3>Daily Housekeeping</h3></div>
+                <div class="card feature"><div class="icon">&#128718;&#65039;</div><h3>Room Service</h3></div>
+                <div class="card feature"><div class="icon">&#128250;</div><h3>LED TV</h3></div>
+                <div class="card feature"><div class="icon">&#128703;</div><h3>Attached Bathroom</h3></div>
+                <div class="card feature"><div class="icon">&#9992;&#65039;</div><h3>Near Kolkata Airport</h3></div>
+                <div class="card feature"><div class="icon">&#128222;</div><h3>Easy Phone Booking</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="section-head">
+                <h2>Our Rooms</h2>
+                <hr class="divider">
+                <p>Clean, cosy rooms. Unwind &amp; relax.</p>
+            </div>
+            <div id="room-list" class="grid grid-3"></div>
+        </div>
+    </section>
+
+    <section class="cta-band">
+        <div class="container">
+            <h2>Call us now to book</h2>
+            <a class="phone" data-call href="#" data-phone></a>
+            <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call Now</a>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h3>Call us now to book</h3>
+                    <a class="phone" data-call href="#" data-phone></a>
+                </div>
+                <div>
+                    <h3>Address</h3>
+                    <p>12, Biswa Bangla Sarani, Chinar Park,<br>Rajarhat, Kolkata, West Bengal</p>
+                </div>
+                <div>
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a> &middot; <a href="rooms.html">Rooms &amp; Booking</a> &middot; <a href="contact.html">Contact</a></p>
+                </div>
+            </div>
+            <p class="copy">&copy; <span data-year></span> Hotel Laxmi, Chinar Park. Comfort &bull; Cleanliness &bull; Hospitality</p>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp button -->
-    <a id="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
-       class="fixed bottom-5 right-5 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition">
-        <i data-lucide="message-circle" class="h-6 w-6"></i>
-    </a>
+    <!-- Mobile call bar -->
+    <div class="call-bar">
+        <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call to Book</a>
+        <a class="btn btn-wa" data-whatsapp href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8s-.39-.12-.56.12-.64.8-.78.97-.29.18-.54.06a6.7 6.7 0 0 1-3.3-2.9c-.25-.43.25-.4.71-1.33a.45.45 0 0 0-.02-.42c-.06-.12-.56-1.34-.76-1.84s-.4-.42-.56-.43h-.48a.92.92 0 0 0-.67.31 2.8 2.8 0 0 0-.87 2.08 4.9 4.9 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.27 3.77c1.6.69 2.22.75 3.02.63a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .15-1.2c-.06-.1-.23-.17-.48-.29z"/></svg>WhatsApp</a>
+    </div>
 
-    <script>
-        /* =====================================================================
-           HOTEL DETAILS - edit everything here. All values below are
-           PLACEHOLDERS and must be replaced with the hotel's real details.
-           Photos: put files in an "images" folder next to this page using
-           the names below. Missing photos show a coloured placeholder.
-           ===================================================================== */
-        const HOTEL = {
-            name: 'Hotel Laxmi',
-            city: 'Your City, State',                      // PLACEHOLDER
-            tagline: 'Clean, comfortable and affordable rooms in the heart of the city.',
-            about: 'Hotel Laxmi offers well-maintained AC rooms, warm hospitality and a convenient central location, ideal for families, pilgrims and business travellers.',
-            address: 'Main Road, Near Bus Stand, Your City - 000000',   // PLACEHOLDER
-            phone: '+91 98765 43210',                     // PLACEHOLDER
-            whatsapp: '919876543210',                     // PLACEHOLDER: country code + number, digits only
-            email: 'info@hotellaxmi.co.in',               // PLACEHOLDER
-            lat: 28.6139, lng: 77.2090,                   // PLACEHOLDER: hotel's map coordinates
-            checkIn: '12:00 PM',
-            checkOut: '11:00 AM',
-            heroImage: 'images/hero.jpg',
-            aboutImage: 'images/exterior.jpg',
-            nearby: [                                     // PLACEHOLDER distances
-                'Railway Station - 2 km',
-                'Bus Stand - 500 m',
-                'Main Temple - 1 km',
-                'Airport - 15 km'
-            ],
-            highlights: [
-                ['wifi', 'Free Wi-Fi'],
-                ['car', 'Free Parking'],
-                ['clock', '24×7 Reception'],
-                ['badge-indian-rupee', 'Best Price Direct']
-            ],
-            rooms: [                                      // PLACEHOLDER prices
-                { name: 'Standard Room', price: 1200, guests: 2, image: 'images/room-standard.jpg',
-                  features: ['AC', 'Double Bed', 'LED TV', 'Attached Bathroom'] },
-                { name: 'Deluxe Room', price: 1800, guests: 3, image: 'images/room-deluxe.jpg',
-                  features: ['AC', 'King Bed', 'LED TV', 'Geyser', 'Work Desk'] },
-                { name: 'Family Suite', price: 2800, guests: 5, image: 'images/room-family.jpg',
-                  features: ['AC', '2 Beds', 'Sofa', 'LED TV', 'Mini Fridge'] }
-            ],
-            amenities: [
-                ['wifi', 'Free Wi-Fi'], ['snowflake', 'Air Conditioning'], ['tv', 'LED TV'],
-                ['utensils', 'Restaurant'], ['car', 'Parking'], ['bell-ring', 'Room Service'],
-                ['shirt', 'Laundry'], ['zap', 'Power Backup'], ['shield-check', 'CCTV Security'],
-                ['droplets', 'Hot Water'], ['briefcase', 'Travel Desk'], ['credit-card', 'UPI / Cards Accepted']
-            ],
-            gallery: ['images/gallery-1.jpg', 'images/gallery-2.jpg', 'images/gallery-3.jpg',
-                      'images/gallery-4.jpg', 'images/gallery-5.jpg', 'images/gallery-6.jpg'],
-            reviews: [                                    // PLACEHOLDER: replace with real guest reviews
-                { name: 'Guest Name', text: 'Replace with a real guest review from Google or a booking site.', rating: 5 },
-                { name: 'Guest Name', text: 'Replace with a real guest review from Google or a booking site.', rating: 5 },
-                { name: 'Guest Name', text: 'Replace with a real guest review from Google or a booking site.', rating: 4 }
-            ]
-        };
-
-        // ---------- Rendering ----------
-        const $ = (id) => document.getElementById(id);
-        const rupees = (n) => '₹' + n.toLocaleString('en-IN');
-        const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        const telHref = 'tel:' + HOTEL.phone.replace(/[^0-9+]/g, '');
-        const waHref = (text) => `https://wa.me/${HOTEL.whatsapp}` + (text ? `?text=${encodeURIComponent(text)}` : '');
-
-        function render() {
-            document.querySelectorAll('[data-cfg]').forEach((el) => { el.textContent = HOTEL[el.dataset.cfg]; });
-            document.title = `${HOTEL.name} - ${HOTEL.city}`;
-            document.querySelector('.hero-bg').style.setProperty('--hero-img', `url('${HOTEL.heroImage}')`);
-            document.querySelector('[data-img="about"]').src = HOTEL.aboutImage;
-
-            $('hero-call').href = telHref;
-            $('contact-phone').href = telHref;
-            $('contact-email').href = 'mailto:' + HOTEL.email;
-            $('wa-float').href = waHref(`Hi, I'd like to know about room availability at ${HOTEL.name}.`);
-            $('directions').href = `https://www.google.com/maps/dir/?api=1&destination=${HOTEL.lat},${HOTEL.lng}`;
-            $('year').textContent = new Date().getFullYear();
-
-            $('highlights').innerHTML = HOTEL.highlights.map(([icon, label]) =>
-                `<div class="flex items-center justify-center text-amber-900 font-medium"><i data-lucide="${icon}" class="h-5 w-5 mr-2"></i>${esc(label)}</div>`).join('');
-
-            $('nearby').innerHTML = HOTEL.nearby.map((n) =>
-                `<li class="flex items-center"><i data-lucide="map-pin" class="h-4 w-4 text-amber-700 mr-2"></i>${esc(n)}</li>`).join('');
-
-            $('room-list').innerHTML = HOTEL.rooms.map((r, i) => `
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col">
-                    <div class="aspect-[4/3] img-fallback">
-                        <img src="${esc(r.image)}" alt="${esc(r.name)}" loading="lazy" class="w-full h-full object-cover" onerror="this.remove()">
-                    </div>
-                    <div class="p-6 flex flex-col flex-1">
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-semibold text-slate-900">${esc(r.name)}</h3>
-                            <span class="text-xs bg-slate-100 rounded-full px-2 py-1 inline-flex items-center"><i data-lucide="users" class="h-3 w-3 mr-1"></i>Up to ${r.guests}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            ${r.features.map((f) => `<span class="text-xs text-slate-600 border rounded-full px-2 py-1">${esc(f)}</span>`).join('')}
-                        </div>
-                        <div class="mt-auto flex items-end justify-between">
-                            <div><span class="text-2xl font-bold text-amber-700">${rupees(r.price)}</span><span class="text-sm text-slate-500"> / night</span></div>
-                            <a href="#book" onclick="selectRoom(${i})" class="bg-slate-900 hover:bg-slate-700 text-white text-sm px-4 py-2 rounded-lg transition">Book</a>
-                        </div>
-                    </div>
-                </div>`).join('');
-
-            $('room-select').innerHTML = HOTEL.rooms.map((r, i) =>
-                `<option value="${i}">${esc(r.name)} - ${rupees(r.price)}/night</option>`).join('');
-
-            $('amenity-list').innerHTML = HOTEL.amenities.map(([icon, label]) => `
-                <div class="flex flex-col items-center text-center p-5 rounded-xl border hover:border-amber-300 hover:bg-amber-50 transition">
-                    <i data-lucide="${icon}" class="h-8 w-8 text-amber-700 mb-3"></i>
-                    <span class="text-sm font-medium">${esc(label)}</span>
-                </div>`).join('');
-
-            $('gallery-list').innerHTML = HOTEL.gallery.map((src, i) => `
-                <div class="aspect-square rounded-xl overflow-hidden img-fallback">
-                    <img src="${esc(src)}" alt="Hotel photo ${i + 1}" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition duration-300" onerror="this.remove()">
-                </div>`).join('');
-
-            $('review-list').innerHTML = HOTEL.reviews.map((r) => `
-                <figure class="p-6 rounded-2xl border bg-white">
-                    <div class="text-amber-500 mb-3">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-                    <blockquote class="text-slate-700 mb-4">"${esc(r.text)}"</blockquote>
-                    <figcaption class="text-sm font-semibold text-slate-900">${esc(r.name)}</figcaption>
-                </figure>`).join('');
-        }
-
-        // ---------- Map (Leaflet + free OpenStreetMap tiles, no API key) ----------
-        function initMap() {
-            if (typeof L === 'undefined') return;
-            const map = L.map('map', { scrollWheelZoom: false }).setView([HOTEL.lat, HOTEL.lng], 15);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-            L.marker([HOTEL.lat, HOTEL.lng]).addTo(map)
-                .bindPopup(`<b>${esc(HOTEL.name)}</b><br>${esc(HOTEL.address)}`).openPopup();
-        }
-
-        // ---------- Booking (sends request via WhatsApp, no server needed) ----------
-        const form = $('booking-form');
-        const isoDate = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-
-        function nights() {
-            const a = new Date(form.checkin.value), b = new Date(form.checkout.value);
-            return Math.round((b - a) / 86400000);
-        }
-
-        function updateEstimate() {
-            const n = nights();
-            const room = HOTEL.rooms[form.room.value];
-            $('booking-estimate').textContent = n > 0 && room
-                ? `Estimated tariff: ${n} night${n > 1 ? 's' : ''} × ${rupees(room.price)} = ${rupees(n * room.price)} (excl. taxes)`
-                : '';
-        }
-
-        function selectRoom(i) { form.room.value = i; updateEstimate(); }
-
-        function submitBooking(e) {
-            e.preventDefault();
-            const err = $('booking-error');
-            if (nights() < 1) {
-                err.textContent = 'Check-out date must be after check-in date.';
-                err.classList.remove('hidden');
-                return;
-            }
-            err.classList.add('hidden');
-            const room = HOTEL.rooms[form.room.value];
-            const msg = [
-                `Booking request - ${HOTEL.name}`,
-                `Name: ${form.name.value}`,
-                `Mobile: ${form.phone.value}`,
-                `Check-in: ${form.checkin.value}`,
-                `Check-out: ${form.checkout.value} (${nights()} night${nights() > 1 ? 's' : ''})`,
-                `Room: ${room.name}`,
-                `Guests: ${form.guests.value}`,
-                form.notes.value ? `Notes: ${form.notes.value}` : ''
-            ].filter(Boolean).join('\n');
-            window.open(waHref(msg), '_blank', 'noopener');
-        }
-
-        function toggleMobileMenu() { $('mobile-menu').classList.toggle('hidden'); }
-
-        // ---------- Init ----------
-        render();
-        const today = new Date(), tomorrow = new Date(Date.now() + 86400000);
-        form.checkin.min = isoDate(today);
-        form.checkin.value = isoDate(today);
-        form.checkout.min = isoDate(tomorrow);
-        form.checkout.value = isoDate(tomorrow);
-        form.checkin.addEventListener('change', () => {
-            const next = new Date(new Date(form.checkin.value).getTime() + 86400000);
-            form.checkout.min = isoDate(next);
-            if (form.checkout.value <= form.checkin.value) form.checkout.value = isoDate(next);
-            updateEstimate();
-        });
-        ['checkout', 'room'].forEach((n) => form[n].addEventListener('change', updateEstimate));
-        updateEstimate();
-        initMap();
-        if (window.lucide) lucide.createIcons();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

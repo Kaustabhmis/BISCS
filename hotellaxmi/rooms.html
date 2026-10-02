@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms & Booking - Hotel Laxmi, Chinar Park</title>
+    <meta name="description" content="Room types, tariffs and online booking requests for Hotel Laxmi, Chinar Park, Kolkata.">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">
+                <img src="images/logo.png" alt="" onerror="this.remove()">
+                <span class="brand-text">HOTEL <span>LAXMI</span></span>
+            </a>
+            <button class="menu-btn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="rooms.html" class="active" aria-current="page">Rooms &amp; Booking</a>
+                <a href="contact.html">Contact</a>
+                <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call Us</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-title">
+        <div class="container">
+            <h1>Rooms &amp; Booking</h1>
+            <p>Choose your room, send a booking request, and we'll confirm by phone or WhatsApp.</p>
+        </div>
+    </div>
+
+    <section>
+        <div class="container">
+            <div id="room-list" class="grid grid-3"></div>
+            <p style="text-align:center;color:var(--muted);font-size:.9rem;margin-top:16px">Tariff per room per night. Taxes extra. Rates may change on weekends and festivals.</p>
+        </div>
+    </section>
+
+    <section id="book" class="section-soft">
+        <div class="container" style="max-width:760px">
+            <div class="section-head">
+                <h2>Book a Room</h2>
+                <hr class="divider">
+                <p>Prefer to talk? <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call Us: <span data-phone></span></a></p>
+            </div>
+
+            <div class="card"><div class="card-body">
+                <form id="booking-form" class="form" novalidate>
+                    <label>Full Name
+                        <input name="name" required autocomplete="name">
+                    </label>
+                    <label>Mobile Number
+                        <input name="phone" type="tel" required autocomplete="tel" pattern="[0-9+ -]{10,15}">
+                    </label>
+                    <label>Check-in
+                        <input name="checkin" type="date" required>
+                    </label>
+                    <label>Check-out
+                        <input name="checkout" type="date" required>
+                    </label>
+                    <label class="full">Room Type
+                        <select name="room"></select>
+                    </label>
+                    <label>Number of Rooms
+                        <select name="rooms"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+                    </label>
+                    <label>Guests
+                        <select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+                    </label>
+                    <label class="full">Special Requests (optional)
+                        <textarea name="notes" rows="2" placeholder="Early check-in, extra bed, airport pickup..."></textarea>
+                    </label>
+                    <div id="booking-summary" class="summary full"></div>
+                    <p id="booking-error" class="error full hidden" role="alert"></p>
+                    <button class="btn btn-blue full" type="submit">Continue to Confirm</button>
+                </form>
+
+                <div id="booking-confirm" class="confirm hidden">
+                    <h3>Almost done!</h3>
+                    <p>Your booking reference</p>
+                    <div id="confirm-ref" class="ref"></div>
+                    <table id="confirm-table"></table>
+                    <p>Send this request to the hotel to confirm your room. We'll reply with availability.</p>
+                    <div class="actions">
+                        <a id="confirm-wa" class="btn btn-wa" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8s-.39-.12-.56.12-.64.8-.78.97-.29.18-.54.06a6.7 6.7 0 0 1-3.3-2.9c-.25-.43.25-.4.71-1.33a.45.45 0 0 0-.02-.42c-.06-.12-.56-1.34-.76-1.84s-.4-.42-.56-.43h-.48a.92.92 0 0 0-.67.31 2.8 2.8 0 0 0-.87 2.08 4.9 4.9 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.27 3.77c1.6.69 2.22.75 3.02.63a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .15-1.2c-.06-.1-.23-.17-.48-.29z"/></svg>Send on WhatsApp</a>
+                        <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call to Confirm</a>
+                    </div>
+                    <p><button id="confirm-edit" class="btn" type="button" style="background:none;color:var(--blue)">&larr; Edit details</button></p>
+                </div>
+            </div></div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h3>Call us now to book</h3>
+                    <a class="phone" data-call href="#" data-phone></a>
+                </div>
+                <div>
+                    <h3>Address</h3>
+                    <p>12, Biswa Bangla Sarani, Chinar Park,<br>Rajarhat, Kolkata, West Bengal</p>
+                </div>
+                <div>
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a> &middot; <a href="rooms.html">Rooms &amp; Booking</a> &middot; <a href="contact.html">Contact</a></p>
+                </div>
+            </div>
+            <p class="copy">&copy; <span data-year></span> Hotel Laxmi, Chinar Park. Comfort &bull; Cleanliness &bull; Hospitality</p>
+        </div>
+    </footer>
+
+    <!-- Mobile call bar -->
+    <div class="call-bar">
+        <a class="btn btn-call" data-call href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Call to Book</a>
+        <a class="btn btn-wa" data-whatsapp href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8s-.39-.12-.56.12-.64.8-.78.97-.29.18-.54.06a6.7 6.7 0 0 1-3.3-2.9c-.25-.43.25-.4.71-1.33a.45.45 0 0 0-.02-.42c-.06-.12-.56-1.34-.76-1.84s-.4-.42-.56-.43h-.48a.92.92 0 0 0-.67.31 2.8 2.8 0 0 0-.87 2.08 4.9 4.9 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.27 3.77c1.6.69 2.22.75 3.02.63a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .15-1.2c-.06-.1-.23-.17-.48-.29z"/></svg>WhatsApp</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
