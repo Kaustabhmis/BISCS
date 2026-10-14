@@ -10,16 +10,16 @@ const HOTEL = {
     lat: 22.6233, lng: 88.4465,            // APPROXIMATE - check against the hotel's Google Maps pin
     rooms: [                               // PLACEHOLDER prices and room types - replace with actual tariff
         { id: 'standard', name: 'Standard Room', price: 1500, maxGuests: 2, bed: 'Double bed',
-          images: ['images/standard-1.jpg', 'images/standard-2.jpg', 'images/standard-3.jpg', 'images/standard-4.jpg', 'images/standard-5.jpg'],
+          images: ['images/standard-1.jpg', 'images/standard-2.jpg', 'images/standard-6.jpg', 'images/standard-3.jpg', 'images/standard-4.jpg', 'images/standard-5.jpg'],
           blurb: 'A bright, spotless room with a comfortable double bed, ideal for solo travellers and couples.',
-          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Intercom phone', 'Mirror wardrobe'] },
+          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Intercom phone', 'Mirror wardrobe', 'Bathroom with geyser'] },
         { id: 'deluxe', name: 'Deluxe Room', price: 2000, maxGuests: 3, bed: 'Double bed',
           images: ['images/deluxe-1.jpg', 'images/deluxe-balcony.jpg'],
           blurb: 'A spacious, bright room with a sofa seating area and a private balcony overlooking Chinar Park.',
           features: ['Private balcony', 'Sofa seating', 'Air conditioning', 'Free Wi-Fi', 'Wardrobe'] },
-        { id: 'family', name: 'Family Suite', price: 2800, maxGuests: 4, bed: 'Bedroom + sitting room',
-          images: ['images/suite-1.jpg', 'images/suite-2.jpg', 'images/suite-3.jpg'],
-          blurb: 'A separate sitting room with a sofa-cum-bed, plus a private bedroom. Room for the whole family.',
+        { id: 'family', name: 'Family Suite', price: 2800, maxGuests: 4, bed: 'Double bed + sofa-cum-bed',
+          images: ['images/suite-4.jpg', 'images/suite-1.jpg', 'images/suite-5.jpg', 'images/suite-2.jpg', 'images/suite-6.jpg', 'images/suite-3.jpg', 'images/suite-7.jpg'],
+          blurb: 'A private bedroom plus a separate sitting room with a sofa-cum-bed. Room for the whole family.',
           features: ['Separate sitting room', 'Sofa-cum-bed', 'Air conditioning', 'LED TV', 'Marble flooring'] }
     ]
 };
@@ -29,8 +29,15 @@ const HOTEL = {
 const EXTRA_PHOTOS = [
     { src: 'images/reception-1.jpg', caption: 'Reception and lobby lounge', category: 'hotel' },
     { src: 'images/reception-2.jpg', caption: 'Front desk', category: 'hotel' },
+    { src: 'images/lounge-1.jpg', caption: 'Guest lounge', category: 'hotel' },
+    { src: 'images/lobby-1.jpg', caption: 'Lobby', category: 'hotel' },
+    { src: 'images/corridor-1.jpg', caption: 'Corridor to the rooms', category: 'hotel' },
+    { src: 'images/corridor-2.jpg', caption: 'Room corridor', category: 'hotel' },
+    { src: 'images/bathroom-1.jpg', caption: 'Attached bathroom with geyser', category: 'facilities' },
+    { src: 'images/lift-1.jpg', caption: 'Lift', category: 'facilities' },
+    { src: 'images/lift-2.jpg', caption: 'Lift to all floors', category: 'facilities' },
 ];
-const GALLERY_CATEGORIES = { hotel: 'Reception & Lobby' };
+const GALLERY_CATEGORIES = { hotel: 'Reception & Lobby', facilities: 'Bathroom & Lift' };
 
 const DAY = 86400000;
 const $ = (id) => document.getElementById(id);
