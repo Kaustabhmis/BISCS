@@ -9,17 +9,28 @@ const HOTEL = {
     address: '12, Biswa Bangla Sarani, Chinar Park, Rajarhat, Kolkata, West Bengal',
     lat: 22.6233, lng: 88.4465,            // APPROXIMATE - check against the hotel's Google Maps pin
     rooms: [                               // PLACEHOLDER prices and room types - replace with actual tariff
-        { id: 'standard', name: 'Standard Room', price: 1500, maxGuests: 2, bed: 'Double bed', image: 'images/room-standard.jpg',
-          blurb: 'A cosy, spotless room for solo travellers and couples.',
-          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Attached bathroom'] },
-        { id: 'deluxe', name: 'Deluxe Room', price: 2000, maxGuests: 3, bed: 'Queen bed', image: 'images/room-deluxe.jpg',
-          blurb: 'More space to unwind, ideal for business stays.',
-          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Work desk', 'Hot water'] },
-        { id: 'family', name: 'Family Room', price: 2800, maxGuests: 4, bed: '2 double beds', image: 'images/room-family.jpg',
-          blurb: 'Room for the whole family, close to the airport.',
-          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Extra space', 'Hot water'] }
+        { id: 'standard', name: 'Standard Room', price: 1500, maxGuests: 2, bed: 'Double bed',
+          images: ['images/standard-1.jpg', 'images/standard-2.jpg', 'images/standard-3.jpg', 'images/standard-4.jpg', 'images/standard-5.jpg'],
+          blurb: 'A bright, spotless room with a comfortable double bed, ideal for solo travellers and couples.',
+          features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Intercom phone', 'Mirror wardrobe'] },
+        { id: 'deluxe', name: 'Deluxe Room', price: 2000, maxGuests: 3, bed: 'Double bed',
+          images: ['images/deluxe-1.jpg', 'images/deluxe-balcony.jpg'],
+          blurb: 'A spacious, bright room with a sofa seating area and a private balcony overlooking Chinar Park.',
+          features: ['Private balcony', 'Sofa seating', 'Air conditioning', 'Free Wi-Fi', 'Wardrobe'] },
+        { id: 'family', name: 'Family Suite', price: 2800, maxGuests: 4, bed: 'Bedroom + sitting room',
+          images: ['images/suite-1.jpg', 'images/suite-2.jpg', 'images/suite-3.jpg'],
+          blurb: 'A separate sitting room with a sofa-cum-bed, plus a private bedroom. Room for the whole family.',
+          features: ['Separate sitting room', 'Sofa-cum-bed', 'Air conditioning', 'LED TV', 'Marble flooring'] }
     ]
 };
+
+/* Gallery page. Room photos are added automatically from HOTEL.rooms above.
+   Add other photos (lobby, building, views, restaurant...) here. */
+const EXTRA_PHOTOS = [
+    { src: 'images/reception-1.jpg', caption: 'Reception and lobby lounge', category: 'hotel' },
+    { src: 'images/reception-2.jpg', caption: 'Front desk', category: 'hotel' },
+];
+const GALLERY_CATEGORIES = { hotel: 'Reception & Lobby' };
 
 const DAY = 86400000;
 const $ = (id) => document.getElementById(id);
@@ -73,8 +84,9 @@ if (roomList) {
     roomList.innerHTML = HOTEL.rooms.map((r) => `
         <article class="room">
             <div class="ph">
-                <img src="${esc(r.image)}" alt="${esc(r.name)}" loading="lazy" onerror="this.remove()">
+                ${r.images[0] ? `<img src="${esc(r.images[0])}" alt="${esc(r.name)} at Hotel Laxmi" loading="lazy" onerror="this.remove()">` : ''}
                 <span class="price-tag">from <b>${rupees(r.price)}</b> / night</span>
+                ${r.images.length ? `<a class="photo-count" href="gallery.html#${r.id}">${icon('camera')}${r.images.length} photo${r.images.length > 1 ? 's' : ''}</a>` : ''}
             </div>
             <div class="room-body">
                 <h3>${esc(r.name)}</h3>
@@ -134,9 +146,10 @@ if (form) {
     const summaryImg = $('sum-img');
     const updateSummary = () => {
         const b = read();
-        if (summaryImg.dataset.src !== b.room.image) {
-            summaryImg.dataset.src = b.room.image;
-            summaryImg.innerHTML = `<img src="${esc(b.room.image)}" alt="" onerror="this.remove()">`;
+        const img = b.room.images[0] || '';
+        if (summaryImg.dataset.src !== img) {
+            summaryImg.dataset.src = img;
+            summaryImg.innerHTML = img ? `<img src="${esc(img)}" alt="" onerror="this.remove()">` : '';
         }
         $('sum-room').textContent = b.room.name;
         $('sum-in').textContent = niceDate(f.checkin.value);
@@ -189,6 +202,75 @@ if (form) {
         $('booking-confirm').classList.add('hidden');
         form.classList.remove('hidden');
         setStep(1);
+    });
+}
+
+/* ---------- Gallery page: filter tabs + lightbox ---------- */
+const galleryEl = $('gallery-grid');
+if (galleryEl) {
+    const photos = [
+        ...HOTEL.rooms.flatMap((r) => r.images.map((src, i) => ({
+            src, category: r.id, caption: `${r.name}${i ? ' - photo ' + (i + 1) : ''}`
+        }))),
+        ...EXTRA_PHOTOS
+    ];
+    const labels = Object.fromEntries(HOTEL.rooms.map((r) => [r.id, r.name]));
+    Object.assign(labels, GALLERY_CATEGORIES);
+    const used = [...new Set(photos.map((p) => p.category))];
+
+    $('gallery-tabs').innerHTML = [['all', 'All photos'], ...used.map((c) => [c, labels[c] || c])]
+        .map(([c, l]) => `<button type="button" data-cat="${esc(c)}">${esc(l)}</button>`).join('');
+
+    let visible = photos;
+    const show = (cat) => {
+        visible = cat === 'all' ? photos : photos.filter((p) => p.category === cat);
+        document.querySelectorAll('#gallery-tabs button').forEach((b) => b.classList.toggle('on', b.dataset.cat === cat));
+        galleryEl.innerHTML = visible.length ? visible.map((p, i) => `
+            <figure class="g-item">
+                <button type="button" data-i="${i}" aria-label="Open photo: ${esc(p.caption)}">
+                    <img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy">
+                </button>
+                <figcaption>${esc(p.caption)}</figcaption>
+            </figure>`).join('') : '<p class="g-empty">More photos coming soon.</p>';
+    };
+    const fromHash = decodeURIComponent(location.hash.slice(1));
+    show(used.includes(fromHash) ? fromHash : 'all');
+    $('gallery-tabs').addEventListener('click', (e) => {
+        const b = e.target.closest('button');
+        if (b) { show(b.dataset.cat); history.replaceState(null, '', b.dataset.cat === 'all' ? location.pathname : '#' + b.dataset.cat); }
+    });
+
+    // Lightbox
+    const box = $('lightbox');
+    let current = 0;
+    const open = (i) => {
+        current = (i + visible.length) % visible.length;
+        const p = visible[current];
+        $('lb-img').src = p.src;
+        $('lb-img').alt = p.caption;
+        $('lb-cap').textContent = `${p.caption}  (${current + 1} / ${visible.length})`;
+        box.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+    const close = () => { box.classList.add('hidden'); document.body.style.overflow = ''; };
+    galleryEl.addEventListener('click', (e) => { const b = e.target.closest('button[data-i]'); if (b) open(Number(b.dataset.i)); });
+    $('lb-prev').addEventListener('click', () => open(current - 1));
+    $('lb-next').addEventListener('click', () => open(current + 1));
+    $('lb-close').addEventListener('click', close);
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+    document.addEventListener('keydown', (e) => {
+        if (box.classList.contains('hidden')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') open(current - 1);
+        if (e.key === 'ArrowRight') open(current + 1);
+    });
+    let touchX = null;
+    box.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', (e) => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 50) open(current + (dx < 0 ? 1 : -1));
+        touchX = null;
     });
 }
 
