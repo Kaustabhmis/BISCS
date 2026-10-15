@@ -275,6 +275,78 @@
     return libPromises[name];
   };
 
+  // ----------------------------------------------------------- AI helpers
+  var AI = BASE + 'assets/vendor/ai/';
+  LIBS.tfjs = { src: 'ai/upscaler/tf.min.js', global: 'tf' };
+  LIBS.upscaler = { src: 'ai/upscaler/upscaler.min.js', global: 'Upscaler' };
+  BT.aiBase = AI;
+
+  /** MediaPipe Tasks Vision: resolves to { vision (module), fileset }. */
+  var mpPromise;
+  BT.loadMediapipe = function () {
+    if (!mpPromise) {
+      mpPromise = import(AI + 'mediapipe/vision_bundle.mjs').then(function (vision) {
+        return vision.FilesetResolver.forVisionTasks(AI + 'mediapipe/wasm').then(function (fileset) {
+          return { vision: vision, fileset: fileset };
+        });
+      }).catch(function (e) { mpPromise = null; throw e; });
+    }
+    return mpPromise;
+  };
+
+  var MODEL_FILES = {
+    'selfie-multiclass': ['selfie_multiclass_256x256.tflite.part0', 'selfie_multiclass_256x256.tflite.part1'],
+    'selfie': ['selfie_segmenter.tflite'],
+    'magic-touch': ['magic_touch.tflite'],
+    'face-full': ['blaze_face_full_range.tflite'],
+    'face-short': ['blaze_face_short_range.tflite']
+  };
+  var modelCache = {};
+  /**
+   * Download an AI model (joining split parts) as a Uint8Array, reporting
+   * progress via onProgress(fraction 0..1). Cached per page.
+   */
+  BT.loadAiModel = function (name, onProgress) {
+    if (modelCache[name]) return modelCache[name];
+    var parts = MODEL_FILES[name];
+    if (!parts) return Promise.reject(new Error('Unknown model ' + name));
+    var loaded = parts.map(function () { return 0; }), totals = parts.map(function () { return 0; });
+    function report() {
+      if (!onProgress) return;
+      var t = totals.reduce(function (a, b) { return a + b; }, 0);
+      if (t) onProgress(Math.min(1, loaded.reduce(function (a, b) { return a + b; }, 0) / t));
+    }
+    modelCache[name] = Promise.all(parts.map(function (file, i) {
+      return fetch(AI + 'models/' + file).then(function (res) {
+        if (!res.ok) throw new Error('Could not download the AI model (' + res.status + ')');
+        totals[i] = +res.headers.get('Content-Length') || 0;
+        if (!res.body || !res.body.getReader) return res.arrayBuffer().then(function (b) { loaded[i] = totals[i] = b.byteLength; report(); return new Uint8Array(b); });
+        var reader = res.body.getReader(), chunks = [];
+        return (function pump() {
+          return reader.read().then(function (r) {
+            if (r.done) {
+              var size = chunks.reduce(function (a, c) { return a + c.length; }, 0), out = new Uint8Array(size), o = 0;
+              chunks.forEach(function (c) { out.set(c, o); o += c.length; });
+              if (!totals[i]) totals[i] = size;
+              loaded[i] = size; report();
+              return out;
+            }
+            chunks.push(r.value);
+            loaded[i] += r.value.length;
+            report();
+            return pump();
+          });
+        })();
+      });
+    })).then(function (arrs) {
+      if (arrs.length === 1) return arrs[0];
+      var size = arrs.reduce(function (a, c) { return a + c.length; }, 0), out = new Uint8Array(size), o = 0;
+      arrs.forEach(function (c) { out.set(c, o); o += c.length; });
+      return out;
+    }).catch(function (e) { delete modelCache[name]; throw e; });
+    return modelCache[name];
+  };
+
   // ---------------------------------------------------------- PDF helpers
   /** Open a PDF for rendering with pdf.js. Accepts File/ArrayBuffer/Uint8Array. */
   BT.openPdfjs = function (src) {
@@ -445,7 +517,7 @@
   function initSearch() {
     var modal = BT.h('div.search-modal', { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Search tools' });
     modal.innerHTML = '<div class="search-panel"><div class="sp-input">' + BT.icon('search') +
-      '<input type="search" placeholder="Search 100 free tools…" aria-label="Search tools" autocomplete="off">' +
+      '<input type="search" placeholder="Search ' + REG.TOOLS.length + ' free tools…" aria-label="Search tools" autocomplete="off">' +
       '<button class="icon-btn" data-close aria-label="Close search">' + BT.icon('x') + '</button></div>' +
       '<div class="search-results" role="listbox"></div></div>';
     doc.body.appendChild(modal);

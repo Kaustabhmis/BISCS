@@ -22,7 +22,11 @@
     { id: 'image', name: 'Image Tools', short: 'Image', color: '#f76b15', icon: 'image',
       desc: 'Resize, compress, crop, convert and edit images without uploading them.' },
     { id: 'utility', name: 'Generators & Utilities', short: 'Utilities', color: '#d6409f', icon: 'sparkles',
-      desc: 'Passwords, QR codes, barcodes, invoices, timers and random pickers.' }
+      desc: 'Passwords, QR codes, barcodes, invoices, timers and random pickers.' },
+    { id: 'ai', name: 'AI Photo Tools', short: 'AI Photo', color: '#6e56cf', icon: 'brain-circuit',
+      desc: 'Remove backgrounds, upscale, blur faces and more with AI that runs on your device.' },
+    { id: 'seo', name: 'SEO Tools', short: 'SEO', color: '#c2410c', icon: 'search-check',
+      desc: 'Meta tags, schema markup, sitemaps, previews and keyword tools to grow your traffic.' }
   ];
 
   var TOOLS = [
@@ -338,7 +342,59 @@
       kw: 'invoice bill gst tax invoice generator' },
     { id: 'signature-maker', name: 'Signature Maker', cat: 'utility', icon: 'pen-tool',
       desc: 'Draw or type a signature and download it as a transparent PNG.',
-      kw: 'digital signature draw create png' }
+      kw: 'digital signature draw create png' },
+
+    // ----------------------------------------------------------- AI Photo (6)
+    { id: 'ai-background-remover', name: 'AI Background Remover', cat: 'ai', icon: 'image-minus', file: 'ai',
+      desc: 'Remove the background from photos automatically and download a transparent PNG.',
+      kw: 'remove bg background eraser transparent png cutout ai' },
+    { id: 'ai-background-changer', name: 'AI Background Blur & Changer', cat: 'ai', icon: 'aperture', file: 'ai',
+      desc: 'Blur your background like a portrait camera, or replace it with a colour or image.',
+      kw: 'portrait blur bokeh change background replace ai' },
+    { id: 'ai-image-upscaler', name: 'AI Image Upscaler', cat: 'ai', icon: 'scaling', file: 'ai',
+      desc: 'Enlarge photos 2\u00d7 or 4\u00d7 with AI super-resolution for sharper results.',
+      kw: 'upscale enlarge increase resolution super resolution enhance ai' },
+    { id: 'ai-face-blur', name: 'AI Face Blur', cat: 'ai', icon: 'scan-face', file: 'ai',
+      desc: 'Detect faces automatically and blur or pixelate them for privacy.',
+      kw: 'blur faces anonymize pixelate privacy censor ai' },
+    { id: 'ai-passport-photo', name: 'AI Passport Photo', cat: 'ai', icon: 'square-user-round', file: 'ai',
+      desc: 'Auto-crops your face to 35\u00d745 mm and makes the background white.',
+      kw: 'passport photo auto crop white background visa ai' },
+    { id: 'ai-photo-enhancer', name: 'Photo Enhancer', cat: 'ai', icon: 'wand-sparkles', file: 'ai',
+      desc: 'One-click fix for dull, dark or noisy photos: colour, light, sharpness and noise.',
+      kw: 'enhance photo auto fix improve quality sharpen denoise old photo' },
+
+    // ---------------------------------------------------------------- SEO (10)
+    { id: 'meta-tag-generator', name: 'Meta Tag Generator', cat: 'seo', icon: 'tags',
+      desc: 'Generate title, description, Open Graph and Twitter meta tags.',
+      kw: 'meta tags seo title description og tags' },
+    { id: 'serp-preview', name: 'Google SERP Preview', cat: 'seo', icon: 'monitor-smartphone',
+      desc: 'See how your page will look in Google search results on desktop and mobile.',
+      kw: 'serp snippet preview google search result title length' },
+    { id: 'social-share-preview', name: 'Social Share Preview', cat: 'seo', icon: 'share-2',
+      desc: 'Preview link cards for WhatsApp, Facebook, LinkedIn and X.',
+      kw: 'open graph preview whatsapp facebook twitter card' },
+    { id: 'schema-markup-generator', name: 'Schema Markup Generator', cat: 'seo', icon: 'file-json-2',
+      desc: 'JSON-LD structured data for local business, FAQ, product, article and more.',
+      kw: 'schema json-ld structured data rich results local business faq' },
+    { id: 'robots-txt-generator', name: 'Robots.txt Generator', cat: 'seo', icon: 'bot',
+      desc: 'Create a robots.txt file with crawler rules and your sitemap.',
+      kw: 'robots txt crawler disallow googlebot' },
+    { id: 'sitemap-generator', name: 'XML Sitemap Generator', cat: 'seo', icon: 'map',
+      desc: 'Turn a list of URLs into a valid XML sitemap.',
+      kw: 'xml sitemap generator urls search console' },
+    { id: 'keyword-density-checker', name: 'Keyword Density Checker', cat: 'seo', icon: 'text-search',
+      desc: 'Find the most used keywords and phrases in your content.',
+      kw: 'keyword density frequency phrases seo content' },
+    { id: 'utm-builder', name: 'UTM Link Builder', cat: 'seo', icon: 'link-2',
+      desc: 'Build campaign tracking links for Google Analytics.',
+      kw: 'utm campaign url builder analytics tracking' },
+    { id: 'on-page-seo-checker', name: 'On-Page SEO Checker', cat: 'seo', icon: 'heading',
+      desc: 'Paste a page\u2019s HTML to check titles, headings, alt text, links and more.',
+      kw: 'seo audit html headings alt text canonical checker' },
+    { id: 'backlink-outreach-helper', name: 'Backlink & Listing Helper', cat: 'seo', icon: 'megaphone',
+      desc: 'Checklist of genuine places to list your business, plus outreach templates.',
+      kw: 'backlinks business listing directory outreach local seo india' }
   ];
 
   var api = { CATEGORIES: CATEGORIES, TOOLS: TOOLS };

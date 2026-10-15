@@ -26,7 +26,6 @@ const ICONS = require(path.join(ROOT, 'assets/js/icons.js'));
 const SITE = {
   name: 'BISCS India',
   url: 'https://www.biscsindia.com',
-  tagline: '100 free online tools for everyday work',
   email: 'info@biscsindia.com',
   address: { locality: 'Kolkata', region: 'West Bengal', postalCode: '700026', country: 'IN', countryName: 'India' },
   year: new Date().getFullYear(),
@@ -77,7 +76,7 @@ function miniLink(t, base) {
 function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '' }) {
   const nav = [
     ['pdf', 'PDF Tools'], ['finance', 'Finance'], ['calculators', 'Calculators'],
-    ['text', 'Text'], ['dev', 'Developer'], ['image', 'Image']
+    ['text', 'Text'], ['image', 'Image'], ['ai', 'AI Photo'], ['seo', 'SEO']
   ];
   const navLinks = nav.map(([id, label]) =>
     `<a href="${base}category/${id}/"${active === id ? ' aria-current="page"' : ''}>${label}</a>`).join('');
@@ -170,7 +169,7 @@ ${scripts}
 // -------------------------------------------------------------- home page
 function buildHome() {
   const base = '';
-  const popularIds = ['pdf-editor', 'merge-pdf', 'compress-pdf', 'gst-calculator', 'emi-calculator', 'income-tax-calculator', 'image-compressor', 'qr-code-generator'];
+  const popularIds = ['pdf-editor', 'ai-background-remover', 'merge-pdf', 'compress-pdf', 'gst-calculator', 'emi-calculator', 'income-tax-calculator', 'ai-image-upscaler'];
   const popular = popularIds.map((id) => TOOLS.find((t) => t.id === id));
   const pdfTop = ['pdf-editor', 'sign-pdf', 'merge-pdf', 'split-pdf', 'compress-pdf', 'organize-pdf', 'jpg-to-pdf', 'pdf-to-jpg'].map((id) => TOOLS.find((t) => t.id === id));
 
@@ -180,7 +179,7 @@ function buildHome() {
   <div class="hero-tiles" aria-hidden="true">${CATEGORIES.map((c, i) => `<span class="ht ht${i}" style="--c:${c.color}">${icon(c.icon)}</span>`).join('')}</div>
   <div class="container">
     <h1>Every tool you need, <span class="grad">in one place.</span></h1>
-    <p class="lead">${TOOLS.length} free tools for PDFs, GST and tax, images, text and code. They're fast and private: your files are processed on your device and never uploaded.</p>
+    <p class="lead">${TOOLS.length} free tools for PDFs, AI photo editing, GST and tax, SEO, images, text and code. They're fast and private: your files are processed on your device and never uploaded.</p>
     <form class="hero-search" role="search" action="#all-tools">
       ${icon('search')}
       <input type="search" data-filter-input placeholder="Try “merge pdf”, “emi”, “compress image”…" aria-label="Search tools" autocomplete="off">
@@ -226,7 +225,7 @@ function buildHome() {
 
 <section class="section" style="padding-top:0">
   <div class="container">
-    <div class="section-head reveal"><div><h2>Browse by category</h2><p>Seven toolkits, one place.</p></div></div>
+    <div class="section-head reveal"><div><h2>Browse by category</h2><p>${CATEGORIES.length} toolkits, one place.</p></div></div>
     <div class="cat-grid reveal">
       ${CATEGORIES.map((c) => `<a class="cat-card" href="category/${c.id}/" style="--c:${c.color}">
         <span class="ci">${icon(c.icon)}</span><span class="count">${toolsIn(c.id).length} tools</span>
@@ -494,6 +493,7 @@ function buildStaticPages() {
 <p class="muted">Last updated: ${updated}</p>
 <h2>Files and data you use with our tools</h2>
 <p>All tools on ${SITE.name} run inside your web browser. Files you open (such as PDFs and images) and data you type are processed on your device and are <strong>not uploaded</strong> to our servers. When you close the page, that data is gone.</p>
+<p>Our AI photo tools (such as the background remover and upscaler) also run on your device. The AI models are downloaded from our own website to your browser, and your photos are never sent to us or to any AI service.</p>
 <h2>Information we collect</h2>
 <p>Like most websites, our hosting provider may log standard technical information such as IP address, browser type and pages visited, for security and performance. We may use privacy-respecting analytics to understand which tools are popular.</p>
 <h2>Cookies and advertising</h2>

@@ -1,0 +1,15 @@
+Third-party AI components bundled with BISCS India tools
+=========================================================
+
+MediaPipe Tasks Vision 0.10.14 (mediapipe/), and models selfie_multiclass_256x256,
+selfie_segmenter, magic_touch, blaze_face_short_range, blaze_face_full_range (models/)
+  Copyright Google LLC. Licensed under the Apache License, Version 2.0.
+  https://github.com/google-ai-edge/mediapipe  https://www.apache.org/licenses/LICENSE-2.0
+  selfie_multiclass_256x256.tflite is stored in two parts (.part0, .part1) that are
+  concatenated byte-for-byte in the browser.
+
+TensorFlow.js 4.20.0 (upscaler/tf.min.js)
+  Copyright Google LLC. Licensed under the Apache License, Version 2.0.
+
+UpscalerJS 1.0.0-beta.19 and @upscalerjs/esrgan-medium 1.0.0-beta.13 (upscaler/)
+  Copyright (c) 2022 Kevin Scott. MIT License. https://upscalerjs.com

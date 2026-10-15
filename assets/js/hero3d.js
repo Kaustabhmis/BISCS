@@ -111,7 +111,7 @@ function init() {
   const tiles = [];
   const layout = [
     [2.2, 1.9, 0.5], [4.9, 2.3, -1.2], [3.6, -0.2, 1.4], [6.3, 0.0, -0.4],
-    [2.4, -2.4, -0.6], [5.2, -2.5, 0.6], [7.6, 2.4, -2.4]
+    [2.4, -2.4, -0.6], [5.2, -2.5, 0.6], [7.6, 2.4, -2.4], [7.9, -1.6, -1.0], [3.9, 3.6, -2.0]
   ];
   cats.forEach((c, i) => {
     const p = layout[i % layout.length];
@@ -135,11 +135,11 @@ function init() {
   const glass = new THREE.MeshPhysicalMaterial({ color: 0xa5b4fc, roughness: 0.15, metalness: 0.2, clearcoat: 1, transparent: true, opacity: 0.85 });
   const pink = new THREE.MeshPhysicalMaterial({ color: 0xf472b6, roughness: 0.25, metalness: 0.3, clearcoat: 1 });
   const torus = new THREE.Mesh(new THREE.TorusKnotGeometry(0.55, 0.18, 160, 20), glass);
-  torus.position.set(8.2, -1.2, -1.5);
+  torus.position.set(9.0, -3.3, -1.8);
   const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(0.55, 0), pink);
   ico.position.set(0.6, 0.2, -1.8);
   const ring = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.12, 24, 80), new THREE.MeshPhysicalMaterial({ color: 0xfbbf24, roughness: 0.2, metalness: 0.6, clearcoat: 1 }));
-  ring.position.set(4.3, 3.4, -2.2);
+  ring.position.set(6.3, 3.7, -2.4);
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), new THREE.MeshPhysicalMaterial({ color: 0x34d399, roughness: 0.2, clearcoat: 1 }));
   sphere.position.set(7.2, -3.4, 0.4);
   [torus, ico, ring, sphere].forEach((m, i) => { m.userData = { base: m.position.clone(), phase: i * 2.1 }; group.add(m); });
