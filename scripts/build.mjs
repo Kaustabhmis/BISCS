@@ -416,11 +416,12 @@ function buildTool(t) {
 }
 
 // ------------------------------------------------------------ static pages
-function buildPage(slug, title, description, html) {
-  const base = '../';
+function buildPage(slug, title, description, html, opts = {}) {
+  const base = '../'.repeat(slug.split('/').length);
   write(`${slug}/index.html`, layout({
     base, canonical: `/${slug}/`, title: `${title} | ${SITE.name}`, description,
-    body: `<div class="container"><article class="prose"><nav class="crumbs"><a href="${base}">Home</a>${icon('chevron-right')}<span>${esc(title)}</span></nav><h1>${esc(title)}</h1>${html}</article></div>`
+    extraHead: opts.noindex ? '<meta name="robots" content="noindex">' : '',
+    body: `<div class="container"><article class="prose${opts.wide ? ' wide' : ''}"><nav class="crumbs"><a href="${base}">Home</a>${icon('chevron-right')}<span>${esc(title)}</span></nav><h1>${esc(title)}</h1>${html}</article></div>`
   }));
 }
 
@@ -437,11 +438,57 @@ function buildStaticPages() {
 
   buildPage('contact', 'Contact Us', `Contact ${SITE.name} with feedback, tool requests or business enquiries.`, `
 <p>We’d love to hear from you, whether it’s a bug report, a request for a new tool or a business enquiry.</p>
-<div class="card contact-card">
-  <p>${icon('mail')} <strong>Email:</strong> <a href="mailto:${SITE.email}">${SITE.email}</a></p>
-  <p>${icon('map-pin')} <strong>Address:</strong> ${esc(addressLine())}</p>
+<div class="contact-layout">
+  <form class="card contact-form" name="contact" method="POST" action="/contact/thanks/" data-netlify="true" netlify-honeypot="company-website" data-contact-form novalidate>
+    <input type="hidden" name="form-name" value="contact">
+    <p class="hp" aria-hidden="true"><label>Leave this empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
+    <h2 class="cf-title">Send us a message</h2>
+    <div class="row cols-2">
+      <div class="field"><label for="cf-name">Your name <span class="req" aria-hidden="true">*</span></label>
+        <input type="text" id="cf-name" name="name" autocomplete="name" required maxlength="100"></div>
+      <div class="field"><label for="cf-email">Email <span class="req" aria-hidden="true">*</span></label>
+        <input type="email" id="cf-email" name="email" autocomplete="email" required maxlength="150"></div>
+    </div>
+    <div class="row cols-2">
+      <div class="field"><label for="cf-phone">Phone <span class="muted small">(optional)</span></label>
+        <input type="tel" id="cf-phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="20"></div>
+      <div class="field"><label for="cf-topic">Topic</label>
+        <select id="cf-topic" name="topic">
+          <option>General question</option>
+          <option>Request a new tool</option>
+          <option>Report a problem</option>
+          <option>Business enquiry</option>
+          <option>DomeBox</option>
+          <option>Advertising</option>
+        </select></div>
+    </div>
+    <div class="field"><label for="cf-message">Message <span class="req" aria-hidden="true">*</span></label>
+      <textarea id="cf-message" name="message" required minlength="10" maxlength="5000" rows="6" placeholder="How can we help?"></textarea>
+      <span class="hint" data-count>0 / 5000</span></div>
+    <label class="check"><input type="checkbox" name="consent" value="yes" required><span>I agree that BISCS India may use these details to reply to me (see our <a href="../privacy/">Privacy Policy</a>).</span></label>
+    <div class="cf-status" role="status" aria-live="polite"></div>
+    <button class="btn btn-primary btn-lg" type="submit">${icon('mail')} Send message</button>
+  </form>
+  <div class="contact-side">
+    <div class="card contact-card">
+      <h2 class="cf-title">Contact details</h2>
+      <p>${icon('mail')} <a href="mailto:${SITE.email}">${SITE.email}</a></p>
+      <p>${icon('map-pin')} <span>${esc(addressLine())}</span></p>
+    </div>
+    <div class="card">
+      <h2 class="cf-title">Response time</h2>
+      <p class="muted" style="margin:0">We usually reply within two working days, Monday to Saturday.</p>
+    </div>
+  </div>
+</div>`, { wide: true });
+
+  buildPage('contact/thanks', 'Message sent', `Thank you for contacting ${SITE.name}.`, `
+<div class="card contact-thanks">
+  <span class="tool-icon" style="--c:#08786c">${icon('check')}</span>
+  <div><h2 class="cf-title">Thank you, we’ve received your message.</h2>
+  <p class="muted" style="margin:0">We usually reply within two working days. If it’s urgent, email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p></div>
 </div>
-<p style="margin-top:16px">We usually reply within two working days.</p>`);
+<p style="margin-top:20px"><a class="btn" href="../../">${icon('arrow-left')} Back to all tools</a></p>`, { noindex: true });
 
   buildPage('privacy', 'Privacy Policy', `${SITE.name} privacy policy: our tools process your files locally in your browser.`, `
 <p class="muted">Last updated: ${updated}</p>
@@ -455,6 +502,8 @@ function buildStaticPages() {
 <p>We store small preferences, such as your light or dark theme choice, in your browser’s local storage. You can clear them at any time in your browser settings.</p>
 <h2>Third-party services</h2>
 <p>We load the Inter font from Google Fonts. All other libraries are hosted on our own domain.</p>
+<h2>Contact form</h2>
+<p>If you send us a message through our contact form, we receive your name, email address, optional phone number and message. The form is processed and stored by our hosting provider, Netlify, and is used only to reply to you. We do not sell or share these details, and we delete messages when they are no longer needed. To ask us to delete your message, email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>
 <h2>Children</h2>
 <p>Our services are not directed at children under 13 and we do not knowingly collect their personal information.</p>
 <h2>Contact</h2>

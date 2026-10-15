@@ -487,9 +487,28 @@ table.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-va
 .footer-brand p { color: var(--text-3); max-width: 36ch; margin-top: 12px; }
 .footer-contact { font-style: normal; display: flex; flex-direction: column; gap: 6px; margin-top: 4px; color: var(--text-2); }
 .footer-contact a, .footer-contact span { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); }
-.contact-card p { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 8px; }
+.contact-card p { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 8px; }
+.contact-card p .icon { margin-top: 3px; }
 .contact-card p:last-child { margin-bottom: 0; }
 .contact-card .icon { color: var(--brand); }
+.prose.wide { max-width: 1040px; }
+.contact-layout { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: start; margin-top: 8px; }
+@media (min-width: 900px) { .contact-layout { grid-template-columns: minmax(0, 1fr) 300px; } }
+.contact-side { display: flex; flex-direction: column; gap: 16px; }
+.contact-side .card + .card { margin-top: 0; }
+.cf-title, .prose .cf-title { font-size: 1.1rem; margin: 0 0 14px; }
+.contact-form .req { color: var(--danger); }
+.contact-form .check { display: flex; flex-wrap: wrap; align-items: flex-start; margin: 4px 0 14px; color: var(--text-2); font-size: 0.9rem; }
+.contact-form .check > span { flex: 1; min-width: 0; }
+.contact-form .check .err { flex-basis: 100%; padding-left: 25px; }
+.contact-form .check input { margin-top: 2px; flex: none; }
+.contact-form .field.invalid input, .contact-form .field.invalid textarea, .contact-form .check.invalid input { border-color: var(--danger); box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent); }
+.contact-form .err { color: var(--danger); font-size: 0.82rem; font-weight: 600; }
+.cf-status:empty { display: none; }
+.cf-status { margin-bottom: 14px; }
+.hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.contact-thanks { display: flex; gap: 16px; align-items: flex-start; }
+.contact-thanks .tool-icon { flex: none; }
 .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; border-top: 1px solid var(--border); margin-top: 32px; padding-top: 20px; color: var(--text-3); font-size: 0.85rem; }
 .footer-brand { grid-column: 1 / -1; }
 @media (min-width: 860px) { .footer-brand { grid-column: auto; } }

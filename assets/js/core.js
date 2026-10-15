@@ -603,8 +603,89 @@
     }
   }
 
+  /**
+   * Contact form (Netlify Forms). Validates inline, submits with fetch and
+   * shows the result in place. Without JS it posts normally to the
+   * thank-you page.
+   */
+  function initContactForm() {
+    var form = BT.$('[data-contact-form]');
+    if (!form) return;
+    var status = BT.$('.cf-status', form);
+    var btn = BT.$('button[type=submit]', form);
+    var msg = BT.$('#cf-message', form), count = BT.$('[data-count]', form);
+    if (msg && count) {
+      var upd = function () { count.textContent = msg.value.length + ' / 5000'; };
+      msg.addEventListener('input', upd);
+      upd();
+    }
+    var RULES = {
+      name: function (v) { return v.trim().length >= 2 || 'Please enter your name.'; },
+      email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) || 'Please enter a valid email address.'; },
+      phone: function (v) { return !v.trim() || /^[0-9+()\-\s]{7,20}$/.test(v.trim()) || 'Please enter a valid phone number, or leave it empty.'; },
+      message: function (v) { return v.trim().length >= 10 || 'Please write at least 10 characters.'; },
+      consent: function (v, el) { return el.checked || 'Please tick the box so we can reply to you.'; }
+    };
+    function setError(el, text) {
+      var wrap = el.type === 'checkbox' ? el.closest('.check') : el.closest('.field');
+      if (!wrap) return;
+      var err = wrap.querySelector('.err');
+      wrap.classList.toggle('invalid', !!text);
+      el.setAttribute('aria-invalid', text ? 'true' : 'false');
+      if (text) {
+        if (!err) {
+          err = BT.h('span.err', { id: el.id ? el.id + '-err' : null });
+          wrap.appendChild(err);
+          if (err.id) el.setAttribute('aria-describedby', err.id);
+        }
+        err.textContent = text;
+      } else if (err) err.remove();
+    }
+    function check(el) {
+      var rule = RULES[el.name];
+      if (!rule) return true;
+      var r = rule(el.value, el);
+      setError(el, r === true ? '' : r);
+      return r === true;
+    }
+    form.addEventListener('blur', function (e) { if (RULES[e.target.name] && e.target.value) check(e.target); }, true);
+    form.addEventListener('input', function (e) { if (e.target.closest('.invalid')) check(e.target); });
+    form.addEventListener('change', function (e) { if (e.target.type === 'checkbox') check(e.target); });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      BT.$$('input, textarea', form).forEach(function (el) { if (!check(el) && !firstBad) firstBad = el; });
+      if (firstBad) { firstBad.focus(); return; }
+      var data = new URLSearchParams(new FormData(form)).toString();
+      var old = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Sending…';
+      status.innerHTML = '';
+      fetch(form.getAttribute('action') || '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: data
+      }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        form.reset();
+        if (count) count.textContent = '0 / 5000';
+        status.innerHTML = '<div class="notice ok">' + BT.icon('check') + '<span><strong>Thank you, your message has been sent.</strong> We usually reply within two working days.</span></div>';
+        status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }).catch(function () {
+        var mail = (BT.$('.contact-card a[href^="mailto:"]') || {}).textContent || '';
+        status.innerHTML = '<div class="notice error">' + BT.icon('info') + '<span>Sorry, your message could not be sent. Please try again' +
+          (mail ? ', or email us at <a href="mailto:' + BT.esc(mail) + '">' + BT.esc(mail) + '</a>' : '') + '.</span></div>';
+      }).then(function () {
+        btn.disabled = false;
+        btn.innerHTML = old;
+      });
+    });
+  }
+
   function boot() {
     booted = true;
+    initContactForm();
     initTheme();
     initMenu();
     initSearch();

@@ -42,6 +42,7 @@ The generated HTML is committed, so no build step is needed. Choose either optio
 **Then, for either option:**
 - Add `www.biscsindia.com` under **Domain management**. `_redirects` sends `biscsindia.com` to `www`.
 - `_headers` adds security headers and caching.
+- **Contact form:** in Netlify, open **Forms** and click **Enable form detection**, then redeploy once. Messages appear under Forms → `contact`. To get them by email, open **Forms → Form notifications → Add notification → Email notification** and enter `info@biscsindia.com`.
 
 ## Adding or changing a tool
 
