@@ -5,7 +5,8 @@
  * the CSS gradient if WebGL is unavailable, and renders a single still frame
  * for users who prefer reduced motion.
  */
-import * as THREE from '../vendor/three.module.min.js';
+// Three.js is ~650 KB, so it is imported lazily once the page is idle.
+let THREE;
 
 const canvas = document.querySelector('canvas.hero-3d');
 const hero = canvas && canvas.closest('.hero');
@@ -80,7 +81,7 @@ function init() {
     return; // no WebGL: CSS background remains
   }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 760 ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -131,7 +132,7 @@ function init() {
   });
 
   // Decorative shapes
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0xa5b4fc, roughness: 0.1, metalness: 0.1, transmission: 0.6, thickness: 1, clearcoat: 1, transparent: true, opacity: 0.9 });
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0xa5b4fc, roughness: 0.15, metalness: 0.2, clearcoat: 1, transparent: true, opacity: 0.85 });
   const pink = new THREE.MeshPhysicalMaterial({ color: 0xf472b6, roughness: 0.25, metalness: 0.3, clearcoat: 1 });
   const torus = new THREE.Mesh(new THREE.TorusKnotGeometry(0.55, 0.18, 160, 20), glass);
   torus.position.set(8.2, -1.2, -1.5);
@@ -145,7 +146,7 @@ function init() {
   const deco = [torus, ico, ring, sphere];
 
   // Particles
-  const N = 420;
+  const N = window.innerWidth < 760 ? 180 : 360;
   const pos = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) {
     pos[i * 3] = (Math.random() - 0.3) * 26;
@@ -212,12 +213,27 @@ function init() {
     camera.position.y = -scrollY * 0.004;
     renderer.render(scene, camera);
   }
-  function loop() {
+  // Adaptive quality: if the device can't keep up (slow GPU or software
+  // rendering), stop animating and keep a still frame instead of hogging
+  // the main thread.
+  let degraded = false, slow = 0, samples = 0, prev = 0;
+  function loop(now) {
+    const t0 = performance.now();
     frame();
+    // Watch the first 30 frames (skipping the first, which compiles shaders):
+    // if JS cost or the frame-to-frame gap shows the device is struggling,
+    // keep the still frame and stop animating.
+    samples++;
+    if (samples > 1 && samples <= 30) {
+      const cost = performance.now() - t0, gap = prev ? now - prev : 0;
+      if (cost > 22 || gap > 50) slow++;
+      if (slow >= 6) { degraded = true; running = false; return; }
+    }
+    prev = now;
     raf = running ? requestAnimationFrame(loop) : 0;
   }
   function setRunning(on) {
-    if (reduced) { frame(); return; }
+    if (reduced || degraded) return;
     if (on && !running) { running = true; raf = requestAnimationFrame(loop); }
     else if (!on && running) { running = false; cancelAnimationFrame(raf); }
   }
@@ -231,10 +247,39 @@ function init() {
   canvas.style.opacity = '0';
   canvas.style.transition = 'opacity 1s ease';
   frame();
-  requestAnimationFrame(() => { canvas.style.opacity = '1'; });
+  requestAnimationFrame(() => { canvas.style.opacity = '1'; hero.classList.add('webgl'); });
   setRunning(true);
 }
 
-// Registry/icons are deferred classic scripts; wait for them.
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-else init();
+/** True when WebGL would run on a GPU. Software renderers (SwiftShader,
+ * llvmpipe) and very low-memory or data-saver devices get the static hero. */
+function canRun3D() {
+  if (/[?&]3d=1\b/.test(location.search)) return true; // force on (testing)
+  try {
+    const c = navigator.connection;
+    if (c && (c.saveData || /2g/.test(c.effectiveType || ''))) return false;
+    if (navigator.deviceMemory && navigator.deviceMemory < 2) return false;
+    const gl = document.createElement('canvas').getContext('webgl');
+    if (!gl) return false;
+    const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : '';
+    const lose = gl.getExtension('WEBGL_lose_context');
+    if (lose) lose.loseContext();
+    return !/swiftshader|llvmpipe|software|basic render/i.test(name);
+  } catch (e) {
+    return false;
+  }
+}
+
+function start() {
+  if (!canRun3D()) return;
+  import('../vendor/three.module.min.js').then((mod) => { THREE = mod; init(); }).catch(() => { /* keep CSS background */ });
+}
+// Wait for the page to finish loading, then for an idle moment, so the 3D
+// scene never delays the first paint or the tools themselves.
+function schedule() {
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+  idle(start, { timeout: 2500 });
+}
+if (canvas && document.readyState === 'complete') schedule();
+else if (canvas) window.addEventListener('load', schedule, { once: true });

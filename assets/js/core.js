@@ -79,7 +79,12 @@
   /** Call fn on every input/change inside root, and once immediately. */
   BT.bindInputs = function (root, fn) {
     root.addEventListener('input', fn);
-    root.addEventListener('change', fn);
+    // Text fields also fire `change` on blur; re-rendering then would swallow
+    // the click that caused the blur, so only listen for controls without `input`.
+    root.addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.tagName === 'SELECT' || /^(checkbox|radio|file|date|time|datetime-local|month|color)$/.test(t.type)) fn(e);
+    });
     fn();
   };
 
@@ -362,7 +367,13 @@
   };
 
   // ----------------------------------------------------------- Registry
-  BT.impl = function (id, fn) { impls[id] = fn; };
+  var booted = false;
+  BT.impl = function (id, fn) {
+    impls[id] = fn;
+    // A tool script that runs after boot (e.g. loaded late) mounts immediately.
+    var root = booted && BT.$('#tool-root[data-tool="' + id + '"]');
+    if (root && !root.getAttribute('data-mounted')) initTool();
+  };
   BT.tool = function (id) {
     for (var i = 0; i < REG.TOOLS.length; i++) if (REG.TOOLS[i].id === id) return REG.TOOLS[i];
     return null;
@@ -557,7 +568,7 @@
 
   function initTool() {
     var root = BT.$('#tool-root');
-    if (!root) return;
+    if (!root || root.getAttribute('data-mounted')) return;
     var id = root.getAttribute('data-tool');
     var fn = impls[id];
     var tool = BT.tool(id);
@@ -566,6 +577,24 @@
       return;
     }
     root.innerHTML = '';
+    root.setAttribute('data-mounted', '1');
+    // Scrollable tables must be reachable by keyboard (WCAG 2.1.1).
+    if (window.MutationObserver) {
+      var fixTables = BT.debounce(function () {
+        var used = {};
+        BT.$$('.table-wrap', root).forEach(function (w, i) {
+          if (!w.hasAttribute('tabindex')) w.setAttribute('tabindex', '0');
+          w.setAttribute('role', 'region');
+          var card = w.closest('.card');
+          var h = card && card.querySelector('h2, h3, h4');
+          var name = (h && h.textContent.trim()) || 'Table';
+          if (used[name]) name += ' ' + (i + 1);
+          used[name] = true;
+          w.setAttribute('aria-label', name);
+        });
+      }, 50);
+      new MutationObserver(fixTables).observe(root, { childList: true, subtree: true });
+    }
     try {
       fn(root, { tool: tool, category: tool && BT.category(tool.cat) });
     } catch (e) {
@@ -575,6 +604,7 @@
   }
 
   function boot() {
+    booted = true;
     initTheme();
     initMenu();
     initSearch();
@@ -585,6 +615,8 @@
   }
 
   window.BT = BT;
-  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot);
-  else setTimeout(boot, 0);
+  // core.js is a deferred script: later deferred scripts (the tool files) only
+  // finish running before DOMContentLoaded, so always wait for it.
+  if (doc.readyState === 'complete') boot();
+  else doc.addEventListener('DOMContentLoaded', boot);
 })();

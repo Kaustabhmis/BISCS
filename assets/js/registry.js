@@ -87,7 +87,7 @@
 
     // ------------------------------------------------------------ Finance (16)
     { id: 'gst-calculator', name: 'GST Calculator', cat: 'finance', icon: 'receipt-indian-rupee',
-      desc: 'Add or remove GST at 5%, 12%, 18% or 28% with CGST/SGST split.',
+      desc: 'Add or remove GST at any rate (5%, 18%, 40% and more) with CGST/SGST split.',
       kw: 'goods and services tax inclusive exclusive cgst sgst igst' },
     { id: 'emi-calculator', name: 'EMI Calculator', cat: 'finance', icon: 'landmark',
       desc: 'Monthly EMI, total interest and amortisation schedule for any loan.',

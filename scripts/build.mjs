@@ -107,7 +107,8 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <link rel="manifest" href="${base}site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="${base}assets/css/site.css?v=${SITE.version}">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join('\n')}
@@ -140,8 +141,8 @@ ${body}
         <a class="logo" href="${base}"><span class="logo-mark">${icon('zap')}</span><span>BISCS <em>India</em></span></a>
         <p>${TOOLS.length} free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
       </div>
-      ${footCols.map(([h, list]) => `<div><h4>${h}</h4><ul>${list.map((t) => `<li><a href="${base}tools/${t.id}/">${esc(t.name)}</a></li>`).join('')}</ul></div>`).join('')}
-      <div><h4>Company</h4><ul>
+      ${footCols.map(([h, list]) => `<div><h2>${h}</h2><ul>${list.map((t) => `<li><a href="${base}tools/${t.id}/">${esc(t.name)}</a></li>`).join('')}</ul></div>`).join('')}
+      <div><h2>Company</h2><ul>
         <li><a href="${base}about/">About</a></li>
         <li><a href="${base}contact/">Contact</a></li>
         <li><a href="${base}privacy/">Privacy Policy</a></li>
@@ -171,6 +172,7 @@ function buildHome() {
   const body = `
 <section class="hero">
   <canvas class="hero-3d" aria-hidden="true"></canvas>
+  <div class="hero-tiles" aria-hidden="true">${CATEGORIES.map((c, i) => `<span class="ht ht${i}" style="--c:${c.color}">${icon(c.icon)}</span>`).join('')}</div>
   <div class="container">
     <h1>Every tool you need, <span class="grad">in one place.</span></h1>
     <p class="lead">${TOOLS.length} free tools for PDFs, GST and tax, images, text and code. They're fast and private: your files are processed on your device and never uploaded.</p>
@@ -282,6 +284,7 @@ function buildCategory(c) {
 </section>
 <section class="section" style="padding-top:20px">
   <div class="container">
+    <h2 class="sr-only">All ${esc(c.name)}</h2>
     <div class="tool-grid">${list.map((t) => toolCard(t, base)).join('\n')}</div>
   </div>
 </section>
@@ -342,6 +345,7 @@ function buildTool(t) {
   <div class="tool-layout${wide ? '' : ' has-aside'}">
     <div>
       <div class="ad-slot" data-ad="tool-top"></div>
+      <h2 class="sr-only">${esc(t.name)} tool</h2>
       <div id="tool-root" data-tool="${t.id}"><div class="loading"><span class="spinner"></span> Loading ${esc(t.name)}…</div></div>
       <noscript><p class="notice warn">Please enable JavaScript to use this tool.</p></noscript>
     </div>

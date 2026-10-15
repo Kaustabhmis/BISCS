@@ -1,0 +1,2 @@
+# Send the bare domain to www (301).
+https://biscsindia.com/*  https://www.biscsindia.com/:splat  301!

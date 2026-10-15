@@ -29,11 +29,19 @@ netlify.toml                                         Netlify config (headers, re
 
 ## Deploying on Netlify
 
-The generated HTML is committed, so no build step is needed.
+The generated HTML is committed, so no build step is needed. Choose either option.
 
-1. In Netlify, choose **Add new site → Import an existing project** and pick this repository.
-2. Leave the build command empty and set the publish directory to `.` (both are already set in `netlify.toml`).
-3. Add your domain `www.biscsindia.com` under **Domain management**. Requests to `biscsindia.com` are redirected to `www`.
+**Option A: drag and drop (quickest)**
+1. Unzip `biscs-netlify.zip`.
+2. Open https://app.netlify.com/drop and drag the unzipped folder onto the page.
+
+**Option B: connect this GitHub repository (automatic redeploys)**
+1. In Netlify, choose **Add new site → Import an existing project** and pick this repository and branch.
+2. Leave the build command empty and set the publish directory to `.`. Both are already set in `netlify.toml`.
+
+**Then, for either option:**
+- Add `www.biscsindia.com` under **Domain management**. `_redirects` sends `biscsindia.com` to `www`.
+- `_headers` adds security headers and caching.
 
 ## Adding or changing a tool
 
