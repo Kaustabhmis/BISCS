@@ -27,8 +27,8 @@ const SITE = {
   name: 'BISCS India',
   url: 'https://www.biscsindia.com',
   tagline: '100 free online tools for everyday work',
-  // TODO(owner): replace with your real contact details.
-  email: 'support@biscsindia.com',
+  email: 'info@biscsindia.com',
+  address: { locality: 'Kolkata', region: 'West Bengal', postalCode: '700026', country: 'IN', countryName: 'India' },
   year: new Date().getFullYear(),
   version: '' // cache-buster for CSS/JS, set from asset contents below
 };
@@ -45,6 +45,7 @@ const SITE = {
 }
 
 // ----------------------------------------------------------------- helpers
+const addressLine = () => `${SITE.address.locality}, ${SITE.address.region}, ${SITE.address.countryName} ${SITE.address.postalCode}`;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const icon = (name, cls = '') =>
   `<svg class="icon ${cls}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ICONS.sparkles}</svg>`;
@@ -140,6 +141,10 @@ ${body}
       <div class="footer-brand">
         <a class="logo" href="${base}"><span class="logo-mark">${icon('zap')}</span><span>BISCS <em>India</em></span></a>
         <p>${TOOLS.length} free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:${SITE.email}">${icon('mail')} ${SITE.email}</a>
+          <span>${icon('map-pin')} ${esc(addressLine())}</span>
+        </address>
       </div>
       ${footCols.map(([h, list]) => `<div><h2>${h}</h2><ul>${list.map((t) => `<li><a href="${base}tools/${t.id}/">${esc(t.name)}</a></li>`).join('')}</ul></div>`).join('')}
       <div><h2>Company</h2><ul>
@@ -258,6 +263,14 @@ function buildHome() {
   const jsonld = [{
     '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url + '/',
     potentialAction: { '@type': 'SearchAction', target: SITE.url + '/?q={search_term_string}', 'query-input': 'required name=search_term_string' }
+  }, {
+    '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: SITE.url + '/',
+    logo: SITE.url + '/assets/img/icon-512.png', email: SITE.email,
+    address: {
+      '@type': 'PostalAddress', addressLocality: SITE.address.locality, addressRegion: SITE.address.region,
+      postalCode: SITE.address.postalCode, addressCountry: SITE.address.country
+    },
+    contactPoint: { '@type': 'ContactPoint', email: SITE.email, contactType: 'customer support', areaServed: 'IN', availableLanguage: ['English', 'Hindi', 'Bengali'] }
   }];
   write('index.html', layout({
     base, canonical: '/',
@@ -424,7 +437,10 @@ function buildStaticPages() {
 
   buildPage('contact', 'Contact Us', `Contact ${SITE.name} with feedback, tool requests or business enquiries.`, `
 <p>We’d love to hear from you, whether it’s a bug report, a request for a new tool or a business enquiry.</p>
-<div class="card"><p style="margin:0">${icon('mail')} Email: <a href="mailto:${SITE.email}">${SITE.email}</a></p></div>
+<div class="card contact-card">
+  <p>${icon('mail')} <strong>Email:</strong> <a href="mailto:${SITE.email}">${SITE.email}</a></p>
+  <p>${icon('map-pin')} <strong>Address:</strong> ${esc(addressLine())}</p>
+</div>
 <p style="margin-top:16px">We usually reply within two working days.</p>`);
 
   buildPage('privacy', 'Privacy Policy', `${SITE.name} privacy policy: our tools process your files locally in your browser.`, `

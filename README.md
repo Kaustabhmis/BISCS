@@ -52,5 +52,5 @@ The generated HTML is committed, so no build step is needed. Choose either optio
 
 ## Before going live
 
-- Set your real contact email in `scripts/build.mjs` (`SITE.email`), then rebuild.
+- Contact details (email and address) are set in `scripts/build.mjs` (`SITE.email`, `SITE.address`). Rebuild after changing them.
 - To show ads, place your AdSense code in the `.ad-slot` elements. They stay hidden while empty.
