@@ -298,7 +298,6 @@
     'selfie-multiclass': ['selfie_multiclass_256x256.tflite.part0', 'selfie_multiclass_256x256.tflite.part1'],
     'selfie': ['selfie_segmenter.tflite'],
     'magic-touch': ['magic_touch.tflite'],
-    'face-full': ['blaze_face_full_range.tflite'],
     'face-short': ['blaze_face_short_range.tflite']
   };
   var modelCache = {};

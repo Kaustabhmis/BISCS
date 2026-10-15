@@ -614,7 +614,7 @@
 
   // ============================================================ AI engine
   var WASM_MB = 9.4;
-  var MODEL_MB = { 'selfie-multiclass': 16.4, 'magic-touch': 6.2, 'face-full': 1.1, 'face-short': 0.2 };
+  var MODEL_MB = { 'selfie-multiclass': 16.4, 'magic-touch': 6.2, 'face-short': 0.2 };
   var TASKS = {
     person: { model: 'selfie-multiclass', cls: 'ImageSegmenter', gpu: true,
       opts: { runningMode: 'IMAGE', outputCategoryMask: false, outputConfidenceMasks: true } },
@@ -782,7 +782,8 @@
           c2d(tile).drawImage(canvas, j[0], j[1], j[2], j[3], 0, 0, j[2], j[3]);
           return detectFacesOnce(wrap, tile).then(function (list) {
             list.forEach(function (f) {
-              if (f.score < 0.62) return;
+              // Tiles see a zoomed-in view: be stricter and ignore implausibly big boxes.
+              if (f.score < 0.7 || f.w > j[2] * 0.6) return;
               f.x += j[0]; f.y += j[1];
               f.kp.forEach(function (k) { k.x += j[0]; k.y += j[1]; });
               all.push(f);
@@ -1864,13 +1865,13 @@
       // ---- geometry
       function headGeometry(f) {
         var top = f.y, bot = f.y + f.h, cx = f.x + f.w / 2;
-        var crown = top - 0.5 * f.h, chin = bot, tilt = 0;
+        var crown = top - 0.38 * f.h, chin = bot, tilt = 0;
         if (f.kp && f.kp.length >= 4) {
           var re = f.kp[0], le = f.kp[1], mo = f.kp[3];
           var ey = (re.y + le.y) / 2, ex = (re.x + le.x) / 2, d = mo.y - ey;
           if (d > 2) {
             chin = (chin + mo.y + 1.05 * d) / 2;
-            crown = (crown + ey - 2.05 * d) / 2;
+            crown = (crown + ey - 1.8 * d) / 2;
             cx = (cx + ex) / 2;
           }
           tilt = Math.atan2(le.y - re.y, le.x - re.x) * 180 / Math.PI;

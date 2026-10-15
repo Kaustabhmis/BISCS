@@ -324,11 +324,13 @@ function buildCategory(c) {
 const HOWTO = {
   pdf: (t) => [`Click <strong>Choose PDF</strong> or drag your file into the box.`, `Adjust the options for ${esc(t.name.toLowerCase())}.`, `Press the main button and your new PDF downloads instantly.`],
   image: (t) => [`Choose an image (JPG, PNG or WebP) or drop it in.`, `Adjust the settings and check the live preview.`, `Download the result. The image never leaves your device.`],
+  ai: (t) => [`Choose a photo (JPG, PNG or WebP), drop it in, or paste it with Ctrl+V.`, `The first time, the AI model downloads to your browser (one time only). ${esc(t.name)} then runs on your own device.`, `Fine-tune the result with the controls, compare before and after, and download it. Your photo is never uploaded.`],
+  seo: (t) => [`Enter your page details or paste your content into ${esc(t.name)}.`, `Check the live preview, warnings and suggestions as you type.`, `Copy or download the result and add it to your website.`],
   default: (t) => [`Enter your values or paste your text into ${esc(t.name)}.`, `Results update instantly as you type.`, `Copy or download the result with one click.`]
 };
 const FAQ = (t, c) => [
   [`Is ${t.name} free?`, `Yes. ${t.name} is completely free with no sign-up, no watermarks and no usage limits.`],
-  [`Are my files or data uploaded?`, `No. ${t.name} runs entirely in your web browser. Your ${c.id === 'pdf' || c.id === 'image' ? 'files are' : 'data is'} processed on your own device and never sent to our servers.`],
+  [`Are my files or data uploaded?`, `No. ${t.name} runs entirely in your web browser. Your ${c.id === 'pdf' || c.id === 'image' || c.id === 'ai' ? 'files are' : 'data is'} processed on your own device and never sent to our servers.`],
   [`Does it work on mobile?`, `Yes. ${SITE.name} works in any modern browser on Android, iPhone, Windows, Mac and Linux.`]
 ];
 
