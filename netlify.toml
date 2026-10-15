@@ -1,7 +1,9 @@
 # Netlify configuration for BISCS India tools.
 # The site is pre-built (HTML is committed), so there is no build command.
-# Headers and redirects live in _headers and _redirects, which Netlify applies
-# to both Git deploys and drag-and-drop deploys.
+# Headers live in _headers, which Netlify applies to both Git and
+# drag-and-drop deploys. The apex <-> www redirect is handled by Netlify's
+# primary-domain setting, so there is no redirect rule here (a second rule
+# would cause an infinite redirect loop).
 # To regenerate pages after editing assets/js/registry.js: node scripts/build.mjs
 [build]
   publish = "."

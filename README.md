@@ -40,7 +40,7 @@ The generated HTML is committed, so no build step is needed. Choose either optio
 2. Leave the build command empty and set the publish directory to `.`. Both are already set in `netlify.toml`.
 
 **Then, for either option:**
-- Add `www.biscsindia.com` under **Domain management**. `_redirects` sends `biscsindia.com` to `www`.
+- Add `biscsindia.com` under **Domain management**. Netlify adds `www.biscsindia.com` and redirects between the two automatically, according to the primary domain you choose. Don't add your own domain redirect rule as well, because the two rules redirect back and forth forever.
 - `_headers` adds security headers and caching.
 - **Contact form:** in Netlify, open **Forms** and click **Enable form detection**, then redeploy once. Messages appear under Forms → `contact`. To get them by email, open **Forms → Form notifications → Add notification → Email notification** and enter `info@biscsindia.com`.
 
