@@ -1504,3 +1504,717 @@
       }).join('\n');
     }).join('\n\n');
   }
+
+  // ======================================================== OCR HELPERS
+  var LANGS = [
+    { code: 'eng', name: 'English', script: 'Abc' },
+    { code: 'hin', name: 'Hindi', script: 'हिन्दी' },
+    { code: 'ben', name: 'Bengali', script: 'বাংলা' }
+  ];
+  var OCR_STATUS = {
+    'loading tesseract core': 'Loading the OCR engine…',
+    'initializing tesseract': 'Starting the OCR engine…',
+    'initialized tesseract': 'Starting the OCR engine…',
+    'loading language traineddata': 'Loading language data (first time only)…',
+    'loading language traineddata (from cache)': 'Loading language data…',
+    'loaded language traineddata': 'Language data ready',
+    'initializing api': 'Preparing the recogniser…',
+    'initialized api': 'Recogniser ready'
+  };
+  function otsuHist(hist, n) {
+    var sumAll = 0, sumB = 0, wB = 0, best = -1, thr = 128, t;
+    for (t = 0; t < 256; t++) sumAll += t * hist[t];
+    for (t = 0; t < 256; t++) {
+      wB += hist[t];
+      if (!wB) continue;
+      var wF = n - wB;
+      if (!wF) break;
+      sumB += t * hist[t];
+      var mB = sumB / wB, mF = (sumAll - sumB) / wF, between = wB * wF * (mB - mF) * (mB - mF);
+      if (between > best) { best = between; thr = t; }
+    }
+    return thr;
+  }
+  function histPct(hist, n, p) {
+    var target = n * p, s = 0;
+    for (var i = 0; i < 256; i++) { s += hist[i]; if (s >= target) return i; }
+    return 255;
+  }
+  /** Prepare an image for OCR: flatten on white, upscale small text, optional grayscale/contrast and Otsu B&W. */
+  function prepForOcr(src, o) {
+    var w = src.width, hh = src.height, long = Math.max(w, hh), s = 1;
+    if (o.upscale && long < 1800) s = Math.min(2.5, 2000 / long);
+    if (long * s > 4200) s = 4200 / long;
+    var c = mk(w * s, hh * s), g = c2d(c, true);
+    g.fillStyle = '#fff';
+    g.fillRect(0, 0, c.width, c.height);
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(src, 0, 0, c.width, c.height);
+    if (o.clean || o.bw) {
+      var id = g.getImageData(0, 0, c.width, c.height), d = id.data, n = c.width * c.height, L = new Uint8ClampedArray(n);
+      var hist = new Uint32Array(256), i, j;
+      for (i = 0, j = 0; i < n; i++, j += 4) { L[i] = 0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2]; hist[L[i]]++; }
+      if (histPct(hist, n, 0.5) < 100) { // light text on a dark background: invert
+        hist.fill(0);
+        for (i = 0; i < n; i++) { L[i] = 255 - L[i]; hist[L[i]]++; }
+      }
+      var lo = histPct(hist, n, 0.01), hi = histPct(hist, n, 0.99);
+      if (hi - lo < 30) { lo = 0; hi = 255; }
+      var h2 = new Uint32Array(256);
+      for (i = 0; i < n; i++) { L[i] = (L[i] - lo) * 255 / (hi - lo); h2[L[i]]++; }
+      var thr = o.bw ? otsuHist(h2, n) : -1;
+      for (i = 0, j = 0; i < n; i++, j += 4) {
+        var v = thr >= 0 ? (L[i] > thr ? 255 : 0) : L[i];
+        d[j] = d[j + 1] = d[j + 2] = v; d[j + 3] = 255;
+      }
+      g.putImageData(id, 0, 0);
+    }
+    return { canvas: c, scale: s };
+  }
+  function ocrWords(data) {
+    var out = [];
+    (data.blocks || []).forEach(function (b) {
+      (b.paragraphs || []).forEach(function (p) {
+        (p.lines || []).forEach(function (l) {
+          (l.words || []).forEach(function (w) { if (w.text && w.text.trim() && w.bbox) out.push(w); });
+        });
+      });
+    });
+    return out;
+  }
+  function confColor(c) { return c >= 85 ? '#16a34a' : c >= 60 ? '#f59e0b' : '#ef4444'; }
+  /** Pick languages: a row of checkbox chips. Returns {el, get()}. */
+  function langPicker(defaults, multi) {
+    var wrap = h('div.dai-chips', { role: 'group', 'aria-label': 'Languages' });
+    var boxes = LANGS.map(function (L) {
+      var inp = h('input', { type: multi ? 'checkbox' : 'radio', name: multi ? null : uid('lang'), value: L.code });
+      inp.checked = defaults.indexOf(L.code) >= 0;
+      inp.className = 'sr-only-dai';
+      wrap.appendChild(h('label.dai-chip', null, [inp, h('span', { text: L.name }), h('span.dai-script', { lang: L.code.slice(0, 2), text: L.script })]));
+      return inp;
+    });
+    wrap.addEventListener('change', function (e) {
+      if (multi && !boxes.some(function (b) { return b.checked; })) { e.target.checked = true; BT.toast('Choose at least one language'); }
+    });
+    return { el: wrap, get: function () { return boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }).join('+'); } };
+  }
+
+  // ============================================================ IMAGE TO TEXT
+  register('image-to-text', function (root, ctx) {
+    var items = [], results = null, worker = null, workerLangs = '', busy = false, alive = true, fileN = 0, itemN = 0;
+    var thumbQ = Promise.resolve();
+    var S = workspace(root, ctx, {
+      accept: 'image/*,.pdf,application/pdf', multiple: true, icon: 'scan-text', pick: 'Choose files',
+      title: 'Choose images or a PDF', hint: 'Photos, screenshots, scans or PDFs · or paste an image with Ctrl+V',
+      onFiles: addFiles,
+      introExtra: h('div.dai-alt', null, [h('span.muted', { text: 'On a phone?' }), fileBtn('Take a photo', 'aperture', '', 'image/*', false, addFiles, 'environment')])
+    });
+    S.barActs.appendChild(btn('Start over', 'refresh-cw', 'btn-sm btn-ghost', reset));
+
+    // main area
+    var countEl = h('span.muted.small');
+    var grid = h('div.dai-thumbs', { role: 'list', 'aria-label': 'Pages to read' });
+    var resWrap = h('div');
+    S.main.appendChild(h('div.dai-head', null, [h('h3', null, ['Pages ', countEl]), h('div.btn-group', null, [
+      fileBtn('Add files', 'plus', 'btn-sm', 'image/*,.pdf,application/pdf', true, addFiles),
+      fileBtn('Camera', 'aperture', 'btn-sm', 'image/*', false, addFiles, 'environment')
+    ])]));
+    S.main.appendChild(grid);
+    S.main.appendChild(resWrap);
+
+    // options
+    var langs = langPicker(['eng'], true);
+    var optClean = checkbox('Enhance contrast', true, null, 'Grayscale + auto levels; inverts light-on-dark text');
+    var optBw = checkbox('Black & white (Otsu threshold)', false, null, 'Helps with uneven backgrounds and faint print');
+    var optUp = checkbox('Upscale small images', true, null, 'Small screenshots are enlarged before reading');
+    var optRot = checkbox('Straighten slightly tilted text', true, null, 'Automatic deskew of small angles');
+    var optEmb = checkbox('Use the PDF’s own text when available', true, null, 'Faster and exact for digital PDFs; scanned pages still use OCR');
+    var pdfSec = sec('PDF pages', [h('div.dai-checks', null, [optEmb])]);
+    S.opts.appendChild(h('h3', { text: 'Recognition settings' }));
+    S.opts.appendChild(sec('Languages in the image', [langs.el, hint('Tick every language that appears. Fewer languages read faster and more accurately.')]));
+    S.opts.appendChild(sec('Image clean-up', [h('div.dai-checks', null, [optClean, optBw, optUp, optRot])]));
+    S.opts.appendChild(pdfSec);
+    var prog = progressBox();
+    var runBtn = btn('Extract text', 'scan-text', 'btn-primary btn-lg', run);
+    S.act.appendChild(prog);
+    S.act.appendChild(runBtn);
+
+    function onPaste(e) {
+      if (!alive || !root.isConnected) return;
+      var files = [];
+      Array.prototype.forEach.call((e.clipboardData && e.clipboardData.items) || [], function (it) {
+        if (it.kind === 'file' && /^image\//.test(it.type)) { var f = it.getAsFile(); if (f) files.push(f); }
+      });
+      if (!files.length) return;
+      e.preventDefault();
+      files = files.map(function (f, i) { return f.name && f.name !== 'image.png' ? f : new File([f], 'Pasted image ' + (i + 1) + '.png', { type: f.type }); });
+      addFiles(files);
+      BT.toast('Image pasted');
+    }
+    doc.addEventListener('paste', onPaste);
+
+    function isPdf(f) { return /pdf/i.test(f.type) || /\.pdf$/i.test(f.name); }
+    async function addFiles(files) {
+      var added = 0;
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        try {
+          if (isPdf(f)) {
+            var bytes = new Uint8Array(await f.arrayBuffer());
+            var pdf = await BT.openPdfjs(bytes);
+            var file = { id: ++fileN, name: f.name, bytes: bytes, pdf: pdf };
+            if (pdf.numPages > 40) BT.toast(f.name + ': ' + pdf.numPages + ' pages — reading many scanned pages can take a while');
+            for (var p = 1; p <= pdf.numPages; p++) {
+              items.push({ id: ++itemN, kind: 'pdf', file: file, pageNo: p, label: BT.baseName(f.name) + ' · p' + p, thumb: null });
+              added++;
+            }
+          } else if (/^image\//.test(f.type) || /\.(png|jpe?g|webp|gif|bmp|avif)$/i.test(f.name)) {
+            var img = await BT.loadImage(f);
+            var c = toCanvas(img, 4000);
+            if (img.src && img.src.slice(0, 5) === 'blob:') URL.revokeObjectURL(img.src);
+            items.push({ id: ++itemN, kind: 'img', canvas: c, label: f.name || 'Image', thumb: thumbOf(c, 260) });
+            added++;
+          } else BT.toast(f.name + ' is not an image or PDF', 'error');
+        } catch (e) {
+          console.error(e);
+          BT.toast((f.name ? f.name + ': ' : '') + (isPdf(f) ? friendlyPdfError(e) : 'could not be read as an image'), 'error');
+        }
+      }
+      if (!items.length) return;
+      if (added) { results = null; resWrap.innerHTML = ''; }
+      S.show('work');
+      refresh();
+    }
+    function refresh() {
+      var pdfs = items.filter(function (it) { return it.kind === 'pdf'; }).length;
+      countEl.textContent = '(' + items.length + ')';
+      S.setFile(items.length === 1 ? items[0].label : plural(items.length, 'page'), pdfs ? plural(pdfs, 'PDF page') + (items.length > pdfs ? ' · ' + plural(items.length - pdfs, 'image') : '') : 'Images');
+      pdfSec.classList.toggle('hidden', !pdfs);
+      grid.innerHTML = '';
+      items.forEach(function (it) {
+        var tw = h('div.dai-tw');
+        var card = h('div.dai-thumb', { role: 'listitem', title: it.label }, [tw, h('div.dai-pg', { text: it.label })]);
+        card.appendChild(h('div.dai-tx', null, [ibtn('x', 'Remove ' + it.label, function () { remove(it); }, 'danger')]));
+        if (it.thumb) tw.appendChild(it.thumb);
+        else {
+          tw.appendChild(h('div.dai-ph'));
+          thumbQ = thumbQ.then(function () {
+            if (it.thumb || items.indexOf(it) < 0) return;
+            return BT.renderPdfThumb(it.file.pdf, it.pageNo, 260).then(function (cv) {
+              it.thumb = cv;
+              if (tw.isConnected) { tw.innerHTML = ''; tw.appendChild(cv); }
+            });
+          }).catch(function (e) { console.warn(e); });
+        }
+        grid.appendChild(card);
+      });
+      runBtn.disabled = busy || !items.length;
+    }
+    function remove(it) {
+      if (busy) return;
+      items.splice(items.indexOf(it), 1);
+      if (!items.length) { reset(); return; }
+      refresh();
+    }
+    function killWorker() {
+      if (worker) { var w = worker; worker = null; workerLangs = ''; w.terminate().catch(function () {}); }
+    }
+    function reset() {
+      runSeq++;
+      killWorker();
+      busy = false;
+      items = []; results = null;
+      resWrap.innerHTML = '';
+      prog.hide();
+      setBtn(runBtn, 'Extract text', 'scan-text');
+      runBtn.disabled = false;
+      S.msg();
+      S.show('intro');
+    }
+    var runSeq = 0;
+    async function getWorker(langStr, logger) {
+      if (worker && workerLangs === langStr) return worker;
+      killWorker();
+      var w = await BT.createOcrWorker(langStr, logger);
+      worker = w; workerLangs = langStr;
+      return w;
+    }
+    async function pdfPageCanvas(it) {
+      var page = await it.file.pdf.getPage(it.pageNo);
+      var vp = page.getViewport({ scale: 1 });
+      var scale = Math.min(2.2, 3200 / Math.max(vp.width, vp.height));
+      var r = await BT.renderPdfPage(page, scale);
+      page.cleanup();
+      return { canvas: r.canvas, ptW: vp.width, ptH: vp.height };
+    }
+    function run() {
+      if (busy || !items.length) return;
+      var mySeq = ++runSeq;
+      var langStr = langs.get(), opt = { clean: optClean.input.checked, bw: optBw.input.checked, upscale: optUp.input.checked };
+      var rotate = optRot.input.checked, useEmb = optEmb.input.checked;
+      busy = true;
+      runBtn.disabled = true;
+      resWrap.innerHTML = '';
+      S.msg();
+      var cur = 0, total = items.length, out = [];
+      function logger(m) {
+        if (mySeq !== runSeq) return;
+        if (m.status === 'recognizing text') prog.set((cur + (m.progress || 0)) / total, 'Reading page ' + (cur + 1) + ' of ' + total + '… ' + Math.round((m.progress || 0) * 100) + '%');
+        else if (OCR_STATUS[m.status]) prog.set(null, OCR_STATUS[m.status]);
+      }
+      prog.set(null, 'Starting…');
+      (async function () {
+        var w = null;
+        for (cur = 0; cur < total; cur++) {
+          if (mySeq !== runSeq) return;
+          var it = items[cur];
+          prog.set(cur / total, 'Reading page ' + (cur + 1) + ' of ' + total + '…');
+          var src, ptW, ptH;
+          if (it.kind === 'pdf') {
+            if (useEmb) {
+              var page = await it.file.pdf.getPage(it.pageNo);
+              var model = await pdfTextModel(page, false);
+              if (model.chars >= 20) {
+                out.push({ item: it, embedded: true, text: modelText(model), words: [], conf: null });
+                continue;
+              }
+            }
+            var pr = await pdfPageCanvas(it);
+            src = pr.canvas; ptW = pr.ptW; ptH = pr.ptH;
+          } else {
+            src = it.canvas;
+            var ps = Math.min(0.75, 1190 / Math.max(src.width, src.height));
+            ptW = src.width * ps; ptH = src.height * ps;
+          }
+          if (!w) w = await getWorker(langStr, logger);
+          if (mySeq !== runSeq) return;
+          var prep = prepForOcr(src, opt);
+          var r = await w.recognize(prep.canvas, { rotateAuto: rotate, pdfTitle: it.label, pdfTextOnly: true }, { text: true, blocks: true, pdf: true });
+          var view = thumbOf(src, 1400), k = view.width / prep.canvas.width;
+          var words = ocrWords(r.data).map(function (wd) {
+            return { text: wd.text, conf: wd.confidence, x: wd.bbox.x0 * k, y: wd.bbox.y0 * k, w: (wd.bbox.x1 - wd.bbox.x0) * k, h: (wd.bbox.y1 - wd.bbox.y0) * k };
+          });
+          var confs = words.map(function (wd) { return wd.conf; });
+          var jpeg = await BT.canvasToBlob(src.width * src.height > 9e6 ? thumbOf(src, 3000) : src, 'image/jpeg', 0.85);
+          out.push({
+            item: it, embedded: false, text: (r.data.text || '').replace(/\n{3,}/g, '\n\n').trim(), words: words,
+            conf: confs.length ? confs.reduce(function (a, b) { return a + b; }, 0) / confs.length : null,
+            view: view, angle: r.data.rotateRadians || 0, pdf: r.data.pdf ? new Uint8Array(r.data.pdf) : null, jpeg: jpeg, ptW: ptW, ptH: ptH
+          });
+          if (src !== it.canvas) { src.width = src.height = 1; }
+          prep.canvas.width = prep.canvas.height = 1;
+        }
+        if (mySeq !== runSeq) return;
+        results = out;
+        prog.set(1, 'Done');
+        showResults();
+      })().catch(function (e) {
+        if (mySeq !== runSeq) return;
+        console.error(e);
+        var msg = String((e && e.message) || e);
+        S.msg('error', esc(/fetch|network|load/i.test(msg) ? 'The OCR engine or language data could not be loaded. Please check your connection and try again.' : 'Text recognition failed: ' + msg));
+      }).then(function () {
+        if (mySeq !== runSeq) return;
+        killWorker(); // free the engine's memory; language data stays in the browser cache
+        busy = false;
+        runBtn.disabled = !items.length;
+        setBtn(runBtn, results ? 'Run again' : 'Extract text', results ? 'refresh-cw' : 'scan-text');
+        setTimeout(function () { if (!busy) prog.hide(); }, 1200);
+      });
+    }
+
+    function joinText(sep) {
+      return results.map(function (r, i) {
+        return (sep && results.length > 1 ? '--- ' + r.item.label + ' ---\n' : '') + r.text;
+      }).join('\n\n').trim() + '\n';
+    }
+    function showResults() {
+      resWrap.innerHTML = '';
+      var chars = 0, words = 0, confSum = 0, confN = 0, ocrPages = 0;
+      results.forEach(function (r) {
+        chars += r.text.replace(/\s/g, '').length;
+        words += (r.text.match(/\S+/g) || []).length;
+        if (r.conf != null) { confSum += r.conf; confN++; }
+        if (!r.embedded) ocrPages++;
+      });
+      var card = h('section.dai-res', { 'aria-label': 'Extracted text' });
+      card.appendChild(h('div.dai-head', null, [h('h3', { text: 'Extracted text' }), h('span.badge.ok', { html: icon('check') + ' Done' })]));
+      card.appendChild(h('div.stats', null, [
+        stat('Pages', String(results.length)), stat('Words', fmtNum(words)), stat('Characters', fmtNum(chars)),
+        stat('Confidence', confN ? Math.round(confSum / confN) + '%' : 'Exact')
+      ]));
+      if (!chars) card.appendChild(notice('warn', 'No text was found. Try another language, turn on <strong>Black &amp; white</strong>, or use a sharper, closer photo.'));
+      var sepBox = checkbox('Page separators', results.length > 1);
+      var ta = h('textarea', { 'aria-label': 'Extracted text (editable)', spellcheck: 'false' });
+      ta.value = joinText(results.length > 1);
+      ta.setAttribute('lang', workerLangsFor());
+      sepBox.input.addEventListener('change', function () { ta.value = joinText(sepBox.input.checked); });
+      var base = results.length === 1 ? BT.baseName(results[0].item.label) : 'extracted-text';
+      var pdfBtn = btn('Searchable PDF', 'file-text', '', function () { BT.busy(pdfBtn, buildSearchable, 'Building PDF…'); });
+      var canPdf = results.every(function (r) { return r.embedded || r.pdf; });
+      card.appendChild(ta);
+      card.appendChild(h('div.btn-group', null, [
+        btn('Copy', 'copy', 'btn-primary', function () { BT.copy(ta.value, 'Text copied'); }),
+        btn('Download .txt', 'download', '', function () { BT.download(new Blob([ta.value], { type: 'text/plain;charset=utf-8' }), safeName(base) + '.txt'); }),
+        canPdf ? pdfBtn : null,
+        results.length > 1 ? sepBox : null
+      ]));
+      if (canPdf) card.appendChild(hint('The searchable PDF keeps each page as an image with an invisible text layer, so you can search, select and copy text in any PDF reader.'));
+      else card.appendChild(hint('A searchable PDF is not available in this browser.'));
+      resWrap.appendChild(card);
+      if (ocrPages) resWrap.appendChild(viewer());
+      ta.focus({ preventScroll: true });
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      function buildSearchable() {
+        return BT.loadLib('pdflib').then(async function (PDFLib) {
+          var outDoc = await PDFLib.PDFDocument.create(), srcDocs = {};
+          for (var i = 0; i < results.length; i++) {
+            var r = results[i];
+            if (r.embedded) {
+              var key = r.item.file.id;
+              if (!srcDocs[key]) srcDocs[key] = await PDFLib.PDFDocument.load(r.item.file.bytes, { ignoreEncryption: true });
+              var cp = await outDoc.copyPages(srcDocs[key], [r.item.pageNo - 1]);
+              outDoc.addPage(cp[0]);
+              continue;
+            }
+            var page = outDoc.addPage([r.ptW, r.ptH]);
+            var img = await outDoc.embedJpg(await blobBytes(r.jpeg));
+            page.drawImage(img, { x: 0, y: 0, width: r.ptW, height: r.ptH });
+            var tdoc = await PDFLib.PDFDocument.load(r.pdf);
+            var emb = await outDoc.embedPage(tdoc.getPage(0));
+            page.drawPage(emb, { x: 0, y: 0, width: r.ptW, height: r.ptH });
+          }
+          outDoc.setTitle(base);
+          outDoc.setProducer('BISCS Tools (tesseract.js OCR)');
+          var bytes = await outDoc.save();
+          BT.download(new Blob([bytes], { type: 'application/pdf' }), safeName(base) + '-searchable.pdf');
+          BT.toast('Searchable PDF downloaded');
+        });
+      }
+    }
+    function workerLangsFor() { var l = langs.get(); return l === 'hin' ? 'hi' : l === 'ben' ? 'bn' : l === 'eng' ? 'en' : ''; }
+    function fmtNum(n) { return n.toLocaleString('en-IN'); }
+
+    /** Page image with word boxes coloured by confidence. */
+    function viewer() {
+      var ocrRes = results.filter(function (r) { return !r.embedded; });
+      var wrap = h('section.dai-res.dai-view', { 'aria-label': 'Word boxes' });
+      var sel = h('select', { 'aria-label': 'Page to show' });
+      ocrRes.forEach(function (r, i) { sel.appendChild(h('option', { value: String(i), text: r.item.label })); });
+      var show = checkbox('Show word boxes', true);
+      var box = h('div.dai-ovbox');
+      wrap.appendChild(h('div.dai-head', null, [h('h3', { text: 'Recognised words' }), h('div.dai-vtools', null, [ocrRes.length > 1 ? sel : null, show])]));
+      wrap.appendChild(box);
+      wrap.appendChild(h('div.dai-legend', {
+        html: '<span><i style="background:#16a34a"></i>High confidence (85%+)</span><span><i style="background:#f59e0b"></i>Medium (60–85%)</span><span><i style="background:#ef4444"></i>Low — please check</span>'
+      }));
+      function draw() {
+        var r = ocrRes[+sel.value || 0];
+        box.innerHTML = '';
+        var ov = h('div.dai-ov' + (show.input.checked ? '' : '.off'));
+        ov.appendChild(r.view);
+        var W = r.view.width, H = r.view.height;
+        var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(r.words.length + ' recognised words') + '">';
+        var deg = -(r.angle || 0) * 180 / Math.PI;
+        svg += '<g transform="rotate(' + deg.toFixed(3) + ' ' + (W / 2) + ' ' + (H / 2) + ')">';
+        var sw = Math.max(1, W / 600);
+        r.words.forEach(function (wd) {
+          var c = confColor(wd.conf);
+          svg += '<rect x="' + wd.x.toFixed(1) + '" y="' + wd.y.toFixed(1) + '" width="' + wd.w.toFixed(1) + '" height="' + wd.h.toFixed(1) + '" fill="' + c + '" fill-opacity="0.16" stroke="' + c + '" stroke-width="' + sw.toFixed(2) + '"><title>' + esc(wd.text + ' — ' + Math.round(wd.conf) + '%') + '</title></rect>';
+        });
+        svg += '</g></svg>';
+        ov.insertAdjacentHTML('beforeend', svg);
+        box.appendChild(ov);
+      }
+      sel.addEventListener('change', draw);
+      show.input.addEventListener('change', function () { var ov = box.querySelector('.dai-ov'); if (ov) ov.classList.toggle('off', !show.input.checked); });
+      draw();
+      return wrap;
+    }
+    return { destroy: function () { alive = false; reset(); doc.removeEventListener('paste', onPaste); } };
+  });
+
+  // ============================================================== PDF TO WORD
+  var XML_BAD = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g;
+  function twips(pt) { return Math.round(pt * 20); }
+  function paraDocx(D, p, pageBreak) {
+    var runs = p.runs.map(function (r) {
+      return new D.TextRun({
+        text: r.text.replace(XML_BAD, ''), bold: r.bold || undefined, italics: r.italic || undefined,
+        size: Math.max(2, Math.round(r.size * 2)), font: FONT[r.fam] || FONT.sans
+      });
+    });
+    var o = { children: runs, spacing: p.heading ? { before: 240, after: 120 } : { after: 100 } };
+    if (p.heading) o.heading = D.HeadingLevel['HEADING_' + p.heading];
+    if (p.list === 'bullet') o.numbering = { reference: 'dai-bullet', level: 0 };
+    else if (p.list === 'num') o.indent = { left: 720, hanging: 360 };
+    if (p.align === 'center') o.alignment = D.AlignmentType.CENTER;
+    if (pageBreak) o.pageBreakBefore = true;
+    return new D.Paragraph(o);
+  }
+  /** Paragraphs from tesseract blocks (for scanned pages). Sizes estimated from line heights. */
+  function ocrParas(data, pxPerPt) {
+    var out = [];
+    (data.blocks || []).forEach(function (b) {
+      (b.paragraphs || []).forEach(function (pp) {
+        var lines = (pp.lines || []).filter(function (l) { return l.text && l.text.trim(); });
+        if (!lines.length) return;
+        var hts = lines.map(function (l) { return (l.bbox.y1 - l.bbox.y0) / pxPerPt; });
+        var size = Math.max(6, Math.min(48, Math.round(median(hts) / 1.25 * 2) / 2));
+        var texts = lines.map(function (l) { return l.text.replace(/\s+$/, ''); });
+        var mb = BULLET_RE.exec(texts[0]), mn = !mb && NUM_RE.exec(texts[0]);
+        if (mb) texts[0] = texts[0].slice(mb[0].length);
+        var text = texts.join(' ').replace(/(\w)- (\p{Ll})/gu, '$1$2').replace(/\s+/g, ' ').trim();
+        if (!text) return;
+        var chars = text.replace(/\s/g, '').length;
+        out.push({ runs: [{ text: text, bold: false, italic: false, size: size, fam: 'sans' }], size: size, n: chars, lines: lines, list: mb ? 'bullet' : mn ? 'num' : null, heading: 0, align: 'left', text: text });
+      });
+    });
+    return out;
+  }
+
+  register('pdf-to-word', function (root, ctx) {
+    var st = null, seq = 0, ocrWorker = null, ocrLangs = '';
+    var S = workspace(root, ctx, {
+      accept: '.pdf,application/pdf', multiple: false, icon: 'file-text', pick: 'Choose PDF',
+      title: 'Choose a PDF file', hint: 'or drag and drop it here', onFiles: function (f) { load(f[0]); }
+    });
+    S.barActs.appendChild(btn('Choose another', 'refresh-cw', 'btn-sm btn-ghost', function () { reset(); }));
+
+    var preview = h('div.dai-doc');
+    var mainHead = h('div.dai-head', null, [h('h3', { text: 'Preview of the Word document' }), h('span.muted.small')]);
+    S.main.appendChild(mainHead);
+    S.main.appendChild(preview);
+
+    var mode = choices([
+      { v: 'text', t: 'Editable text', d: 'Headings, paragraphs, lists, bold and italic. Best for editing and reusing text.' },
+      { v: 'image', t: 'Exact look', d: 'Each page as a picture. Looks identical, but the text cannot be edited.' }
+    ], 'text', function () { syncMode(); renderPreview(); }, 'Conversion mode');
+    var optBreaks = checkbox('Start each PDF page on a new page', true);
+    var optOcr = checkbox('Recognise scanned pages (OCR)', true, null, 'Pages without selectable text are read with OCR');
+    var ocrLang = h('select', { 'aria-label': 'OCR language' });
+    [['eng', 'English'], ['hin', 'Hindi'], ['ben', 'Bengali'], ['eng+hin', 'English + Hindi'], ['eng+ben', 'English + Bengali']].forEach(function (o) { ocrLang.appendChild(h('option', { value: o[0], text: o[1] })); });
+    var ocrSec = sec('Scanned pages', [h('div.dai-checks', null, [optOcr]), h('div', { style: { marginTop: '10px' } }, [field('OCR language', ocrLang)])]);
+    var quality = seg([['150', 'Standard'], ['220', 'High']], '150', null, 'Image quality');
+    var textSec = h('div', null, [sec('Layout', [h('div.dai-checks', null, [optBreaks])]), ocrSec]);
+    var imgSec = sec('Image quality', [quality, hint('High quality gives sharper pages but a larger file.')]);
+    S.opts.appendChild(h('h3', { text: 'Conversion' }));
+    S.opts.appendChild(sec(null, [mode]));
+    S.opts.appendChild(textSec);
+    S.opts.appendChild(imgSec);
+    S.opts.appendChild(notice('', 'Editable mode keeps text, headings, lists and basic formatting. Tables, columns, text boxes and pictures are simplified; use <strong>Exact look</strong> when the appearance matters most.'));
+    var prog = progressBox();
+    var goBtn = btn('Convert to Word', 'file-text', 'btn-primary btn-lg', convert);
+    var resSlot = h('div');
+    S.act.appendChild(prog);
+    S.act.appendChild(goBtn);
+    S.act.appendChild(resSlot);
+
+    function syncMode() {
+      var m = mode.get();
+      textSec.classList.toggle('hidden', m !== 'text');
+      imgSec.classList.toggle('hidden', m !== 'image');
+      ocrSec.classList.toggle('hidden', !(st && st.scanned.length));
+      ocrLang.closest('.field').classList.toggle('hidden', !optOcr.input.checked);
+      resSlot.innerHTML = '';
+    }
+    optOcr.input.addEventListener('change', syncMode);
+
+    function reset() {
+      seq++;
+      if (ocrWorker) { ocrWorker.terminate().catch(function () {}); ocrWorker = null; ocrLangs = ''; }
+      if (st && st.pdf) st.pdf.destroy().catch(function () {});
+      st = null;
+      preview.innerHTML = '';
+      resSlot.innerHTML = '';
+      prog.hide();
+      goBtn.disabled = false;
+      S.msg();
+      S.show('intro');
+    }
+    async function load(file) {
+      reset();
+      var my = seq;
+      S.show('work');
+      S.setFile(file.name, BT.fmtBytes(file.size) + ' · reading…');
+      goBtn.disabled = true;
+      preview.innerHTML = '<div class="dai-page"><span class="spinner"></span> Reading the PDF…</div>';
+      try {
+        var bytes = new Uint8Array(await file.arrayBuffer());
+        var pdf = await BT.openPdfjs(bytes);
+        if (my !== seq) return;
+        st = { name: file.name, base: BT.baseName(file.name), size: file.size, pdf: pdf, pages: [], scanned: [] };
+        for (var n = 1; n <= pdf.numPages; n++) {
+          if (my !== seq) return;
+          prog.set((n - 1) / pdf.numPages, 'Analysing page ' + n + ' of ' + pdf.numPages + '…');
+          var page = await pdf.getPage(n);
+          var model = await pdfTextModel(page, true);
+          var pg = { n: n, model: model, paras: buildParas(model), scanned: model.chars < 15, ocr: null };
+          st.pages.push(pg);
+          if (pg.scanned) st.scanned.push(pg);
+        }
+        st.body = assignHeadings(st.pages);
+        prog.hide();
+        S.setFile(file.name, BT.fmtBytes(file.size) + ' · ' + plural(pdf.numPages, 'page'));
+        if (st.scanned.length === st.pages.length) S.msg('warn', 'This PDF has no selectable text, so it looks scanned. Turn on <strong>OCR</strong> (on by default) to recognise the text, or use <strong>Exact look</strong> to keep the pages as images.');
+        else if (st.scanned.length) S.msg('', esc(plural(st.scanned.length, 'page')) + ' without selectable text (probably scanned): ' + esc(st.scanned.map(function (p) { return p.n; }).join(', ')) + '. They will be read with OCR.');
+        syncMode();
+        renderPreview();
+        goBtn.disabled = false;
+      } catch (e) {
+        if (my !== seq) return;
+        console.error(e);
+        prog.hide();
+        preview.innerHTML = '';
+        S.msg('error', esc(friendlyPdfError(e)));
+      }
+    }
+
+    function previewPara(p) {
+      var el = h('div.dai-blk' + (p.heading ? '.h' + p.heading : '') + (p.list === 'bullet' ? '.li' : p.list === 'num' ? '.num' : '') + (p.align === 'center' ? '.c' : ''));
+      if (p.heading) el.appendChild(h('span.dai-tag', { text: 'H' + p.heading }));
+      var len = 0;
+      p.runs.forEach(function (r) {
+        if (len >= 500) return;
+        var t = r.text;
+        if (len + t.length > 500) t = t.slice(0, 500 - len) + '…';
+        len += t.length;
+        var node = doc.createTextNode(t);
+        if (r.italic) { var i = doc.createElement('i'); i.appendChild(node); node = i; }
+        if (r.bold && !p.heading) { var b = doc.createElement('b'); b.appendChild(node); node = b; }
+        el.appendChild(node);
+      });
+      return el;
+    }
+    function renderPreview() {
+      preview.innerHTML = '';
+      if (!st) return;
+      var m = mode.get(), limit = Math.min(st.pages.length, 30), heads = 0, lists = 0, paras = 0;
+      st.pages.forEach(function (pg) {
+        (pg.ocr ? pg.ocr.paras : pg.paras).forEach(function (p) { paras++; if (p.heading) heads++; if (p.list) lists++; });
+      });
+      mainHead.lastChild.textContent = m === 'text' ? plural(paras, 'paragraph') + ' · ' + plural(heads, 'heading') + ' · ' + plural(lists, 'list item') : plural(st.pages.length, 'page image');
+      for (var i = 0; i < limit; i++) {
+        (function (pg) {
+          var card = h('div.dai-page', null, [h('div.dai-page-h', null, [h('span', { text: 'Page ' + pg.n }), pg.scanned ? h('span.badge.warn', { text: pg.ocr ? 'OCR' : 'Scanned' }) : null])]);
+          if (m === 'image') {
+            var slot = h('div', { style: { minHeight: '120px', display: 'grid', placeItems: 'center' } }, [h('span.spinner')]);
+            card.appendChild(slot);
+            BT.renderPdfThumb(st.pdf, pg.n, 640).then(function (c) { c.className = 'dai-pimg'; c.setAttribute('role', 'img'); c.setAttribute('aria-label', 'Page ' + pg.n); slot.innerHTML = ''; slot.appendChild(c); }).catch(function () { slot.textContent = ''; });
+          } else {
+            var list = pg.ocr ? pg.ocr.paras : pg.paras;
+            if (!list.length) card.appendChild(h('p.dai-empty', { text: pg.scanned ? (optOcr.input.checked ? 'Scanned page — its text will be recognised with OCR when you convert.' : 'Scanned page — no selectable text (it will be an empty page).') : 'No text on this page.' }));
+            list.slice(0, 80).forEach(function (p) { card.appendChild(previewPara(p)); });
+            if (list.length > 80) card.appendChild(h('p.dai-more', { text: '+ ' + plural(list.length - 80, 'more paragraph') + ' on this page' }));
+          }
+          preview.appendChild(card);
+        })(st.pages[i]);
+      }
+      if (st.pages.length > limit) preview.appendChild(h('p.dai-more', { text: 'Preview shows the first ' + limit + ' pages. All ' + st.pages.length + ' pages will be converted.' }));
+    }
+
+    async function runOcr(my) {
+      var langStr = ocrLang.value, todo = st.scanned.filter(function (pg) { return !pg.ocr || pg.ocr.langs !== langStr; });
+      if (!todo.length) return;
+      var cur = 0;
+      if (ocrWorker && ocrLangs !== langStr) { ocrWorker.terminate().catch(function () {}); ocrWorker = null; }
+      if (!ocrWorker) {
+        prog.set(null, 'Loading the OCR engine…');
+        ocrWorker = await BT.createOcrWorker(langStr, function (m) {
+          if (my !== seq) return;
+          if (m.status === 'recognizing text') prog.set((cur + (m.progress || 0)) / todo.length, 'OCR: page ' + todo[cur].n + ' (' + (cur + 1) + ' of ' + todo.length + ')…');
+          else if (OCR_STATUS[m.status]) prog.set(null, OCR_STATUS[m.status]);
+        });
+        ocrLangs = langStr;
+      }
+      for (cur = 0; cur < todo.length; cur++) {
+        if (my !== seq) return;
+        var pg = todo[cur], page = await st.pdf.getPage(pg.n), vp = page.getViewport({ scale: 1 });
+        var scale = Math.min(2.8, 3400 / Math.max(vp.width, vp.height));
+        var r = await BT.renderPdfPage(page, scale);
+        page.cleanup();
+        var res = await ocrWorker.recognize(r.canvas, { rotateAuto: true }, { text: true, blocks: true });
+        r.canvas.width = r.canvas.height = 1;
+        pg.ocr = { langs: langStr, paras: ocrParas(res.data, scale) };
+      }
+      st.body = assignHeadings(st.pages.map(function (pg) { return { paras: pg.ocr ? pg.ocr.paras : pg.paras }; }));
+    }
+
+    function margins() {
+      var xs = [];
+      st.pages.forEach(function (pg) { pg.model.lines.forEach(function (l) { xs.push(l.x0); }); });
+      var first = st.pages[0].model;
+      var left = xs.length ? percentile(xs, 0.05) : 72;
+      return twips(clamp(left, 36, Math.min(108, first.w * 0.2)));
+    }
+    async function buildText(D) {
+      var children = [], first = st.pages[0].model;
+      st.pages.forEach(function (pg, pi) {
+        var list = pg.ocr ? pg.ocr.paras : pg.paras, brk = optBreaks.input.checked && pi > 0;
+        if (!list.length) { children.push(new D.Paragraph({ children: [], pageBreakBefore: brk || undefined })); return; }
+        list.forEach(function (p, i) { children.push(paraDocx(D, p, brk && i === 0)); });
+      });
+      var m = margins(), hd = function (sz) { return { run: { font: FONT.sans, bold: true, color: '111827', size: sz }, paragraph: { spacing: { before: 240, after: 120 }, keepNext: true } }; };
+      return new D.Document({
+        creator: 'BISCS Tools', title: st.base, description: 'Converted from ' + st.name,
+        styles: { default: { document: { run: { font: FONT.sans, size: Math.round(st.body * 2) } }, heading1: hd(Math.round(st.body * 4)), heading2: hd(Math.round(st.body * 3)), heading3: hd(Math.round(st.body * 2.4)) } },
+        numbering: { config: [{ reference: 'dai-bullet', levels: [{ level: 0, format: D.LevelFormat.BULLET, text: '•', alignment: D.AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] }] },
+        sections: [{ properties: { page: { size: { width: twips(first.w), height: twips(first.h) }, margin: { top: m, right: m, bottom: m, left: m } } }, children: children }]
+      });
+    }
+    async function buildImages(D, my) {
+      var dpi = +quality.get(), sections = [];
+      for (var i = 0; i < st.pages.length; i++) {
+        if (my !== seq) return null;
+        var pg = st.pages[i];
+        prog.set(i / st.pages.length, 'Rendering page ' + pg.n + ' of ' + st.pages.length + '…');
+        var page = await st.pdf.getPage(pg.n), vp = page.getViewport({ scale: 1 });
+        var scale = Math.min(dpi / 72, 4200 / Math.max(vp.width, vp.height));
+        var r = await BT.renderPdfPage(page, scale);
+        page.cleanup();
+        var bytes = await blobBytes(await BT.canvasToBlob(r.canvas, 'image/jpeg', 0.88));
+        r.canvas.width = r.canvas.height = 1;
+        sections.push({
+          properties: { page: { size: { width: twips(vp.width), height: twips(vp.height) }, margin: { top: 0, right: 0, bottom: 0, left: 0, header: 0, footer: 0, gutter: 0 } } },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.ImageRun({ type: 'jpg', data: bytes, transformation: { width: Math.floor(vp.width * 4 / 3) - 1, height: Math.floor(vp.height * 4 / 3) - 4 } })] })]
+        });
+      }
+      return new D.Document({ creator: 'BISCS Tools', title: st.base, description: 'Converted from ' + st.name, sections: sections });
+    }
+    function convert() {
+      if (!st) return;
+      var my = seq, m = mode.get();
+      resSlot.innerHTML = '';
+      BT.busy(goBtn, async function () {
+        try {
+          prog.set(null, 'Loading the Word writer…');
+          var D = await BT.loadLib('docx');
+          var document;
+          if (m === 'text') {
+            if (optOcr.input.checked && st.scanned.length) { await runOcr(my); renderPreview(); }
+            if (my !== seq) return;
+            prog.set(0.9, 'Building the document…');
+            document = await buildText(D);
+          } else {
+            document = await buildImages(D, my);
+          }
+          if (!document || my !== seq) return;
+          prog.set(0.96, 'Saving…');
+          var blob = await D.Packer.toBlob(document);
+          if (my !== seq) return;
+          prog.hide();
+          var fname = safeName(st.base) + '.docx';
+          var dl = btn('Download ' + fname, 'download', 'btn-primary', function () { BT.download(blob, fname); });
+          resSlot.appendChild(doneCard('Your Word file is ready', BT.fmtBytes(blob.size) + ' · ' + plural(st.pages.length, 'page') + (m === 'image' ? ' as images' : ' of editable text')));
+          resSlot.appendChild(h('div', { style: { marginTop: '10px' } }, [dl]));
+          dl.style.width = '100%';
+          BT.download(blob, fname);
+        } finally {
+          if (my === seq) prog.hide();
+          if (ocrWorker) { ocrWorker.terminate().catch(function () {}); ocrWorker = null; ocrLangs = ''; }
+        }
+      }, m === 'text' ? 'Converting…' : 'Rendering pages…');
+    }
+    syncMode();
+  });

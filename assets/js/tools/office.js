@@ -35,7 +35,7 @@
     '@media (max-width:719px){.off-bar{position:static}.off-bar .spacer{flex-basis:100%;height:0}.off-bar .btn{flex:1 1 auto}}',
     '.off-cols{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}',
     '.off-cols>*{min-width:0}',
-    '@container (min-width:880px){.off-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);align-items:start}.off-cols .off-side{align-self:stretch}.off-cols .off-sticky{position:sticky;top:140px}.off-cols .off-sticky .off-preview{max-height:calc(100vh - 156px);overflow:auto}}',
+    '@container (min-width:760px){.off-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);align-items:start}.off-cols .off-side{align-self:stretch}.off-cols .off-sticky{position:sticky;top:var(--off-top,140px)}.off-cols .off-sticky .off-preview{max-height:calc(100vh - var(--off-top,140px) - 16px);overflow:auto}}',
     '.off-stack>*+*{margin-top:16px}',
     '.off-stack>.card+.card{margin-top:16px}',
     '.off-grid2{display:grid;gap:0 12px;grid-template-columns:minmax(0,1fr)}',
@@ -461,7 +461,8 @@
   function scaler(wrap, host, paperWidth) {
     function fit() {
       var pw = typeof paperWidth === 'function' ? paperWidth() : paperWidth;
-      var w = wrap.parentNode ? wrap.parentNode.clientWidth : pw;
+      var par = wrap.parentNode, w = pw;
+      if (par) { var cs = getComputedStyle(par); w = par.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0); }
       var sc = Math.min(1, (w || pw) / pw);
       host.style.width = pw + 'px';
       host.style.transform = sc < 1 ? 'scale(' + sc + ')' : '';
@@ -471,6 +472,13 @@
     if (window.ResizeObserver) new ResizeObserver(function () { fit(); }).observe(wrap.parentNode || wrap);
     else window.addEventListener('resize', fit);
     return fit;
+  }
+
+  /** Keep the sticky preview below the sticky toolbar, whatever its height. */
+  function watchBar(wrap, bar) {
+    function upd() { wrap.style.setProperty('--off-top', (72 + bar.offsetHeight + 12) + 'px'); }
+    if (window.ResizeObserver) new ResizeObserver(upd).observe(bar);
+    upd();
   }
 
   /** Print the page with a nicer document title (used as the default PDF file name). */
@@ -780,10 +788,10 @@
     var docxBtn = btn('', 'file-text', 'Word (.docx)');
     var bar = h('div.off-bar.no-print', null, [pdfBtn, docxBtn,
       btn('btn-ghost', 'sparkles', 'Sample', function () { if (!confirm('Replace your resume with the sample data?')) return; D = rsSample(); build(); changed(); }),
-      btn('btn-ghost', 'download', 'Export JSON', function () {
+      btn('btn-ghost', 'download', 'Export', function () {
         BT.download(new Blob([JSON.stringify(D, null, 2)], { type: 'application/json' }), slug(D.personal.name || 'resume') + '-resume.json');
       }),
-      btn('btn-ghost', 'upload', 'Import JSON', function () {
+      btn('btn-ghost', 'upload', 'Import', function () {
         pickFile('.json,application/json', function (f) {
           BT.readFile(f, 'text').then(function (t) {
             var x = JSON.parse(t);
@@ -795,6 +803,7 @@
       btn('btn-ghost', 'trash-2', 'Clear', function () { if (!confirm('Clear every field and start an empty resume?')) return; D = rsBlank(); build(); changed(); }),
       h('span.spacer'), status]);
     wrap.appendChild(bar);
+    watchBar(wrap, bar);
 
     var editor = h('div.off-stack.no-print');
     var sheetHost = h('div.off-scale');
@@ -1240,13 +1249,15 @@
     var status = h('span.off-status', { 'aria-live': 'polite', text: 'Autosaves on this device' });
     var pdfBtn = btn('btn-primary', 'download', 'Download PDF');
     var batchBtn = btn('', 'calendar-range', 'Print several months');
-    wrap.appendChild(h('div.off-bar.no-print', null, [pdfBtn, batchBtn,
+    var bar = h('div.off-bar.no-print', null, [pdfBtn, batchBtn,
       btn('btn-ghost', 'sparkles', 'Sample', function () { if (!confirm('Replace all fields with sample data?')) return; D = slipSample(); build(); changed(); }),
       btn('btn-ghost', 'trash-2', 'Clear employee', function () {
         if (!confirm('Clear the employee details? Company details and pay structure are kept.')) return;
         D.emp = { name: '', id: '', designation: '', department: '', pan: '', uan: '', bank: '', doj: '', location: '' }; build(); changed();
       }),
-      h('span.spacer'), status]));
+      h('span.spacer'), status]);
+    wrap.appendChild(bar);
+    watchBar(wrap, bar);
     var editor = h('div.off-stack.no-print');
     var sheetHost = h('div.off-scale');
     var pwrap = h('div.off-pwrap', null, [sheetHost]);
@@ -1594,9 +1605,11 @@
     var status = h('span.off-status', { 'aria-live': 'polite', text: 'Autosaves on this device' });
     var printBtn = btn('btn-primary', 'download', 'Print / Save as PDF');
     var pdfBtn = btn('', 'file-output', 'Download all as one PDF');
-    wrap.appendChild(h('div.off-bar.no-print', null, [printBtn, pdfBtn,
+    var bar = h('div.off-bar.no-print', null, [printBtn, pdfBtn,
       btn('btn-ghost', 'sparkles', 'Sample', function () { if (!confirm('Replace all fields with sample data?')) return; D = rentSample(); build(); changed(); }),
-      h('span.spacer'), status]));
+      h('span.spacer'), status]);
+    wrap.appendChild(bar);
+    watchBar(wrap, bar);
     var editor = h('div.off-stack.no-print');
     var sheetHost = h('div.off-scale');
     var pwrap = h('div.off-pwrap', null, [sheetHost]);
@@ -2178,7 +2191,9 @@
     var htmlBtn = btn('', 'file-code', 'Download HTML');
     var newBtn = btn('btn-ghost', 'upload', 'Open another', function () { pickFile('.docx,.doc', load); });
     var nameEl = h('span.small.muted', { style: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '260px' } });
-    app.appendChild(h('div.off-bar.no-print', null, [printBtn, htmlBtn, newBtn, h('span.spacer'), nameEl]));
+    var bar = h('div.off-bar.no-print', null, [printBtn, htmlBtn, newBtn, h('span.spacer'), nameEl]);
+    app.appendChild(bar);
+    watchBar(wrap, bar);
     var paperSeg = seg([['a4', 'A4'], ['letter', 'Letter']], O.paper, function (v) { O.paper = v; opts(); }, 'Paper size');
     var marginSel = select([['normal', 'Normal (2.54 cm)'], ['moderate', 'Moderate (1.9 cm)'], ['narrow', 'Narrow (1.27 cm)']], O.margin);
     var fontSel = select([['calibri', 'Calibri style (sans)'], ['serif', 'Cambria style (serif)'], ['times', 'Times New Roman'], ['arial', 'Arial']], O.font);
