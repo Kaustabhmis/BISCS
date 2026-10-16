@@ -75,8 +75,8 @@ function miniLink(t, base) {
 // ------------------------------------------------------------------ layout
 function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '' }) {
   const nav = [
-    ['pdf', 'PDF Tools'], ['finance', 'Finance'], ['calculators', 'Calculators'],
-    ['text', 'Text'], ['image', 'Image'], ['ai', 'AI Photo'], ['seo', 'SEO']
+    ['pdf', 'PDF Tools'], ['finance', 'Finance'],
+    ['ai', 'AI Photo'], ['video', 'Video'], ['office', 'Office'], ['design', 'Design'], ['seo', 'SEO']
   ];
   const navLinks = nav.map(([id, label]) =>
     `<a href="${base}category/${id}/"${active === id ? ' aria-current="page"' : ''}>${label}</a>`).join('');
@@ -179,7 +179,7 @@ function buildHome() {
   <div class="hero-tiles" aria-hidden="true">${CATEGORIES.map((c, i) => `<span class="ht ht${i}" style="--c:${c.color}">${icon(c.icon)}</span>`).join('')}</div>
   <div class="container">
     <h1>Every tool you need, <span class="grad">in one place.</span></h1>
-    <p class="lead">${TOOLS.length} free tools for PDFs, AI photo editing, GST and tax, SEO, images, text and code. They're fast and private: your files are processed on your device and never uploaded.</p>
+    <p class="lead">${TOOLS.length} free tools for PDFs, AI photo editing, video, GST and tax, office work, design and SEO. They're fast and private: your files are processed on your device and never uploaded.</p>
     <form class="hero-search" role="search" action="#all-tools">
       ${icon('search')}
       <input type="search" data-filter-input placeholder="Try “merge pdf”, “emi”, “compress image”…" aria-label="Search tools" autocomplete="off">
@@ -324,13 +324,16 @@ function buildCategory(c) {
 const HOWTO = {
   pdf: (t) => [`Click <strong>Choose PDF</strong> or drag your file into the box.`, `Adjust the options for ${esc(t.name.toLowerCase())}.`, `Press the main button and your new PDF downloads instantly.`],
   image: (t) => [`Choose an image (JPG, PNG or WebP) or drop it in.`, `Adjust the settings and check the live preview.`, `Download the result. The image never leaves your device.`],
+  video: (t) => [`Choose a video or audio file, or start recording.`, `The first time, the video engine downloads to your browser (one time only). Choose your settings and press the main button.`, `Download the result. Your files are processed on your own device and never uploaded.`],
+  design: (t) => [`Add your photos or start from a template in ${esc(t.name)}.`, `Customise layout, colours, text and effects with the live preview.`, `Download a high-resolution PNG or JPG. Nothing is uploaded.`],
+  office: (t) => [`Fill in your details or open your file in ${esc(t.name)}.`, `Check the live preview as you type. Your draft is saved in your browser.`, `Download or print it as a PDF. Your data never leaves your device.`],
   ai: (t) => [`Choose a photo (JPG, PNG or WebP), drop it in, or paste it with Ctrl+V.`, `The first time, the AI model downloads to your browser (one time only). ${esc(t.name)} then runs on your own device.`, `Fine-tune the result with the controls, compare before and after, and download it. Your photo is never uploaded.`],
   seo: (t) => [`Enter your page details or paste your content into ${esc(t.name)}.`, `Check the live preview, warnings and suggestions as you type.`, `Copy or download the result and add it to your website.`],
   default: (t) => [`Enter your values or paste your text into ${esc(t.name)}.`, `Results update instantly as you type.`, `Copy or download the result with one click.`]
 };
 const FAQ = (t, c) => [
   [`Is ${t.name} free?`, `Yes. ${t.name} is completely free with no sign-up, no watermarks and no usage limits.`],
-  [`Are my files or data uploaded?`, `No. ${t.name} runs entirely in your web browser. Your ${c.id === 'pdf' || c.id === 'image' || c.id === 'ai' ? 'files are' : 'data is'} processed on your own device and never sent to our servers.`],
+  [`Are my files or data uploaded?`, `No. ${t.name} runs entirely in your web browser. Your ${['pdf', 'image', 'ai', 'video', 'design', 'office'].includes(c.id) ? 'files are' : 'data is'} processed on your own device and never sent to our servers.`],
   [`Does it work on mobile?`, `Yes. ${SITE.name} works in any modern browser on Android, iPhone, Windows, Mac and Linux.`]
 ];
 

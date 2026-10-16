@@ -275,6 +275,101 @@
     return libPromises[name];
   };
 
+  // ------------------------------------------------- More vendored libraries
+  LIBS.tesseract = { src: 'ocr/tesseract.min.js', global: 'Tesseract' };
+  LIBS.mammoth = { src: 'office/mammoth.browser.min.js', global: 'mammoth' };
+  LIBS.docx = { src: 'office/docx.iife.js', global: 'docx' };
+  LIBS.exceljs = { src: 'office/exceljs.min.js', global: 'ExcelJS' };
+  BT.vendor = BASE + 'assets/vendor/';
+
+  /**
+   * Fetch one or more files (e.g. the parts of a split binary) and return
+   * them joined as a Uint8Array, reporting progress via onProgress(0..1).
+   */
+  BT.fetchParts = function (urls, onProgress) {
+    var loaded = urls.map(function () { return 0; }), totals = urls.map(function () { return 0; });
+    function report() {
+      if (!onProgress) return;
+      var t = totals.reduce(function (a, b) { return a + b; }, 0);
+      if (t) onProgress(Math.min(1, loaded.reduce(function (a, b) { return a + b; }, 0) / t));
+    }
+    return Promise.all(urls.map(function (url, i) {
+      return fetch(url).then(function (res) {
+        if (!res.ok) throw new Error('Download failed (' + res.status + ')');
+        totals[i] = +res.headers.get('Content-Length') || 0;
+        if (!res.body || !res.body.getReader) return res.arrayBuffer().then(function (b) { loaded[i] = totals[i] = b.byteLength; report(); return new Uint8Array(b); });
+        var reader = res.body.getReader(), chunks = [];
+        return (function pump() {
+          return reader.read().then(function (r) {
+            if (r.done) {
+              var size = chunks.reduce(function (a, c) { return a + c.length; }, 0), out = new Uint8Array(size), o = 0;
+              chunks.forEach(function (c) { out.set(c, o); o += c.length; });
+              if (!totals[i]) totals[i] = size;
+              loaded[i] = size; report();
+              return out;
+            }
+            chunks.push(r.value); loaded[i] += r.value.length; report();
+            return pump();
+          });
+        })();
+      });
+    })).then(function (arrs) {
+      if (arrs.length === 1) return arrs[0];
+      var size = arrs.reduce(function (a, c) { return a + c.length; }, 0), out = new Uint8Array(size), o = 0;
+      arrs.forEach(function (c) { out.set(c, o); o += c.length; });
+      return out;
+    });
+  };
+
+  /**
+   * Load ffmpeg.wasm (single-threaded core, self-hosted). Resolves to a loaded
+   * FFmpeg instance; onProgress(0..1) reports the one-time engine download.
+   */
+  var ffPromise;
+  BT.loadFFmpeg = function (onProgress) {
+    if (ffPromise) return ffPromise;
+    var dir = BT.vendor + 'ffmpeg/';
+    ffPromise = Promise.all([
+      import(dir + 'esm/index.js'),
+      BT.fetchParts([0, 1, 2, 3].map(function (i) { return dir + 'ffmpeg-core.wasm.part' + i; }), onProgress),
+      fetch(dir + 'ffmpeg-core.js').then(function (res) { if (!res.ok) throw new Error('Download failed'); return res.text(); })
+    ]).then(function (r) {
+      var ff = new r[0].FFmpeg();
+      // The ESM worker imports the core with import(), so blob URLs work.
+      var coreURL = URL.createObjectURL(new Blob([r[2]], { type: 'text/javascript' }));
+      var wasmURL = URL.createObjectURL(new Blob([r[1]], { type: 'application/wasm' }));
+      return ff.load({ coreURL: coreURL, wasmURL: wasmURL }).then(function () { return ff; });
+    }).catch(function (e) { ffPromise = null; throw e; });
+    return ffPromise;
+  };
+
+  /**
+   * Cancel a running ffmpeg job: terminates the instance so the next
+   * BT.loadFFmpeg() call starts a fresh one (the 32 MB engine is then
+   * re-read from the browser cache, not re-downloaded).
+   */
+  BT.resetFFmpeg = function () {
+    var p = ffPromise;
+    ffPromise = null;
+    if (p) p.then(function (ff) { try { ff.terminate(); } catch (e) { /* already gone */ } }, function () {});
+  };
+
+  /** Create a tesseract.js worker for the given languages ('eng', 'eng+hin'…). */
+  BT.createOcrWorker = function (langs, logger) {
+    var dir = BT.vendor + 'ocr/';
+    return BT.loadLib('tesseract').then(function (T) {
+      var opts = {
+        workerPath: dir + 'worker.min.js',
+        corePath: dir + 'core/',
+        langPath: dir + 'lang',
+        gzip: true,
+        workerBlobURL: false
+      };
+      if (typeof logger === 'function') opts.logger = logger;
+      return T.createWorker(langs, 1, opts);
+    });
+  };
+
   // ----------------------------------------------------------- AI helpers
   var AI = BASE + 'assets/vendor/ai/';
   LIBS.tfjs = { src: 'ai/upscaler/tf.min.js', global: 'tf' };

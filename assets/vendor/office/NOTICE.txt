@@ -1,0 +1,3 @@
+mammoth 1.9.0: BSD 2-Clause License. https://github.com/mwilliamson/mammoth.js
+docx 9.1.1: MIT License. https://github.com/dolanmiu/docx
+ExcelJS 4.4.0: MIT License. https://github.com/exceljs/exceljs

@@ -1,0 +1,5 @@
+ffmpeg.wasm (@ffmpeg/ffmpeg 0.12.15, @ffmpeg/util 0.12.2): MIT License.
+@ffmpeg/core 0.12.10 (ffmpeg-core.js, ffmpeg-core.wasm): FFmpeg compiled to WebAssembly,
+licensed under the GNU General Public License v2.0 or later. It is distributed unmodified.
+Source code: https://github.com/ffmpegwasm/ffmpeg.wasm (tag v0.12.10) and https://ffmpeg.org/download.html
+ffmpeg-core.wasm is stored in four parts (.part0-.part3) that are concatenated byte-for-byte in the browser.

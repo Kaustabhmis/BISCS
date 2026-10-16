@@ -157,6 +157,9 @@ p { margin: 0 0 1em; }
 .ht6 { left: 86%; top: 18%; --r: 8deg; animation-delay: -6s; width: 72px; height: 72px; }
 .ht7 { left: 87%; top: 58%; --r: -10deg; animation-delay: -2s; width: 76px; height: 76px; }
 .ht8 { left: 47%; top: 8%; --r: 14deg; animation-delay: -3.5s; width: 64px; height: 64px; }
+.ht9 { left: 93%; top: 40%; --r: -6deg; animation-delay: -4.5s; width: 60px; height: 60px; }
+.ht10 { left: 50%; top: 78%; --r: 9deg; animation-delay: -0.5s; width: 60px; height: 60px; }
+.ht11 { left: 82%; top: 80%; --r: -12deg; animation-delay: -5.5s; width: 64px; height: 64px; }
 @keyframes htFloat {
   0%, 100% { transform: rotateX(18deg) rotateY(var(--r)) translateY(0); }
   50% { transform: rotateX(4deg) rotateY(calc(var(--r) * -0.6)) translateY(-14px); }
@@ -169,6 +172,7 @@ p { margin: 0 0 1em; }
   .ht6 { left: 66%; top: auto; bottom: 36px; width: 56px; height: 56px; }
   .ht7 { left: 84%; top: auto; bottom: 70px; width: 52px; height: 52px; }
   .ht8 { left: 2%; top: auto; bottom: 64px; width: 48px; height: 48px; }
+  .ht9, .ht10, .ht11 { display: none; }
 }
 @media (min-width: 760px) and (max-width: 1099px) { .ht { width: 72px; height: 72px; } .ht svg { width: 32px; height: 32px; } }
 .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;

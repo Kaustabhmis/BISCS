@@ -1,0 +1,2 @@
+tesseract.js 6.0.1 and tesseract.js-core 6.0.0: Apache License 2.0. https://github.com/naptha/tesseract.js
+Language data (eng, hin, ben; tessdata_best integerized, from @tesseract.js-data 1.0.0): Apache License 2.0 (Tesseract OCR) / MIT packaging.

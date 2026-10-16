@@ -26,7 +26,13 @@
     { id: 'ai', name: 'AI Photo Tools', short: 'AI Photo', color: '#6e56cf', icon: 'brain-circuit',
       desc: 'Remove backgrounds, upscale, blur faces and more with AI that runs on your device.' },
     { id: 'seo', name: 'SEO Tools', short: 'SEO', color: '#c2410c', icon: 'search-check',
-      desc: 'Meta tags, schema markup, sitemaps, previews and keyword tools to grow your traffic.' }
+      desc: 'Meta tags, schema markup, sitemaps, previews and keyword tools to grow your traffic.' },
+    { id: 'video', name: 'Video & Audio', short: 'Video', color: '#e5484d', icon: 'clapperboard',
+      desc: 'Record your screen, compress, trim and convert videos, make GIFs and record audio.' },
+    { id: 'office', name: 'Office & Business', short: 'Office', color: '#0e7490', icon: 'briefcase-business',
+      desc: 'Resumes, salary slips, rent receipts, Excel and Word converters for daily office work.' },
+    { id: 'design', name: 'Design Studio', short: 'Design', color: '#be185d', icon: 'palette',
+      desc: 'Collages, photo art effects, social media posts, logos and device mockups.' }
   ];
 
   var TOOLS = [
@@ -394,7 +400,89 @@
       kw: 'seo audit html headings alt text canonical checker' },
     { id: 'backlink-outreach-helper', name: 'Backlink & Listing Helper', cat: 'seo', icon: 'megaphone',
       desc: 'Checklist of genuine places to list your business, plus outreach templates.',
-      kw: 'backlinks business listing directory outreach local seo india' }
+      kw: 'backlinks business listing directory outreach local seo india' },
+
+    // -------------------------------------------------------- Video & Audio (6)
+    { id: 'screen-recorder', name: 'Screen Recorder', cat: 'video', icon: 'monitor-play', file: 'video',
+      desc: 'Record your screen, a window or a tab, with webcam and microphone. No watermark.',
+      kw: 'screen record capture webcam tutorial no watermark' },
+    { id: 'video-compressor', name: 'Video Compressor', cat: 'video', icon: 'file-video-2', file: 'video',
+      desc: 'Shrink videos for WhatsApp, email and upload limits.',
+      kw: 'compress video reduce size mp4 whatsapp' },
+    { id: 'video-trimmer', name: 'Video Trimmer', cat: 'video', icon: 'scissors-line-dashed', file: 'video',
+      desc: 'Cut the start and end of a video, or extract a clip.',
+      kw: 'trim cut video clip shorten' },
+    { id: 'video-converter', name: 'Video Converter & MP3', cat: 'video', icon: 'film', file: 'video',
+      desc: 'Convert between MP4, WebM and MOV, or extract the audio as MP3.',
+      kw: 'convert video mp4 webm mov mp3 extract audio' },
+    { id: 'video-to-gif', name: 'Video to GIF', cat: 'video', icon: 'clapperboard', file: 'video',
+      desc: 'Turn a video clip into an animated GIF.',
+      kw: 'gif maker video to gif animated' },
+    { id: 'audio-recorder', name: 'Audio Recorder & Converter', cat: 'video', icon: 'mic', file: 'video',
+      desc: 'Record your voice, trim it, and convert audio to MP3, WAV or M4A.',
+      kw: 'voice recorder audio converter mp3 wav record mic' },
+
+    // ---------------------------------------------------- Office & Business (5)
+    { id: 'resume-builder', name: 'Resume Builder', cat: 'office', icon: 'file-user', file: 'office',
+      desc: 'Create a professional resume from templates and download it as PDF.',
+      kw: 'resume cv builder maker template pdf' },
+    { id: 'salary-slip-generator', name: 'Salary Slip Generator', cat: 'office', icon: 'banknote', file: 'office',
+      desc: 'Payslips with PF, ESI, professional tax and TDS, ready to print as PDF.',
+      kw: 'salary slip payslip pf esi professional tax' },
+    { id: 'rent-receipt-generator', name: 'Rent Receipt Generator', cat: 'office', icon: 'receipt-text', file: 'office',
+      desc: 'Monthly rent receipts for HRA claims, with landlord PAN and revenue stamp space.',
+      kw: 'rent receipt hra landlord pan' },
+    { id: 'excel-csv-converter', name: 'Excel & CSV Converter', cat: 'office', icon: 'sheet', file: 'office',
+      desc: 'View Excel and CSV files and convert between XLSX, CSV and JSON.',
+      kw: 'excel xlsx csv json converter viewer spreadsheet' },
+    { id: 'word-to-pdf', name: 'Word to PDF', cat: 'office', icon: 'file-type-2', file: 'office',
+      desc: 'Convert DOCX documents to PDF in your browser.',
+      kw: 'word to pdf docx convert' },
+
+    // ---------------------------------------------------------- GST & tax (4)
+    { id: 'gstin-validator', name: 'GSTIN Validator', cat: 'finance', icon: 'badge-check', file: 'gst',
+      desc: 'Check a GST number\u2019s format and checksum, and see its state and PAN.',
+      kw: 'gstin validate gst number check verify' },
+    { id: 'pan-ifsc-validator', name: 'PAN & IFSC Checker', cat: 'finance', icon: 'id-card', file: 'gst',
+      desc: 'Validate PAN and IFSC code formats and identify the holder type and bank.',
+      kw: 'pan card validate ifsc code bank check' },
+    { id: 'hsn-code-finder', name: 'HSN & SAC Code Finder', cat: 'finance', icon: 'book-open-text', file: 'gst',
+      desc: 'Search HSN chapters and SAC service codes for GST invoices.',
+      kw: 'hsn code sac code gst finder search' },
+    { id: 'gst-due-date-calendar', name: 'GST Due Date Calendar', cat: 'finance', icon: 'calendar-clock', file: 'gst',
+      desc: 'GSTR-1, GSTR-3B, CMP-08 and annual return due dates, with calendar reminders.',
+      kw: 'gst due dates gstr1 gstr3b calendar reminder' },
+
+    // ------------------------------------------------------ Documents & AI (4)
+    { id: 'pdf-to-word', name: 'PDF to Word', cat: 'pdf', icon: 'file-text', file: 'docai',
+      desc: 'Convert PDF text and basic layout into an editable Word (DOCX) file.',
+      kw: 'pdf to word docx convert editable' },
+    { id: 'scan-to-pdf', name: 'Scan to PDF', cat: 'pdf', icon: 'file-scan', file: 'docai',
+      desc: 'Use your camera to scan documents, auto-crop and enhance them, and save a PDF.',
+      kw: 'scanner camscanner scan document camera pdf' },
+    { id: 'image-to-text', name: 'Image to Text (OCR)', cat: 'ai', icon: 'scan-text', file: 'docai',
+      desc: 'Extract text from photos, screenshots and scanned PDFs in English, Hindi and Bengali.',
+      kw: 'ocr image to text extract text scan hindi bengali' },
+    { id: 'object-eraser', name: 'Smart Object Eraser', cat: 'ai', icon: 'eraser', file: 'docai',
+      desc: 'Brush over unwanted objects, text or blemishes and fill them in naturally.',
+      kw: 'remove object erase people text watermark blemish content aware fill' },
+
+    // -------------------------------------------------------- Design Studio (5)
+    { id: 'collage-maker', name: 'Collage Maker', cat: 'design', icon: 'layout-dashboard', file: 'design',
+      desc: 'Combine photos into beautiful grid and freestyle collages.',
+      kw: 'photo collage grid layout combine pictures' },
+    { id: 'photo-art-effects', name: 'Photo to Sketch & Art', cat: 'design', icon: 'brush', file: 'design',
+      desc: 'Turn photos into pencil sketches, cartoons, oil paintings and more.',
+      kw: 'photo to sketch cartoon oil painting art filter' },
+    { id: 'social-post-maker', name: 'Instagram Grid & Story Maker', cat: 'design', icon: 'grid-3x3', file: 'design',
+      desc: 'Split photos into grid posts and design stories and posts in the right sizes.',
+      kw: 'instagram grid split story post maker social media size' },
+    { id: 'logo-maker', name: 'Logo Maker', cat: 'design', icon: 'pen-line', file: 'design',
+      desc: 'Design a simple logo with icons, fonts and colours, and download SVG or PNG.',
+      kw: 'logo maker design brand icon svg png' },
+    { id: 'mockup-generator', name: 'Device Mockup Generator', cat: 'design', icon: 'monitor-smartphone', file: 'design',
+      desc: 'Place your screenshot inside phone, laptop and browser frames.',
+      kw: 'mockup device frame phone laptop screenshot browser' }
   ];
 
   var api = { CATEGORIES: CATEGORIES, TOOLS: TOOLS };
