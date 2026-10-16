@@ -97,7 +97,7 @@
     '.gst-tree .gst-chs button{font:inherit;text-align:left;border:0;background:none;color:var(--text-2);font-size:.84rem;padding:5px 8px;border-radius:8px;cursor:pointer;display:flex;gap:8px}',
     '.gst-tree .gst-chs button:hover,.gst-tree .gst-chs button[aria-current=true]{background:var(--brand-soft);color:var(--brand)}',
     '.gst-tree .gst-chs button b{font-family:var(--mono);flex:none}',
-    '.gst-tree .gst-chs button.res{opacity:.6}',
+    '.gst-tree .gst-chs button.res{font-style:italic}',
     // Calendar
     '.gst-next{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}',
     '.gst-next .gst-nd{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}',
@@ -114,7 +114,7 @@
     '.gst-ev .gst-f{font-weight:750;display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
     '.gst-ev .gst-f i{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}',
     '.gst-ev .gst-p{font-size:.84rem;color:var(--text-2);margin-top:1px}',
-    '.gst-ev.past{opacity:.66}',
+    '.gst-ev.past{opacity:1;filter:saturate(.4)}',
     '.gst-ev.past .gst-dt{background:var(--danger-soft);border-color:transparent}',
     '.gst-ev.soon{border-color:color-mix(in srgb,var(--warn) 55%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 14%,transparent)}',
     '.gst-ev.soon .gst-dt{background:var(--warn-soft);border-color:transparent}',
@@ -556,7 +556,7 @@
         '<div id="pi-micr-out" aria-live="polite" class="gst-wrap"></div>' +
         '<p class="gst-note">MICR codes are printed at the bottom of cheques: 3-digit city code (usually matching the first three PIN code digits), 3-digit bank code and 3-digit branch code.</p>' +
       '</div></div>' +
-      card('Banks recognised offline', '<div class="field"><label for="pi-bsearch" class="sr-only">Filter banks</label><input type="search" id="pi-bsearch" placeholder="Filter by bank name or code"></div><div class="gst-banks" id="pi-banks"></div>',
+      card('Banks recognised offline', '<div class="field"><label for="pi-bsearch" class="sr-only">Filter banks</label><input type="search" id="pi-bsearch" placeholder="Filter by bank name or code"></div><div class="gst-banks" id="pi-banks" tabindex="0" role="region" aria-label="Recognised banks"></div>',
         '<span class="badge">' + bankList.length + ' bank codes</span>') +
     '</div>';
 
