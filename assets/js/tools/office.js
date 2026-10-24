@@ -35,6 +35,7 @@
     '@media (max-width:719px){.off-bar{position:static}.off-bar .spacer{flex-basis:100%;height:0}.off-bar .btn{flex:1 1 auto}}',
     '.off-cols{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}',
     '.off-cols>*{min-width:0}',
+    '@container (min-width:760px){.off-cols.doc-first{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}}',
     '@container (min-width:760px){.off-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);align-items:start}.off-cols .off-side{align-self:stretch}.off-cols .off-sticky{position:sticky;top:var(--off-top,140px)}.off-cols .off-sticky .off-preview{max-height:calc(100vh - var(--off-top,140px) - 16px);overflow:auto}}',
     '.off-stack>*+*{margin-top:16px}',
     '.off-stack>.card+.card{margin-top:16px}',
@@ -94,7 +95,7 @@
     '.off-sheet{position:relative;background:#fff;color:#1f2937;box-shadow:0 18px 50px -20px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.05);box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;overflow-wrap:break-word}',
     '.off-sheet *{box-sizing:border-box}',
     '.off-sheet+.off-sheet{margin-top:24px}',
-    '.off-pb{position:absolute;left:0;right:0;border-top:1.5px dashed #94a3b8;pointer-events:none}',
+    '.off-pb{position:absolute;left:0;right:0;border-top:1.5px dashed #64748b;pointer-events:none}',
     '.off-pb span{position:absolute;right:8px;top:-10px;font:600 10px/1 system-ui,sans-serif;color:#64748b;background:#fff;padding:2px 6px;border-radius:99px;border:1px solid #cbd5e1}',
     // ATS / checklist
     '.off-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}',
@@ -131,7 +132,7 @@
     '.off-rs-sheet .r-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}',
     '.off-rs-sheet .r-role{font-weight:700;color:#111827;font-size:13.5px}',
     '.off-rs-sheet .r-org{color:#374151;font-weight:550}',
-    '.off-rs-sheet .r-date{font-size:11.5px;color:#6b7280;white-space:nowrap;font-variant-numeric:tabular-nums}',
+    '.off-rs-sheet .r-date{font-size:11.5px;color:#4b5563;white-space:nowrap;font-variant-numeric:tabular-nums}',
     '.off-rs-sheet ul{margin:5px 0 0;padding-left:17px}',
     '.off-rs-sheet li{margin:2px 0;padding-left:2px}',
     '.off-rs-sheet li::marker{color:var(--acc)}',
@@ -166,10 +167,10 @@
     // minimal
     '.off-rs-sheet.t-minimal .r-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;padding-bottom:20px}',
     '.off-rs-sheet.t-minimal h1{font-weight:300;font-size:34px;letter-spacing:-.02em}',
-    '.off-rs-sheet.t-minimal .r-title{color:#6b7280;font-weight:500}',
+    '.off-rs-sheet.t-minimal .r-title{color:#4b5563;font-weight:500}',
     '.off-rs-sheet.t-minimal .r-head .r-contact{flex-direction:column;align-items:flex-end;gap:2px;margin:0;text-align:right}',
     '.off-rs-sheet.t-minimal .r-sec{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;margin-top:0;padding:14px 0;border-top:1px solid #e5e7eb}',
-    '.off-rs-sheet.t-minimal .r-sec>h2{border:0;padding:2px 0 0;color:#6b7280;letter-spacing:.12em;font-size:10.5px}',
+    '.off-rs-sheet.t-minimal .r-sec>h2{border:0;padding:2px 0 0;color:#4b5563;letter-spacing:.12em;font-size:10.5px}',
     '.off-rs-sheet.t-minimal .r-chip{background:#f3f4f6;border-color:#f3f4f6}',
     '.off-rs-sheet.t-minimal .r-role{color:var(--acc)}',
     // creative
@@ -192,16 +193,16 @@
     '.off-ss-sheet .top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:16px;border-bottom:3px solid var(--acc)}',
     '.off-ss-sheet .co{display:flex;gap:14px;align-items:center;max-width:62%}',
     '.off-ss-sheet .co img{max-width:110px;max-height:64px;object-fit:contain}',
-    '.off-ss-sheet .co h2{margin:0 0 3px;font-size:19px;color:#0f172a;letter-spacing:-.01em}',
-    '.off-ss-sheet .pre{white-space:pre-line}.off-ss-sheet .mut{color:#6b7280}',
-    '.off-ss-sheet .ttl{text-align:right}.off-ss-sheet .ttl h1{margin:0;font-size:21px;letter-spacing:.06em;color:var(--acc);font-weight:800}',
+    '.off-ss-sheet .co .cn{margin:0 0 3px;font-size:19px;font-weight:700;color:#0f172a;letter-spacing:-.01em}',
+    '.off-ss-sheet .pre{white-space:pre-line}.off-ss-sheet .mut{color:#4b5563}',
+    '.off-ss-sheet .ttl{text-align:right}.off-ss-sheet .ttl .pt{margin:0;font-size:21px;letter-spacing:.06em;color:var(--acc);font-weight:800}',
     '.off-ss-sheet .ttl div{margin-top:4px;font-weight:600}',
     '.off-ss-sheet .emp{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;margin:18px 0 0;padding:14px 16px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}',
     '.off-ss-sheet .emp div{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed #e5e7eb}',
-    '.off-ss-sheet .emp div span:first-child{color:#6b7280}.off-ss-sheet .emp div span:last-child{font-weight:600;text-align:right}',
+    '.off-ss-sheet .emp div span:first-child{color:#4b5563}.off-ss-sheet .emp div span:last-child{font-weight:600;text-align:right}',
     '.off-ss-sheet .att{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}',
     '.off-ss-sheet .att div{border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px}',
-    '.off-ss-sheet .att b{display:block;font-size:15px;color:#0f172a}.off-ss-sheet .att span{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280}',
+    '.off-ss-sheet .att b{display:block;font-size:15px;color:#0f172a}.off-ss-sheet .att span{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#4b5563}',
     '.off-ss-sheet .ed{display:grid;grid-template-columns:1fr 1fr;border:1px solid #d1d5db;border-radius:8px;overflow:hidden}',
     '.off-ss-sheet .ed>div+div{border-left:1px solid #d1d5db}',
     '.off-ss-sheet table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}',
@@ -212,10 +213,10 @@
     '.off-ss-sheet .net{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:16px;padding:14px 18px;border-radius:8px;background:color-mix(in srgb,var(--acc) 9%,#fff);border:1px solid color-mix(in srgb,var(--acc) 30%,#fff)}',
     '.off-ss-sheet .net b{font-size:22px;color:#0f172a;white-space:nowrap}',
     '.off-ss-sheet .net .w{font-weight:600;color:#374151}',
-    '.off-ss-sheet h4{margin:18px 0 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280}',
+    '.off-ss-sheet h4,.off-ss-sheet .er-h{font-weight:700;margin:18px 0 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#4b5563}',
     '.off-ss-sheet .er{border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}',
     '.off-ss-sheet .er th{background:#f3f4f6;color:#374151}',
-    '.off-ss-sheet .foot{margin-top:28px;padding-top:10px;border-top:1px solid #e5e7eb;text-align:center;font-size:11px;color:#6b7280}',
+    '.off-ss-sheet .foot{margin-top:28px;padding-top:10px;border-top:1px solid #e5e7eb;text-align:center;font-size:11px;color:#4b5563}',
     '.off-ss-sheet .sig{display:flex;justify-content:space-between;margin-top:46px;font-size:11.5px;color:#4b5563}',
     '.off-ss-sheet .sig span{border-top:1px solid #9ca3af;padding-top:4px;min-width:180px;text-align:center}',
 
@@ -223,27 +224,27 @@
     '.off-rr-page{width:794px;height:1123px;padding:38px 44px;display:flex;flex-direction:column;gap:0}',
     '.off-rr-rc{flex:1;display:flex;flex-direction:column;border:1.5px solid #cbd5e1;border-radius:10px;padding:26px 30px;font:13px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1f2937;position:relative;overflow:hidden;--acc:#0e7490}',
     '.off-rr-rc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--acc)}',
-    '.off-rr-cut{height:44px;display:flex;align-items:center;gap:8px;color:#94a3b8;font:600 10px/1 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}',
+    '.off-rr-cut{height:44px;display:flex;align-items:center;gap:8px;color:#64748b;font:600 10px/1 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}',
     '.off-rr-cut::before,.off-rr-cut::after{content:"";flex:1;border-top:1.5px dashed #cbd5e1}',
     '.off-rr-rc .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:12px;border-bottom:1px solid #e5e7eb}',
-    '.off-rr-rc h2{margin:0;font-size:20px;letter-spacing:.14em;color:var(--acc);font-weight:800}',
-    '.off-rr-rc .no{text-align:right;font-size:12px;color:#6b7280}.off-rr-rc .no b{color:#111827;font-size:13px}',
+    '.off-rr-rc .rt{margin:0;font-size:20px;letter-spacing:.14em;color:var(--acc);font-weight:800}',
+    '.off-rr-rc .no{text-align:right;font-size:12px;color:#4b5563}.off-rr-rc .no b{color:#111827;font-size:13px}',
     '.off-rr-rc .bd{margin:16px 0 0;font-size:14px;line-height:1.85}',
     '.off-rr-rc .bd b{color:#0f172a}',
     '.off-rr-rc .amt{display:inline-block;padding:1px 10px;border-radius:6px;background:color-mix(in srgb,var(--acc) 10%,#fff);border:1px solid color-mix(in srgb,var(--acc) 25%,#fff);font-weight:800;color:#0f172a}',
     '.off-rr-rc .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding-top:14px}',
     '.off-rr-rc .ll{font-size:12.5px;color:#374151}.off-rr-rc .ll b{color:#111827}',
     '.off-rr-rc .sg{display:flex;align-items:flex-end;gap:16px}',
-    '.off-rr-rc .stamp{width:76px;height:84px;border:1.5px dashed #94a3b8;border-radius:6px;display:grid;place-items:center;text-align:center;font-size:9.5px;color:#94a3b8;line-height:1.3;text-transform:uppercase;letter-spacing:.06em}',
-    '.off-rr-rc .sl{min-width:170px;border-top:1px solid #6b7280;padding-top:5px;text-align:center;font-size:11.5px;color:#4b5563}',
+    '.off-rr-rc .stamp{width:76px;height:84px;border:1.5px dashed #64748b;border-radius:6px;display:grid;place-items:center;text-align:center;font-size:9.5px;color:#64748b;line-height:1.3;text-transform:uppercase;letter-spacing:.06em}',
+    '.off-rr-rc .sl{min-width:170px;border-top:1px solid #4b5563;padding-top:5px;text-align:center;font-size:11.5px;color:#4b5563}',
 
     // --------------------------------------------------------- excel viewer
     '.off-xc-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px}',
     '.off-xc-tabs button{flex:none;font:inherit;font-size:.86rem;font-weight:600;padding:7px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center}',
     '.off-xc-tabs button[aria-selected="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}',
     '.off-xc-tabs button .c{font-size:.72rem;opacity:.7}',
-    '.off-xc-grid{height:min(560px,64vh);overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);position:relative;overscroll-behavior:contain}',
-    '.off-xc-grid table{border-collapse:separate;border-spacing:0;table-layout:fixed;font-size:.86rem;font-variant-numeric:tabular-nums}',
+    '.off-xc-grid{max-height:min(560px,64vh);overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);position:relative;overscroll-behavior:contain}',
+    '.off-xc-grid table{min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;font-size:.86rem;font-variant-numeric:tabular-nums}',
     '.off-xc-grid th,.off-xc-grid td{height:34px;padding:0 10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}',
     '.off-xc-grid thead th{position:sticky;top:0;z-index:2;background:var(--surface-2);font-weight:650;color:var(--text);cursor:pointer;user-select:none}',
     '.off-xc-grid thead th:hover{background:var(--bg-2)}',
@@ -474,6 +475,17 @@
     return fit;
   }
 
+  /** Height of the real content inside a paper sheet (ignores min-height), minus its top padding. */
+  function contentHeight(sheet, padTop) {
+    var m = 0;
+    Array.prototype.forEach.call(sheet.children, function (c) {
+      if (c.classList.contains('off-pb')) return;
+      var mb = parseFloat(getComputedStyle(c).marginBottom) || 0;
+      m = Math.max(m, c.offsetTop + c.offsetHeight + mb);
+    });
+    return Math.max(0, m - padTop);
+  }
+
   /** Keep the sticky preview below the sticky toolbar, whatever its height. */
   function watchBar(wrap, bar) {
     function upd() { wrap.style.setProperty('--off-top', (72 + bar.offsetHeight + 12) + 'px'); }
@@ -685,9 +697,9 @@
     if (d.template === 'modern') {
       head = '<header class="r-head">' + photo + nameBlock + '</div></header>';
       var side = secs.filter(function (k) { return RS_SIDE[k]; }), main = secs.filter(function (k) { return !RS_SIDE[k]; });
-      body = '<div class="r-body"><aside class="r-side"><section class="r-sec"><h2>Contact</h2>' + contactHtml + '</section>' +
-        side.map(function (k) { return rsSectionHtml(d, k); }).join('') + '</aside><main class="r-main">' +
-        (main.length ? main.map(function (k) { return rsSectionHtml(d, k); }).join('') : '<p class="r-empty">Add your experience, education and more on the left.</p>') + '</main></div>';
+      body = '<div class="r-body"><div class="r-side"><section class="r-sec"><h2>Contact</h2>' + contactHtml + '</section>' +
+        side.map(function (k) { return rsSectionHtml(d, k); }).join('') + '</div><div class="r-main">' +
+        (main.length ? main.map(function (k) { return rsSectionHtml(d, k); }).join('') : '<p class="r-empty">Add your experience, education and more on the left.</p>') + '</div></div>';
     } else {
       if (d.template === 'minimal') head = '<header class="r-head">' + (photo ? '<div style="display:flex;gap:16px;align-items:center">' + photo + nameBlock + '</div></div>' : nameBlock + '</div>') + contactHtml + '</header>';
       else if (d.template === 'classic') head = '<header class="r-head">' + photo + '<h1>' + e(p.name || 'Your Name') + '</h1>' + (p.title ? '<div class="r-title">' + e(p.title) + '</div>' : '') + contactHtml + '</header>';
@@ -809,7 +821,7 @@
     var sheetHost = h('div.off-scale');
     var pwrap = h('div.off-pwrap', null, [sheetHost]);
     var pageInfo = h('span.badge');
-    var preview = h('div.off-preview', null, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Live preview' }), pageInfo]), pwrap]);
+    var preview = h('div.off-preview', { tabindex: '0', role: 'region', 'aria-label': 'Resume preview' }, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Live preview' }), pageInfo]), pwrap]);
     var atsBox = h('div');
     var atsCard = h('div.card.no-print', null, [h('div.card-title', null, [h('h3', { text: 'ATS & recruiter checklist' })]), atsBox]);
     wrap.appendChild(h('div.off-cols', null, [editor, h('div.off-side', null, [h('div.off-sticky', null, [preview])])]));
@@ -1069,10 +1081,10 @@
       var sheet = sheetHost.firstChild;
       // dashed page-break guides (approximate: printable height per page)
       var pageH = D.paper === 'letter' ? 1056 - 91 : 1123 - 91;
-      var contentH = sheet.scrollHeight;
-      var n = Math.max(1, Math.ceil((contentH - 4) / pageH));
+      var contentH = contentHeight(sheet, 48);
+      var n = Math.max(1, Math.ceil((contentH - 2) / pageH));
       for (var i = 1; i < n; i++) {
-        var pb = h('div.off-pb', { style: { top: (i * pageH) + 'px' }, html: '<span>Page ' + (i + 1) + '</span>' });
+        var pb = h('div.off-pb', { style: { top: (48 + i * pageH) + 'px' }, html: '<span>Page ' + (i + 1) + '</span>' });
         sheet.appendChild(pb);
       }
       pageInfo.textContent = (D.paper === 'letter' ? 'Letter' : 'A4') + ' · about ' + n + ' page' + (n > 1 ? 's' : '');
@@ -1223,8 +1235,8 @@
     for (var i = 0; i < rows; i++) { er += td(C.earnings, i); ed += td(C.deductions, i); }
     var period = MONTHS[C.m - 1] + ' ' + C.y;
     return '<div class="off-sheet off-ss-sheet" style="--acc:' + e(d.accent || '#0e7490') + '">' +
-      '<div class="top"><div class="co">' + (co.logo ? '<img src="' + e(co.logo) + '" alt="">' : '') + '<div><h2>' + e(co.name || 'Company name') + '</h2><div class="pre mut">' + e(co.address) + '</div></div></div>' +
-      '<div class="ttl"><h1>PAYSLIP</h1><div>' + e(period) + '</div></div></div>' +
+      '<div class="top"><div class="co">' + (co.logo ? '<img src="' + e(co.logo) + '" alt="">' : '') + '<div><div class="cn">' + e(co.name || 'Company name') + '</div><div class="pre mut">' + e(co.address) + '</div></div></div>' +
+      '<div class="ttl"><div class="pt">PAYSLIP</div><div>' + e(period) + '</div></div></div>' +
       '<div class="emp">' + info.map(function (x) { return '<div><span>' + e(x[0]) + '</span><span>' + e(x[1]) + '</span></div>'; }).join('') + '</div>' +
       '<div class="att"><div><span>Days in month</span><b>' + C.dim + '</b></div><div><span>Paid days</span><b>' + BT.fmtNum(C.paid, 1) + '</b></div><div><span>LOP days</span><b>' + BT.fmtNum(C.lop, 1) + '</b></div><div><span>Pay period</span><b>' + MON3[C.m - 1] + ' ' + C.y + '</b></div></div>' +
       '<div class="ed"><div><table><thead><tr><th>Earnings</th><th class="r">Amount (₹)</th></tr></thead><tbody>' + er +
@@ -1232,7 +1244,7 @@
       '<div><table><thead><tr><th>Deductions</th><th class="r">Amount (₹)</th></tr></thead><tbody>' + ed +
       '<tr class="tot"><td>Total deductions</td><td class="r">' + money(C.totalDed) + '</td></tr></tbody></table></div></div>' +
       '<div class="net"><div><div class="mut" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Net pay</div><div class="w">' + e(C.words) + '</div></div><b>₹' + money(C.net) + '</b></div>' +
-      (d.employerSection && (C.employer.total > 0) ? '<h4>Employer contributions (not part of net pay)</h4><div class="er"><table><thead><tr><th>Contribution</th><th class="r">Amount (₹)</th></tr></thead><tbody>' +
+      (d.employerSection && (C.employer.total > 0) ? '<p class="er-h">Employer contributions (not part of net pay)</p><div class="er"><table><thead><tr><th>Contribution</th><th class="r">Amount (₹)</th></tr></thead><tbody>' +
         (d.pf ? '<tr><td>EPF employer share (3.67%)</td><td class="r">' + money(C.employer.epf) + '</td></tr><tr><td>EPS pension (8.33%)</td><td class="r">' + money(C.employer.eps) + '</td></tr>' : '') +
         (C.esiEligible ? '<tr><td>ESI employer (3.25%)</td><td class="r">' + money(C.employer.esi) + '</td></tr>' : '') +
         '<tr class="tot"><td>Cost to company this month</td><td class="r">' + money(C.ctc) + '</td></tr></tbody></table></div>' : '') +
@@ -1262,7 +1274,7 @@
     var sheetHost = h('div.off-scale');
     var pwrap = h('div.off-pwrap', null, [sheetHost]);
     var badge = h('span.badge', { text: 'A4' });
-    var preview = h('div.off-preview', null, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Payslip preview' }), badge]), pwrap]);
+    var preview = h('div.off-preview', { tabindex: '0', role: 'region', 'aria-label': 'Payslip preview' }, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Payslip preview' }), badge]), pwrap]);
     wrap.appendChild(h('div.off-cols', null, [editor, h('div.off-side', null, [h('div.off-sticky', null, [preview])])]));
     var fit = scaler(pwrap, sheetHost, 794);
     var batch = null; // [{m,y}] while printing several months
@@ -1503,7 +1515,7 @@
     var e = function (v) { return esc(v || ''); };
     var rent = BT.num(d.rent) || 0;
     var ref = d.ref ? ' (ref. ' + e(d.ref) + ')' : '';
-    return '<div class="off-rr-rc" style="--acc:' + e(d.accent) + '"><div class="hd"><div><h2>RENT RECEIPT</h2><div class="mut" style="color:#6b7280;font-size:12px">For the month of ' + e(r.label) + '</div></div>' +
+    return '<div class="off-rr-rc" style="--acc:' + e(d.accent) + '"><div class="hd"><div><div class="rt">RENT RECEIPT</div><div class="mut" style="color:#4b5563;font-size:12px">For the month of ' + e(r.label) + '</div></div>' +
       '<div class="no">Receipt no. <b>' + e(r.no) + '</b><br>Date: <b>' + e(r.date) + '</b></div></div>' +
       '<p class="bd">Received with thanks from <b>' + e(d.tenant || 'Tenant name') + '</b> a sum of <span class="amt">₹' + money0(rent) + '</span> (' + e(amountWords(rent)) + ') by <b>' + e(d.mode) + '</b>' + ref +
       ' towards rent for the period <b>' + e(r.period) + '</b> for the property at <b>' + e(d.address || 'Property address') + '</b>.</p>' +
@@ -1614,7 +1626,7 @@
     var sheetHost = h('div.off-scale');
     var pwrap = h('div.off-pwrap', null, [sheetHost]);
     var badge = h('span.badge');
-    var preview = h('div.off-preview', null, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Receipts preview' }), badge]), pwrap]);
+    var preview = h('div.off-preview', { tabindex: '0', role: 'region', 'aria-label': 'Receipts preview' }, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Receipts preview' }), badge]), pwrap]);
     wrap.appendChild(h('div.off-cols', null, [editor, h('div.off-side', null, [h('div.off-sticky', null, [preview])])]));
     var fit = scaler(pwrap, sheetHost, 794);
 
@@ -1969,8 +1981,10 @@
       var n = ncols(s), dd = disp(s), hd = headers(s), w = [];
       for (var c = 0; c < n; c++) {
         var m = String(hd[c] || '').length + 3;
-        for (var r = 0; r < Math.min(dd.length, 400); r++) { var l = (dd[r][c] || '').length; if (l > m) m = l; }
-        w.push(clamp(Math.round(m * 7.6 + 26), 72, 340));
+        var step = Math.max(1, Math.floor(dd.length / 300));
+        for (var r = 0; r < dd.length; r += (r < 200 ? 1 : step)) { var l = (dd[r][c] || '').length; if (l > m) m = l; }
+        if (dd.length) { var ll = (dd[dd.length - 1][c] || '').length; if (ll > m) m = ll; }
+        w.push(clamp(Math.round(m * 8.2 + 30), 80, 360));
       }
       s.w = w; s.wh = S.header;
       return w;
@@ -2212,7 +2226,7 @@
     var pwrap = h('div.off-pwrap', null, [host]);
     var pinfo = h('span.badge');
     var preview = h('div.off-preview', null, [h('div.off-preview-h.no-print', null, [h('h3', { text: 'Preview' }), pinfo]), pwrap]);
-    app.appendChild(h('div.off-cols', null, [h('div.off-side', null, [h('div.off-sticky', null, [preview])]), side]));
+    app.appendChild(h('div.off-cols.doc-first', null, [h('div.off-side', null, [h('div.off-sticky', null, [preview])]), side]));
     var fit = scaler(pwrap, host, function () { return O.paper === 'letter' ? 816 : 794; });
 
     function cls() { return 'off-sheet off-wd-doc off-' + O.paper + ' m-' + O.margin + (O.font === 'calibri' ? '' : ' f-' + O.font); }
@@ -2222,7 +2236,7 @@
       host.innerHTML = '<article class="' + cls() + '" style="font-size:' + (parseFloat(O.size) * 4 / 3).toFixed(2) + 'px">' + (S.html || '<p style="color:#9ca3af">This document has no text.</p>') + '</article>';
       var sheet = host.firstChild;
       var pad = { normal: 96, moderate: 72, narrow: 48 }[O.margin], ph = (O.paper === 'letter' ? 1056 : 1123) - pad * 2;
-      var n = Math.max(1, Math.ceil((sheet.scrollHeight - pad * 2 - 2) / ph));
+      var n = Math.max(1, Math.ceil((contentHeight(sheet, pad) - 2) / ph));
       for (var i = 1; i < n; i++) sheet.appendChild(h('div.off-pb', { style: { top: (pad + i * ph) + 'px' }, html: '<span>Page ' + (i + 1) + '</span>' }));
       pinfo.textContent = (O.paper === 'letter' ? 'Letter' : 'A4') + ' · about ' + n + ' page' + (n > 1 ? 's' : '');
       fit();
