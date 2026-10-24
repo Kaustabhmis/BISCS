@@ -23,6 +23,7 @@
     '.dsn-stage canvas.dsn-view:focus-visible{outline:3px solid var(--brand);outline-offset:3px}',
     '.dsn-stage.dark{background:#0d1020}',
     '.dsn-panel h3{font-size:1rem;margin:0 0 12px}',
+    '@media(min-width:900px){.dsn-left{position:sticky;top:84px;align-self:start}}',
     '.dsn-panel .field:last-child{margin-bottom:0}',
     '.dsn-sec{padding-top:14px;margin-top:14px;border-top:1px solid var(--border)}',
     '.dsn-sec>h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin:0 0 10px}',
@@ -116,6 +117,7 @@
     '.dsn-pal button i{flex:1;display:block}',
     '.dsn-pal button[aria-pressed=true]{border-color:var(--brand)}',
     '.dsn-dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}',
+    '.dsn-dl .btn{white-space:normal;height:auto;min-height:42px;padding:8px 12px;line-height:1.25;text-align:center}',
     '@media(max-width:480px){.dsn-stage{padding:8px}.dsn-pick{grid-template-columns:repeat(auto-fill,minmax(50px,1fr))}}'
   ].join('\n');
 
@@ -507,7 +509,7 @@
     var stage = h('div.dsn-stage');
     var under = h('div.dsn-under');
     var panel = h('div.card.dsn-panel');
-    var left = h('div', null, [stage, under]);
+    var left = h('div.dsn-left', null, [stage, under]);
     root.appendChild(h('div.split.wide-left', null, [left, h('div', null, [panel])]));
     return { stage: stage, under: under, panel: panel, left: left };
   }
@@ -2104,9 +2106,10 @@
       function applyTemplate(id) {
         var t = TEMPLATES.filter(function (x) { return x.id === id; })[0] || TEMPLATES[0];
         var r = t.make(D.w, D.h, u());
-        var keepImg = D.bg.img;
-        D.bg = Object.assign({ img: keepImg, fit: 'cover', blur: 0, dim: 20 }, r.bg);
-        if (keepImg && D.bg.type !== 'image') D.bg.img = keepImg;
+        // mutate in place: the background editor holds a reference to D.bg
+        Object.assign(D.bg, { fit: 'cover', blur: 0, dim: 20 }, r.bg);
+        // tall formats (stories): pull content towards the middle, away from the safe zones
+        if (D.h / D.w > 1.5) r.layers.forEach(function (L) { L.y = D.h * (0.5 + (L.y / D.h - 0.5) * 0.72); });
         D.layers = r.layers;
         D.tpl = id;
         sel = -1;
@@ -2166,9 +2169,9 @@
             c.strokeStyle = 'rgba(239,68,68,.85)'; c.lineWidth = 2 / k; c.setLineDash([10 / k, 8 / k]);
             c.beginPath(); c.moveTo(0, top); c.lineTo(D.w, top); c.moveTo(0, D.h - bot); c.lineTo(D.w, D.h - bot); c.stroke();
             c.setLineDash([]);
-            c.fillStyle = 'rgba(255,255,255,.92)'; c.font = fontStr(600, 13 / k * 1.6, 'inter'); c.textAlign = 'center'; c.textBaseline = 'middle';
-            c.fillText('Safe zone: app buttons cover this area', D.w / 2, top / 2);
-            c.fillText('Safe zone: replies and captions cover this area', D.w / 2, D.h - bot / 2);
+            c.fillStyle = 'rgba(255,255,255,.92)'; c.font = fontStr(600, D.w * 0.032, 'inter'); c.textAlign = 'center'; c.textBaseline = 'middle';
+            c.fillText('Safe zone · profile and buttons cover this', D.w / 2, top / 2, D.w * 0.9);
+            c.fillText('Safe zone · reply bar covers this', D.w / 2, D.h - bot / 2, D.w * 0.9);
           }
           if (sel >= 0 && D.layers[sel]) {
             var b = box(D.layers[sel]);
@@ -2570,7 +2573,7 @@
         ops.push({ t: 'icon', name: L.icon, cx: cx, cy: cy, size: shaped || onShape ? M * 0.54 : M, color: ink, sw: L.sw || 2 });
       }
     }
-    var ns = 100, ts = 32, nf = fontStr(L.weight, ns, L.font), tf = fontStr(500, ts, 'inter');
+    var ns = 100, ts = 40, nf = fontStr(L.weight, ns, L.font), tf = fontStr(500, ts, 'inter');
     var nls = L.ls / 100 * ns, tls = ts * 0.08;
     var nameW = measureSpaced(name, nf, nls), tagW = tag ? measureSpaced(tag, tf, tls) : 0;
     var nm = vmetrics(name, nf, ns), tm = vmetrics(tag, tf, ts);

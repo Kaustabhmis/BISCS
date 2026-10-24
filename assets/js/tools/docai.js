@@ -29,8 +29,7 @@
   if (!BT) return;
   var doc = document;
   var h = BT.h, esc = BT.esc, icon = BT.icon;
-  var IMPLS = {};
-  function register(id, fn) { IMPLS[id] = fn; BT.impl(id, fn); }
+  function register(id, fn) { BT.impl(id, fn); }
 
   // ================================================================ STYLES
   var CSS = [
@@ -2218,3 +2217,1089 @@
     }
     syncMode();
   });
+
+  // ============================================================== SCAN TO PDF
+  var FILTERS = [['original', 'Original'], ['enhanced', 'Enhanced'], ['gray', 'Grayscale'], ['bw', 'B & W']];
+  function pdist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+  /** Output size of the flattened page; snaps to the A4 ratio when asked (or when close, in auto mode). */
+  function scanSize(q, shape) {
+    var w = Math.max(pdist(q[0], q[1]), pdist(q[3], q[2])), hh = Math.max(pdist(q[0], q[3]), pdist(q[1], q[2])), A = Math.SQRT2;
+    var portrait = hh >= w, r = portrait ? hh / w : w / hh;
+    if (shape === 'a4' || (shape === 'auto' && Math.abs(r / A - 1) < 0.12)) {
+      if (portrait) w = hh / A; else hh = w / A;
+    }
+    var s = Math.min(1.25, 2400 / Math.max(w, hh));
+    return [Math.max(16, Math.round(w * s)), Math.max(16, Math.round(hh * s))];
+  }
+  function rotated(c, rot) {
+    if (!rot) return c;
+    var swap = rot % 180 !== 0, o = mk(swap ? c.height : c.width, swap ? c.width : c.height), g = c2d(o);
+    g.translate(o.width / 2, o.height / 2);
+    g.rotate(rot * Math.PI / 180);
+    g.drawImage(c, -c.width / 2, -c.height / 2);
+    return o;
+  }
+
+  register('scan-to-pdf', function (root, ctx) {
+    var pages = [], selId = null, pid = 0, view = 'grid', retakeId = null, alive = true;
+    var worker = jobWorker(SCAN_WORKER);
+    var set = { filter: 'enhanced', shape: 'auto', size: 'a4', quality: 85 };
+    var hasCam = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    var color = (ctx && ctx.category && ctx.category.color) || '#e5484d';
+
+    var camCard = h('button.dai-camcard', {
+      type: 'button', disabled: !hasCam,
+      html: '<span class="dz-icon">' + icon('aperture') + '</span><strong>Scan with camera</strong><span class="s">' +
+        esc(hasCam ? 'Use your phone or webcam. Page edges are found automatically.' : 'The camera is not available in this browser. Upload photos instead.') + '</span>'
+    });
+    camCard.addEventListener('click', function () { openCamera(null); });
+    var upDz = BT.dropzone({ accept: 'image/*', multiple: true, title: 'Upload photos', hint: 'Photos of documents, receipts or notes (JPG, PNG, WebP)', icon: 'images', color: color, onFiles: addFiles });
+    upDz.appendChild(h('span.btn.btn-primary.dai-pick', { 'aria-hidden': 'true', html: icon('upload') + ' Choose photos' }));
+    var S = workspace(root, ctx, { icon: 'file-scan', introExtra: h('div.dai-scanintro', null, [camCard, upDz]) });
+    S.setFile('Scanned document', 'No pages yet');
+    if (hasCam) S.barActs.appendChild(btn('Camera', 'aperture', 'btn-sm', function () { openCamera(null); }));
+    S.barActs.appendChild(fileBtn('Add photos', 'image-plus', 'btn-sm', 'image/*', true, addFiles));
+    S.barActs.appendChild(btn('Start over', 'refresh-cw', 'btn-sm btn-ghost', reset));
+
+    // ---------- views
+    var gridView = h('div'), camView = h('div.hidden'), cropView = h('div.hidden');
+    S.main.appendChild(gridView); S.main.appendChild(camView); S.main.appendChild(cropView);
+    var ptools = h('div.dai-ptools');
+    var grid = h('div.dai-thumbs', { role: 'list', 'aria-label': 'Scanned pages' });
+    gridView.appendChild(ptools);
+    gridView.appendChild(grid);
+    gridView.appendChild(hint('Tip: drag a page by its handle to reorder. Select a page to rotate it, fix its corners or change its filter.'));
+
+    // ---------- options
+    var fSeg = seg(FILTERS, set.filter, function (v) {
+      set.filter = v;
+      var pg = sel();
+      if (pg && pg.filter !== v) { pg.filter = v; processPage(pg); }
+    }, 'Filter');
+    var allBtn = btn('Apply to all pages', 'layers', 'btn-sm', function () {
+      pages.forEach(function (pg) { if (pg.filter !== set.filter) { pg.filter = set.filter; processPage(pg); } });
+      BT.toast('Filter applied to all pages');
+    });
+    var shapeSeg = seg([['auto', 'Auto'], ['a4', 'A4 ratio'], ['free', 'As measured']], set.shape, function (v) {
+      set.shape = v;
+      pages.forEach(processPage);
+    }, 'Page shape');
+    var sizeSeg = seg([['a4', 'A4'], ['letter', 'Letter'], ['fit', 'Fit image']], set.size, function (v) { set.size = v; }, 'PDF page size');
+    var qual = rangeCtl('JPEG quality', set.quality, 50, 95, 5, function (v) { return v + '%'; }, function (v) { set.quality = v; });
+    var nameIn = h('input', { type: 'text', value: 'Scan ' + dateStamp(), autocomplete: 'off', spellcheck: 'false' });
+    S.opts.appendChild(h('h3', { text: 'Page look' }));
+    S.opts.appendChild(sec('Filter', [fSeg, h('div', { style: { marginTop: '8px' } }, [allBtn])]));
+    S.opts.appendChild(sec('Shape', [shapeSeg, hint('Auto snaps pages that are close to A4 to an exact A4 shape.')]));
+    S.opts.appendChild(h('h3', { text: 'Export', style: { margin: '18px 0 14px', fontSize: '1.05rem' } }));
+    S.opts.appendChild(sec('PDF page size', [sizeSeg]));
+    S.opts.appendChild(sec(null, [qual]));
+    S.opts.appendChild(sec(null, [field('File name', nameIn)]));
+    var prog = progressBox();
+    var pdfBtn = btn('Download PDF', 'download', 'btn-primary btn-lg', function () { BT.busy(pdfBtn, exportPdf, 'Creating PDF…'); });
+    var zipBtn = btn('Download JPGs (ZIP)', 'file-archive', '', function () { BT.busy(zipBtn, exportZip, 'Zipping…'); });
+    S.act.appendChild(prog);
+    S.act.appendChild(pdfBtn);
+    S.act.appendChild(zipBtn);
+
+    function sel() { for (var i = 0; i < pages.length; i++) if (pages[i].id === selId) return pages[i]; return null; }
+    function setView(v) {
+      view = v;
+      gridView.classList.toggle('hidden', v !== 'grid');
+      camView.classList.toggle('hidden', v !== 'cam');
+      cropView.classList.toggle('hidden', v !== 'crop');
+      if (v !== 'cam') closeCamera();
+      if (v !== 'crop') cropView.innerHTML = '';
+      S.show('work');
+      if (v === 'grid' && !pages.length) S.show('intro');
+      updateBar();
+    }
+    function updateBar() {
+      S.setFile(safeName(nameIn.value, 'Scanned document'), pages.length ? plural(pages.length, 'page') : 'No pages yet');
+      pdfBtn.disabled = zipBtn.disabled = !pages.length;
+    }
+    nameIn.addEventListener('input', updateBar);
+
+    // ---------- pages
+    function newPage(src, det) {
+      return { id: ++pid, src: src, quad: det.quad, found: det.found, rot: 0, filter: set.filter, out: null, thumb: null, busy: false, ver: 0, pending: null };
+    }
+    async function addFiles(files) {
+      var any = false;
+      for (var i = 0; i < files.length; i++) {
+        try {
+          var img = await BT.loadImage(files[i]);
+          var c = toCanvas(img, 3200);
+          if (img.src.slice(0, 5) === 'blob:') URL.revokeObjectURL(img.src);
+          var pg = newPage(c, detectQuad(c, c.width, c.height));
+          pages.push(pg);
+          selId = pg.id;
+          processPage(pg);
+          any = true;
+        } catch (e) { BT.toast(files[i].name + ' could not be read as an image', 'error'); }
+      }
+      if (any) { setView('grid'); renderGrid(); }
+    }
+    function processPage(pg) {
+      var ver = ++pg.ver;
+      pg.busy = true;
+      paintThumb(pg);
+      var sz = scanSize(pg.quad, set.shape);
+      var id = c2d(pg.src, true).getImageData(0, 0, pg.src.width, pg.src.height);
+      pg.pending = worker.run({ op: 'process', src: id.data.buffer, sw: id.width, sh: id.height, quad: pg.quad, W: sz[0], H: sz[1], filter: pg.filter }, [id.data.buffer])
+        .then(function (m) {
+          if (ver !== pg.ver) return;
+          var c = mk(m.w, m.h);
+          c2d(c).putImageData(new ImageData(new Uint8ClampedArray(m.data), m.w, m.h), 0, 0);
+          pg.out = c;
+          pg.thumb = thumbOf(c, 320, pg.rot);
+        })
+        .catch(function (e) { if (!e.cancelled) { console.error(e); BT.toast(e.message || 'Could not process this page', 'error'); } })
+        .then(function () { if (ver === pg.ver) { pg.busy = false; pg.pending = null; paintThumb(pg); } });
+      return pg.pending;
+    }
+    function paintThumb(pg) {
+      var card = grid.querySelector('[data-id="' + pg.id + '"]');
+      if (!card) return;
+      var tw = card.querySelector('.dai-tw');
+      tw.innerHTML = '';
+      if (pg.thumb) tw.appendChild(pg.thumb); else tw.appendChild(h('div.dai-ph'));
+      if (pg.busy) tw.appendChild(h('div.dai-tspin', { html: '<span class="spinner"></span>' }));
+      var badge = card.querySelector('.dai-tbadge');
+      if (badge) badge.classList.toggle('hidden', pg.found);
+    }
+    function renderGrid() {
+      grid.innerHTML = '';
+      pages.forEach(function (pg, i) {
+        var tw = h('div.dai-tw');
+        var card = h('div.dai-thumb', { role: 'listitem', tabindex: '0', 'data-id': String(pg.id), 'aria-current': pg.id === selId ? 'true' : 'false', 'aria-label': 'Page ' + (i + 1) }, [
+          tw, h('div.dai-pg', { text: 'Page ' + (i + 1) }), h('span.dai-tbadge' + (pg.found ? '.hidden' : ''), { text: 'Check corners', title: 'The page edges were not found automatically' })
+        ]);
+        var grip = ibtn('grip-vertical', 'Drag to reorder page ' + (i + 1), null, 'dai-grip');
+        grip.addEventListener('pointerdown', function (e) { startDrag(e, pg, card); });
+        grip.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); move(pg, -1); focusGrip(pg); }
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); move(pg, 1); focusGrip(pg); }
+        });
+        card.appendChild(grip);
+        card.addEventListener('click', function () { select(pg); });
+        card.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); select(pg); } });
+        card.addEventListener('dblclick', function () { openCrop(pg); });
+        grid.appendChild(card);
+        paintThumb(pg);
+      });
+      renderTools();
+      updateBar();
+    }
+    function focusGrip(pg) { var g = grid.querySelector('[data-id="' + pg.id + '"] .dai-grip'); if (g) g.focus(); }
+    function select(pg) {
+      selId = pg.id;
+      fSeg.set(pg.filter); set.filter = pg.filter;
+      BT.$$('.dai-thumb', grid).forEach(function (c) { c.setAttribute('aria-current', c.getAttribute('data-id') === String(pg.id) ? 'true' : 'false'); });
+      renderTools();
+    }
+    function move(pg, d) {
+      var i = pages.indexOf(pg), j = i + d;
+      if (j < 0 || j >= pages.length) return;
+      pages.splice(i, 1); pages.splice(j, 0, pg);
+      renderGrid();
+    }
+    function renderTools() {
+      ptools.innerHTML = '';
+      var pg = sel();
+      if (!pg) { ptools.appendChild(h('span.dai-plabel', { text: plural(pages.length, 'page') })); return; }
+      var i = pages.indexOf(pg);
+      ptools.appendChild(h('span.dai-plabel', { text: 'Page ' + (i + 1) + ' of ' + pages.length }));
+      var l = ibtn('arrow-left', 'Move page earlier', function () { move(pg, -1); });
+      var r = ibtn('arrow-right', 'Move page later', function () { move(pg, 1); });
+      l.disabled = i === 0; r.disabled = i === pages.length - 1;
+      ptools.appendChild(l); ptools.appendChild(r);
+      ptools.appendChild(ibtn('rotate-ccw', 'Rotate left', function () { rotate(pg, 270); }));
+      ptools.appendChild(ibtn('rotate-cw', 'Rotate right', function () { rotate(pg, 90); }));
+      ptools.appendChild(ibtn('crop', 'Adjust corners', function () { openCrop(pg); }));
+      ptools.appendChild(hasCam ? ibtn('aperture', 'Retake with camera', function () { openCamera(pg.id); })
+        : fileBtn('Replace', 'refresh-cw', 'btn-sm', 'image/*', false, function (f) { replaceFromFile(pg, f[0]); }));
+      ptools.appendChild(ibtn('trash-2', 'Delete page', function () { del(pg); }, 'danger'));
+    }
+    function rotate(pg, d) {
+      pg.rot = (pg.rot + d) % 360;
+      if (pg.out) pg.thumb = thumbOf(pg.out, 320, pg.rot);
+      paintThumb(pg);
+    }
+    function del(pg) {
+      var i = pages.indexOf(pg);
+      pages.splice(i, 1);
+      pg.ver++;
+      selId = pages.length ? pages[Math.min(i, pages.length - 1)].id : null;
+      if (!pages.length) { setView('grid'); return; }
+      renderGrid();
+    }
+    async function replaceFromFile(pg, f) {
+      try {
+        var img = await BT.loadImage(f), c = toCanvas(img, 3200), det = detectQuad(c, c.width, c.height);
+        pg.src = c; pg.quad = det.quad; pg.found = det.found; pg.rot = 0;
+        processPage(pg); renderGrid();
+      } catch (e) { BT.toast('Could not read that image', 'error'); }
+    }
+
+    // ---------- drag to reorder
+    function startDrag(e, pg, card) {
+      if (e.button > 0) return;
+      e.preventDefault();
+      var grip = e.currentTarget, sx = e.clientX, sy = e.clientY, moved = false, ghost = null, target = null, after = false;
+      try { grip.setPointerCapture(e.pointerId); } catch (er) { /* ignore */ }
+      function onMove(ev) {
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        if (!moved) {
+          moved = true;
+          card.classList.add('dragging');
+          doc.body.classList.add('dai-dragging');
+          ghost = h('div.dai-ghost.dai-thumb', { style: { width: card.offsetWidth + 'px' } }, [h('div.dai-tw', null, [pg.thumb ? thumbOf(pg.thumb, 200) : h('div.dai-ph')])]);
+          doc.body.appendChild(ghost);
+        }
+        ghost.style.left = (ev.clientX - card.offsetWidth / 2) + 'px';
+        ghost.style.top = (ev.clientY - 30) + 'px';
+        BT.$$('.dai-thumb', grid).forEach(function (c) { c.classList.remove('drop-before', 'drop-after'); });
+        var el = doc.elementFromPoint(ev.clientX, ev.clientY);
+        target = el && el.closest && el.closest('.dai-thumbs .dai-thumb');
+        if (target && target !== card) {
+          var r = target.getBoundingClientRect();
+          after = ev.clientX > r.left + r.width / 2;
+          target.classList.add(after ? 'drop-after' : 'drop-before');
+        } else target = null;
+      }
+      function onUp() {
+        grip.removeEventListener('pointermove', onMove);
+        grip.removeEventListener('pointerup', onUp);
+        grip.removeEventListener('pointercancel', onUp);
+        doc.body.classList.remove('dai-dragging');
+        if (ghost) ghost.remove();
+        card.classList.remove('dragging');
+        if (moved && target) {
+          var tid = +target.getAttribute('data-id'), from = pages.indexOf(pg);
+          pages.splice(from, 1);
+          var to = pages.findIndex(function (p) { return p.id === tid; }) + (after ? 1 : 0);
+          pages.splice(to, 0, pg);
+          renderGrid();
+        } else BT.$$('.dai-thumb', grid).forEach(function (c) { c.classList.remove('drop-before', 'drop-after'); });
+        if (!moved) select(pg);
+      }
+      grip.addEventListener('pointermove', onMove);
+      grip.addEventListener('pointerup', onUp);
+      grip.addEventListener('pointercancel', onUp);
+    }
+
+    // ---------- camera
+    var cam = null, facing = 'environment';
+    var video = h('video', { playsinline: '', muted: '', autoplay: '', 'aria-label': 'Camera preview' });
+    video.muted = true; video.setAttribute('playsinline', ''); video.setAttribute('muted', '');
+    var camOv = h('canvas.dai-camov', { 'aria-hidden': 'true' });
+    var flashEl = h('div.dai-flash');
+    var pill = h('span.dai-pill', { html: icon('scan-search') + ' Looking for a page…', role: 'status' });
+    var countPill = h('span.dai-pill');
+    var shutter = h('button.dai-shutter', { type: 'button', 'aria-label': 'Capture page' });
+    var torchBtn = h('button.dai-cbtn.hidden', { type: 'button', 'aria-pressed': 'false', 'aria-label': 'Flash', title: 'Flash / torch', html: icon('zap') });
+    var flipBtn = h('button.dai-cbtn.hidden', { type: 'button', 'aria-label': 'Switch camera', title: 'Switch camera', html: icon('refresh-cw') });
+    var closeBtn = h('button.dai-cbtn', { type: 'button', 'aria-label': 'Close camera', title: 'Close camera', html: icon('x') });
+    var lastBox = h('div.dai-last', { 'aria-hidden': 'true' });
+    var doneBtn = h('button.dai-cbtn.go', { type: 'button', html: icon('check') + '<span>Done</span>' });
+    var camMsg = h('div.dai-cammsg.hidden');
+    var camBox = h('div.dai-cam', null, [video, camOv, flashEl, camMsg,
+      h('div.dai-camtop', null, [pill, countPill]),
+      h('div.dai-camctl', null, [h('div.dai-camside', null, [closeBtn, torchBtn, flipBtn]), shutter, h('div.dai-camside.r', null, [lastBox, doneBtn])])
+    ]);
+    camView.appendChild(camBox);
+    camView.appendChild(hint('Hold the phone above the page with all four corners visible. Good, even light gives the best scans.'));
+    shutter.addEventListener('click', capture);
+    closeBtn.addEventListener('click', function () { setView('grid'); if (pages.length) renderGrid(); });
+    doneBtn.addEventListener('click', function () { setView('grid'); if (pages.length) renderGrid(); });
+    torchBtn.addEventListener('click', function () {
+      if (!cam || !cam.track) return;
+      var on = torchBtn.getAttribute('aria-pressed') !== 'true';
+      cam.track.applyConstraints({ advanced: [{ torch: on }] }).then(function () { torchBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); })
+        .catch(function () { BT.toast('Flash is not available on this camera', 'error'); });
+    });
+    flipBtn.addEventListener('click', function () { facing = facing === 'environment' ? 'user' : 'environment'; startStream(); });
+
+    function updateCamCount() {
+      countPill.textContent = retakeId ? 'Retaking a page' : plural(pages.length, 'page');
+      lastBox.innerHTML = '';
+      var last = pages[pages.length - 1];
+      if (last && !retakeId) {
+        lastBox.appendChild(thumbOf(last.src, 88));
+        lastBox.appendChild(h('b', { text: String(pages.length) }));
+      }
+      lastBox.classList.toggle('hidden', !last || !!retakeId);
+      doneBtn.classList.toggle('hidden', !pages.length && !retakeId);
+    }
+    function openCamera(retake) {
+      if (!hasCam) return;
+      retakeId = retake || null;
+      setView('cam');
+      updateCamCount();
+      startStream();
+    }
+    function camError(msg) {
+      camMsg.classList.remove('hidden');
+      camMsg.innerHTML = '<p><strong>' + esc(msg) + '</strong></p><p>You can still upload photos of your documents instead.</p>';
+      shutter.disabled = true;
+    }
+    function startStream() {
+      closeCamera();
+      camMsg.classList.add('hidden');
+      shutter.disabled = true;
+      var my = cam = { stream: null, track: null, timer: 0 };
+      navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1080 } } })
+        .then(function (stream) {
+          if (cam !== my || view !== 'cam' || !alive) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+          my.stream = stream;
+          my.track = stream.getVideoTracks()[0];
+          video.srcObject = stream;
+          return video.play().catch(function () { /* autoplay may need a gesture; the stream still shows */ }).then(function () {
+            shutter.disabled = false;
+            var caps = (my.track && my.track.getCapabilities) ? my.track.getCapabilities() : {};
+            torchBtn.classList.toggle('hidden', !caps.torch);
+            torchBtn.setAttribute('aria-pressed', 'false');
+            if (navigator.mediaDevices.enumerateDevices) {
+              navigator.mediaDevices.enumerateDevices().then(function (ds) {
+                flipBtn.classList.toggle('hidden', ds.filter(function (d) { return d.kind === 'videoinput'; }).length < 2);
+              }).catch(function () {});
+            }
+            my.timer = setInterval(liveDetect, 380);
+          });
+        })
+        .catch(function (e) {
+          if (cam !== my) return;
+          console.warn(e);
+          camError(e && e.name === 'NotAllowedError' ? 'Camera permission was blocked.' : e && e.name === 'NotFoundError' ? 'No camera was found on this device.' : 'The camera could not be started.');
+        });
+    }
+    function closeCamera() {
+      if (!cam) return;
+      clearInterval(cam.timer);
+      if (cam.stream) cam.stream.getTracks().forEach(function (t) { t.stop(); });
+      cam = null;
+      video.srcObject = null;
+      var g = c2d(camOv); g.clearRect(0, 0, camOv.width, camOv.height);
+    }
+    function containRect() {
+      var ew = video.clientWidth, eh = video.clientHeight, vw = video.videoWidth, vh = video.videoHeight;
+      var s = Math.min(ew / vw, eh / vh);
+      return { x: (ew - vw * s) / 2, y: (eh - vh * s) / 2, s: s };
+    }
+    function liveDetect() {
+      if (!cam || !video.videoWidth || doc.hidden) return;
+      var det = detectQuad(video, video.videoWidth, video.videoHeight);
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      var W = Math.round(camOv.clientWidth * dpr), H = Math.round(camOv.clientHeight * dpr);
+      if (camOv.width !== W || camOv.height !== H) { camOv.width = W; camOv.height = H; }
+      var g = c2d(camOv), r = containRect();
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, W, H);
+      pill.className = 'dai-pill' + (det.found ? ' ok' : '');
+      pill.innerHTML = det.found ? icon('check') + ' Page found — tap to capture' : icon('scan-search') + ' Looking for a page…';
+      if (!det.found) return;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.beginPath();
+      det.quad.forEach(function (p, i) { var x = r.x + p[0] * r.s, y = r.y + p[1] * r.s; if (i) g.lineTo(x, y); else g.moveTo(x, y); });
+      g.closePath();
+      g.fillStyle = 'rgba(34,197,94,.18)';
+      g.fill();
+      g.lineWidth = 3;
+      g.strokeStyle = '#22c55e';
+      g.stroke();
+    }
+    function capture() {
+      if (!cam || !video.videoWidth) return;
+      var c = mk(video.videoWidth, video.videoHeight);
+      c2d(c).drawImage(video, 0, 0);
+      flashEl.classList.add('on');
+      setTimeout(function () { flashEl.classList.remove('on'); }, 60);
+      var det = detectQuad(c, c.width, c.height);
+      if (retakeId) {
+        var pg = pages.find(function (p) { return p.id === retakeId; });
+        retakeId = null;
+        if (pg) { pg.src = c; pg.quad = det.quad; pg.found = det.found; pg.rot = 0; selId = pg.id; processPage(pg); }
+        setView('grid'); renderGrid();
+        return;
+      }
+      var np = newPage(c, det);
+      pages.push(np);
+      selId = np.id;
+      processPage(np);
+      updateCamCount();
+      updateBar();
+      BT.toast('Page ' + pages.length + ' captured');
+    }
+    function onVis() { if (doc.hidden && cam) { setView('grid'); if (pages.length) renderGrid(); } }
+    doc.addEventListener('visibilitychange', onVis);
+    window.addEventListener('pagehide', closeCamera);
+
+    // ---------- crop editor
+    function openCrop(pg) {
+      setView('crop');
+      var srcW = pg.src.width, srcH = pg.src.height, quad = pg.quad.map(function (p) { return p.slice(); });
+      var disp = thumbOf(pg.src, 1400);
+      disp.style.maxHeight = '65vh';
+      disp.setAttribute('role', 'img');
+      disp.setAttribute('aria-label', 'Photo of the page with adjustable corners');
+      var NS = 'http://www.w3.org/2000/svg';
+      var svg = doc.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 ' + srcW + ' ' + srcH);
+      svg.setAttribute('preserveAspectRatio', 'none');
+      var shade = doc.createElementNS(NS, 'path'), poly = doc.createElementNS(NS, 'polygon');
+      shade.setAttribute('fill', 'rgba(8,10,22,.5)'); shade.setAttribute('fill-rule', 'evenodd');
+      poly.setAttribute('fill', 'none'); poly.setAttribute('stroke', '#6366f1'); poly.setAttribute('stroke-width', '3'); poly.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.appendChild(shade); svg.appendChild(poly);
+      var loupe = h('canvas.dai-loupe', { width: 240, height: 240, 'aria-hidden': 'true' });
+      var stage = h('div.dai-cstage', null, [disp, svg, loupe]);
+      var names = ['Top-left', 'Top-right', 'Bottom-right', 'Bottom-left'];
+      var handles = names.map(function (nm, i) {
+        var hd = h('button.dai-handle', { type: 'button', 'aria-label': nm + ' corner. Use arrow keys to move.' });
+        var off = [0, 0];
+        hd.addEventListener('pointerdown', function (e) {
+          e.preventDefault();
+          try { hd.setPointerCapture(e.pointerId); } catch (er) { /* ignore */ }
+          var r = disp.getBoundingClientRect();
+          off = [e.clientX - (r.left + quad[i][0] / srcW * r.width), e.clientY - (r.top + quad[i][1] / srcH * r.height)];
+          hd.classList.add('drag');
+          hd.focus();
+          moveTo(e);
+        });
+        hd.addEventListener('pointermove', function (e) { if (hd.classList.contains('drag')) moveTo(e); });
+        function end() { hd.classList.remove('drag'); loupe.style.display = 'none'; }
+        hd.addEventListener('pointerup', end);
+        hd.addEventListener('pointercancel', end);
+        hd.addEventListener('keydown', function (e) {
+          var step = (e.shiftKey ? 10 : 2) * srcW / disp.getBoundingClientRect().width, dx = 0, dy = 0;
+          if (e.key === 'ArrowLeft') dx = -step; else if (e.key === 'ArrowRight') dx = step;
+          else if (e.key === 'ArrowUp') dy = -step; else if (e.key === 'ArrowDown') dy = step; else return;
+          e.preventDefault();
+          quad[i] = [clamp(quad[i][0] + dx, 0, srcW), clamp(quad[i][1] + dy, 0, srcH)];
+          update();
+        });
+        function moveTo(e) {
+          var r = disp.getBoundingClientRect();
+          var x = clamp((e.clientX - off[0] - r.left) / r.width, 0, 1), y = clamp((e.clientY - off[1] - r.top) / r.height, 0, 1);
+          quad[i] = [x * srcW, y * srcH];
+          update();
+          showLoupe(x * r.width, y * r.height, r.width);
+        }
+        stage.appendChild(hd);
+        return hd;
+      });
+      function update() {
+        var pts = quad.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+        poly.setAttribute('points', pts);
+        shade.setAttribute('d', 'M0 0H' + srcW + 'V' + srcH + 'H0Z M' + quad.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L') + 'Z');
+        handles.forEach(function (hd, i) { hd.style.left = (quad[i][0] / srcW * 100) + '%'; hd.style.top = (quad[i][1] / srcH * 100) + '%'; });
+      }
+      function showLoupe(px, py, dispW) {
+        var g = c2d(loupe), Z = 3, scale = dispW / srcW, size = 240 / (Z * scale * 2);
+        var cx = px / scale, cy = py / scale;
+        g.fillStyle = '#000'; g.fillRect(0, 0, 240, 240);
+        g.imageSmoothingEnabled = true;
+        g.drawImage(pg.src, cx - size / 2, cy - size / 2, size, size, 0, 0, 240, 240);
+        g.strokeStyle = '#22c55e'; g.lineWidth = 2;
+        g.beginPath(); g.moveTo(120, 96); g.lineTo(120, 144); g.moveTo(96, 120); g.lineTo(144, 120); g.stroke();
+        loupe.style.display = 'block';
+        var sw = stage.clientWidth, top = py - 150;
+        if (top < 0) top = py + 40;
+        loupe.style.left = clamp(px - 60, 0, Math.max(0, sw - 120)) + 'px';
+        loupe.style.top = top + 'px';
+      }
+      update();
+      var tools = h('div.dai-ctools', null, [
+        btn('Auto-detect', 'scan-search', 'btn-sm', function () {
+          var det = detectQuad(pg.src, srcW, srcH);
+          quad = det.quad.map(function (p) { return p.slice(); });
+          update();
+          BT.toast(det.found ? 'Page edges found' : 'No clear edges found — corners reset', det.found ? null : 'error');
+        }),
+        btn('Whole photo', 'minimize-2', 'btn-sm', function () { quad = [[0, 0], [srcW, 0], [srcW, srcH], [0, srcH]]; update(); }),
+        btn('Cancel', 'x', 'btn-sm btn-ghost', function () { setView('grid'); renderGrid(); }),
+        btn('Apply crop', 'check', 'btn-sm btn-primary', function () {
+          pg.quad = quad; pg.found = true;
+          processPage(pg);
+          setView('grid'); renderGrid();
+        })
+      ]);
+      cropView.appendChild(h('div.dai-crop', null, [h('div.dai-head', { style: { width: '100%' } }, [h('h3', { text: 'Adjust the corners' }), h('span.muted.small', { text: 'Drag the four handles onto the page corners' })]), stage, tools]));
+      handles[0].focus({ preventScroll: true });
+    }
+
+    // ---------- export
+    function finalCanvas(pg) { return rotated(pg.out, pg.rot); }
+    async function ready() {
+      await Promise.all(pages.map(function (pg) { return pg.pending; }));
+      var bad = pages.filter(function (pg) { return !pg.out; });
+      if (bad.length) throw new Error(plural(bad.length, 'page') + ' could not be processed. Delete or retake them and try again.');
+    }
+    async function exportPdf() {
+      if (!pages.length) return;
+      await ready();
+      var PDFLib = await BT.loadLib('pdflib');
+      var pdf = await PDFLib.PDFDocument.create(), q = set.quality / 100;
+      for (var i = 0; i < pages.length; i++) {
+        prog.set(i / pages.length, 'Adding page ' + (i + 1) + ' of ' + pages.length + '…');
+        var c = finalCanvas(pages[i]);
+        var img = await pdf.embedJpg(await blobBytes(await BT.canvasToBlob(c, 'image/jpeg', q)));
+        var land = c.width > c.height, pw, ph;
+        if (set.size === 'fit') { pw = c.width * 72 / 200; ph = c.height * 72 / 200; }
+        else {
+          var base = set.size === 'letter' ? [612, 792] : [595.28, 841.89];
+          pw = land ? base[1] : base[0]; ph = land ? base[0] : base[1];
+        }
+        var page = pdf.addPage([pw, ph]), s = Math.min(pw / c.width, ph / c.height), dw = c.width * s, dh = c.height * s;
+        page.drawImage(img, { x: (pw - dw) / 2, y: (ph - dh) / 2, width: dw, height: dh });
+      }
+      var name = safeName(nameIn.value, 'Scan');
+      pdf.setTitle(name);
+      pdf.setProducer('BISCS Tools Scanner');
+      var bytes = await pdf.save();
+      prog.hide();
+      BT.download(new Blob([bytes], { type: 'application/pdf' }), name + '.pdf');
+      BT.toast('PDF downloaded (' + plural(pages.length, 'page') + ', ' + BT.fmtBytes(bytes.length) + ')');
+    }
+    async function exportZip() {
+      if (!pages.length) return;
+      await ready();
+      var files = [], name = safeName(nameIn.value, 'Scan');
+      for (var i = 0; i < pages.length; i++) {
+        files.push({ name: name + ' - ' + String(i + 1).padStart(2, '0') + '.jpg', data: await BT.canvasToBlob(finalCanvas(pages[i]), 'image/jpeg', set.quality / 100) });
+      }
+      await BT.downloadZip(files, name + '.zip');
+    }
+    function reset() {
+      closeCamera();
+      worker.kill();
+      pages = []; selId = null; retakeId = null;
+      grid.innerHTML = '';
+      nameIn.value = 'Scan ' + dateStamp();
+      prog.hide();
+      setView('grid');
+    }
+    setView('grid');
+    return { destroy: function () { alive = false; closeCamera(); worker.kill(); doc.removeEventListener('visibilitychange', onVis); } };
+  });
+
+  // ============================================================ OBJECT ERASER
+  function dilateMask(m, w, hh, r) {
+    if (r <= 0) return m;
+    var t = new Uint8Array(w * hh), o = new Uint8Array(w * hh), x, y, last;
+    for (y = 0; y < hh; y++) {
+      var row = y * w;
+      last = -1e9;
+      for (x = 0; x < w; x++) { if (m[row + x]) last = x; if (x - last <= r) t[row + x] = 1; }
+      last = 1e9;
+      for (x = w - 1; x >= 0; x--) { if (m[row + x]) last = x; if (last - x <= r) t[row + x] = 1; }
+    }
+    for (x = 0; x < w; x++) {
+      last = -1e9;
+      for (y = 0; y < hh; y++) { if (t[y * w + x]) last = y; if (y - last <= r) o[y * w + x] = 1; }
+      last = 1e9;
+      for (y = hh - 1; y >= 0; y--) { if (t[y * w + x]) last = y; if (last - y <= r) o[y * w + x] = 1; }
+    }
+    return o;
+  }
+  function blurF(a, w, hh, r) {
+    var t = new Float32Array(w * hh), o = new Float32Array(w * hh), x, y, k, d = 2 * r + 1;
+    for (y = 0; y < hh; y++) {
+      for (x = 0; x < w; x++) {
+        var s = 0;
+        for (k = -r; k <= r; k++) s += a[y * w + clamp(x + k, 0, w - 1)];
+        t[y * w + x] = s / d;
+      }
+    }
+    for (y = 0; y < hh; y++) {
+      for (x = 0; x < w; x++) {
+        var s2 = 0;
+        for (k = -r; k <= r; k++) s2 += t[clamp(y + k, 0, hh - 1) * w + x];
+        o[y * w + x] = s2 / d;
+      }
+    }
+    return o;
+  }
+  /** Replay mask strokes (stored in full-image pixels) at a given scale/offset. */
+  function drawStrokes(g, strokes, scale, ox, oy) {
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    strokes.forEach(function (s) {
+      g.globalCompositeOperation = s.mode === 'erase' ? 'destination-out' : 'source-over';
+      g.strokeStyle = g.fillStyle = '#ff1e5a';
+      g.lineWidth = s.size * scale;
+      var p = s.pts;
+      if (p.length === 1) {
+        g.beginPath();
+        g.arc((p[0][0] - ox) * scale, (p[0][1] - oy) * scale, s.size * scale / 2, 0, Math.PI * 2);
+        g.fill();
+        return;
+      }
+      g.beginPath();
+      g.moveTo((p[0][0] - ox) * scale, (p[0][1] - oy) * scale);
+      for (var i = 1; i < p.length; i++) g.lineTo((p[i][0] - ox) * scale, (p[i][1] - oy) * scale);
+      g.stroke();
+    });
+    g.globalCompositeOperation = 'source-over';
+  }
+  function compareWidget(before, after) {
+    var b = thumbOf(before, 1600), a = thumbOf(after, 1600);
+    b.className = 'b';
+    var rng = h('input', { type: 'range', min: '0', max: '100', value: '50', 'aria-label': 'Compare before and after' });
+    var w = h('div.dai-cmp', null, [a, b, h('span.bar'), h('span.knob', { html: '&#8596;' }), h('span.tag.l', { text: 'Before' }), h('span.tag.r', { text: 'After' }), rng]);
+    function upd() { w.style.setProperty('--pos', rng.value + '%'); }
+    rng.addEventListener('input', upd);
+    upd();
+    return w;
+  }
+
+  register('object-eraser', function (root, ctx) {
+    var st = null, busy = false, alive = true;
+    var worker = jobWorker(ERASE_WORKER);
+    var V = { z: 1, tx: 0, ty: 0, fit: 1 };
+    var tool = 'brush', spaceDown = false;
+    var S = workspace(root, ctx, {
+      accept: 'image/*', multiple: false, icon: 'eraser', pick: 'Choose photo',
+      title: 'Choose a photo', hint: 'JPG, PNG or WebP · or paste an image with Ctrl+V', onFiles: function (f) { load(f[0]); }
+    });
+    S.barActs.appendChild(btn('Choose another', 'refresh-cw', 'btn-sm btn-ghost', function () { reset(); }));
+
+    // ---------- toolbar + stage
+    var toolSeg = seg([['brush', 'Brush', 'brush'], ['erase', 'Unpaint', 'eraser'], ['pan', 'Move', 'move']], 'brush', function (v) { tool = v; syncCursor(); }, 'Tool');
+    toolSeg.classList.remove('dai-seg');
+    var undoB = ibtn('undo-2', 'Undo (Ctrl+Z)', undo), redoB = ibtn('redo-2', 'Redo (Ctrl+Shift+Z)', redo);
+    var clearB = ibtn('trash-2', 'Clear the painted mask', function () {
+      if (!st || !st.strokes.length) return;
+      var saved = st.strokes.slice();
+      st.strokes.forEach(function (s) { st.undo.push({ t: 's', stroke: s, clear: true }); });
+      st.undo.push({ t: 'c', strokes: saved });
+      st.strokes = []; st.redo = [];
+      redrawMask(); syncButtons();
+    }, 'danger');
+    var zoomV = h('span.dai-zoomv', { 'aria-live': 'polite' });
+    var zOut = ibtn('zoom-out', 'Zoom out', function () { zoomAt(1 / 1.4); });
+    var zIn = ibtn('zoom-in', 'Zoom in', function () { zoomAt(1.4); });
+    var zFit = btn('Fit', null, 'btn-sm', function () { fit(); });
+    var etb = h('div.dai-etb', null, [toolSeg, undoB, redoB, clearB, h('span.spacer'), zOut, zoomV, zIn, zFit]);
+    var dispC = mk(1, 1), maskC = mk(1, 1);
+    maskC.className = 'dai-maskc';
+    var world = h('div.dai-world', null, [dispC, maskC]);
+    var cursor = h('div.dai-cursor');
+    var busyOv = h('div.dai-busyov.hidden');
+    var stage = h('div.dai-stage', { tabindex: '0', role: 'application', 'aria-label': 'Photo. Paint over the object to remove; press [ or ] to change the brush size.' }, [world, cursor, busyOv]);
+    var cmpBox = h('div.hidden');
+    S.main.appendChild(etb);
+    S.main.appendChild(stage);
+    S.main.appendChild(cmpBox);
+    S.main.appendChild(h('div.dai-under', null, [
+      h('span', { text: 'Paint over what you want to remove, then press Erase.' }),
+      h('span', { text: 'Zoom: Ctrl + scroll or pinch · Pan: Move tool or hold Space' })
+    ]));
+
+    // ---------- options
+    var sizeCtl = rangeCtl('Brush size', 40, 6, 160, 1, function (v) { return v + ' px'; }, function () { syncCursor(); });
+    var method = choices([
+      { v: 'patch', t: 'Content-aware fill', d: 'Rebuilds the area from matching patches of the photo (PatchMatch). Best quality.' },
+      { v: 'fast', t: 'Fast smooth fill', d: 'Blends in the surrounding colours. Instant, good for big areas and skies.' }
+    ], 'patch', null, 'Fill method');
+    S.opts.appendChild(h('h3', { text: 'Erase settings' }));
+    S.opts.appendChild(sec(null, [sizeCtl]));
+    S.opts.appendChild(sec('Fill method', [method]));
+    S.opts.appendChild(notice('', 'This is <strong>content-aware fill</strong>, not generative AI: it borrows texture from elsewhere in the photo. It works best on small objects, text and blemishes over plain or textured backgrounds (grass, sand, walls, sky).'));
+    var prog = progressBox();
+    var eraseBtn = btn('Erase painted area', 'wand-sparkles', 'btn-primary btn-lg', erase);
+    var cmpBtn = btn('Compare', 'git-compare', '', toggleCompare, { 'aria-pressed': 'false' });
+    var pngBtn = btn('PNG', 'download', '', function () { save('png'); });
+    var jpgBtn = btn('JPG', 'download', '', function () { save('jpg'); });
+    S.act.appendChild(prog);
+    S.act.appendChild(eraseBtn);
+    S.act.appendChild(h('div.dai-brow', null, [cmpBtn, pngBtn, jpgBtn]));
+
+    function onPaste(e) {
+      if (!alive || !root.isConnected || busy) return;
+      var it = Array.prototype.find.call((e.clipboardData && e.clipboardData.items) || [], function (x) { return x.kind === 'file' && /^image\//.test(x.type); });
+      if (!it) return;
+      e.preventDefault();
+      var f = it.getAsFile();
+      if (f) load(new File([f], 'pasted-image.png', { type: f.type }));
+    }
+    doc.addEventListener('paste', onPaste);
+
+    async function load(file) {
+      try {
+        var img = await BT.loadImage(file);
+        var full = toCanvas(img, 6000);
+        if (img.src.slice(0, 5) === 'blob:') URL.revokeObjectURL(img.src);
+        reset(true);
+        var W = full.width, H = full.height, ds = Math.min(1, 2000 / Math.max(W, H));
+        st = { name: file.name || 'image.png', base: BT.baseName(file.name || 'image'), type: file.type, full: full, orig: toCanvas(full), W: W, H: H, ds: ds, strokes: [], undo: [], redo: [] };
+        dispC.width = maskC.width = Math.max(1, Math.round(W * ds));
+        dispC.height = maskC.height = Math.max(1, Math.round(H * ds));
+        world.style.width = dispC.width + 'px';
+        world.style.height = dispC.height + 'px';
+        redrawDisp(); redrawMask();
+        S.setFile(st.name, W + ' × ' + H + ' px · ' + BT.fmtBytes(file.size || 0));
+        S.show('work');
+        showCompare(false);
+        layout(); fit();
+        syncButtons();
+        stage.focus({ preventScroll: true });
+      } catch (e) {
+        console.error(e);
+        BT.toast('This image could not be opened', 'error');
+      }
+    }
+    function reset(keep) {
+      if (busy) worker.kill();
+      busy = false;
+      st = null;
+      busyOv.classList.add('hidden');
+      prog.hide();
+      showCompare(false);
+      S.msg();
+      if (!keep) S.show('intro');
+    }
+    function redrawDisp() {
+      var g = c2d(dispC);
+      g.clearRect(0, 0, dispC.width, dispC.height);
+      g.imageSmoothingQuality = 'high';
+      g.drawImage(st.full, 0, 0, dispC.width, dispC.height);
+    }
+    function redrawMask() {
+      var g = c2d(maskC);
+      g.clearRect(0, 0, maskC.width, maskC.height);
+      if (st) drawStrokes(g, st.strokes, st.ds, 0, 0);
+    }
+    function syncButtons() {
+      var has = !!st;
+      undoB.disabled = !has || !st.undo.length || busy;
+      redoB.disabled = !has || !st.redo.length || busy;
+      clearB.disabled = !has || !st.strokes.length || busy;
+      eraseBtn.disabled = !has || busy || !st.strokes.some(function (s) { return s.mode !== 'erase'; });
+      var edited = has && st.undo.some(function (e) { return e.t === 'f'; });
+      cmpBtn.disabled = !edited || busy;
+      pngBtn.disabled = jpgBtn.disabled = !has || busy;
+    }
+
+    // ---------- view transform
+    function layout() {
+      if (!st) return;
+      var sw = stage.clientWidth || 600;
+      var hgt = clamp(sw * dispC.height / dispC.width, 240, Math.min(window.innerHeight * 0.68, 720));
+      stage.style.height = Math.round(hgt) + 'px';
+    }
+    function fit() {
+      if (!st) return;
+      var sw = stage.clientWidth, sh = stage.clientHeight;
+      V.fit = Math.min(sw / dispC.width, sh / dispC.height);
+      V.z = V.fit;
+      V.tx = (sw - dispC.width * V.z) / 2;
+      V.ty = (sh - dispC.height * V.z) / 2;
+      apply();
+    }
+    function apply() {
+      world.style.transform = 'translate(' + V.tx + 'px,' + V.ty + 'px) scale(' + V.z + ')';
+      zoomV.textContent = Math.round(V.z / st.ds * 100) + '%';
+      syncCursor();
+    }
+    function zoomAt(f, cx, cy) {
+      if (!st) return;
+      if (cx == null) { cx = stage.clientWidth / 2; cy = stage.clientHeight / 2; }
+      var nz = clamp(V.z * f, V.fit * 0.5, Math.max(V.fit * 16, 8));
+      var k = nz / V.z;
+      V.tx = cx - (cx - V.tx) * k;
+      V.ty = cy - (cy - V.ty) * k;
+      V.z = nz;
+      apply();
+    }
+    function toImg(e) {
+      var r = stage.getBoundingClientRect();
+      return [((e.clientX - r.left) - V.tx) / V.z / st.ds, ((e.clientY - r.top) - V.ty) / V.z / st.ds];
+    }
+    var lastPos = null;
+    function syncCursor() {
+      var panning = tool === 'pan' || spaceDown;
+      stage.classList.toggle('pan', panning);
+      cursor.classList.toggle('erase', tool === 'erase');
+      var d = sizeCtl.get();
+      cursor.style.width = cursor.style.height = d + 'px';
+      cursor.style.display = lastPos && !panning && !busy && st ? 'block' : 'none';
+      if (lastPos) cursor.style.transform = 'translate(' + (lastPos[0] - d / 2) + 'px,' + (lastPos[1] - d / 2) + 'px)';
+    }
+
+    // ---------- pointer input: paint, pan, pinch
+    var pointers = {}, act = null;
+    stage.addEventListener('pointerdown', function (e) {
+      if (!st || busy) return;
+      stage.focus({ preventScroll: true });
+      try { stage.setPointerCapture(e.pointerId); } catch (er) { /* ignore */ }
+      pointers[e.pointerId] = [e.clientX, e.clientY];
+      var ids = Object.keys(pointers);
+      if (ids.length === 2) {
+        // second finger: cancel the stroke just started and pinch instead
+        if (act && act.type === 'paint' && act.stroke) {
+          st.strokes.pop(); st.undo.pop(); redrawMask(); syncButtons();
+        }
+        var a = pointers[ids[0]], b = pointers[ids[1]];
+        act = { type: 'pinch', d: Math.hypot(a[0] - b[0], a[1] - b[1]), mx: (a[0] + b[0]) / 2, my: (a[1] + b[1]) / 2, z: V.z, tx: V.tx, ty: V.ty };
+        return;
+      }
+      if (ids.length > 2) return;
+      if (tool === 'pan' || spaceDown || e.button === 1) {
+        act = { type: 'pan', x: e.clientX, y: e.clientY, tx: V.tx, ty: V.ty };
+        stage.classList.add('dragging');
+        return;
+      }
+      if (e.button !== 0) return;
+      var p = toImg(e);
+      var stroke = { mode: tool === 'erase' ? 'erase' : 'paint', size: sizeCtl.get() / V.z / st.ds, pts: [p] };
+      st.strokes.push(stroke);
+      st.undo.push({ t: 's', stroke: stroke });
+      st.redo = [];
+      act = { type: 'paint', stroke: stroke };
+      paintSeg(stroke, p, p);
+      syncButtons();
+    });
+    stage.addEventListener('pointermove', function (e) {
+      var r = stage.getBoundingClientRect();
+      lastPos = [e.clientX - r.left, e.clientY - r.top];
+      syncCursor();
+      if (!pointers[e.pointerId]) return;
+      pointers[e.pointerId] = [e.clientX, e.clientY];
+      if (!act) return;
+      if (act.type === 'pinch') {
+        var ids = Object.keys(pointers);
+        if (ids.length < 2) return;
+        var a = pointers[ids[0]], b = pointers[ids[1]];
+        var d = Math.hypot(a[0] - b[0], a[1] - b[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+        var nz = clamp(act.z * d / (act.d || 1), V.fit * 0.5, Math.max(V.fit * 16, 8)), k = nz / act.z;
+        var cx = act.mx - r.left, cy = act.my - r.top;
+        V.z = nz;
+        V.tx = cx - (cx - act.tx) * k + (mx - act.mx);
+        V.ty = cy - (cy - act.ty) * k + (my - act.my);
+        apply();
+      } else if (act.type === 'pan') {
+        V.tx = act.tx + e.clientX - act.x;
+        V.ty = act.ty + e.clientY - act.y;
+        apply();
+      } else if (act.type === 'paint') {
+        var p = toImg(e), s = act.stroke, last = s.pts[s.pts.length - 1];
+        if (Math.hypot(p[0] - last[0], p[1] - last[1]) < s.size * 0.08) return;
+        s.pts.push(p);
+        paintSeg(s, last, p);
+      }
+    });
+    function endPointer(e) {
+      delete pointers[e.pointerId];
+      if (!Object.keys(pointers).length) { act = null; stage.classList.remove('dragging'); syncButtons(); }
+      else if (act && act.type === 'pinch') act = null;
+    }
+    stage.addEventListener('pointerup', endPointer);
+    stage.addEventListener('pointercancel', endPointer);
+    stage.addEventListener('pointerleave', function () { lastPos = null; syncCursor(); });
+    stage.addEventListener('wheel', function (e) {
+      if (!st || !(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      var r = stage.getBoundingClientRect();
+      zoomAt(Math.exp(-e.deltaY * 0.0025), e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+    function paintSeg(s, a, b) {
+      var g = c2d(maskC), k = st.ds;
+      g.save();
+      g.globalCompositeOperation = s.mode === 'erase' ? 'destination-out' : 'source-over';
+      g.strokeStyle = g.fillStyle = '#ff1e5a';
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      g.lineWidth = s.size * k;
+      g.beginPath();
+      if (a === b) { g.arc(a[0] * k, a[1] * k, s.size * k / 2, 0, Math.PI * 2); g.fill(); }
+      else { g.moveTo(a[0] * k, a[1] * k); g.lineTo(b[0] * k, b[1] * k); g.stroke(); }
+      g.restore();
+    }
+    function onKey(e) {
+      if (!st || !root.isConnected || S.work.classList.contains('hidden')) return;
+      var tg = e.target, typing = /INPUT|TEXTAREA|SELECT/.test(tg.tagName || '') && tg.type !== 'range' && tg.type !== 'checkbox' || tg.isContentEditable;
+      if (typing) return;
+      var k = e.key;
+      if ((e.ctrlKey || e.metaKey) && (k === 'z' || k === 'Z')) { e.preventDefault(); if (e.shiftKey) redo(); else undo(); return; }
+      if ((e.ctrlKey || e.metaKey) && (k === 'y' || k === 'Y')) { e.preventDefault(); redo(); return; }
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (k === '[' || k === ']') { e.preventDefault(); sizeCtl.set(clamp(sizeCtl.get() + (k === ']' ? 6 : -6), 6, 160)); syncCursor(); }
+      else if (k === ' ' && doc.activeElement === stage) { e.preventDefault(); if (!spaceDown) { spaceDown = true; syncCursor(); } }
+      else if (k === 'b' || k === 'B') { tool = 'brush'; toolSeg.set('brush'); syncCursor(); }
+      else if (k === 'e' || k === 'E') { tool = 'erase'; toolSeg.set('erase'); syncCursor(); }
+      else if (k === 'h' || k === 'H') { tool = 'pan'; toolSeg.set('pan'); syncCursor(); }
+    }
+    function onKeyUp(e) { if (e.key === ' ' && spaceDown) { spaceDown = false; syncCursor(); } }
+    doc.addEventListener('keydown', onKey);
+    doc.addEventListener('keyup', onKeyUp);
+    var onResize = BT.debounce(function () { if (st && !S.work.classList.contains('hidden')) { layout(); fit(); } }, 150);
+    window.addEventListener('resize', onResize);
+
+    // ---------- history
+    function trimHistory() {
+      var fills = st.undo.filter(function (e) { return e.t === 'f'; }).length;
+      while (fills > 5) {
+        var e = st.undo.shift();
+        if (e.t === 'f') fills--;
+      }
+    }
+    function undo() {
+      if (!st || busy || !st.undo.length) return;
+      var e = st.undo.pop();
+      if (e.t === 's') { st.strokes.splice(st.strokes.lastIndexOf(e.stroke), 1); }
+      else if (e.t === 'c') {
+        // undo "clear": the clear pushed one 's' per stroke before this marker; restore them all
+        st.strokes = e.strokes.slice();
+        while (st.undo.length && st.undo[st.undo.length - 1].clear) st.undo.pop();
+        e.strokes.forEach(function (s) { st.undo.push({ t: 's', stroke: s }); });
+        redrawMask(); syncButtons();
+        return;
+      } else if (e.t === 'f') { st.full = e.before; st.strokes = e.strokes.slice(); redrawDisp(); }
+      st.redo.push(e);
+      redrawMask(); syncButtons();
+    }
+    function redo() {
+      if (!st || busy || !st.redo.length) return;
+      var e = st.redo.pop();
+      if (e.t === 's') st.strokes.push(e.stroke);
+      else if (e.t === 'f') { st.full = e.after; st.strokes = []; redrawDisp(); }
+      st.undo.push(e);
+      redrawMask(); syncButtons();
+    }
+
+    // ---------- erase
+    function strokeBox(strokes, W, H) {
+      var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      strokes.forEach(function (s) {
+        if (s.mode === 'erase') return;
+        var r = s.size / 2 + 2;
+        s.pts.forEach(function (p) {
+          x0 = Math.min(x0, p[0] - r); y0 = Math.min(y0, p[1] - r); x1 = Math.max(x1, p[0] + r); y1 = Math.max(y1, p[1] + r);
+        });
+      });
+      if (!isFinite(x0)) return null;
+      x0 = Math.max(0, Math.floor(x0)); y0 = Math.max(0, Math.floor(y0)); x1 = Math.min(W, Math.ceil(x1)); y1 = Math.min(H, Math.ceil(y1));
+      return x1 > x0 && y1 > y0 ? { x0: x0, y0: y0, x1: x1, y1: y1 } : null;
+    }
+    function maskOf(strokes, scale, ox, oy, w, hh) {
+      var c = mk(w, hh), g = c2d(c, true);
+      drawStrokes(g, strokes, scale, ox, oy);
+      var a = g.getImageData(0, 0, w, hh).data, m = new Uint8Array(w * hh), n = 0;
+      for (var i = 0; i < w * hh; i++) if (a[i * 4 + 3] > 8) { m[i] = 1; n++; }
+      return { m: m, count: n };
+    }
+    function erase() {
+      if (!st || busy) return;
+      var bb = strokeBox(st.strokes, st.W, st.H);
+      if (!bb) { BT.toast('Paint over the object you want to remove first'); return; }
+      var full = st.full, W = st.W, H = st.H;
+      var bm = maskOf(st.strokes, 1, bb.x0, bb.y0, bb.x1 - bb.x0, bb.y1 - bb.y0);
+      if (!bm.count) { BT.toast('Paint over the object you want to remove first'); return; }
+      // tight bounds of the real mask
+      var bw = bb.x1 - bb.x0, tx0 = bw, ty0 = Infinity, tx1 = -1, ty1 = -1;
+      for (var i = 0; i < bm.m.length; i++) {
+        if (!bm.m[i]) continue;
+        var x = i % bw, y = (i / bw) | 0;
+        if (x < tx0) tx0 = x; if (x > tx1) tx1 = x; if (y < ty0) ty0 = y; if (y > ty1) ty1 = y;
+      }
+      tx0 += bb.x0; tx1 += bb.x0 + 1; ty0 += bb.y0; ty1 += bb.y0 + 1;
+      var meth = method.get(), ext = Math.max(tx1 - tx0, ty1 - ty0);
+      var margin = Math.round(clamp(ext * 1.1, 48, 3000));
+      var cx = Math.max(0, tx0 - margin), cy = Math.max(0, ty0 - margin), cx1 = Math.min(W, tx1 + margin), cy1 = Math.min(H, ty1 + margin);
+      var cw = cx1 - cx, ch = cy1 - cy;
+      var ps = Math.min(1, 1600 / Math.max(cw, ch));
+      if (meth === 'patch' && bm.count * ps * ps > 160000) ps = Math.sqrt(160000 / bm.count);
+      if (meth === 'patch' && bm.count / (cw * ch) > 0.55) BT.toast('Large areas fill better with a smaller brush selection or the fast fill');
+      var pw = Math.max(8, Math.round(cw * ps)), ph = Math.max(8, Math.round(ch * ps));
+      var pc = mk(pw, ph), pg = c2d(pc, true);
+      pg.imageSmoothingQuality = 'high';
+      pg.drawImage(full, cx, cy, cw, ch, 0, 0, pw, ph);
+      var rgba = pg.getImageData(0, 0, pw, ph);
+      var pm = maskOf(st.strokes, pw / cw, cx, cy, pw, ph);
+      var hole = dilateMask(pm.m, pw, ph, 2);
+      busy = true;
+      syncButtons(); syncCursor();
+      var cancel = btn('Cancel', 'x', 'btn-sm', function () { worker.kill(); });
+      var ptxt = h('div.dai-ptxt', { text: 'Preparing…' }), pbar = h('span');
+      busyOv.innerHTML = '';
+      busyOv.appendChild(h('div.dai-busycard', { role: 'status' }, [
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '650', marginBottom: '8px' }, html: '<span class="spinner"></span> Erasing…' }),
+        ptxt, h('div.progress', null, [pbar]), cancel
+      ]));
+      busyOv.classList.remove('hidden');
+      var t0 = Date.now();
+      worker.run({ op: 'inpaint', w: pw, h: ph, rgba: rgba.data.buffer, mask: hole.buffer, method: meth }, [rgba.data.buffer, hole.buffer], function (p, label) {
+        pbar.style.width = Math.round(p * 100) + '%';
+        if (label) ptxt.textContent = label + ' ' + Math.round(p * 100) + '%';
+      }).then(function (m) {
+        if (!alive || !st || st.full !== full) return;
+        // upscale the filled crop to full resolution and blend it in only inside the (dilated, feathered) mask
+        var fc = mk(pw, ph);
+        c2d(fc).putImageData(new ImageData(new Uint8ClampedArray(m.rgba), pw, ph), 0, 0);
+        var up = mk(cw, ch), ug = c2d(up, true);
+        ug.imageSmoothingQuality = 'high';
+        ug.drawImage(fc, 0, 0, cw, ch);
+        var fill = ug.getImageData(0, 0, cw, ch).data;
+        var fm = maskOf(st.strokes, 1, cx, cy, cw, ch).m;
+        var grow = dilateMask(fm, cw, ch, Math.max(1, Math.round(1 / ps)));
+        var alpha = blurF(Float32Array.from(grow), cw, ch, 2);
+        var next = toCanvas(full), ng = c2d(next, true);
+        var od = ng.getImageData(cx, cy, cw, ch), o = od.data;
+        for (var i = 0, j = 0; i < cw * ch; i++, j += 4) {
+          var a = fm[i] ? 1 : alpha[i];
+          if (a <= 0) continue;
+          o[j] = o[j] + (fill[j] - o[j]) * a;
+          o[j + 1] = o[j + 1] + (fill[j + 1] - o[j + 1]) * a;
+          o[j + 2] = o[j + 2] + (fill[j + 2] - o[j + 2]) * a;
+        }
+        ng.putImageData(od, cx, cy);
+        st.undo.push({ t: 'f', before: full, after: next, strokes: st.strokes.slice() });
+        st.redo = [];
+        trimHistory();
+        st.full = next;
+        st.strokes = [];
+        redrawDisp(); redrawMask();
+        BT.toast('Erased in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s');
+      }).catch(function (e) {
+        if (e && e.cancelled) { BT.toast('Cancelled'); return; }
+        console.error(e);
+        BT.toast((e && e.message) || 'The fill failed', 'error');
+      }).then(function () {
+        busy = false;
+        busyOv.classList.add('hidden');
+        syncButtons(); syncCursor();
+      });
+    }
+
+    // ---------- compare + save
+    function showCompare(on) {
+      cmpBox.innerHTML = '';
+      cmpBox.classList.toggle('hidden', !on);
+      stage.classList.toggle('hidden', !!on);
+      etb.classList.toggle('hidden', !!on);
+      cmpBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      setBtn(cmpBtn, on ? 'Back to editing' : 'Compare', on ? 'brush' : 'git-compare');
+      if (on && st) cmpBox.appendChild(compareWidget(st.orig, st.full));
+      if (!on && st) { layout(); fit(); }
+    }
+    function toggleCompare() { showCompare(cmpBtn.getAttribute('aria-pressed') !== 'true'); }
+    function save(kind) {
+      if (!st) return;
+      var b = kind === 'png' ? pngBtn : jpgBtn;
+      BT.busy(b, function () {
+        var c = st.full;
+        if (kind === 'jpg') {
+          c = mk(st.W, st.H);
+          var g = c2d(c);
+          g.fillStyle = '#fff'; g.fillRect(0, 0, st.W, st.H);
+          g.drawImage(st.full, 0, 0);
+        }
+        return BT.canvasToBlob(c, kind === 'png' ? 'image/png' : 'image/jpeg', 0.92).then(function (blob) {
+          BT.download(blob, safeName(st.base) + '-erased.' + kind);
+        });
+      }, 'Saving…');
+    }
+    syncButtons();
+    return { destroy: function () { alive = false; worker.kill(); doc.removeEventListener('paste', onPaste); doc.removeEventListener('keydown', onKey); doc.removeEventListener('keyup', onKeyUp); window.removeEventListener('resize', onResize); } };
+  });
+
+})();
