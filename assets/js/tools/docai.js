@@ -58,6 +58,8 @@
     '.dai-act:empty{display:none}',
     '@media (min-width:960px){.dai-layout{grid-template-columns:minmax(0,1fr) 330px}.dai-side{position:sticky;top:80px;max-height:calc(100vh - 96px);display:flex;flex-direction:column}.dai-opts{overflow:auto;flex:1 1 auto}.dai-act{flex:none}}',
     '@media (max-width:959px){.dai-side{display:contents}.dai-opts{order:-1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}.dai-act{order:5;position:sticky;bottom:8px;z-index:30;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--shadow-lg);padding:12px}}',
+    '@media (max-width:959px){.dai-mainfirst .dai-opts{order:1}}',
+    '.dai-brow.tight>.btn{flex:1 1 80px;padding:0 10px}',
     '.dai-sec{margin-bottom:16px}.dai-sec:last-child{margin-bottom:0}.dai-sec>.label{display:block;margin-bottom:8px}',
     '.dai-sec .field{margin-bottom:0}',
     '.dai-seg{display:flex;width:100%}.dai-seg button{flex:1 1 auto;padding:7px 8px;display:inline-flex;align-items:center;justify-content:center;gap:6px}',
@@ -110,7 +112,7 @@
     '.dai-pg{font-size:.78rem;color:var(--text-3);margin-top:6px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
     '.dai-tx{position:absolute;top:4px;right:4px;z-index:3}',
     '.dai-tx .dai-ibtn{width:28px;height:28px;box-shadow:var(--shadow-sm)}',
-    '.dai-tbadge{position:absolute;left:8px;top:8px;z-index:2;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}',
+    '.dai-tbadge{position:absolute;left:50%;transform:translateX(-50%);bottom:30px;white-space:nowrap;z-index:2;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}',
     '.dai-tspin{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 55%,transparent);color:var(--brand);z-index:2}',
     '.dai-ph{width:70%;height:86%;border-radius:4px;background:linear-gradient(90deg,var(--surface-2),var(--border),var(--surface-2));background-size:200% 100%;animation:dai-sh 1.3s infinite linear}',
     '@keyframes dai-sh{to{background-position:-200% 0}}',
@@ -2219,7 +2221,7 @@
   });
 
   // ============================================================== SCAN TO PDF
-  var FILTERS = [['original', 'Original'], ['enhanced', 'Enhanced'], ['gray', 'Grayscale'], ['bw', 'B & W']];
+  var FILTERS = [['original', 'Original'], ['enhanced', 'Enhanced'], ['gray', 'Gray'], ['bw', 'B&W']];
   function pdist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
   /** Output size of the flattened page; snaps to the A4 ratio when asked (or when close, in auto mode). */
   function scanSize(q, shape) {
@@ -2256,6 +2258,7 @@
     var upDz = BT.dropzone({ accept: 'image/*', multiple: true, title: 'Upload photos', hint: 'Photos of documents, receipts or notes (JPG, PNG, WebP)', icon: 'images', color: color, onFiles: addFiles });
     upDz.appendChild(h('span.btn.btn-primary.dai-pick', { 'aria-hidden': 'true', html: icon('upload') + ' Choose photos' }));
     var S = workspace(root, ctx, { icon: 'file-scan', introExtra: h('div.dai-scanintro', null, [camCard, upDz]) });
+    S.wrap.classList.add('dai-mainfirst');
     S.setFile('Scanned document', 'No pages yet');
     if (hasCam) S.barActs.appendChild(btn('Camera', 'aperture', 'btn-sm', function () { openCamera(null); }));
     S.barActs.appendChild(fileBtn('Add photos', 'image-plus', 'btn-sm', 'image/*', true, addFiles));
@@ -2862,6 +2865,7 @@
       title: 'Choose a photo', hint: 'JPG, PNG or WebP · or paste an image with Ctrl+V', onFiles: function (f) { load(f[0]); }
     });
     S.barActs.appendChild(btn('Choose another', 'refresh-cw', 'btn-sm btn-ghost', function () { reset(); }));
+    S.wrap.classList.add('dai-mainfirst');
 
     // ---------- toolbar + stage
     var toolSeg = seg([['brush', 'Brush', 'brush'], ['erase', 'Unpaint', 'eraser'], ['pan', 'Move', 'move']], 'brush', function (v) { tool = v; syncCursor(); }, 'Tool');
@@ -2912,7 +2916,7 @@
     var jpgBtn = btn('JPG', 'download', '', function () { save('jpg'); });
     S.act.appendChild(prog);
     S.act.appendChild(eraseBtn);
-    S.act.appendChild(h('div.dai-brow', null, [cmpBtn, pngBtn, jpgBtn]));
+    S.act.appendChild(h('div.dai-brow.tight', null, [cmpBtn, pngBtn, jpgBtn]));
 
     function onPaste(e) {
       if (!alive || !root.isConnected || busy) return;

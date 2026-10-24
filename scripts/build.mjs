@@ -343,7 +343,7 @@ function buildTool(t) {
   const related = toolsIn(t.cat).filter((o) => o.id !== t.id).slice(0, 6);
   const others = ['pdf-editor', 'merge-pdf', 'gst-calculator', 'image-compressor', 'word-counter', 'qr-code-generator']
     .filter((id) => id !== t.id && !related.find((r) => r.id === id)).slice(0, 4).map((id) => TOOLS.find((x) => x.id === id));
-  const steps = (HOWTO[t.cat] || HOWTO.default)(t);
+  const steps = t.how ? t.how.map(esc) : (HOWTO[t.cat] || HOWTO.default)(t);
   const faqs = FAQ(t, c);
   const wide = t.cat === 'pdf' || t.id === 'invoice-generator';
 
