@@ -24,6 +24,7 @@
     '.dsn-stage.dark{background:#0d1020}',
     '.dsn-panel h3{font-size:1rem;margin:0 0 12px}',
     '@media(min-width:900px){.dsn-left{position:sticky;top:84px;align-self:start}}',
+    '.dsn-split>*{min-width:0}.dsn-panel select{min-width:0;max-width:100%}',
     '.dsn-panel .field:last-child{margin-bottom:0}',
     '.dsn-sec{padding-top:14px;margin-top:14px;border-top:1px solid var(--border)}',
     '.dsn-sec>h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin:0 0 10px}',
@@ -510,7 +511,7 @@
     var under = h('div.dsn-under');
     var panel = h('div.card.dsn-panel');
     var left = h('div.dsn-left', null, [stage, under]);
-    root.appendChild(h('div.split.wide-left', null, [left, h('div', null, [panel])]));
+    root.appendChild(h('div.split.wide-left.dsn-split', null, [left, h('div', null, [panel])]));
     return { stage: stage, under: under, panel: panel, left: left };
   }
 
@@ -1877,7 +1878,7 @@
         T('shape', { shape: 'circle', x: W * 0.86, y: H * 0.12, w: 520 * u, h: 520 * u, fill: '#ffffff', opacity: 0.12, radius: 0 }),
         T('shape', { shape: 'circle', x: W * 0.08, y: H * 0.92, w: 380 * u, h: 380 * u, fill: '#ffffff', opacity: 0.1, radius: 0 }),
         T('icon', { name: 'tag', x: W / 2, y: H * 0.2, size: 120 * u, color: '#ffffff', sw: 2, bg: 'none', bgColor: '#ffffff' }),
-        txt({ text: 'MEGA SALE', x: W / 2, y: H * 0.4, w: W * 0.9, size: 190 * u, font: 'impact', weight: 400, shadow: true }),
+        txt({ text: 'MEGA SALE', x: W / 2, y: H * 0.4, w: W * 0.94, size: 150 * u, font: 'impact', weight: 400, shadow: true }),
         txt({ text: 'UP TO 50% OFF', x: W / 2, y: H * 0.58, w: W * 0.8, size: 70 * u, weight: 800, color: '#db2777', pill: true, pillColor: '#ffffff' }),
         txt({ text: 'This weekend only · Shop now', x: W / 2, y: H * 0.74, w: W * 0.85, size: 46 * u, weight: 500 })
       ] };
@@ -2753,7 +2754,7 @@
     var shuffle = 0, P = {};
     root.innerHTML = '';
     var left = h('div'), panel = h('div.card.dsn-panel');
-    root.appendChild(h('div.split.wide-left', null, [left, h('div', null, [panel])]));
+    root.appendChild(h('div.split.wide-left.dsn-split', null, [left, h('div', null, [panel])]));
 
     P.light = h('div.dsn-lp.light', { role: 'img', 'aria-label': 'Logo on a light background' });
     P.dark = h('div.dsn-lp.dark', { role: 'img', 'aria-label': 'Logo on a dark background' });
