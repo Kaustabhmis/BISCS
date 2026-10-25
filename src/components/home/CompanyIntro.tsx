@@ -45,7 +45,9 @@ export function CompanyIntro() {
   }, [])
 
   return (
-    <section id="intro" ref={root} aria-labelledby="intro-heading" className="relative bg-ink py-24 text-paper md:py-36">
+    <section id="intro" ref={root} aria-labelledby="intro-heading" className="relative py-28 text-paper md:py-44">
+      {/* Soft scrim: the 3D constellation shows through without competing with the copy. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-ink/55 to-ink" />
       <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
@@ -55,7 +57,7 @@ export function CompanyIntro() {
             <h2 id="intro-heading" className="t-h3 mt-6 max-w-sm text-paper/90">
               {intro.heading}
             </h2>
-            <p className="serif-em mt-8 text-3xl leading-tight text-accent">“{intro.philosophy}”</p>
+            <p className="serif-em text-gold mt-8 text-3xl leading-tight">“{intro.philosophy}”</p>
           </div>
         </div>
 

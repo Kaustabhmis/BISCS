@@ -2,6 +2,7 @@ let cached: boolean | undefined
 
 /** Detects whether the browser can create a WebGL context. Result is cached. */
 export function hasWebGL(): boolean {
+  if (typeof document === 'undefined') return false
   if (cached !== undefined) return cached
   try {
     const canvas = document.createElement('canvas')
@@ -17,6 +18,7 @@ export function hasWebGL(): boolean {
 
 /** Rough device capability tier, used to scale rendering quality. */
 export function deviceTier(): 'high' | 'low' {
+  if (typeof window === 'undefined') return 'low'
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } }
   if (nav.connection?.saveData) return 'low'
   if (window.matchMedia('(max-width: 767px)').matches) return 'low'

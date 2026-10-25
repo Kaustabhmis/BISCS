@@ -1,4 +1,5 @@
 import { useParams } from 'react-router'
+import { ServiceSchema } from '../components/OrganizationSchema'
 import { Seo } from '../components/Seo'
 import { ServiceCard } from '../components/services/ServiceCard'
 import { ServiceDetail } from '../components/services/ServiceDetail'
@@ -6,6 +7,7 @@ import { CtaBand } from '../components/ui/CtaBand'
 import { Icon } from '../components/ui/Icon'
 import { PageHeader } from '../components/ui/PageHeader'
 import { PlaceholderBadge } from '../components/ui/PlaceholderBadge'
+import { site } from '../config/site'
 import { services as allServices } from '../data/services'
 import { visible } from '../lib/content'
 import NotFoundPage from './NotFoundPage'
@@ -22,7 +24,12 @@ export default function ServiceDetailPage() {
 
   return (
     <>
-      <Seo title={service.title} description={service.intro} path={`/services/${service.slug}`} />
+      <Seo
+        title={service.title}
+        description={`${service.intro} ${service.category} for small and medium businesses by ${site.brand.shortName}.`}
+        path={`/services/${service.slug}`}
+      />
+      <ServiceSchema service={service} />
       <PageHeader
         label={`Services · ${service.category}`}
         title={service.title}

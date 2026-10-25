@@ -1,7 +1,6 @@
 import type { Plugin } from 'vite'
 import { site } from '../src/config/site'
-import { staticRoutes } from '../src/config/navigation'
-import { services } from '../src/data/services'
+import { sitemapRoutes } from '../src/config/routes'
 
 /**
  * Build-time integration between `src/config/site.ts` and the static output:
@@ -33,6 +32,8 @@ function themeCss(): string {
     '--brand-accent': c.accent,
     '--brand-accent-ink': c.accentInk,
     '--brand-signal': c.signal,
+    '--brand-gold-light': c.goldLight,
+    '--brand-gold-deep': c.goldDeep,
     '--brand-font-display': t.display,
     '--brand-font-serif': t.serif,
     '--brand-font-body': t.body,
@@ -69,23 +70,22 @@ function headTags(url: string): string {
   return tags.join('\n    ')
 }
 
-/** Hidden HTML form so Netlify registers the form and its fields at deploy time. */
-function netlifyForm(): string {
-  const f = site.contactForm
-  const inputs = f.fields
-    .map((field) =>
-      field.type === 'textarea'
-        ? `<textarea name="${field.name}"></textarea>`
-        : field.type === 'select'
-          ? `<select name="${field.name}"><option value="">-</option></select>`
-          : `<input type="${field.type}" name="${field.name}" />`,
-    )
-    .join('')
-  return `<form name="${f.name}" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden aria-hidden="true"><input type="hidden" name="form-name" value="${f.name}" /><input name="bot-field" />${inputs}</form>`
-}
-
-export function siteRoutes(): string[] {
-  return [...staticRoutes, ...services.filter((s) => !(site.launch.hidePlaceholderContent && s.placeholder)).map((s) => `/services/${s.slug}`)]
+/** Hidden HTML forms so Netlify registers each form and its fields at deploy time. */
+function netlifyForms(): string {
+  return [site.contactForm, site.feedbackForm]
+    .map((f) => {
+      const inputs = f.fields
+        .map((field) =>
+          field.type === 'textarea'
+            ? `<textarea name="${field.name}"></textarea>`
+            : field.type === 'select'
+              ? `<select name="${field.name}"><option value="">-</option></select>`
+              : `<input type="${field.type}" name="${field.name}" />`,
+        )
+        .join('')
+      return `<form name="${f.name}" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden aria-hidden="true"><input type="hidden" name="form-name" value="${f.name}" /><input name="bot-field" />${inputs}</form>`
+    })
+    .join('\n    ')
 }
 
 export function sitePlugin(env: Record<string, string | undefined>): Plugin {
@@ -99,14 +99,15 @@ export function sitePlugin(env: Record<string, string | undefined>): Plugin {
       return html
         .replace('<!--site:theme-->', `<style>${themeCss()}</style>`)
         .replace('<!--site:head-->', headTags(url))
-        .replace('<!--site:form-->', netlifyForm())
-        .replace('<!--site:noscript-->', esc(site.brand.name))
+        .replace('<!--site:form-->', netlifyForms())
     },
     generateBundle() {
+      // Only for the browser build (the pre-render server build reuses this config).
+      if (this.environment && this.environment.name !== 'client') return
       const today = new Date().toISOString().slice(0, 10)
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${siteRoutes()
+${sitemapRoutes()
   .map((r) => `  <url><loc>${url}${r === '/' ? '/' : r}</loc><lastmod>${today}</lastmod></url>`)
   .join('\n')}
 </urlset>

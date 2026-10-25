@@ -6,15 +6,17 @@
  * if that injection is missing (e.g. in unit tests).
  */
 :root {
-  --brand-ink: #0b0c10;
-  --brand-ink-raised: #14161d;
-  --brand-paper: #efece5;
-  --brand-paper-deep: #e3dfd5;
-  --brand-ash: #9497a1;
-  --brand-stone: #5d5f66;
-  --brand-accent: #ff5a36;
-  --brand-accent-ink: #b83a1b;
-  --brand-signal: #9db4ff;
+  --brand-ink: #07070b;
+  --brand-ink-raised: #111118;
+  --brand-paper: #f4efe6;
+  --brand-paper-deep: #e9e1d2;
+  --brand-ash: #9a968e;
+  --brand-stone: #5e5a52;
+  --brand-accent: #f2b33d;
+  --brand-accent-ink: #855300;
+  --brand-signal: #ffe7a8;
+  --brand-gold-light: #ffe7a8;
+  --brand-gold-deep: #c9820e;
   --brand-font-display: ui-sans-serif, system-ui, sans-serif;
   --brand-font-serif: ui-serif, Georgia, serif;
   --brand-font-body: ui-sans-serif, system-ui, sans-serif;
@@ -22,6 +24,16 @@
 
   --header-h: 4.5rem;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Metallic gold: a light catch at the top-left falling to deep amber. */
+  --gold-gradient: linear-gradient(
+    120deg,
+    var(--brand-gold-deep) 0%,
+    var(--brand-accent) 22%,
+    var(--brand-gold-light) 42%,
+    var(--brand-accent) 58%,
+    var(--brand-gold-deep) 100%
+  );
 }
 
 @theme inline {
@@ -34,6 +46,8 @@
   --color-accent: var(--brand-accent);
   --color-accent-ink: var(--brand-accent-ink);
   --color-signal: var(--brand-signal);
+  --color-gold-light: var(--brand-gold-light);
+  --color-gold-deep: var(--brand-gold-deep);
 
   --font-display: var(--brand-font-display);
   --font-serif: var(--brand-font-serif);
@@ -137,6 +151,46 @@
     letter-spacing: -0.02em;
   }
 
+  /* Metallic gold text (emphasis words). Falls back to solid accent. */
+  .text-gold {
+    color: var(--brand-accent);
+    background-image: var(--gold-gradient);
+    background-size: 220% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gold-shimmer {
+    animation: gold-shimmer 7s ease-in-out infinite alternate;
+  }
+
+  /* Metallic gold surface with a sheen that sweeps across on hover. */
+  .bg-gold {
+    background-image: var(--gold-gradient);
+    background-size: 200% 100%;
+    background-position: 10% 50%;
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, var(--brand-gold-deep) 70%, transparent),
+      0 10px 30px -12px color-mix(in oklab, var(--brand-accent) 70%, transparent);
+    transition:
+      background-position 0.9s var(--ease-out-expo),
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+  .bg-gold:hover {
+    background-position: 90% 50%;
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 65%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, var(--brand-gold-deep) 70%, transparent),
+      0 16px 44px -10px color-mix(in oklab, var(--brand-accent) 85%, transparent);
+  }
+
+  /* Thin gold-tinted border for premium cards. */
+  .border-gold-soft {
+    border-color: color-mix(in oklab, var(--brand-accent) 28%, transparent);
+  }
+
   /* Hairlines */
   .hairline {
     border-color: color-mix(in oklab, var(--brand-paper) 12%, transparent);
@@ -201,6 +255,15 @@
     background: var(--brand-accent);
     transform-origin: top;
     animation: scroll-cue 2.4s var(--ease-out-expo) infinite;
+  }
+}
+
+@keyframes gold-shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
   }
 }
 

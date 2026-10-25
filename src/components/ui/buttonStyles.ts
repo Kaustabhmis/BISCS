@@ -3,10 +3,10 @@ import { cn } from '../../lib/cn'
 export type Variant = 'primary' | 'ghost' | 'dark' | 'outline-dark'
 
 const variants: Record<Variant, string> = {
-  // Accent pill on dark backgrounds.
-  primary: 'bg-accent text-ink hover:bg-paper',
-  // Outlined on dark backgrounds.
-  ghost: 'text-paper ring-1 ring-inset ring-paper/25 hover:ring-paper hover:bg-paper/5',
+  // Metallic gold pill.
+  primary: 'bg-gold text-ink',
+  // Outlined on dark backgrounds, warming to gold on hover.
+  ghost: 'text-paper ring-1 ring-inset ring-paper/20 hover:ring-accent/70 hover:bg-accent/[0.06] hover:text-gold-light',
   // Solid ink on light backgrounds.
   dark: 'bg-ink text-paper hover:bg-accent-ink',
   // Outlined on light backgrounds.

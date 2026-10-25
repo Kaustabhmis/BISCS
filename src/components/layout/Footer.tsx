@@ -5,6 +5,8 @@ import { services } from '../../data/services'
 import { visible } from '../../lib/content'
 import { Icon } from '../ui/Icon'
 import { Logo } from './Logo'
+import { whatsappUrl } from '../../lib/whatsapp'
+import { WhatsAppGlyph } from '../contact/WhatsAppButton'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -32,6 +34,11 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link to="/feedback" className="text-paper/80 transition-colors hover:text-accent">
+                Share your experience
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -70,6 +77,15 @@ export function Footer() {
                 </a>
               </li>
             )}
+            {whatsappUrl() && (
+              <li>
+                <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-accent">
+                  <WhatsAppGlyph className="size-4 text-[#25D366]" />
+                  WhatsApp us
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              </li>
+            )}
             {contact.address && <li className="not-italic">{contact.address}</li>}
             {!hasContact && (
               <li>
@@ -100,11 +116,12 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Oversized wordmark — purely decorative. */}
+      {/* Oversized wordmark — purely decorative, drawn with CSS so it stays out of the accessibility tree. */}
       <div aria-hidden="true" className="shell pointer-events-none select-none">
-        <p className="font-display text-[22vw] font-semibold leading-[0.75] tracking-[-0.07em] text-paper/[0.04] lg:text-[17rem]">
-          {site.brand.shortName}
-        </p>
+        <div
+          data-word={site.brand.shortName}
+          className="font-display text-[22vw] font-semibold leading-[0.75] tracking-[-0.07em] text-paper/[0.04] before:content-[attr(data-word)] lg:text-[17rem]"
+        />
       </div>
 
       <div className="shell flex flex-col gap-4 border-t border-paper/10 py-6 text-sm text-paper/60 sm:flex-row sm:items-center sm:justify-between">

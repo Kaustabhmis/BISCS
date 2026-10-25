@@ -4,7 +4,7 @@ import type {
   BrandTypography,
   Cta,
   Differentiator,
-  FormField,
+  FormConfig,
   Milestone,
   PageSeo,
   Placeholderable,
@@ -51,19 +51,22 @@ const brand = {
 }
 
 /**
- * Palette derived from the Kunnect logo (gold on black, white wordmark).
- * `accentInk` must keep ≥ 4.5:1 contrast on `paper` for text use (currently 5.8:1).
+ * Premium palette derived from the Kunnect logo: obsidian black, ivory, and a
+ * metallic champagne-to-amber gold (goldLight → accent → goldDeep).
+ * `accentInk` must keep ≥ 4.5:1 contrast on `paper` for text use (currently 5.7:1).
  */
 const colors: BrandColors = {
-  ink: '#0B0C10',
-  inkRaised: '#14161D',
-  paper: '#EFECE5',
-  paperDeep: '#E3DFD5',
-  ash: '#9497A1',
-  stone: '#5D5F66',
-  accent: '#F9A30B',
-  accentInk: '#8A4B00',
-  signal: '#FFE3A8',
+  ink: '#07070B',
+  inkRaised: '#111118',
+  paper: '#F4EFE6',
+  paperDeep: '#E9E1D2',
+  ash: '#9A968E',
+  stone: '#5E5A52',
+  accent: '#F2B33D',
+  accentInk: '#855300',
+  signal: '#FFE7A8',
+  goldLight: '#FFE7A8',
+  goldDeep: '#C9820E',
 }
 
 /** Font stacks. To change fonts, update these and the imports in `src/main.tsx`. */
@@ -151,7 +154,8 @@ const brandsSection = {
 
 const testimonialsSection = {
   label: 'Client voices',
-  heading: 'What working together feels like',
+  heading: 'What our clients say',
+  shareCta: { label: 'Share your experience', href: '/feedback' } satisfies Cta,
 }
 
 /** Closing call-to-action band used at the end of most pages. */
@@ -214,11 +218,18 @@ const about = {
 
 /**
  * Contact details. Empty values are hidden — never invent contact details.
- * PLACEHOLDER: add the real email, phone, address and hours.
+ * PLACEHOLDER: add the real email, address and hours.
  */
 const contact = {
   email: '',
-  phone: '',
+  phone: '+91 79808 71878',
+  /**
+   * WhatsApp number in international format, digits only (no +, spaces or
+   * dashes). Leave empty to hide the WhatsApp buttons.
+   */
+  whatsapp: '917980871878',
+  /** Message pre-filled when a visitor opens WhatsApp. */
+  whatsappMessage: 'Hi Kunnect, I’d like to discuss a project for my business.',
   address: '',
   hours: '',
   /** Map link for the address, optional. */
@@ -251,11 +262,12 @@ const contactPage = {
  * hidden static form Netlify needs for build-time form detection, so the
  * React form and Netlify always stay in sync.
  */
-const contactForm = {
+const contactForm: FormConfig = {
   /** Netlify form name. Changing it creates a new form in the Netlify UI. */
   name: 'contact',
   /** Where submissions are POSTed. `/` is correct for Netlify Forms on this SPA. */
   endpoint: '/',
+  legend: 'Project enquiry',
   submitLabel: 'Send enquiry',
   successTitle: 'Thank you — your enquiry has been sent.',
   successText: 'We’ve received your message and will reply as soon as we can.', // PLACEHOLDER: state a real response time if you have one.
@@ -295,7 +307,70 @@ const contactForm = {
       type: 'checkbox',
       required: true,
     },
-  ] satisfies FormField[],
+  ],
+}
+
+// ── Customer feedback (testimonial submissions) ─────────────────────────────
+
+/**
+ * Customers can submit feedback at /feedback. Submissions arrive in Netlify
+ * (Forms → feedback) and are NOT published automatically: review each one,
+ * confirm the customer is real and agreed to publication, then add it to
+ * src/data/testimonials.ts.
+ */
+const feedbackPage = {
+  label: 'Share your experience',
+  heading: 'Worked with us? We’d love to hear from you.',
+  intro:
+    'Your feedback helps us improve and helps other business owners decide. Approved reviews may be featured on our website.',
+  notes: [
+    'Every submission is reviewed by our team before anything is published.',
+    'We only publish your name, role and company if you agree below.',
+    'Your email is never published — we only use it to confirm your review.',
+  ],
+}
+
+const feedbackForm: FormConfig = {
+  name: 'feedback',
+  endpoint: '/',
+  legend: 'Customer feedback',
+  submitLabel: 'Submit feedback',
+  successTitle: 'Thank you for your feedback!',
+  successText: 'Our team will review it shortly. If you agreed to publication, it may appear on our website after review.',
+  errorText: 'Sorry, your feedback could not be sent. Please try again in a moment.',
+  fields: [
+    { name: 'name', label: 'Your name', type: 'text', required: true, autoComplete: 'name', half: true, maxLength: 120 },
+    { name: 'email', label: 'Email (not published)', type: 'email', required: true, autoComplete: 'email', half: true, maxLength: 200 },
+    { name: 'role', label: 'Your role', type: 'text', autoComplete: 'organization-title', half: true, maxLength: 120, placeholder: 'e.g. Owner' },
+    { name: 'company', label: 'Business name', type: 'text', autoComplete: 'organization', half: true, maxLength: 160 },
+    {
+      name: 'service',
+      label: 'Service you used',
+      type: 'select',
+      half: true,
+      options: [...services.map((s) => s.title), 'Other'],
+    },
+    {
+      name: 'rating',
+      label: 'Your rating',
+      type: 'select',
+      half: true,
+      options: ['5 — Excellent', '4 — Very good', '3 — Good', '2 — Fair', '1 — Poor'],
+    },
+    {
+      name: 'feedback',
+      label: 'Your feedback',
+      type: 'textarea',
+      required: true,
+      placeholder: 'What was it like working with us, and what changed for your business?',
+      maxLength: 1500,
+    },
+    {
+      name: 'publish',
+      label: 'I agree that my feedback, name, role and business name may be published on the Kunnect website.',
+      type: 'checkbox',
+    },
+  ],
 }
 
 // ── Footer & legal ──────────────────────────────────────────────────────────
@@ -325,15 +400,15 @@ const seo = {
   ogImage: '/og-image.jpg',
   twitterHandle: '',
   /**
-   * Organization structured data is emitted only when enabled. Enable it once
-   * the name, logo, contact details and social profiles above are accurate.
+   * JSON-LD structured data (Organization + WebSite on the home page, Service +
+   * BreadcrumbList on service pages). Only fields with real values are used.
    */
-  structuredData: false,
+  structuredData: true,
   pages: {
     home: {
-      title: 'Kunnect Digital and Softwares — Digital marketing & software studio',
+      title: 'Kunnect Digital and Softwares | Digital Marketing & Software',
       description:
-        'Kunnect Digital and Softwares helps small and medium-scale businesses grow with strategic digital marketing and custom software, guided by a dedicated account manager.',
+        'SEO, Google & Meta ads, websites, branding, social media and WhatsApp automation for small and medium businesses, with a dedicated account manager.',
     },
     services: {
       title: 'Services',
@@ -348,6 +423,10 @@ const seo = {
     contact: {
       title: 'Contact',
       description: 'Start a conversation with Kunnect Digital and Softwares about your next project.',
+    },
+    feedback: {
+      title: 'Share your experience',
+      description: 'Worked with Kunnect Digital and Softwares? Share your feedback and help other business owners decide.',
     },
     notFound: { title: 'Page not found', description: 'The page you were looking for could not be found.', noindex: true },
   } satisfies Record<string, PageSeo>,
@@ -369,6 +448,8 @@ export const site = {
   socials,
   contactPage,
   contactForm,
+  feedbackPage,
+  feedbackForm,
   footer,
   legal,
   seo,

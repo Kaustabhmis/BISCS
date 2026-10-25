@@ -55,7 +55,7 @@ export function BrandCarousel() {
   const track = brands.length < 6 ? [...brands, ...brands, ...brands] : brands
 
   return (
-    <section aria-labelledby="brands-heading" className="on-paper relative bg-paper py-20 text-ink md:py-28">
+    <section aria-labelledby="brands-heading" className="on-paper relative bg-paper pb-16 pt-20 text-ink md:pb-20 md:pt-28">
       <div className="shell flex flex-wrap items-end justify-between gap-6">
         <div>
           <SectionLabel index="02" className="text-stone">

@@ -21,7 +21,7 @@ export default function NotFoundPage() {
         <div className="shell">
           <p className="t-label text-accent">Error 404 — signal lost</p>
           <h1 className="t-display mt-6 max-w-[12ch]">
-            This page drifted <span className="serif-em text-accent">off orbit</span>.
+            This page drifted <span className="serif-em text-gold pr-[0.04em]">off orbit</span>.
           </h1>
           <p className="t-lead mt-8 max-w-lg text-paper/70">
             The page you’re looking for doesn’t exist or has moved. Let’s reconnect you with something useful.

@@ -1,8 +1,9 @@
 # Kunnect Digital and Softwares — website
 
 Marketing website for **Kunnect Digital and Softwares** (kunnectds.in), built with
-React, TypeScript, Vite, Tailwind CSS, Three.js (React Three Fiber + Drei) and
-GSAP. Designed for Netlify hosting.
+React, TypeScript, Vite, Tailwind CSS, Three.js (React Three Fiber, Drei,
+post-processing) and GSAP. Every page is pre-rendered to static HTML for SEO
+and hosted on Netlify.
 
 > The file `index` (no extension) in the repository root is an older,
 > unrelated single-file page ("BISCS India — Software & Tools"). It is kept
@@ -16,32 +17,41 @@ Requires Node.js 22+ (Node 20.19+ also works).
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # type-check + production build into dist/
-npm run preview    # serve dist/ at http://localhost:4173
-npm run lint       # ESLint
-npm run test       # unit tests (form validation)
-npm run typecheck  # TypeScript only
+npm run dev          # http://localhost:5173 (client-rendered, for development)
+npm run build        # type-check, build, and pre-render every page into dist/
+npm run build:client # build without pre-rendering (faster, for quick checks)
+npm run preview      # serve dist/ at http://localhost:4173
+npm run lint         # ESLint
+npm run test         # unit tests (form validation)
 ```
 
-The contact form only submits successfully on Netlify (see below). Locally it
-correctly shows its error state.
+The forms only submit successfully on Netlify (see below). Locally they
+correctly show their error state.
 
 ---
 
 ## Creative concept — “The Growth Engine”
 
-The 3D hero is a working model of what the agency does: **channel nodes** (SEO,
-Ads, Social, Branding, Reviews, Web, Automation) travel on three tilted orbits.
-Each node is a gold diamond, taken from the circuit nodes in the Kunnect logo,
-and sends a stream of light into a faceted glass **core**: many channels
-converging into one connected strategy. Underneath, a **radial bar chart rises
-around the circle**: growth, measured. As the visitor scrolls, the structure
-lifts and tilts away into the company introduction.
+The 3D hero is a working model of what Kunnect does:
 
-- **Type:** Inter Tight (display/body), Instrument Serif italic (accent words), JetBrains Mono (labels). Self-hosted, with no third-party font requests.
-- **Colour:** near-black ink, warm paper, and logo gold as the single accent. Dark and light sections alternate for rhythm.
-- **Motion:** one cinematic entrance on the hero, then restrained scroll reveals. Nothing loops except the 3D scene and the logo marquee, and both can be paused or are disabled for reduced motion.
+- **Channel nodes** (SEO, Ads, Social, Branding, Reviews, Web, Automation) are
+  gold diamonds, taken from the circuit nodes in the Kunnect logo. They orbit a
+  **refractive glass core** and stream light into it: many channels, one
+  connected strategy.
+- A **geodesic network of diamonds** surrounds the core, with signals firing
+  across it: connection.
+- Thousands of **particles spiral upward**, and a **radial bar chart rises**
+  beneath the core: growth.
+- Cinematic finish: bloom glow, subtle lens fringing, a vignette, a camera that
+  flies in on load, and a warm light that follows the mouse across the metal.
+- **Scroll journey:** the 3D stage stays pinned behind the hero and the “Who we
+  are” section. As visitors scroll, the engine bursts open into a constellation
+  behind the company introduction.
+
+**Palette:** obsidian black, ivory, and a metallic champagne-to-amber gold
+taken from the logo (`site.colors`). The gold is used as a gradient on buttons
+and emphasis words.
+**Type:** Inter Tight, Instrument Serif italic and JetBrains Mono, all self-hosted.
 
 ---
 
@@ -50,200 +60,195 @@ lifts and tilts away into the company introduction.
 ```
 src/
   config/
-    site.ts            ← ALL business content, colours, fonts, SEO, form fields
-    navigation.ts      ← menu items, navbar CTA, sitemap routes
+    site.ts            ← ALL business content, colours, fonts, SEO, forms
+    navigation.ts      ← menu items, navbar CTA, static routes
+    routes.ts          ← pages to pre-render / include in the sitemap
   data/
     services.ts        ← services (grouped by category)
     brands.ts          ← client / partner logos for the carousel
-    testimonials.ts    ← client testimonials
+    testimonials.ts    ← approved customer testimonials
   types/content.ts     ← TypeScript interfaces for all content
   components/
     layout/            ← Navbar, MobileMenu, Footer, Logo, Layout
     hero/              ← HeroSection, HeroScene (three.js), HeroFallback (SVG)
-    home/              ← CompanyIntro, BrandCarousel, Testimonials
+    home/              ← HomeExperience (sticky 3D stage), CompanyIntro, BrandCarousel, Testimonials
     services/          ← ServiceDetail, ServiceCard, ServiceVisual
-    contact/           ← ContactForm
+    contact/           ← NetlifyForm (shared), ContactForm, WhatsAppButton
     ui/                ← Button, Reveal, PageHeader, CtaBand, Icon, badges…
-    Seo.tsx            ← per-page title / description / canonical / OG tags
-  pages/               ← Home, Services, ServiceDetail, About, Contact, Legal, NotFound
-  lib/                 ← validation, Netlify form submit, GSAP setup, WebGL detection
-  hooks/               ← media query / reduced motion / in-view
-  styles/index.css     ← Tailwind v4 theme tokens + type scale
-scripts/vite-site-plugin.ts  ← build-time: theme CSS, <head> tags, Netlify form, sitemap, robots
-public/                ← logo, favicons, og-image, _redirects
+    Seo.tsx, OrganizationSchema.tsx  ← head tags and JSON-LD structured data
+  pages/               ← Home, Services, ServiceDetail, About, Contact, Feedback, Legal, NotFound
+  AppRoutes.tsx        ← route table shared by the browser and the pre-renderer
+  entry-server.tsx     ← build-time renderer
+scripts/
+  vite-site-plugin.ts  ← theme CSS, default <head> tags, Netlify form definitions, sitemap, robots
+  prerender.mjs        ← writes static HTML for every route + 404.html + _redirects
+public/                ← logo, favicons, og-image, _headers
 netlify.toml
 ```
 
 Routes: `/`, `/services`, `/services/:slug` (one per service), `/about`,
-`/contact`, `/privacy`, `/terms`, and a branded 404 for anything else.
+`/contact`, `/feedback`, `/privacy`, `/terms`, and a branded 404.
 
 ---
 
 ## Editing content
 
-Everything lives in **`src/config/site.ts`** and **`src/data/*.ts`**. Components
-never hardcode business information.
+Everything lives in **`src/config/site.ts`** and **`src/data/*.ts`**.
 
 ### Placeholder content
 
-Anything marked `placeholder: true` (or commented `PLACEHOLDER` / `DRAFT`) is
-temporary. Placeholder items show a visible **“Placeholder”** badge on the site.
+Items marked `placeholder: true` show a visible **“Placeholder”** badge. Before
+launch, set `launch.hidePlaceholderContent: true` in `site.ts` to remove them
+all. Sections left empty (brand carousel, team, milestones) disappear.
 
-Before launch, set:
-
-```ts
-// src/config/site.ts
-launch: { hidePlaceholderContent: true }
-```
-
-This removes every placeholder item, and sections left empty (brand carousel,
-testimonials, team, milestones) disappear automatically.
-
-**Still placeholder / needs your input:**
+**Still needs your input:**
 
 | Content | Where | Status |
 | --- | --- | --- |
-| Email, phone, address, hours | `site.contact` | Empty → hidden. Add real details. |
+| Email, address, hours | `site.contact` | Empty → hidden. |
 | Social links | `site.socials` | Empty `href` → hidden. |
-| Client / partner logos | `src/data/brands.ts` | 8 neutral placeholder slots. |
-| Testimonials | `src/data/testimonials.ts` | 3 clearly labelled placeholders. |
-| Team | `site.about.team` | 4 placeholder profiles. |
-| Milestones | `site.about.milestones` | 3 placeholders. |
-| Company statistics | `site.intro.stats` | Hidden until `verified: true` with a real value. |
-| Service descriptions | `src/data/services.ts` | Names are yours. Descriptions are drafted copy: please review. |
-| “How we work” and “What happens next” | `site.about.methodology`, `site.contactPage.nextSteps` | Drafted copy: please confirm. |
-| Budget ranges | `site.contactForm.fields` → `budget` | Placeholder ₹ bands. |
-| Privacy policy / Terms | `site.legal` | Empty: pages show “awaiting content” and are `noindex`. |
+| Client / partner logos | `src/data/brands.ts` | Placeholder slots. |
+| Testimonials | `src/data/testimonials.ts` | 3 labelled placeholders. Add approved feedback from `/feedback`. |
+| Team, milestones | `site.about` | Placeholders. |
+| Service descriptions | `src/data/services.ts` | Drafted copy: please review. |
+| “How we work”, “What happens next” | `site.about.methodology`, `site.contactPage.nextSteps` | Drafted copy: please confirm. |
+| Budget ranges | `site.contactForm` → `budget` | Placeholder ₹ bands. |
+| Privacy policy / Terms | `site.legal` | Empty: pages say “awaiting content” and are `noindex`. |
 
-Supplied content already in use: company name, logo, philosophy (“Building
-Connections, Delivering Growth”), company introduction, mission, vision,
-values (Innovation, Integration, Trends), and the 13 services in two groups.
+**Supplied and in use:** company name, logo, phone **+91 79808 71878**,
+WhatsApp, philosophy, introduction, mission, vision, values and the 13 services.
 
-### Logo, favicon, colours, fonts
+### Phone and WhatsApp
 
-- **Logo:** `public/logo.webp` (navbar/footer), set by `site.brand.logo` with its width and height. The original PNG is kept in `src/assets/`.
-- **Favicons:** `public/favicon.png`, `public/apple-touch-icon.png` (generated from the head mark).
-- **Social share image:** `public/og-image.jpg` (1200×630).
-- **Colours:** `site.colors`. `accent` is the logo gold. `accentInk` is a darker gold used for text on light backgrounds and must keep ≥ 4.5:1 contrast. The 3D scene reads the same values.
-- **Fonts:** change the `@fontsource` imports in `src/main.tsx` and the stacks in `site.typography`.
+`site.contact.phone` is shown on the Contact page and in the footer, with a
+**Call** button. `site.contact.whatsapp` (digits only, with country code) powers
+the **Chat on WhatsApp** buttons, which open a chat pre-filled with
+`site.contact.whatsappMessage`. Clear `whatsapp` to hide the buttons.
 
-### Services
+### Logo, colours, fonts
 
-Add an object to `src/data/services.ts`. It automatically appears on
-`/services`, gets its own `/services/<slug>` page, and is added to the footer,
-the contact form “Service of interest” options and `sitemap.xml`. Each service’s
-CTA links to `/contact?service=<slug>`, which pre-selects it in the form.
-Optional fields: `image`, `caseStudy`, `cta`.
+- **Logo:** `public/logo.webp`, set in `site.brand.logo`. The original PNG is kept in `src/assets/`.
+- **Icons:** `public/favicon.png`, `public/apple-touch-icon.png`. **Share image:** `public/og-image.jpg` (1200×630).
+- **Colours:** `site.colors` (`accent`, `goldLight` and `goldDeep` form the metallic gold). The 3D scene uses the same values.
+- **Fonts:** the `@fontsource` imports in `src/main.tsx` plus `site.typography`.
 
-### Brands
+### Services, brands
 
-Add logo files to `public/brands/` and entries such as
-`{ name: 'Acme', logo: '/brands/acme.svg', width: 120, height: 32, relationship: 'client' }`.
-SVG, PNG and WebP work, and logos are scaled to a consistent height without distortion.
-Only list brands with a confirmed relationship and permission.
-
-### Testimonials
-
-Add `{ quote, name, role, company, portrait?, logo?, project? }` to
-`src/data/testimonials.ts`. Use genuine, approved quotes only.
-
-### Hero
-
-`site.hero`: eyebrow, headline (`headlineEmphasis` is set in gold italic),
-subheadline, both CTAs, the featured-service card, and `channels` (the labels
-orbiting the 3D core; 3–8 works best).
+Add a service object to `src/data/services.ts`. It gets its own page,
+structured data, a sitemap entry, a footer link and a contact-form option.
+Add brand logos to `public/brands/` and list them in `src/data/brands.ts`
+(confirmed relationships only).
 
 ---
 
-## Contact form (Netlify Forms)
+## Testimonials and customer feedback
 
-The form submits to **Netlify Forms**; no server code or secrets are needed.
+The home page shows testimonials as swipeable **feedback cards** (ratings are
+shown only when a customer gave one).
 
-How it works:
+Customers can submit their own feedback at **`/feedback`**. The page is linked
+from the testimonials section and the footer. Submissions are **not published
+automatically**, which prevents spam and fake reviews:
 
-1. At build time, `scripts/vite-site-plugin.ts` writes a hidden static
-   `<form name="contact" data-netlify="true">` into `dist/index.html`, with
-   every field name from `site.contactForm.fields`. Netlify detects it during deploy.
-2. The React form POSTs URL-encoded data (`form-name=contact&…`) to `/`.
-3. Success is shown **only** after Netlify responds with 2xx; any other
-   response shows an error message, so submissions are never silently dropped.
-4. Spam protection: a honeypot field (`bot-field`) plus Netlify’s built-in
-   spam filtering. Client-side validation covers required fields, email and
-   phone format, select options and max lengths. Netlify Forms has no custom
-   server-side validation; if you need it, add a Netlify Function (e.g.
-   `netlify/functions/contact.ts`) and point `site.contactForm.endpoint` to it.
+1. A submission arrives in Netlify under **Forms → feedback**, with name, email (never published), role, business, service, rating, feedback, and whether they agreed to publication.
+2. Check it is genuine and that the customer agreed to publication.
+3. Add it to `src/data/testimonials.ts`:
+   ```ts
+   { quote: '…', name: 'Asha Rao', role: 'Owner', company: 'Rao Textiles', rating: 5 }
+   ```
+4. Rebuild and deploy. The card appears on the home page.
 
-**To activate after the first deploy:**
+---
+
+## Forms (Netlify Forms)
+
+Two forms, **contact** and **feedback**, both defined in `site.ts`. At build
+time a hidden static copy of each is written into the HTML so Netlify detects
+them. The visible forms validate input, block double submissions, include a
+honeypot spam trap, and show success **only** after Netlify confirms receipt.
+
+**After the first deploy:**
 
 1. Netlify → *Site configuration → Forms* → **Enable form detection**, then redeploy.
-2. Check that a form named **contact** appears under *Forms*.
-3. Under *Forms → Form notifications*, add an **email notification** to the address that should receive enquiries.
-4. Send a test enquiry from the live site and confirm it arrives in *Forms → contact* and by email.
-5. Optional: enable reCAPTCHA by adding `data-netlify-recaptcha="true"` and a `<div data-netlify-recaptcha="true" />` to the form.
+2. Confirm **contact** and **feedback** appear under *Forms*.
+3. Add **email notifications** for each form (*Forms → Form notifications*).
+4. Send a test enquiry and a test review from the live site.
 
-If you rename a field in `site.contactForm.fields`, redeploy so Netlify picks up the new definition.
+---
+
+## SEO
+
+- **Pre-rendered HTML:** `npm run build` renders every page (21 including the
+  404) to static HTML with its full content, so search engines and social
+  previews never depend on JavaScript. The browser then hydrates the page.
+- Unique title, meta description, canonical URL, Open Graph and Twitter tags per page.
+- **Structured data (JSON-LD):** Organization and WebSite on the home page
+  (name, logo, phone; social links once added); Service and BreadcrumbList on
+  every service page. Only real values are used.
+- `sitemap.xml` (legal pages are left out until they have content) and `robots.txt`.
+  Deploy previews are automatically set to `Disallow` so they aren't indexed.
+- Unknown URLs return the branded 404 page with a **real 404 status**
+  (`dist/_redirects`), and it is `noindex`.
+- One H1 per page, logical heading order, alt text on images, fast static pages.
+
+**After launch:** add the site to Google Search Console, submit
+`https://kunnectds.in/sitemap.xml`, and create a Google Business Profile with
+the same name, phone and website.
 
 ---
 
 ## Deploying to Netlify
 
-Configuration is in `netlify.toml`:
+### Option A — drag and drop (no Git needed)
 
-| Setting | Value |
-| --- | --- |
-| Build command | `npm run build` |
-| Publish directory | `dist` |
-| Node version | 22 (`NODE_VERSION` in `netlify.toml`) |
+1. Run `npm run build`, or use the ready-made zip of `dist/`.
+2. Go to **app.netlify.com → Add new site → Deploy manually** and drop the
+   `dist` folder (or the unzipped contents of the zip). The folder must
+   contain `index.html` at its top level.
+3. Add the domain **kunnectds.in** under *Domain management*.
+4. Complete the Forms steps above.
 
-`public/_redirects` contains `/* /index.html 200`, so direct visits and
-refreshes on `/services`, `/about`, `/contact` and other routes work. Real files
-(`sitemap.xml`, `robots.txt`, images) are served as-is.
+To update the site later, rebuild and drop the new `dist` folder onto
+*Deploys* for the same site.
 
-### Connect GitHub → Netlify
+### Option B — connect GitHub (automatic deploys)
 
-1. Netlify → **Add new site → Import an existing project → GitHub**, and choose this repository.
-2. Netlify reads `netlify.toml`; confirm build command `npm run build` and publish directory `dist`.
-3. Set the **production branch** (e.g. `main`) under *Site configuration → Build & deploy → Branches*.
-4. Deploy. Every pull request gets a **Deploy Preview** URL automatically.
-   Previews and branch deploys emit a `robots.txt` that blocks indexing (via
-   Netlify’s `CONTEXT` variable); production allows indexing.
-5. Add the custom domain **kunnectds.in** under *Domain management* and enable HTTPS.
-6. Complete the Forms steps above.
+1. Netlify → **Add new site → Import an existing project → GitHub**, then choose this repository.
+2. Netlify reads `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
+3. Choose the production branch. Every pull request gets a Deploy Preview.
+4. Add the domain and complete the Forms steps.
+
+`dist/_redirects` (generated) handles real 404s; `public/_headers` sets caching
+and security headers. Both work for either deploy option.
 
 ### Environment variables
 
-See `.env.example`. Only one, and it is optional:
-
-- `VITE_SITE_URL`: canonical origin (defaults to `https://kunnectds.in`). Set it in Netlify under *Site configuration → Environment variables* if the domain changes.
-
-Anything prefixed `VITE_` is embedded in the public JavaScript bundle. **Never
-put secrets in `VITE_` variables.** No secrets are required by this site.
+Optional: `VITE_SITE_URL` (canonical origin, defaults to `https://kunnectds.in`).
+Variables starting with `VITE_` are public; never put secrets in them. The site
+needs no secrets.
 
 ### Troubleshooting
 
-- **404 on refresh:** make sure `dist/_redirects` exists after build (it is copied from `public/`).
-- **Form not listed in Netlify:** enable form detection, then trigger a new deploy.
-- **Form shows an error on the live site:** check *Forms* for the `contact` form; field names must match the deployed HTML.
+- **A form doesn't appear in Netlify:** enable form detection, then redeploy.
 - **Wrong canonical / OG URLs:** set `VITE_SITE_URL` or `site.seo.siteUrl`.
-- **Build fails on Node version:** use Node 22 (`NODE_VERSION` in `netlify.toml`).
+- **Build fails:** use Node 22 and run `npm ci` before `npm run build`.
 
 ---
 
 ## Accessibility, motion and performance
 
-- Semantic landmarks, skip link, logical headings, visible focus, labelled controls and form errors announced to screen readers.
-- Mobile menu: focus trap, Escape to close, focus returned to the toggle, page scroll locked.
-- Logo marquee pauses on hover/focus and has a pause button; testimonials never auto-advance.
-- `prefers-reduced-motion`: entrance and scroll animations are off, the marquee is a static scrollable row, and the 3D scene renders a single still frame.
+- Semantic landmarks, skip link, one H1 per page, visible focus, labelled form fields with announced errors.
+- Mobile menu: focus trap, Escape to close, focus returned to the menu button.
+- Logo marquee has a pause button; testimonial cards never auto-advance.
+- With **reduced motion** turned on, animations are off and the 3D renders a single still frame.
 - **No WebGL:** an SVG illustration of the same composition is shown instead.
-- three.js is code-split and loaded only after the page becomes idle. The SVG illustration shows until the scene is ready, so the layout never shifts.
-- The 3D scene stops rendering when the hero is off-screen, and runs at reduced quality and 30 fps on mobile and low-power devices. It lowers its pixel ratio if frame rate drops, and disposes geometries and textures on unmount.
-- SEO: unique titles and descriptions, canonical URLs, Open Graph/Twitter tags (static defaults in the HTML for crawlers), `sitemap.xml`, `robots.txt`, a `noindex` 404 page. Organization structured data is off until contact details are real (`site.seo.structuredData`).
+- three.js loads only after the page is idle. It pauses when off-screen. On
+  phones and low-power devices it runs at 30 fps without post-processing and
+  with fewer particles, and it lowers quality automatically if the frame rate drops.
 
 ### Known limitations
 
-- This is a client-rendered single-page app. Google renders JavaScript, but
-  some other crawlers only see the default tags in `index.html`. Prerendering
-  can be added later if needed.
-- three.js 0.186 logs a `THREE.Clock` deprecation warning from inside React
-  Three Fiber; it is harmless and will go away with a future R3F release.
+- three.js 0.186 logs a harmless `THREE.Clock` deprecation warning from inside React Three Fiber.
+- Lighthouse in a GPU-less environment reports high blocking time on the home
+  page, because WebGL is software-rendered there. Measure real numbers with
+  PageSpeed Insights on the live site.

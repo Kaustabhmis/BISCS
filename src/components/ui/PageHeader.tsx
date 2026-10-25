@@ -28,7 +28,7 @@ export function PageHeader({
           <div className="lg:col-span-8">
             <h1 className="t-h1 max-w-[18ch]">
               {before}
-              {em && <span className="serif-em text-accent">{em}</span>}
+              {em && <span className="serif-em text-gold text-gold-shimmer pr-[0.04em]">{em}</span>}
               {after}
             </h1>
             {children && <div className="t-lead mt-8 max-w-2xl text-paper/70">{children}</div>}

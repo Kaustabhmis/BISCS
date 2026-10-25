@@ -12,4 +12,4 @@ export const mainNav: Cta[] = [
 export const navCta: Cta = { label: 'Start a project', href: '/contact' }
 
 /** Static routes, used for the sitemap. Service detail routes are added automatically. */
-export const staticRoutes = ['/', '/services', '/about', '/contact']
+export const staticRoutes = ['/', '/services', '/about', '/contact', '/feedback', '/privacy', '/terms']

@@ -7,10 +7,12 @@ export default defineConfig(({ mode }) => {
   const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env }
   return {
     plugins: [react(), tailwindcss(), sitePlugin(env)],
+    // The pre-render bundle (src/entry-server.tsx) includes its dependencies, so it runs in plain Node.
+    ssr: { noExternal: true },
     build: {
       target: 'es2022',
       // three.js lives in its own lazily-loaded chunk; it is large by nature.
-      chunkSizeWarningLimit: 1100,
+      chunkSizeWarningLimit: 1200,
     },
   }
 })

@@ -84,7 +84,7 @@ export default function AboutPage() {
             How we work
           </SectionLabel>
           <h2 id="method-heading" className="t-h2 mt-6 max-w-2xl">
-            One connected process, from first call to <span className="serif-em text-accent">growth</span>.
+            One connected process, from first call to <span className="serif-em text-gold pr-[0.04em]">growth</span>.
           </h2>
           <Reveal as="ol" className="relative mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             {about.methodology.map((step, i) => (

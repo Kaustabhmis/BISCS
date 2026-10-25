@@ -71,8 +71,11 @@ export interface BrandColors {
   accent: string
   /** Accessible accent for text on light backgrounds. */
   accentInk: string
-  /** Cool secondary used in data visuals and the 3D scene. */
+  /** Secondary highlight used in data visuals and the 3D scene. */
   signal: string
+  /** Metallic gold gradient stops (light → mid → deep), used for premium accents. */
+  goldLight: string
+  goldDeep: string
 }
 
 export interface BrandTypography {
@@ -142,6 +145,8 @@ export interface Brand extends Placeholderable {
 
 export interface Testimonial extends Placeholderable {
   quote: string
+  /** Optional rating out of 5, only if the client actually gave one. */
+  rating?: number
   name: string
   role: string
   company: string
@@ -199,4 +204,19 @@ export interface PageSeo {
   description: string
   /** Set to true for pages that should not be indexed (e.g. placeholder legal pages). */
   noindex?: boolean
+}
+
+/** A form submitted to Netlify Forms. Field names also generate the static form used for detection. */
+export interface FormConfig {
+  /** Netlify form name. Changing it creates a new form in the Netlify UI. */
+  name: string
+  /** Where submissions are POSTed (`/` for Netlify Forms). */
+  endpoint: string
+  /** Screen-reader name for the group of fields. */
+  legend: string
+  submitLabel: string
+  successTitle: string
+  successText: string
+  errorText: string
+  fields: FormField[]
 }
