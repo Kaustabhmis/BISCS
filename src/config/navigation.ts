@@ -1,4 +1,4 @@
-import type { Cta } from '../types/content'
+import type { Cta } from '../types/content.ts'
 
 /** Primary navigation. Order here is the order in the navbar, mobile menu and footer. */
 export const mainNav: Cta[] = [

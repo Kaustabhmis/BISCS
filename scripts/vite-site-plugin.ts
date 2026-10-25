@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
-import { site } from '../src/config/site'
-import { sitemapRoutes } from '../src/config/routes'
+import { site } from '../src/config/site.ts'
+import { sitemapRoutes } from '../src/config/routes.ts'
 
 /**
  * Build-time integration between `src/config/site.ts` and the static output:
@@ -113,7 +113,7 @@ ${sitemapRoutes()
 </urlset>
 `
       const robots = isProductionContext
-        ? `User-agent: *\nAllow: /\nDisallow: /admin/\n\nSitemap: ${url}/sitemap.xml\n`
+        ? `User-agent: *\nAllow: /\n\nSitemap: ${url}/sitemap.xml\n`
         : `User-agent: *\nDisallow: /\n`
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemap })
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robots })

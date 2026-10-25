@@ -63,7 +63,7 @@ src/
     site.ts            ← assembles content + technical settings (fonts, form fields)
     navigation.ts      ← menu items, navbar CTA, static routes
     routes.ts          ← pages to pre-render / include in the sitemap
-  content/*.json       ← ALL editable content (edited via /admin)
+  content/*.json       ← content snapshot, refreshed from the Google Sheet on each build
   data/                ← typed loaders for services, brands, testimonials
   types/content.ts     ← TypeScript interfaces for all content
   components/
@@ -80,7 +80,9 @@ src/
 scripts/
   vite-site-plugin.ts  ← theme CSS, default <head> tags, Netlify form definitions, sitemap, robots
   prerender.mjs        ← writes static HTML for every route + 404.html + _redirects
-public/                ← logo, favicons, og-image, _headers, admin/ (Decap CMS), uploads/
+  sheet/               ← Google Sheet schema, importer (pull.mjs), template builder
+google-sheets/         ← sheet template (.xlsx), Apps Script (Code.gs), setup guide
+public/                ← logo, favicons, og-image, _headers
 netlify.toml
 ```
 
@@ -89,118 +91,73 @@ Routes: `/`, `/services`, `/services/:slug` (one per service), `/about`,
 
 ---
 
-## Admin panel (edit content without code)
+## Editing content with Google Sheets
 
-Open **https://kunnectds.in/admin/** to edit everything on the site:
+All content is edited in **one Google Sheet**. Nobody needs a GitHub account.
 
-| Section | What you can edit |
+| Sheet tab | What you edit there |
 | --- | --- |
-| **Testimonials** | Add, edit, reorder or remove reviews (quote, name, role, company, rating, photo, logo) |
+| **Testimonials** | Customer reviews: quote, name, role, company, rating, photo, logo |
 | **Team** | Team members with photos, bios and links |
-| **Clients & collaborators** | Logos in the home page strip: upload logos, mark each as client, partner or platform |
-| **Services** | All services and categories, including adding new services (each gets its own page) |
-| **Home page** | Hero headline, gold words, buttons, featured service, 3D labels, “Who we are”, statistics, section headings, closing call to action |
-| **About page** | Introduction, mission, vision, values, how we work, milestones, achievements |
-| **Other pages & forms** | Services/Contact/Feedback page text, form messages, budget options, privacy policy and terms |
-| **Company & contact** | Name, logo, tagline, email, phone, WhatsApp, address, hours, social links, footer text, and the **launch switch** |
-| **Brand colours** | Every site colour (also used by the 3D scene) |
-| **SEO** | Website address, share image, page titles and descriptions, structured data |
+| **Clients** | Logo strip: name, logo, client / partner / platform, website |
+| **Services** | All services: page text, benefits, deliverables, steps, images, buttons. New rows become new pages |
+| **Company** | Name, logo, tagline, email, phone, WhatsApp, address, hours, footer, and the **launch switch** |
+| **Home**, **Pages** | All page text: hero, “Who we are”, section headings, About, Services, Contact, Feedback, forms, legal pages |
+| **Highlights**, **Stats**, **Values**, **How We Work**, **Milestones**, **Achievements**, **Contact Steps**, **Social Links** | The smaller lists on each page |
+| **Colours** | Every brand colour (also used by the 3D scene) |
+| **SEO** | Website address, share image, page titles and descriptions |
 
-**How it works:** the admin panel is [Decap CMS](https://decapcms.org). When
-you click **Publish**, your change is saved to `src/content/*.json` in the
-GitHub repository, and Netlify rebuilds and publishes the site automatically
-in about 1–2 minutes. Uploaded images go to `public/uploads/`. No database is
-needed, and every page stays pre-rendered for SEO.
+**How it works:** you edit the sheet, then choose **Website → Publish
+changes** (a menu added by the included Apps Script). Netlify rebuilds the
+site: the build reads the sheet through a private, password-protected link,
+copies images onto the website, and pre-renders every page. It goes live in
+about 2 minutes. If the sheet can't be read, the build stops and the current
+website stays online. Rows with problems (such as a missing required field or
+an invalid colour) are skipped and listed in the Netlify build log.
 
-### One-time setup (about 10 minutes)
+**Setup and everyday editing:** see **[google-sheets/README.md](google-sheets/README.md)**.
+That folder contains the template (`Kunnect-Website-Content.xlsx`, pre-filled
+with the current content) and the Apps Script (`Code.gs`).
 
-The admin panel needs the site to be deployed **from GitHub** (Option B
-below), because it saves changes to the repository. Drag-and-drop deploys can't
-receive admin edits.
+### How it's built
 
-1. **Merge this work into `main`.** The admin panel saves to the `main`
-   branch (`public/admin/config.yml` → `backend.branch`), and Netlify should
-   deploy from `main`.
-2. **Create a GitHub OAuth app:** GitHub → *Settings → Developer settings →
-   OAuth Apps → New OAuth App*.
-   - Homepage URL: `https://kunnectds.in`
-   - Authorization callback URL: `https://api.netlify.com/auth/done`
-   - Copy the **Client ID**, then generate and copy a **Client secret**.
-3. **Connect it in Netlify:** *Site configuration → Access & security → OAuth →
-   Install provider → GitHub*, then paste the Client ID and secret.
-4. Open **https://kunnectds.in/admin/** and click **Login with GitHub**.
-
-**Who can log in:** anyone with *write* access to the GitHub repository
-`Kaustabhmis/BISCS`. To give a colleague access, invite them under GitHub →
-repository *Settings → Collaborators*. To remove access, remove them there.
-
-### Approving customer reviews
-
-1. Read new reviews in Netlify → *Forms → feedback*.
-2. If the customer ticked “I agree … may be published”, open **Admin →
-   Testimonials → Add testimonial** and copy in their quote, name, role,
-   company and rating.
-3. Click **Publish**. The card appears on the home page after the rebuild.
-
-### Editing on your own computer
-
-```bash
-npm run dev            # terminal 1
-npx decap-server       # terminal 2
-# open http://localhost:5173/admin/index.html: changes are written to src/content/ directly
-```
-
----
-
-## Editing content in code
-
-The admin panel edits the JSON files in **`src/content/`**. You can also edit
-them directly. `src/config/site.ts` assembles them and holds the technical
-settings (fonts, form fields).
+- `scripts/sheet/schema.mjs` maps every sheet tab, row and column to the content files.
+- `scripts/sheet/pull.mjs` runs first in `npm run build` when `CONTENT_SHEET_URL`
+  is set. It writes `src/content/*.json` and downloads images to `public/uploads/sheet/`.
+- `scripts/sheet/make-template.mjs` (`npm run sheet:template`) regenerates the
+  template from `src/content`.
+- Without `CONTENT_SHEET_URL`, builds use the JSON already in `src/content`
+  (the last snapshot), so local builds work offline. To refresh the snapshot
+  locally, run `CONTENT_SHEET_URL=… npm run content:pull`.
 
 ### Placeholder content
 
-Items marked as placeholders show a visible **“Placeholder”** badge. Before
-launch, turn on **Admin → Company & contact → Launch settings → Hide
-placeholder content** to remove them all. Sections left empty (brand carousel, team, milestones) disappear.
+Rows marked **Placeholder = Yes** show a visible “Placeholder” badge. Before
+launch, set **Company → Hide placeholder content = Yes** to remove them all.
+Sections left empty (logo strip, team, milestones) disappear.
 
 **Still needs your input:**
 
-| Content | Where | Status |
+| Content | Sheet tab | Status |
 | --- | --- | --- |
-| Email, address, hours | Admin → Company & contact | Empty → hidden. |
-| Social links | Admin → Company & contact | Empty links → hidden. |
-| Client / partner logos | Admin → Clients & collaborators | Placeholder slots. |
-| Testimonials | Admin → Testimonials | 3 labelled placeholders. Add approved feedback from `/feedback`. |
-| Team, milestones | Admin → Team / About page | Placeholders. |
-| Service descriptions | Admin → Services | Drafted copy: please review. |
-| “How we work”, “What happens next” | `site.about.methodology`, `site.contactPage.nextSteps` | Drafted copy: please confirm. |
-| Budget ranges | `site.contactForm` → `budget` | Placeholder ₹ bands. |
-| Privacy policy / Terms | `site.legal` | Empty: pages say “awaiting content” and are `noindex`. |
+| Email, address, hours | Company | Empty → hidden. |
+| Social links | Social Links | Empty links → hidden. |
+| Client / partner logos | Clients | Placeholder slots. |
+| Testimonials | Testimonials | 3 labelled placeholders. Add approved feedback from `/feedback`. |
+| Team, milestones | Team, Milestones | Placeholders. |
+| Service descriptions | Services | Drafted copy: please review. |
+| “How we work”, “What happens next” | How We Work, Contact Steps | Drafted copy: please confirm. |
+| Budget ranges | Pages → Contact form budget options | Placeholder ₹ bands. |
+| Privacy policy / Terms | Pages | Empty: pages say “awaiting content” and are `noindex`. |
 
 **Supplied and in use:** company name, logo, phone **+91 79808 71878**,
 WhatsApp, philosophy, introduction, mission, vision, values and the 13 services.
 
-### Phone and WhatsApp
+### Things that stay in code
 
-`site.contact.phone` is shown on the Contact page and in the footer, with a
-**Call** button. `site.contact.whatsapp` (digits only, with country code) powers
-the **Chat on WhatsApp** buttons, which open a chat pre-filled with
-`site.contact.whatsappMessage`. Clear `whatsapp` to hide the buttons.
-
-### Logo, colours, fonts
-
-- **Logo:** `public/logo.webp`, set in `site.brand.logo`. The original PNG is kept in `src/assets/`.
-- **Icons:** `public/favicon.png`, `public/apple-touch-icon.png`. **Share image:** `public/og-image.jpg` (1200×630).
-- **Colours:** `site.colors` (`accent`, `goldLight` and `goldDeep` form the metallic gold). The 3D scene uses the same values.
-- **Fonts:** the `@fontsource` imports in `src/main.tsx` plus `site.typography`.
-
-### Services, brands
-
-Add a service object to `src/data/services.ts`. It gets its own page,
-structured data, a sitemap entry, a footer link and a contact-form option.
-Add brand logos to `public/brands/` and list them in `src/data/brands.ts`
-(confirmed relationships only).
+Fonts (`src/main.tsx` and `site.typography`), form field definitions
+(`src/config/site.ts`), favicons (`public/`), and the layout and 3D scene
+itself. The original logo PNG is kept in `src/assets/`.
 
 ---
 
@@ -215,13 +172,13 @@ automatically**, which prevents spam and fake reviews:
 
 1. A submission arrives in Netlify under **Forms → feedback**, with name, email (never published), role, business, service, rating, feedback, and whether they agreed to publication.
 2. Check it is genuine and that the customer agreed to publication.
-3. Add it in **Admin → Testimonials** (see “Approving customer reviews” above).
+3. Add a row to the **Testimonials** tab of the Google Sheet and choose **Website → Publish changes**.
 
 ---
 
 ## Forms (Netlify Forms)
 
-Two forms, **contact** and **feedback**, both defined in `site.ts`. At build
+Two forms, **contact** and **feedback**. Their fields are defined in `site.ts`; their messages are edited in the sheet. At build
 time a hidden static copy of each is written into the HTML so Netlify detects
 them. The visible forms validate input, block double submissions, include a
 honeypot spam trap, and show success **only** after Netlify confirms receipt.
@@ -258,7 +215,7 @@ the same name, phone and website.
 
 ## Deploying to Netlify
 
-### Option A — drag and drop (no Git needed)
+### Option A — drag and drop (quick start, no Google Sheet updates)
 
 1. Run `npm run build`, or use the ready-made zip of `dist/`.
 2. Go to **app.netlify.com → Add new site → Deploy manually** and drop the
@@ -268,28 +225,36 @@ the same name, phone and website.
 4. Complete the Forms steps above.
 
 To update the site later, rebuild and drop the new `dist` folder onto
-*Deploys* for the same site.
+*Deploys* for the same site. Drag-and-drop sites can't rebuild themselves, so
+**Google Sheet publishing needs Option B**.
 
-### Option B — connect GitHub (automatic deploys)
+### Option B — automatic builds (needed for Google Sheet publishing)
 
-1. Netlify → **Add new site → Import an existing project → GitHub**, then choose this repository.
+Netlify builds the site from its code repository. This is a one-time
+connection; content editors never use it.
+
+1. Netlify → **Add new site → Import an existing project**, then choose this repository.
 2. Netlify reads `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 3. Choose the production branch. Every pull request gets a Deploy Preview.
 4. Add the domain and complete the Forms steps.
+5. Connect the Google Sheet: follow [google-sheets/README.md](google-sheets/README.md).
 
 `dist/_redirects` (generated) handles real 404s; `public/_headers` sets caching
 and security headers. Both work for either deploy option.
 
 ### Environment variables
 
-Optional: `VITE_SITE_URL` (canonical origin, defaults to `https://kunnectds.in`).
-Variables starting with `VITE_` are public; never put secrets in them. The site
-needs no secrets.
+- `CONTENT_SHEET_URL`: the Google Sheet content link, including `?key=…`.
+  It's only used during the build and is never sent to visitors' browsers.
+- `VITE_SITE_URL` (optional): canonical origin. Defaults to the website address in the SEO tab.
+
+Variables starting with `VITE_` are public; never put secrets in them.
 
 ### Troubleshooting
 
 - **A form doesn't appear in Netlify:** enable form detection, then redeploy.
-- **Wrong canonical / OG URLs:** set `VITE_SITE_URL` or `site.seo.siteUrl`.
+- **Wrong canonical / OG URLs:** fix the website address in the sheet's SEO tab, or set `VITE_SITE_URL`.
+- **Sheet changes don't appear:** see *If something goes wrong* in [google-sheets/README.md](google-sheets/README.md).
 - **Build fails:** use Node 22 and run `npm ci` before `npm run build`.
 
 ---

@@ -1,8 +1,9 @@
-import type { IconName, Service } from '../types/content'
-import servicesJson from '../content/services.json'
+import type { IconName, Service } from '../types/content.ts'
+import servicesJson from '../content/services.json' with { type: 'json' }
 
 /**
- * SERVICES — edited in the admin panel (Services) or in src/content/services.json.
+ * SERVICES — edited in the Google Sheet (Services tab), copied into
+ * src/content/services.json at build time.
  *
  * Add, remove or reorder entries freely: the services page, the detail pages
  * (`/services/:slug`), the footer, the contact form options and the sitemap

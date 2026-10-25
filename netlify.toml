@@ -1,5 +1,6 @@
 # Netlify build configuration.
-# `npm run build` builds the site and pre-renders every page to static HTML.
+# `npm run build` reads the latest content from the Google Sheet (when
+# CONTENT_SHEET_URL is set), builds the site and pre-renders every page.
 # Redirects (real 404s) and headers are generated into dist/_redirects and
 # copied from public/_headers, so they also work for drag-and-drop deploys.
 [build]

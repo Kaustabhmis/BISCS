@@ -1,6 +1,6 @@
-import { site } from './site'
-import { staticRoutes } from './navigation'
-import { services } from '../data/services'
+import { site } from './site.ts'
+import { staticRoutes } from './navigation.ts'
+import { services } from '../data/services.ts'
 
 /** Every page that is pre-rendered to static HTML at build time. */
 export function prerenderRoutes(): string[] {

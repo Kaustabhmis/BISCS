@@ -11,23 +11,23 @@ import type {
   SocialLink,
   Stat,
   TeamMember,
-} from '../types/content'
-import { services } from '../data/services'
-import aboutJson from '../content/about.json'
-import companyJson from '../content/company.json'
-import homeJson from '../content/home.json'
-import pagesJson from '../content/pages.json'
-import seoJson from '../content/seo.json'
-import teamJson from '../content/team.json'
-import themeJson from '../content/theme.json'
+} from '../types/content.ts'
+import { services } from '../data/services.ts'
+import aboutJson from '../content/about.json' with { type: 'json' }
+import companyJson from '../content/company.json' with { type: 'json' }
+import homeJson from '../content/home.json' with { type: 'json' }
+import pagesJson from '../content/pages.json' with { type: 'json' }
+import seoJson from '../content/seo.json' with { type: 'json' }
+import teamJson from '../content/team.json' with { type: 'json' }
+import themeJson from '../content/theme.json' with { type: 'json' }
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
  *  SITE CONFIGURATION
  * ─────────────────────────────────────────────────────────────────────────────
  *
- *  Editable content lives in `src/content/*.json` and is edited through the
- *  admin panel at /admin (see README → Admin panel). This file assembles it
+ *  Editable content is managed in the Google Sheet (see google-sheets/README.md).
+ *  Each build copies it into `src/content/*.json`; this file assembles it
  *  into one typed object and adds the technical settings editors don't need
  *  to touch (fonts, form field definitions, icon paths).
  *
@@ -46,7 +46,7 @@ const brand = {
   name: companyJson.brand.name,
   shortName: companyJson.brand.shortName,
   wordmarkSuffix: str(companyJson.brand.wordmarkSuffix),
-  /** Logo (edited in the admin). Leave `src` empty to fall back to a typographic wordmark. */
+  /** Logo (Google Sheet → Company). Leave empty to fall back to a typographic wordmark. */
   logo: companyJson.brand.logo as { src: string; width?: number; height?: number },
   tagline: companyJson.brand.tagline,
   /** Square brand mark (the circuit head), used for icons and structured data. */
@@ -55,7 +55,7 @@ const brand = {
   appleTouchIcon: '/apple-touch-icon.png',
 }
 
-/** Brand colours (edited in the admin under "Brand colours"). */
+/** Brand colours (Google Sheet → Colours). */
 const colors: BrandColors = themeJson
 
 /** Font stacks. To change fonts, update these and the imports in `src/main.tsx`. */
@@ -173,7 +173,7 @@ const contactForm: FormConfig = {
 /**
  * Customers submit feedback at /feedback. Submissions arrive in Netlify
  * (Forms → feedback) and are NOT published automatically: approve one by
- * adding it under Testimonials in the admin panel.
+ * adding it to the Testimonials tab of the Google Sheet.
  */
 const feedbackPage = pagesJson.feedbackPage
 
