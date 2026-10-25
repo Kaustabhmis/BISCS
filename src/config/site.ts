@@ -13,61 +13,50 @@ import type {
   TeamMember,
 } from '../types/content'
 import { services } from '../data/services'
+import aboutJson from '../content/about.json'
+import companyJson from '../content/company.json'
+import homeJson from '../content/home.json'
+import pagesJson from '../content/pages.json'
+import seoJson from '../content/seo.json'
+import teamJson from '../content/team.json'
+import themeJson from '../content/theme.json'
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- *  SITE CONFIGURATION — the single place to edit the agency's identity.
+ *  SITE CONFIGURATION
  * ─────────────────────────────────────────────────────────────────────────────
  *
- *  Anything marked `placeholder: true` or commented PLACEHOLDER is temporary
- *  development content. Services, brands and testimonials live in `src/data/`.
+ *  Editable content lives in `src/content/*.json` and is edited through the
+ *  admin panel at /admin (see README → Admin panel). This file assembles it
+ *  into one typed object and adds the technical settings editors don't need
+ *  to touch (fonts, form field definitions, icon paths).
+ *
+ *  Items marked `placeholder: true` are temporary and are removed when
+ *  "Hide placeholder content" (launch.hidePlaceholderContent) is switched on.
  *
  *  This file must stay plain data (no React, no browser APIs): it is also read
- *  at build time by `scripts/vite-site-plugin.ts` to generate the HTML head,
- *  theme variables, the Netlify form definition, sitemap.xml and robots.txt.
+ *  at build time by `scripts/vite-site-plugin.ts` and the pre-renderer.
  */
+
+const str = (v: unknown, fallback = '') => (typeof v === 'string' ? v : fallback)
 
 // ── Identity ────────────────────────────────────────────────────────────────
 
 const brand = {
-  /** Full legal / trading name. */
-  name: 'Kunnect Digital and Softwares',
-  /** Short name used in the wordmark and page titles. */
-  shortName: 'Kunnect',
-  /** Optional suffix shown faintly after the wordmark. */
-  wordmarkSuffix: 'DS',
-  /**
-   * Logo in /public, with its intrinsic size. Leave `src` empty to fall back to
-   * a typographic wordmark. Originals are kept in src/assets/.
-   */
-  logo: { src: '/logo.webp', width: 377, height: 120 },
-  /** Square brand mark (the circuit head), used for icons and social images. */
+  name: companyJson.brand.name,
+  shortName: companyJson.brand.shortName,
+  wordmarkSuffix: str(companyJson.brand.wordmarkSuffix),
+  /** Logo (edited in the admin). Leave `src` empty to fall back to a typographic wordmark. */
+  logo: companyJson.brand.logo as { src: string; width?: number; height?: number },
+  tagline: companyJson.brand.tagline,
+  /** Square brand mark (the circuit head), used for icons and structured data. */
   mark: '/logo-mark.png',
-  /** Favicon and Apple touch icon in /public. */
   favicon: '/favicon.png',
   appleTouchIcon: '/apple-touch-icon.png',
-  /** Company philosophy, used as the tagline. */
-  tagline: 'Building Connections, Delivering Growth.',
 }
 
-/**
- * Premium palette derived from the Kunnect logo: obsidian black, ivory, and a
- * metallic champagne-to-amber gold (goldLight → accent → goldDeep).
- * `accentInk` must keep ≥ 4.5:1 contrast on `paper` for text use (currently 5.7:1).
- */
-const colors: BrandColors = {
-  ink: '#07070B',
-  inkRaised: '#111118',
-  paper: '#F4EFE6',
-  paperDeep: '#E9E1D2',
-  ash: '#9A968E',
-  stone: '#5E5A52',
-  accent: '#F2B33D',
-  accentInk: '#855300',
-  signal: '#FFE7A8',
-  goldLight: '#FFE7A8',
-  goldDeep: '#C9820E',
-}
+/** Brand colours (edited in the admin under "Brand colours"). */
+const colors: BrandColors = themeJson
 
 /** Font stacks. To change fonts, update these and the imports in `src/main.tsx`. */
 const typography: BrandTypography = {
@@ -77,202 +66,74 @@ const typography: BrandTypography = {
   mono: "'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace",
 }
 
-// ── Launch switches ─────────────────────────────────────────────────────────
+const launch = { hidePlaceholderContent: Boolean(companyJson.launch.hidePlaceholderContent) }
 
-const launch = {
-  /**
-   * Set to `true` before going live. Every item marked `placeholder: true`
-   * (services, brands, testimonials, team, milestones, contact details…) is
-   * then removed, and sections left empty are hidden automatically.
-   */
-  hidePlaceholderContent: false,
-}
-
-// ── Home: hero ──────────────────────────────────────────────────────────────
+// ── Home ────────────────────────────────────────────────────────────────────
 
 const hero = {
-  eyebrow: 'Digital marketing & software for growing businesses',
-  /** The headline. `headlineEmphasis` must appear inside it and is set in italic serif. */
-  headline: 'Building connections, delivering growth.',
-  headlineEmphasis: 'delivering growth.',
-  subheadline:
-    'Strategic digital marketing and custom software for small and medium-scale businesses — shaped around your budget and guided by a dedicated account manager.',
-  primaryCta: { label: 'Discuss your project', href: '/contact' } satisfies Cta,
-  secondaryCta: { label: 'Explore services', href: '/services' } satisfies Cta,
-  /** The featured "hero service" card at the bottom of the hero. */
-  featuredService: {
-    label: 'Featured service',
-    title: 'Dedicated Account Manager',
-    summary: 'One point of contact who coordinates every part of your growth.',
-    href: '/services/account-manager',
-  } as Cta & Placeholderable & { title: string; summary: string },
-  /** Labels orbiting the 3D centrepiece (3–8 works best). */
-  channels: ['SEO', 'Ads', 'Social', 'Branding', 'Reviews', 'Web', 'Automation'],
-  /** Accessible description of the 3D scene for screen readers. */
-  sceneDescription:
-    'An illustration of the marketing ecosystem: channel nodes orbit a central core, sending streams of light inward, above a ring of rising bars that represents growth.',
+  ...homeJson.hero,
+  primaryCta: homeJson.hero.primaryCta as Cta,
+  secondaryCta: homeJson.hero.secondaryCta as Cta,
+  featuredService: homeJson.hero.featuredService as Cta & Placeholderable & { title: string; summary: string },
+  channels: homeJson.hero.channels as string[],
 }
-
-// ── Home: company introduction ──────────────────────────────────────────────
 
 const intro = {
-  label: 'Who we are',
-  heading: 'Marketing and software, connected for small and medium businesses.',
-  /** Large editorial statement revealed word by word on scroll. */
-  statement:
-    'We help small and medium-scale businesses grow with strategic digital marketing and custom software — connecting your brand to the customers, tools and technology it needs to reach its full potential.',
-  philosophy: 'Building Connections, Delivering Growth.',
-  differentiators: [
-    {
-      title: 'Built for SMEs',
-      text: 'Every service is designed around the realities of small and medium-scale businesses.',
-    },
-    {
-      title: 'Shaped to your budget',
-      text: 'Professional, quality work scoped to what you can invest — so more businesses can get started.',
-    },
-    {
-      title: 'A dedicated account manager',
-      text: 'One point of contact who knows your business and keeps communication seamless.',
-    },
-  ] satisfies Differentiator[],
-  /** Only verified statistics are displayed. Unverified entries are hidden. */
-  stats: [
-    { placeholder: true, value: '—', label: 'Projects delivered', verified: false },
-    { placeholder: true, value: '—', label: 'Years in practice', verified: false },
-    { placeholder: true, value: '—', label: 'Specialists', verified: false },
-  ] as Stat[],
-  cta: { label: 'More about us', href: '/about' } satisfies Cta,
+  ...homeJson.intro,
+  differentiators: homeJson.intro.differentiators as Differentiator[],
+  /** Only verified statistics are displayed. */
+  stats: (homeJson.intro.stats ?? []) as Stat[],
+  cta: homeJson.intro.cta as Cta,
 }
 
-// ── Home: brands & testimonials headings ────────────────────────────────────
+const brandsSection = homeJson.brandsSection
+const testimonialsSection = { ...homeJson.testimonialsSection, shareCta: homeJson.testimonialsSection.shareCta as Cta }
+const closingCta = { ...homeJson.closingCta, primary: homeJson.closingCta.primary as Cta, secondary: homeJson.closingCta.secondary as Cta }
 
-const brandsSection = {
-  label: 'Brands & platforms',
-  heading: 'Brands and platforms we work with', // Only accurate once real, confirmed logos are added.
-}
+// ── Pages ───────────────────────────────────────────────────────────────────
 
-const testimonialsSection = {
-  label: 'Client voices',
-  heading: 'What our clients say',
-  shareCta: { label: 'Share your experience', href: '/feedback' } satisfies Cta,
-}
-
-/** Closing call-to-action band used at the end of most pages. */
-const closingCta = {
-  eyebrow: 'Start a conversation',
-  heading: 'Ready to connect your business to growth?',
-  text: 'Tell us where you are and where you want to be. Your dedicated account manager will take it from there.',
-  primary: { label: 'Discuss your project', href: '/contact' } satisfies Cta,
-  secondary: { label: 'Explore services', href: '/services' } satisfies Cta,
-}
-
-// ── Services page ───────────────────────────────────────────────────────────
-
-const servicesPage = {
-  label: 'Services',
-  heading: 'Everything your business needs to grow online.',
-  intro:
-    'Digital marketing and software solutions that work on their own or together as one plan — coordinated by a dedicated account manager and shaped around your budget.',
-}
-
-// ── About page ──────────────────────────────────────────────────────────────
+const servicesPage = pagesJson.servicesPage
 
 const about = {
-  label: 'About us',
-  heading: 'Building connections, delivering growth.',
-  intro: [
-    'At Kunnect Digital and Softwares, we empower small and medium-scale businesses with strategic digital marketing solutions and custom software development.',
-    'We deliver professional, quality work shaped around your budget, so more businesses can take the next step. And every business we work with is assigned a dedicated account manager, keeping communication seamless throughout your growth journey.',
-  ],
-  mission: 'Connecting small and medium-scale businesses to the tech and digital world.',
-  vision: 'Empowering businesses with technology and research.',
-  values: [
-    { title: 'Innovation', text: 'We look for better, smarter ways to solve everyday business problems.' },
-    { title: 'Integration', text: 'Marketing, content and software work best when they work together.' },
-    { title: 'Trends', text: 'We keep up with how platforms and customers change, so you don’t have to.' },
-  ] satisfies Differentiator[],
-  // DRAFT copy — confirm it matches how Kunnect actually works.
-  methodology: [
-    { title: 'Discover', text: 'We learn your business, customers, goals and budget.' },
-    { title: 'Design', text: 'We shape a plan across marketing, content and software.' },
-    { title: 'Deliver', text: 'We put it to work across the right channels and tools.' },
-    { title: 'Develop', text: 'We review what is working and keep improving.' },
-  ] satisfies Differentiator[],
-  team: [
-    { placeholder: true, name: 'Team member', role: 'Role title', bio: 'Placeholder — a short line about this person.' },
-    { placeholder: true, name: 'Team member', role: 'Role title', bio: 'Placeholder — a short line about this person.' },
-    { placeholder: true, name: 'Team member', role: 'Role title', bio: 'Placeholder — a short line about this person.' },
-    { placeholder: true, name: 'Team member', role: 'Role title', bio: 'Placeholder — a short line about this person.' },
-  ] as TeamMember[],
-  milestones: [
-    { placeholder: true, year: '20XX', title: 'Milestone', text: 'Placeholder — a real moment in the company’s history.' },
-    { placeholder: true, year: '20XX', title: 'Milestone', text: 'Placeholder — a real moment in the company’s history.' },
-    { placeholder: true, year: '20XX', title: 'Milestone', text: 'Placeholder — a real moment in the company’s history.' },
-  ] as Milestone[],
+  ...aboutJson,
+  intro: aboutJson.intro as string[],
+  values: aboutJson.values as Differentiator[],
+  methodology: aboutJson.methodology as Differentiator[],
+  team: (teamJson.items ?? []) as TeamMember[],
+  milestones: (aboutJson.milestones ?? []) as Milestone[],
   /** Only verified achievements are displayed. */
-  achievements: [] as Achievement[],
+  achievements: (aboutJson.achievements ?? []) as Achievement[],
 }
 
-// ── Contact ─────────────────────────────────────────────────────────────────
-
-/**
- * Contact details. Empty values are hidden — never invent contact details.
- * PLACEHOLDER: add the real email, address and hours.
- */
+/** Contact details. Empty values are hidden — never invent contact details. */
 const contact = {
-  email: '',
-  phone: '+91 79808 71878',
-  /**
-   * WhatsApp number in international format, digits only (no +, spaces or
-   * dashes). Leave empty to hide the WhatsApp buttons.
-   */
-  whatsapp: '917980871878',
-  /** Message pre-filled when a visitor opens WhatsApp. */
-  whatsappMessage: 'Hi Kunnect, I’d like to discuss a project for my business.',
-  address: '',
-  hours: '',
-  /** Map link for the address, optional. */
-  mapUrl: '',
+  email: str(companyJson.contact.email),
+  phone: str(companyJson.contact.phone),
+  /** WhatsApp number with country code, digits only. Empty hides the WhatsApp buttons. */
+  whatsapp: str(companyJson.contact.whatsapp).replace(/\D/g, ''),
+  whatsappMessage: str(companyJson.contact.whatsappMessage),
+  address: str(companyJson.contact.address),
+  hours: str(companyJson.contact.hours),
+  mapUrl: str(companyJson.contact.mapUrl),
 }
 
 /** Social links. Empty `href` values are hidden. */
-const socials: SocialLink[] = [
-  { label: 'LinkedIn', icon: 'linkedin', href: '' },
-  { label: 'Instagram', icon: 'instagram', href: '' },
-  { label: 'X', icon: 'x', href: '' },
-  { label: 'YouTube', icon: 'youtube', href: '' },
-]
+const socials = (companyJson.socials ?? []) as SocialLink[]
 
-const contactPage = {
-  label: 'Contact',
-  heading: 'Let’s start a conversation.',
-  intro:
-    'Tell us a little about your business and what you’re hoping to achieve. We’ll get back to you with clear next steps.',
-  // DRAFT copy — confirm it matches your enquiry process.
-  nextSteps: [
-    { title: 'We read your enquiry', text: 'Your message comes straight to our team.' },
-    { title: 'We talk it through', text: 'We get in touch to understand your goals and budget.' },
-    { title: 'You meet your account manager', text: 'A dedicated point of contact guides everything from there.' },
-  ] satisfies Differentiator[],
-}
+const contactPage = { ...pagesJson.contactPage, nextSteps: pagesJson.contactPage.nextSteps as Differentiator[] }
 
 /**
- * Contact form definition. Field names here are also used to generate the
- * hidden static form Netlify needs for build-time form detection, so the
- * React form and Netlify always stay in sync.
+ * Form definitions. Field names here generate the hidden static forms Netlify
+ * needs for detection, so they stay in code; labels and messages are editable.
  */
 const contactForm: FormConfig = {
-  /** Netlify form name. Changing it creates a new form in the Netlify UI. */
   name: 'contact',
-  /** Where submissions are POSTed. `/` is correct for Netlify Forms on this SPA. */
   endpoint: '/',
   legend: 'Project enquiry',
-  submitLabel: 'Send enquiry',
-  successTitle: 'Thank you — your enquiry has been sent.',
-  successText: 'We’ve received your message and will reply as soon as we can.', // PLACEHOLDER: state a real response time if you have one.
-  errorText:
-    'Sorry, your message could not be sent. Please try again in a moment.',
+  submitLabel: pagesJson.contactForm.submitLabel,
+  successTitle: pagesJson.contactForm.successTitle,
+  successText: pagesJson.contactForm.successText,
+  errorText: pagesJson.contactForm.errorText,
   fields: [
     { name: 'name', label: 'Full name', type: 'text', required: true, autoComplete: 'name', half: true, maxLength: 120 },
     { name: 'email', label: 'Work email', type: 'email', required: true, autoComplete: 'email', half: true, maxLength: 200 },
@@ -290,8 +151,7 @@ const contactForm: FormConfig = {
       label: 'Estimated budget',
       type: 'select',
       half: true,
-      // PLACEHOLDER ranges — set the currency and bands that suit the business.
-      options: ['To be discussed', 'Under ₹1 lakh', '₹1–5 lakh', '₹5–15 lakh', '₹15 lakh+'],
+      options: pagesJson.contactForm.budgetOptions as string[],
     },
     {
       name: 'message',
@@ -310,34 +170,21 @@ const contactForm: FormConfig = {
   ],
 }
 
-// ── Customer feedback (testimonial submissions) ─────────────────────────────
-
 /**
- * Customers can submit feedback at /feedback. Submissions arrive in Netlify
- * (Forms → feedback) and are NOT published automatically: review each one,
- * confirm the customer is real and agreed to publication, then add it to
- * src/data/testimonials.ts.
+ * Customers submit feedback at /feedback. Submissions arrive in Netlify
+ * (Forms → feedback) and are NOT published automatically: approve one by
+ * adding it under Testimonials in the admin panel.
  */
-const feedbackPage = {
-  label: 'Share your experience',
-  heading: 'Worked with us? We’d love to hear from you.',
-  intro:
-    'Your feedback helps us improve and helps other business owners decide. Approved reviews may be featured on our website.',
-  notes: [
-    'Every submission is reviewed by our team before anything is published.',
-    'We only publish your name, role and company if you agree below.',
-    'Your email is never published — we only use it to confirm your review.',
-  ],
-}
+const feedbackPage = pagesJson.feedbackPage
 
 const feedbackForm: FormConfig = {
   name: 'feedback',
   endpoint: '/',
   legend: 'Customer feedback',
-  submitLabel: 'Submit feedback',
-  successTitle: 'Thank you for your feedback!',
-  successText: 'Our team will review it shortly. If you agreed to publication, it may appear on our website after review.',
-  errorText: 'Sorry, your feedback could not be sent. Please try again in a moment.',
+  submitLabel: pagesJson.feedbackForm.submitLabel,
+  successTitle: pagesJson.feedbackForm.successTitle,
+  successText: pagesJson.feedbackForm.successText,
+  errorText: pagesJson.feedbackForm.errorText,
   fields: [
     { name: 'name', label: 'Your name', type: 'text', required: true, autoComplete: 'name', half: true, maxLength: 120 },
     { name: 'email', label: 'Email (not published)', type: 'email', required: true, autoComplete: 'email', half: true, maxLength: 200 },
@@ -367,7 +214,7 @@ const feedbackForm: FormConfig = {
     },
     {
       name: 'publish',
-      label: 'I agree that my feedback, name, role and business name may be published on the Kunnect website.',
+      label: `I agree that my feedback, name, role and business name may be published on the ${companyJson.brand.shortName} website.`,
       type: 'checkbox',
     },
   ],
@@ -376,60 +223,37 @@ const feedbackForm: FormConfig = {
 // ── Footer & legal ──────────────────────────────────────────────────────────
 
 const footer = {
-  blurb:
-    'Strategic digital marketing and custom software for small and medium-scale businesses.',
+  blurb: companyJson.footer.blurb,
   legalLinks: [
     { label: 'Privacy policy', href: '/privacy' },
     { label: 'Terms', href: '/terms' },
   ] satisfies Cta[],
 }
 
-/** Legal pages. Leave `body` empty until real policies are supplied — the page then shows a clear notice. */
+/** Legal pages. While `body` is empty the page shows a clear notice and is not indexed. */
 const legal = {
-  privacy: { title: 'Privacy policy', body: [] as string[] },
-  terms: { title: 'Terms of use', body: [] as string[] },
+  privacy: { title: pagesJson.legal.privacy.title, body: (pagesJson.legal.privacy.body ?? []) as string[] },
+  terms: { title: pagesJson.legal.terms.title, body: (pagesJson.legal.terms.body ?? []) as string[] },
 }
 
 // ── SEO ─────────────────────────────────────────────────────────────────────
 
 const seo = {
   /** Canonical origin, no trailing slash. Override per environment with VITE_SITE_URL. */
-  siteUrl: 'https://kunnectds.in',
-  locale: 'en_IN',
-  /** Social share image in /public (1200×630). Replace `public/og-image.jpg`. */
-  ogImage: '/og-image.jpg',
-  twitterHandle: '',
-  /**
-   * JSON-LD structured data (Organization + WebSite on the home page, Service +
-   * BreadcrumbList on service pages). Only fields with real values are used.
-   */
-  structuredData: true,
+  siteUrl: seoJson.siteUrl.replace(/\/$/, ''),
+  locale: seoJson.locale,
+  ogImage: seoJson.ogImage,
+  twitterHandle: str(seoJson.twitterHandle),
+  /** JSON-LD structured data. Only fields with real values are used. */
+  structuredData: Boolean(seoJson.structuredData),
   pages: {
-    home: {
-      title: 'Kunnect Digital and Softwares | Digital Marketing & Software',
-      description:
-        'SEO, Google & Meta ads, websites, branding, social media and WhatsApp automation for small and medium businesses, with a dedicated account manager.',
-    },
-    services: {
-      title: 'Services',
-      description:
-        'SEO, Google & Meta ads, branding, social media, websites, review management, WhatsApp automation, HR software and more from Kunnect Digital and Softwares.',
-    },
-    about: {
-      title: 'About us',
-      description:
-        'Kunnect Digital and Softwares connects small and medium-scale businesses to the tech and digital world. Our mission, vision and values.',
-    },
-    contact: {
-      title: 'Contact',
-      description: 'Start a conversation with Kunnect Digital and Softwares about your next project.',
-    },
-    feedback: {
-      title: 'Share your experience',
-      description: 'Worked with Kunnect Digital and Softwares? Share your feedback and help other business owners decide.',
-    },
-    notFound: { title: 'Page not found', description: 'The page you were looking for could not be found.', noindex: true },
-  } satisfies Record<string, PageSeo>,
+    home: seoJson.pages.home as PageSeo,
+    services: seoJson.pages.services as PageSeo,
+    about: seoJson.pages.about as PageSeo,
+    contact: seoJson.pages.contact as PageSeo,
+    feedback: seoJson.pages.feedback as PageSeo,
+    notFound: { ...seoJson.pages.notFound, noindex: true } as PageSeo,
+  },
 }
 
 export const site = {

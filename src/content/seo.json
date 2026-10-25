@@ -1,0 +1,34 @@
+{
+  "siteUrl": "https://kunnectds.in",
+  "locale": "en_IN",
+  "ogImage": "/og-image.jpg",
+  "twitterHandle": "",
+  "structuredData": true,
+  "pages": {
+    "home": {
+      "title": "Kunnect Digital and Softwares | Digital Marketing & Software",
+      "description": "SEO, Google & Meta ads, websites, branding, social media and WhatsApp automation for small and medium businesses, with a dedicated account manager."
+    },
+    "services": {
+      "title": "Services",
+      "description": "SEO, Google & Meta ads, branding, social media, websites, review management, WhatsApp automation, HR software and more from Kunnect Digital and Softwares."
+    },
+    "about": {
+      "title": "About us",
+      "description": "Kunnect Digital and Softwares connects small and medium-scale businesses to the tech and digital world. Our mission, vision and values."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Start a conversation with Kunnect Digital and Softwares about your next project."
+    },
+    "feedback": {
+      "title": "Share your experience",
+      "description": "Worked with Kunnect Digital and Softwares? Share your feedback and help other business owners decide."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you were looking for could not be found.",
+      "noindex": true
+    }
+  }
+}

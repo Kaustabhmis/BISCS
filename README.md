@@ -60,13 +60,11 @@ and emphasis words.
 ```
 src/
   config/
-    site.ts            ← ALL business content, colours, fonts, SEO, forms
+    site.ts            ← assembles content + technical settings (fonts, form fields)
     navigation.ts      ← menu items, navbar CTA, static routes
     routes.ts          ← pages to pre-render / include in the sitemap
-  data/
-    services.ts        ← services (grouped by category)
-    brands.ts          ← client / partner logos for the carousel
-    testimonials.ts    ← approved customer testimonials
+  content/*.json       ← ALL editable content (edited via /admin)
+  data/                ← typed loaders for services, brands, testimonials
   types/content.ts     ← TypeScript interfaces for all content
   components/
     layout/            ← Navbar, MobileMenu, Footer, Logo, Layout
@@ -82,7 +80,7 @@ src/
 scripts/
   vite-site-plugin.ts  ← theme CSS, default <head> tags, Netlify form definitions, sitemap, robots
   prerender.mjs        ← writes static HTML for every route + 404.html + _redirects
-public/                ← logo, favicons, og-image, _headers
+public/                ← logo, favicons, og-image, _headers, admin/ (Decap CMS), uploads/
 netlify.toml
 ```
 
@@ -91,26 +89,91 @@ Routes: `/`, `/services`, `/services/:slug` (one per service), `/about`,
 
 ---
 
-## Editing content
+## Admin panel (edit content without code)
 
-Everything lives in **`src/config/site.ts`** and **`src/data/*.ts`**.
+Open **https://kunnectds.in/admin/** to edit everything on the site:
+
+| Section | What you can edit |
+| --- | --- |
+| **Testimonials** | Add, edit, reorder or remove reviews (quote, name, role, company, rating, photo, logo) |
+| **Team** | Team members with photos, bios and links |
+| **Clients & collaborators** | Logos in the home page strip: upload logos, mark each as client, partner or platform |
+| **Services** | All services and categories, including adding new services (each gets its own page) |
+| **Home page** | Hero headline, gold words, buttons, featured service, 3D labels, “Who we are”, statistics, section headings, closing call to action |
+| **About page** | Introduction, mission, vision, values, how we work, milestones, achievements |
+| **Other pages & forms** | Services/Contact/Feedback page text, form messages, budget options, privacy policy and terms |
+| **Company & contact** | Name, logo, tagline, email, phone, WhatsApp, address, hours, social links, footer text, and the **launch switch** |
+| **Brand colours** | Every site colour (also used by the 3D scene) |
+| **SEO** | Website address, share image, page titles and descriptions, structured data |
+
+**How it works:** the admin panel is [Decap CMS](https://decapcms.org). When
+you click **Publish**, your change is saved to `src/content/*.json` in the
+GitHub repository, and Netlify rebuilds and publishes the site automatically
+in about 1–2 minutes. Uploaded images go to `public/uploads/`. No database is
+needed, and every page stays pre-rendered for SEO.
+
+### One-time setup (about 10 minutes)
+
+The admin panel needs the site to be deployed **from GitHub** (Option B
+below), because it saves changes to the repository. Drag-and-drop deploys can't
+receive admin edits.
+
+1. **Merge this work into `main`.** The admin panel saves to the `main`
+   branch (`public/admin/config.yml` → `backend.branch`), and Netlify should
+   deploy from `main`.
+2. **Create a GitHub OAuth app:** GitHub → *Settings → Developer settings →
+   OAuth Apps → New OAuth App*.
+   - Homepage URL: `https://kunnectds.in`
+   - Authorization callback URL: `https://api.netlify.com/auth/done`
+   - Copy the **Client ID**, then generate and copy a **Client secret**.
+3. **Connect it in Netlify:** *Site configuration → Access & security → OAuth →
+   Install provider → GitHub*, then paste the Client ID and secret.
+4. Open **https://kunnectds.in/admin/** and click **Login with GitHub**.
+
+**Who can log in:** anyone with *write* access to the GitHub repository
+`Kaustabhmis/BISCS`. To give a colleague access, invite them under GitHub →
+repository *Settings → Collaborators*. To remove access, remove them there.
+
+### Approving customer reviews
+
+1. Read new reviews in Netlify → *Forms → feedback*.
+2. If the customer ticked “I agree … may be published”, open **Admin →
+   Testimonials → Add testimonial** and copy in their quote, name, role,
+   company and rating.
+3. Click **Publish**. The card appears on the home page after the rebuild.
+
+### Editing on your own computer
+
+```bash
+npm run dev            # terminal 1
+npx decap-server       # terminal 2
+# open http://localhost:5173/admin/index.html: changes are written to src/content/ directly
+```
+
+---
+
+## Editing content in code
+
+The admin panel edits the JSON files in **`src/content/`**. You can also edit
+them directly. `src/config/site.ts` assembles them and holds the technical
+settings (fonts, form fields).
 
 ### Placeholder content
 
-Items marked `placeholder: true` show a visible **“Placeholder”** badge. Before
-launch, set `launch.hidePlaceholderContent: true` in `site.ts` to remove them
-all. Sections left empty (brand carousel, team, milestones) disappear.
+Items marked as placeholders show a visible **“Placeholder”** badge. Before
+launch, turn on **Admin → Company & contact → Launch settings → Hide
+placeholder content** to remove them all. Sections left empty (brand carousel, team, milestones) disappear.
 
 **Still needs your input:**
 
 | Content | Where | Status |
 | --- | --- | --- |
-| Email, address, hours | `site.contact` | Empty → hidden. |
-| Social links | `site.socials` | Empty `href` → hidden. |
-| Client / partner logos | `src/data/brands.ts` | Placeholder slots. |
-| Testimonials | `src/data/testimonials.ts` | 3 labelled placeholders. Add approved feedback from `/feedback`. |
-| Team, milestones | `site.about` | Placeholders. |
-| Service descriptions | `src/data/services.ts` | Drafted copy: please review. |
+| Email, address, hours | Admin → Company & contact | Empty → hidden. |
+| Social links | Admin → Company & contact | Empty links → hidden. |
+| Client / partner logos | Admin → Clients & collaborators | Placeholder slots. |
+| Testimonials | Admin → Testimonials | 3 labelled placeholders. Add approved feedback from `/feedback`. |
+| Team, milestones | Admin → Team / About page | Placeholders. |
+| Service descriptions | Admin → Services | Drafted copy: please review. |
 | “How we work”, “What happens next” | `site.about.methodology`, `site.contactPage.nextSteps` | Drafted copy: please confirm. |
 | Budget ranges | `site.contactForm` → `budget` | Placeholder ₹ bands. |
 | Privacy policy / Terms | `site.legal` | Empty: pages say “awaiting content” and are `noindex`. |
@@ -152,11 +215,7 @@ automatically**, which prevents spam and fake reviews:
 
 1. A submission arrives in Netlify under **Forms → feedback**, with name, email (never published), role, business, service, rating, feedback, and whether they agreed to publication.
 2. Check it is genuine and that the customer agreed to publication.
-3. Add it to `src/data/testimonials.ts`:
-   ```ts
-   { quote: '…', name: 'Asha Rao', role: 'Owner', company: 'Rao Textiles', rating: 5 }
-   ```
-4. Rebuild and deploy. The card appears on the home page.
+3. Add it in **Admin → Testimonials** (see “Approving customer reviews” above).
 
 ---
 

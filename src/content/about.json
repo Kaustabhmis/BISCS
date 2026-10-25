@@ -1,0 +1,63 @@
+{
+  "label": "About us",
+  "heading": "Building connections, delivering growth.",
+  "intro": [
+    "At Kunnect Digital and Softwares, we empower small and medium-scale businesses with strategic digital marketing solutions and custom software development.",
+    "We deliver professional, quality work shaped around your budget, so more businesses can take the next step. And every business we work with is assigned a dedicated account manager, keeping communication seamless throughout your growth journey."
+  ],
+  "mission": "Connecting small and medium-scale businesses to the tech and digital world.",
+  "vision": "Empowering businesses with technology and research.",
+  "values": [
+    {
+      "title": "Innovation",
+      "text": "We look for better, smarter ways to solve everyday business problems."
+    },
+    {
+      "title": "Integration",
+      "text": "Marketing, content and software work best when they work together."
+    },
+    {
+      "title": "Trends",
+      "text": "We keep up with how platforms and customers change, so you don’t have to."
+    }
+  ],
+  "methodology": [
+    {
+      "title": "Discover",
+      "text": "We learn your business, customers, goals and budget."
+    },
+    {
+      "title": "Design",
+      "text": "We shape a plan across marketing, content and software."
+    },
+    {
+      "title": "Deliver",
+      "text": "We put it to work across the right channels and tools."
+    },
+    {
+      "title": "Develop",
+      "text": "We review what is working and keep improving."
+    }
+  ],
+  "milestones": [
+    {
+      "placeholder": true,
+      "year": "20XX",
+      "title": "Milestone",
+      "text": "Placeholder — a real moment in the company’s history."
+    },
+    {
+      "placeholder": true,
+      "year": "20XX",
+      "title": "Milestone",
+      "text": "Placeholder — a real moment in the company’s history."
+    },
+    {
+      "placeholder": true,
+      "year": "20XX",
+      "title": "Milestone",
+      "text": "Placeholder — a real moment in the company’s history."
+    }
+  ],
+  "achievements": []
+}

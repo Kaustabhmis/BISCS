@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kunnect Admin</title>
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <!-- Absolute path so the panel also works at /admin (without the trailing slash). -->
+    <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
+  </head>
+  <body>
+    <!-- Decap CMS: edits the JSON files in src/content and commits them to GitHub; Netlify then rebuilds the site. -->
+    <script src="https://unpkg.com/decap-cms@3.16.3/dist/decap-cms.js"></script>
+  </body>
+</html>

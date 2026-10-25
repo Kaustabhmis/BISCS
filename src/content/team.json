@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "placeholder": true,
+      "name": "Team member",
+      "role": "Role title",
+      "bio": "Placeholder — a short line about this person."
+    },
+    {
+      "placeholder": true,
+      "name": "Team member",
+      "role": "Role title",
+      "bio": "Placeholder — a short line about this person."
+    },
+    {
+      "placeholder": true,
+      "name": "Team member",
+      "role": "Role title",
+      "bio": "Placeholder — a short line about this person."
+    },
+    {
+      "placeholder": true,
+      "name": "Team member",
+      "role": "Role title",
+      "bio": "Placeholder — a short line about this person."
+    }
+  ]
+}

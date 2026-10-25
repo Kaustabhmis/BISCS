@@ -1,0 +1,65 @@
+{
+  "servicesPage": {
+    "label": "Services",
+    "heading": "Everything your business needs to grow online.",
+    "intro": "Digital marketing and software solutions that work on their own or together as one plan — coordinated by a dedicated account manager and shaped around your budget."
+  },
+  "contactPage": {
+    "label": "Contact",
+    "heading": "Let’s start a conversation.",
+    "intro": "Tell us a little about your business and what you’re hoping to achieve. We’ll get back to you with clear next steps.",
+    "nextSteps": [
+      {
+        "title": "We read your enquiry",
+        "text": "Your message comes straight to our team."
+      },
+      {
+        "title": "We talk it through",
+        "text": "We get in touch to understand your goals and budget."
+      },
+      {
+        "title": "You meet your account manager",
+        "text": "A dedicated point of contact guides everything from there."
+      }
+    ]
+  },
+  "feedbackPage": {
+    "label": "Share your experience",
+    "heading": "Worked with us? We’d love to hear from you.",
+    "intro": "Your feedback helps us improve and helps other business owners decide. Approved reviews may be featured on our website.",
+    "notes": [
+      "Every submission is reviewed by our team before anything is published.",
+      "We only publish your name, role and company if you agree below.",
+      "Your email is never published — we only use it to confirm your review."
+    ]
+  },
+  "contactForm": {
+    "submitLabel": "Send enquiry",
+    "successTitle": "Thank you — your enquiry has been sent.",
+    "successText": "We’ve received your message and will reply as soon as we can.",
+    "errorText": "Sorry, your message could not be sent. Please try again in a moment.",
+    "budgetOptions": [
+      "To be discussed",
+      "Under ₹1 lakh",
+      "₹1–5 lakh",
+      "₹5–15 lakh",
+      "₹15 lakh+"
+    ]
+  },
+  "feedbackForm": {
+    "submitLabel": "Submit feedback",
+    "successTitle": "Thank you for your feedback!",
+    "successText": "Our team will review it shortly. If you agreed to publication, it may appear on our website after review.",
+    "errorText": "Sorry, your feedback could not be sent. Please try again in a moment."
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "body": []
+    },
+    "terms": {
+      "title": "Terms of use",
+      "body": []
+    }
+  }
+}

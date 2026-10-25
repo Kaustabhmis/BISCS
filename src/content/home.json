@@ -1,0 +1,101 @@
+{
+  "hero": {
+    "eyebrow": "Digital marketing & software for growing businesses",
+    "headline": "Building connections, delivering growth.",
+    "headlineEmphasis": "delivering growth.",
+    "subheadline": "Strategic digital marketing and custom software for small and medium-scale businesses — shaped around your budget and guided by a dedicated account manager.",
+    "primaryCta": {
+      "label": "Discuss your project",
+      "href": "/contact"
+    },
+    "secondaryCta": {
+      "label": "Explore services",
+      "href": "/services"
+    },
+    "featuredService": {
+      "label": "Featured service",
+      "title": "Dedicated Account Manager",
+      "summary": "One point of contact who coordinates every part of your growth.",
+      "href": "/services/account-manager"
+    },
+    "channels": [
+      "SEO",
+      "Ads",
+      "Social",
+      "Branding",
+      "Reviews",
+      "Web",
+      "Automation"
+    ],
+    "sceneDescription": "An illustration of the marketing ecosystem: channel nodes orbit a central core, sending streams of light inward, above a ring of rising bars that represents growth."
+  },
+  "intro": {
+    "label": "Who we are",
+    "heading": "Marketing and software, connected for small and medium businesses.",
+    "statement": "We help small and medium-scale businesses grow with strategic digital marketing and custom software — connecting your brand to the customers, tools and technology it needs to reach its full potential.",
+    "philosophy": "Building Connections, Delivering Growth.",
+    "differentiators": [
+      {
+        "title": "Built for SMEs",
+        "text": "Every service is designed around the realities of small and medium-scale businesses."
+      },
+      {
+        "title": "Shaped to your budget",
+        "text": "Professional, quality work scoped to what you can invest — so more businesses can get started."
+      },
+      {
+        "title": "A dedicated account manager",
+        "text": "One point of contact who knows your business and keeps communication seamless."
+      }
+    ],
+    "stats": [
+      {
+        "placeholder": true,
+        "value": "—",
+        "label": "Projects delivered",
+        "verified": false
+      },
+      {
+        "placeholder": true,
+        "value": "—",
+        "label": "Years in practice",
+        "verified": false
+      },
+      {
+        "placeholder": true,
+        "value": "—",
+        "label": "Specialists",
+        "verified": false
+      }
+    ],
+    "cta": {
+      "label": "More about us",
+      "href": "/about"
+    }
+  },
+  "brandsSection": {
+    "label": "Clients & collaborators",
+    "heading": "Brands we work with"
+  },
+  "testimonialsSection": {
+    "label": "Client voices",
+    "heading": "What our clients say",
+    "shareCta": {
+      "label": "Share your experience",
+      "href": "/feedback"
+    }
+  },
+  "closingCta": {
+    "eyebrow": "Start a conversation",
+    "heading": "Ready to connect your business to growth?",
+    "text": "Tell us where you are and where you want to be. Your dedicated account manager will take it from there.",
+    "primary": {
+      "label": "Discuss your project",
+      "href": "/contact"
+    },
+    "secondary": {
+      "label": "Explore services",
+      "href": "/services"
+    }
+  }
+}

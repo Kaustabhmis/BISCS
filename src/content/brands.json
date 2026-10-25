@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "placeholder": true,
+      "name": "Brand slot 01",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 02",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 03",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 04",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 05",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 06",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 07",
+      "relationship": "client"
+    },
+    {
+      "placeholder": true,
+      "name": "Brand slot 08",
+      "relationship": "client"
+    }
+  ]
+}

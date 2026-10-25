@@ -120,8 +120,8 @@ export default function AboutPage() {
             <ul className="mt-14 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
               {team.map((m, i) => (
                 <li key={i}>
-                  {m.portrait ? (
-                    <img src={m.portrait.src} alt={m.portrait.alt} loading="lazy" width={600} height={750} className="aspect-[4/5] w-full rounded-2xl object-cover" />
+                  {m.portrait?.src ? (
+                    <img src={m.portrait.src} alt={m.portrait.alt || m.name} loading="lazy" width={600} height={750} className="aspect-[4/5] w-full rounded-2xl object-cover" />
                   ) : (
                     <div aria-hidden="true" className="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-ink">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,color-mix(in_oklab,var(--brand-accent)_35%,transparent),transparent_55%)]" />
@@ -131,6 +131,20 @@ export default function AboutPage() {
                   <h3 className="mt-5 text-lg font-medium">{m.name}</h3>
                   <p className="text-stone">{m.role}</p>
                   {m.bio && <p className="mt-2 text-sm text-stone">{m.bio}</p>}
+                  {m.links && m.links.length > 0 && (
+                    <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                      {m.links
+                        .filter((l) => l.href)
+                        .map((l) => (
+                          <li key={l.href}>
+                            <a href={l.href} target="_blank" rel="noopener noreferrer" className="font-medium text-accent-ink underline-offset-4 hover:underline">
+                              {l.label}
+                              <span className="sr-only"> (opens in a new tab)</span>
+                            </a>
+                          </li>
+                        ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>

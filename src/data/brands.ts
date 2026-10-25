@@ -1,21 +1,12 @@
 import type { Brand } from '../types/content'
+import brandsJson from '../content/brands.json'
 
 /**
- * BRANDS — PLACEHOLDER CONTENT
+ * CLIENTS & PARTNERS — edited in the admin panel (Clients & partners) or in
+ * src/content/brands.json.
  *
- * Only list brands the agency has a confirmed relationship with (and permission
- * to show). Put logo files in `public/brands/` and reference them like
- * `logo: '/brands/acme.svg'`. SVG, PNG and WebP are supported; logos are
- * scaled to a consistent height without distortion.
- *
- * Example of a real entry:
- *   { name: 'Acme', logo: '/brands/acme.svg', width: 120, height: 32, relationship: 'client' }
- *
- * Placeholder entries render as neutral, clearly labelled slots and are
- * removed when `site.launch.hidePlaceholderContent` is true. If no real brands
- * remain, the whole section is hidden.
+ * Only list brands the agency has a confirmed relationship with (and
+ * permission to show). Logos are scaled to a consistent height without
+ * distortion. If no real brands remain at launch, the section is hidden.
  */
-export const brands: Brand[] = Array.from({ length: 8 }, (_, i) => ({
-  placeholder: true,
-  name: `Brand slot ${String(i + 1).padStart(2, '0')}`,
-}))
+export const brands: Brand[] = (brandsJson.items as Brand[]).filter((b) => b.name)

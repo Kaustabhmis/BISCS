@@ -126,7 +126,7 @@ export interface Service extends Placeholderable {
   deliverables: string[]
   process: ServiceProcessStep[]
   /** Optional image path (in /public) shown on the detail page. */
-  image?: { src: string; alt: string; width: number; height: number }
+  image?: { src: string; alt: string; width?: number; height?: number }
   caseStudy?: CaseStudyRef
   cta?: Cta
 }
@@ -151,7 +151,7 @@ export interface Testimonial extends Placeholderable {
   role: string
   company: string
   portrait?: { src: string; alt: string }
-  logo?: { src: string; alt: string; width: number; height: number }
+  logo?: { src: string; alt: string; width?: number; height?: number }
   project?: string
 }
 

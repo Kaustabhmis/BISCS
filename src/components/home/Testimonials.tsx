@@ -36,8 +36,8 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         <p>{t.quote}</p>
       </blockquote>
       <figcaption className="relative mt-8 flex items-center gap-4 border-t border-ink/10 pt-6">
-        {t.portrait ? (
-          <img src={t.portrait.src} alt={t.portrait.alt} width={52} height={52} loading="lazy" className="size-13 rounded-full object-cover" />
+        {t.portrait?.src ? (
+          <img src={t.portrait.src} alt={t.portrait.alt || t.name} width={52} height={52} loading="lazy" className="size-13 rounded-full object-cover" />
         ) : (
           <span aria-hidden="true" className="bg-gold grid size-13 shrink-0 place-items-center rounded-full font-display text-lg font-semibold text-ink">
             {t.name.charAt(0)}
@@ -50,7 +50,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
             {t.project && <> · {t.project}</>}
           </span>
         </span>
-        {t.logo && <img src={t.logo.src} alt={t.logo.alt} width={t.logo.width} height={t.logo.height} loading="lazy" className="ml-auto h-7 w-auto" />}
+        {t.logo?.src && <img src={t.logo.src} alt={t.logo.alt || t.company} width={t.logo.width} height={t.logo.height} loading="lazy" className="ml-auto h-7 w-auto" />}
       </figcaption>
     </figure>
   )

@@ -1,0 +1,50 @@
+{
+  "brand": {
+    "name": "Kunnect Digital and Softwares",
+    "shortName": "Kunnect",
+    "wordmarkSuffix": "DS",
+    "logo": {
+      "src": "/logo.webp",
+      "width": 377,
+      "height": 120
+    },
+    "tagline": "Building Connections, Delivering Growth."
+  },
+  "contact": {
+    "email": "",
+    "phone": "+91 79808 71878",
+    "whatsapp": "917980871878",
+    "whatsappMessage": "Hi Kunnect, I’d like to discuss a project for my business.",
+    "address": "",
+    "hours": "",
+    "mapUrl": ""
+  },
+  "socials": [
+    {
+      "label": "LinkedIn",
+      "icon": "linkedin",
+      "href": ""
+    },
+    {
+      "label": "Instagram",
+      "icon": "instagram",
+      "href": ""
+    },
+    {
+      "label": "X",
+      "icon": "x",
+      "href": ""
+    },
+    {
+      "label": "YouTube",
+      "icon": "youtube",
+      "href": ""
+    }
+  ],
+  "footer": {
+    "blurb": "Strategic digital marketing and custom software for small and medium-scale businesses."
+  },
+  "launch": {
+    "hidePlaceholderContent": false
+  }
+}
