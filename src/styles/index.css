@@ -1,0 +1,258 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Brand values come from src/config/site.ts and are injected
+ * into :root at build time as --brand-* variables. Fallbacks below only apply
+ * if that injection is missing (e.g. in unit tests).
+ */
+:root {
+  --brand-ink: #0b0c10;
+  --brand-ink-raised: #14161d;
+  --brand-paper: #efece5;
+  --brand-paper-deep: #e3dfd5;
+  --brand-ash: #9497a1;
+  --brand-stone: #5d5f66;
+  --brand-accent: #ff5a36;
+  --brand-accent-ink: #b83a1b;
+  --brand-signal: #9db4ff;
+  --brand-font-display: ui-sans-serif, system-ui, sans-serif;
+  --brand-font-serif: ui-serif, Georgia, serif;
+  --brand-font-body: ui-sans-serif, system-ui, sans-serif;
+  --brand-font-mono: ui-monospace, monospace;
+
+  --header-h: 4.5rem;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-ink: var(--brand-ink);
+  --color-ink-raised: var(--brand-ink-raised);
+  --color-paper: var(--brand-paper);
+  --color-paper-deep: var(--brand-paper-deep);
+  --color-ash: var(--brand-ash);
+  --color-stone: var(--brand-stone);
+  --color-accent: var(--brand-accent);
+  --color-accent-ink: var(--brand-accent-ink);
+  --color-signal: var(--brand-signal);
+
+  --font-display: var(--brand-font-display);
+  --font-serif: var(--brand-font-serif);
+  --font-sans: var(--brand-font-body);
+  --font-mono: var(--brand-font-mono);
+
+  --ease-expo: var(--ease-out-expo);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    background: var(--brand-ink);
+  }
+  body {
+    @apply bg-ink font-sans text-paper;
+    font-feature-settings: 'ss01', 'cv11';
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--brand-accent);
+    color: var(--brand-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-paper :focus-visible {
+    outline-color: var(--brand-accent-ink);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--brand-font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Layout primitive: consistent gutters and max width. */
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Type scale */
+  .t-display {
+    font-size: clamp(2.75rem, 7.4vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+  .t-h1 {
+    font-size: clamp(2.5rem, 6vw, 6.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.032em;
+    font-weight: 500;
+  }
+  .t-h2 {
+    font-size: clamp(2rem, 4.2vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+  .t-h3 {
+    font-size: clamp(1.5rem, 2.2vw, 2.125rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+  .t-lead {
+    font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+  }
+  .t-statement {
+    font-size: clamp(1.75rem, 3.6vw, 3.6rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: 450;
+  }
+  .t-label {
+    font-family: var(--brand-font-mono);
+    font-size: 0.75rem;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .serif-em {
+    font-family: var(--brand-font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  /* Hairlines */
+  .hairline {
+    border-color: color-mix(in oklab, var(--brand-paper) 12%, transparent);
+  }
+  .on-paper .hairline,
+  .hairline-dark {
+    border-color: color-mix(in oklab, var(--brand-ink) 14%, transparent);
+  }
+
+  /* Subtle film grain used on dark sections. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Faint measurement grid used behind the hero. */
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--brand-paper) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--brand-paper) 5%, transparent) 1px, transparent 1px);
+    background-size: 96px 96px;
+    mask-image: radial-gradient(ellipse 70% 60% at 60% 45%, #000 20%, transparent 75%);
+  }
+
+  /* Form controls */
+  .field {
+    @apply w-full rounded-none border-0 border-b bg-transparent px-0 py-3 text-base text-ink transition-colors outline-none placeholder:text-stone/70;
+    border-color: color-mix(in oklab, var(--brand-ink) 25%, transparent);
+  }
+  .field:hover {
+    border-color: color-mix(in oklab, var(--brand-ink) 45%, transparent);
+  }
+  .field:focus {
+    border-color: var(--brand-ink);
+    box-shadow: 0 1px 0 0 var(--brand-ink);
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--brand-accent-ink);
+    box-shadow: 0 1px 0 0 var(--brand-accent-ink);
+  }
+}
+
+@layer utilities {
+  .marquee-track {
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee-paused .marquee-track {
+    animation-play-state: paused;
+  }
+  .page-enter {
+    animation: page-enter 0.7s var(--ease-out-expo) both;
+  }
+  .scroll-cue::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--brand-accent);
+    transform-origin: top;
+    animation: scroll-cue 2.4s var(--ease-out-expo) infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}

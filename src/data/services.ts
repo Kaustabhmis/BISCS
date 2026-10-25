@@ -1,0 +1,335 @@
+import type { Service } from '../types/content'
+
+/**
+ * SERVICES
+ *
+ * Service names and groupings were supplied by Kunnect Digital and Softwares.
+ * The descriptions, benefits, deliverables and process steps are drafted copy
+ * based on those names — review and adjust them so they describe exactly what
+ * is delivered. Avoid adding promises about results that cannot be guaranteed.
+ *
+ * Add, remove or reorder entries freely: the services page, the detail pages
+ * (`/services/:slug`), the footer, the contact form options and the sitemap
+ * all update automatically. Entries in the same `category` are grouped.
+ */
+
+export const serviceCategories = ['Digital Marketing Solutions', 'Software Solutions'] as const
+
+const DM = serviceCategories[0]
+const SW = serviceCategories[1]
+
+const contactFor = (slug: string, label: string) => ({ label, href: `/contact?service=${slug}` })
+
+export const services: Service[] = [
+  {
+    slug: 'profile-creation',
+    title: 'Profile Creation & Updates',
+    shortTitle: 'Profiles',
+    category: DM,
+    icon: 'id',
+    intro: 'Complete, accurate and consistent business profiles wherever customers look for you.',
+    description: [
+      'Customers often meet your business on a profile before they ever reach your website. We create and maintain your business profiles so that your details, photos, services and opening hours are complete, accurate and consistent everywhere.',
+      'When something changes — new timings, a new offer, a new location — we keep every profile up to date so customers never find outdated information.',
+    ],
+    benefits: [
+      'Consistent business information across platforms',
+      'Profiles that present your business professionally',
+      'Ongoing updates without the admin burden',
+    ],
+    deliverables: ['Profile set-up', 'Photo & information updates', 'Category & service listings', 'Regular profile reviews'],
+    process: [
+      { title: 'Audit', text: 'Review the profiles you already have.' },
+      { title: 'Create', text: 'Set up or claim missing profiles.' },
+      { title: 'Optimise', text: 'Complete every detail and visual.' },
+      { title: 'Maintain', text: 'Keep information current over time.' },
+    ],
+    cta: contactFor('profile-creation', 'Discuss your profiles'),
+  },
+  {
+    slug: 'photo-video-shoots',
+    title: 'Photoshoot & Videoshoot',
+    shortTitle: 'Shoots',
+    category: DM,
+    icon: 'camera',
+    intro: 'Original photos and videos that show your business as it really is.',
+    description: [
+      'Authentic visuals build trust faster than stock imagery. We plan and produce photo and video shoots of your products, space and people, ready for your website, profiles, ads and social media.',
+    ],
+    benefits: [
+      'Visuals that are genuinely yours',
+      'Content planned for every channel you use',
+      'A library of assets for future campaigns',
+    ],
+    deliverables: ['Shoot planning', 'Product & location photography', 'Short-form video', 'Edited, channel-ready files'],
+    process: [
+      { title: 'Plan', text: 'Agree the shot list and purpose.' },
+      { title: 'Shoot', text: 'Capture photos and video on location.' },
+      { title: 'Edit', text: 'Retouch, cut and format.' },
+      { title: 'Deliver', text: 'Hand over assets for every channel.' },
+    ],
+    cta: contactFor('photo-video-shoots', 'Plan a shoot'),
+  },
+  {
+    slug: 'website',
+    title: 'Website',
+    shortTitle: 'Web',
+    category: DM,
+    icon: 'monitor',
+    intro: 'Fast, mobile-friendly websites designed to turn visitors into enquiries.',
+    description: [
+      'Your website is the home base for every campaign. We design and build websites that load quickly, work beautifully on mobile, explain what you do clearly and make it easy for customers to get in touch.',
+    ],
+    benefits: [
+      'A professional first impression on every device',
+      'Clear journeys that lead to enquiries',
+      'Built to support SEO and advertising',
+    ],
+    deliverables: ['Structure & content plan', 'Visual design', 'Development', 'Launch & handover'],
+    process: [
+      { title: 'Map', text: 'Define goals, pages and content.' },
+      { title: 'Design', text: 'Shape the look and the journeys.' },
+      { title: 'Build', text: 'Develop, test and optimise.' },
+      { title: 'Launch', text: 'Go live and support the handover.' },
+    ],
+    cta: contactFor('website', 'Discuss your website'),
+  },
+  {
+    slug: 'seo-local-search',
+    title: 'SEO & Local Search',
+    shortTitle: 'SEO',
+    category: DM,
+    icon: 'pin',
+    intro: 'Help nearby customers find you when they search for what you offer.',
+    description: [
+      'Most small and medium businesses win customers close to home. We improve how your website and business profiles appear in search — including local and map results — through technical fixes, useful content and accurate local listings.',
+    ],
+    benefits: [
+      'Stronger visibility in local and map results',
+      'Website improvements search engines can understand',
+      'Clear reporting on what is changing',
+    ],
+    deliverables: ['SEO audit', 'Local listing optimisation', 'On-page improvements', 'Progress reports'],
+    process: [
+      { title: 'Audit', text: 'Measure where you stand today.' },
+      { title: 'Prioritise', text: 'Focus on the highest-impact fixes.' },
+      { title: 'Improve', text: 'Optimise pages, listings and content.' },
+      { title: 'Report', text: 'Track progress and refine.' },
+    ],
+    cta: contactFor('seo-local-search', 'Discuss SEO'),
+  },
+  {
+    slug: 'review-standee',
+    title: 'Review Standee',
+    shortTitle: 'Standee',
+    category: DM,
+    icon: 'star',
+    intro: 'A simple in-store standee that makes leaving a review effortless.',
+    description: [
+      'Happy customers are often willing to leave a review — they just need an easy way to do it. Our branded review standees sit at your counter or reception and take customers straight to your review page in seconds.',
+    ],
+    benefits: [
+      'Makes it easy for happy customers to leave reviews',
+      'Designed to match your brand',
+      'Works alongside your review management',
+    ],
+    deliverables: ['Standee design', 'Review link set-up', 'Printed standee'],
+    process: [
+      { title: 'Design', text: 'Create a standee in your brand style.' },
+      { title: 'Connect', text: 'Link it to your review page.' },
+      { title: 'Produce', text: 'Print and deliver.' },
+    ],
+    cta: contactFor('review-standee', 'Order a review standee'),
+  },
+  {
+    slug: 'review-management',
+    title: 'Review Management',
+    shortTitle: 'Reviews',
+    category: DM,
+    icon: 'message',
+    intro: 'Monitor, respond to and learn from what customers say about you.',
+    description: [
+      'Reviews shape how new customers see your business. We help you keep track of reviews, respond professionally and promptly, and turn recurring feedback into improvements.',
+    ],
+    benefits: [
+      'Timely, professional responses to reviews',
+      'A clear view of customer sentiment',
+      'Feedback turned into practical actions',
+    ],
+    deliverables: ['Review monitoring', 'Response management', 'Feedback summaries'],
+    process: [
+      { title: 'Monitor', text: 'Track new reviews as they arrive.' },
+      { title: 'Respond', text: 'Reply in your brand’s voice.' },
+      { title: 'Learn', text: 'Share recurring themes with you.' },
+    ],
+    cta: contactFor('review-management', 'Discuss review management'),
+  },
+  {
+    slug: 'promo-creation',
+    title: 'Promo Creation',
+    shortTitle: 'Promos',
+    category: DM,
+    icon: 'megaphone',
+    intro: 'Eye-catching promotional creatives for offers, launches and seasons.',
+    description: [
+      'From festive offers to new product launches, we design promotional creatives — posters, social posts, short videos and banners — that communicate your offer clearly and look unmistakably like your brand.',
+    ],
+    benefits: [
+      'Clear, on-brand promotional messages',
+      'Formats ready for every channel',
+      'Quick turnaround for timely offers',
+    ],
+    deliverables: ['Offer concepts', 'Social & print creatives', 'Short promo videos', 'Ad-ready formats'],
+    process: [
+      { title: 'Brief', text: 'Understand the offer and audience.' },
+      { title: 'Create', text: 'Design the concept and variations.' },
+      { title: 'Refine', text: 'Incorporate your feedback.' },
+      { title: 'Deliver', text: 'Export for every placement.' },
+    ],
+    cta: contactFor('promo-creation', 'Create a promo'),
+  },
+  {
+    slug: 'google-meta-ads',
+    title: 'Google & Meta Ads',
+    shortTitle: 'Ads',
+    category: DM,
+    icon: 'target',
+    intro: 'Targeted advertising on Google, Facebook and Instagram, managed within your budget.',
+    description: [
+      'We plan, launch and manage advertising campaigns on Google and Meta platforms, reaching the people most likely to need your products or services.',
+      'Budgets are agreed with you up front, campaigns are monitored and adjusted continuously, and you receive clear reports on spend and results.',
+    ],
+    benefits: [
+      'Campaigns built around your goals and budget',
+      'Continuous monitoring and optimisation',
+      'Transparent reporting on spend and results',
+    ],
+    deliverables: ['Campaign strategy', 'Ad set-up & creatives', 'Ongoing optimisation', 'Performance reports'],
+    process: [
+      { title: 'Plan', text: 'Set goals, audiences and budget.' },
+      { title: 'Launch', text: 'Build campaigns and tracking.' },
+      { title: 'Optimise', text: 'Test, learn and adjust.' },
+      { title: 'Report', text: 'Share clear results regularly.' },
+    ],
+    cta: contactFor('google-meta-ads', 'Discuss advertising'),
+  },
+  {
+    slug: 'branding',
+    title: 'Branding',
+    shortTitle: 'Branding',
+    category: DM,
+    icon: 'sparkles',
+    intro: 'A distinctive identity that makes your business recognisable and memorable.',
+    description: [
+      'A strong brand makes every other marketing effort work harder. We help define how your business looks and sounds — from logo and colours to tone of voice — and bring it together in guidelines your team can use.',
+    ],
+    benefits: [
+      'A consistent, professional identity',
+      'Easier recognition across every touchpoint',
+      'Guidelines that keep everything on-brand',
+    ],
+    deliverables: ['Brand discovery', 'Logo & visual identity', 'Tone of voice', 'Brand guidelines'],
+    process: [
+      { title: 'Discover', text: 'Learn your story and audience.' },
+      { title: 'Define', text: 'Shape positioning and personality.' },
+      { title: 'Design', text: 'Create the identity system.' },
+      { title: 'Apply', text: 'Roll it out across touchpoints.' },
+    ],
+    cta: contactFor('branding', 'Discuss branding'),
+  },
+  {
+    slug: 'social-media-content',
+    title: 'Social Media Content Planning',
+    shortTitle: 'Social',
+    category: DM,
+    icon: 'calendar',
+    intro: 'A planned, consistent social media presence your audience looks forward to.',
+    description: [
+      'Consistency is the hardest part of social media. We plan your content calendar around your goals, seasons and offers, so your channels stay active, relevant and recognisably yours.',
+    ],
+    benefits: [
+      'A clear monthly content plan',
+      'A consistent voice and visual style',
+      'Content aligned with your offers and seasons',
+    ],
+    deliverables: ['Content strategy', 'Monthly content calendar', 'Post creatives & captions', 'Monthly review'],
+    process: [
+      { title: 'Understand', text: 'Learn your audience and goals.' },
+      { title: 'Plan', text: 'Build the monthly calendar.' },
+      { title: 'Create', text: 'Produce posts and captions.' },
+      { title: 'Review', text: 'Learn from engagement and refine.' },
+    ],
+    cta: contactFor('social-media-content', 'Plan your content'),
+  },
+  {
+    slug: 'account-manager',
+    title: 'Dedicated Account Manager',
+    shortTitle: 'Account Manager',
+    category: DM,
+    icon: 'user',
+    intro: 'One dedicated point of contact for every business we work with.',
+    description: [
+      'Every business we work with is assigned a dedicated account manager. They understand your goals, coordinate every service you use and keep communication clear and simple throughout your growth journey.',
+    ],
+    benefits: [
+      'One person who knows your business',
+      'Coordinated work across every service',
+      'Clear, regular communication',
+    ],
+    deliverables: ['Onboarding', 'Regular check-ins', 'Coordinated planning', 'Progress updates'],
+    process: [
+      { title: 'Onboard', text: 'Get to know your business and goals.' },
+      { title: 'Coordinate', text: 'Align every service to one plan.' },
+      { title: 'Communicate', text: 'Keep you informed at every step.' },
+    ],
+    cta: contactFor('account-manager', 'Talk to us'),
+  },
+  {
+    slug: 'whatsapp-automation',
+    title: 'WhatsApp Automation',
+    shortTitle: 'WhatsApp',
+    category: SW,
+    icon: 'whatsapp',
+    intro: 'Automate replies, updates and follow-ups on the channel your customers already use.',
+    description: [
+      'Your customers are already on WhatsApp. We set up automation that answers common questions, sends updates and reminders, and follows up with enquiries — so customers get quick responses and your team saves time.',
+    ],
+    benefits: [
+      'Faster responses to customer enquiries',
+      'Fewer repetitive manual messages',
+      'Consistent follow-ups and reminders',
+    ],
+    deliverables: ['Workflow mapping', 'Automation set-up', 'Message templates', 'Training & support'],
+    process: [
+      { title: 'Map', text: 'Identify the conversations to automate.' },
+      { title: 'Build', text: 'Configure flows and templates.' },
+      { title: 'Test', text: 'Check every path before launch.' },
+      { title: 'Support', text: 'Train your team and refine.' },
+    ],
+    cta: contactFor('whatsapp-automation', 'Discuss WhatsApp automation'),
+  },
+  {
+    slug: 'hr-management',
+    title: 'HR Management Software',
+    shortTitle: 'HR',
+    category: SW,
+    icon: 'users',
+    intro: 'Simple software to manage your team’s records and everyday HR tasks.',
+    description: [
+      'Spreadsheets and paperwork slow growing teams down. Our HR management software brings employee information and everyday HR tasks into one organised place, set up to fit the way your business works.',
+    ],
+    benefits: [
+      'Employee information in one organised place',
+      'Less time spent on manual HR admin',
+      'Set up around your existing processes',
+    ],
+    deliverables: ['Requirements review', 'Software set-up', 'Data onboarding', 'Training & support'],
+    process: [
+      { title: 'Understand', text: 'Review how your team works today.' },
+      { title: 'Configure', text: 'Set up the software to fit.' },
+      { title: 'Onboard', text: 'Bring in your data and team.' },
+      { title: 'Support', text: 'Help as your team grows.' },
+    ],
+    cta: contactFor('hr-management', 'Discuss HR software'),
+  },
+]
