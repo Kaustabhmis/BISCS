@@ -8,16 +8,16 @@ const HOTEL = {
     whatsapp: '919339691217',              // country code + number, digits only
     address: '12, Biswa Bangla Sarani, Chinar Park, Rajarhat, Kolkata, West Bengal',
     lat: 22.6233, lng: 88.4465,            // APPROXIMATE - check against the hotel's Google Maps pin
-    rooms: [                               // PLACEHOLDER prices and room types - replace with actual tariff
-        { id: 'standard', name: 'Standard Room', price: 1500, maxGuests: 2, bed: 'Double bed',
+    rooms: [                               // Tariff per room per night (taxes extra)
+        { id: 'standard', name: 'Standard Room', price: 1200, maxGuests: 2, bed: 'Double bed',
           images: ['images/standard-1.jpg', 'images/standard-2.jpg', 'images/standard-6.jpg', 'images/standard-3.jpg', 'images/standard-4.jpg', 'images/standard-5.jpg'],
           blurb: 'A bright, spotless room with a comfortable double bed, ideal for solo travellers and couples.',
           features: ['Air conditioning', 'Free Wi-Fi', 'LED TV', 'Intercom phone', 'Mirror wardrobe', 'Bathroom with geyser'] },
-        { id: 'deluxe', name: 'Deluxe Room', price: 2000, maxGuests: 3, bed: 'Double bed',
+        { id: 'deluxe', name: 'Deluxe Room', price: 1500, maxGuests: 3, bed: 'Double bed',
           images: ['images/deluxe-1.jpg', 'images/deluxe-balcony.jpg'],
           blurb: 'A spacious, bright room with a sofa seating area and a private balcony overlooking Chinar Park.',
           features: ['Private balcony', 'Sofa seating', 'Air conditioning', 'Free Wi-Fi', 'Wardrobe'] },
-        { id: 'family', name: 'Family Suite', price: 2800, maxGuests: 4, bed: 'Double bed + sofa-cum-bed',
+        { id: 'family', name: 'Family Suite', price: 3000, maxGuests: 4, bed: 'Double bed + sofa-cum-bed',
           images: ['images/suite-4.jpg', 'images/suite-1.jpg', 'images/suite-5.jpg', 'images/suite-2.jpg', 'images/suite-6.jpg', 'images/suite-3.jpg', 'images/suite-7.jpg'],
           blurb: 'A private bedroom plus a separate sitting room with a sofa-cum-bed. Room for the whole family.',
           features: ['Separate sitting room', 'Sofa-cum-bed', 'Air conditioning', 'LED TV', 'Marble flooring'] }
