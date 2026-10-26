@@ -224,6 +224,8 @@ const feedbackForm: FormConfig = {
 
 const footer = {
   blurb: companyJson.footer.blurb,
+  /** "Website by …" credit in the bottom bar. Empty text hides it. */
+  credit: { label: str(companyJson.footer.creditText), href: str(companyJson.footer.creditUrl) },
   legalLinks: [
     { label: 'Privacy policy', href: '/privacy' },
     { label: 'Terms', href: '/terms' },

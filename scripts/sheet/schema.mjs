@@ -48,6 +48,8 @@ export const settingsTabs = [
       kv('contact.hours', 'Business hours', 'company', 'contact.hours'),
       kv('contact.map_url', 'Map link', 'company', 'contact.mapUrl'),
       kv('footer.blurb', 'Footer introduction', 'company', 'footer.blurb'),
+      kv('footer.credit_text', 'Website credit text', 'company', 'footer.creditText', 'text', 'Shown at the bottom of every page. Leave empty to hide.'),
+      kv('footer.credit_link', 'Website credit link', 'company', 'footer.creditUrl'),
       kv('launch.hide_placeholders', 'Hide placeholder content', 'company', 'launch.hidePlaceholderContent', 'bool', 'Set to Yes before going live: removes every row marked Placeholder = Yes.'),
     ],
   },

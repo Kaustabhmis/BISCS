@@ -128,6 +128,15 @@ export function Footer() {
         <p>
           © {year} {site.brand.name}. All rights reserved.
         </p>
+        {site.footer.credit.label &&
+          (site.footer.credit.href ? (
+            <a href={site.footer.credit.href} target="_blank" rel="noopener" className="transition-colors hover:text-accent order-last">
+              {site.footer.credit.label}
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ) : (
+            <p className="order-last">{site.footer.credit.label}</p>
+          ))}
         <ul className="flex gap-6">
           {site.footer.legalLinks.map((l) => (
             <li key={l.href}>

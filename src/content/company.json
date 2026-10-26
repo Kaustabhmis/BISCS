@@ -42,7 +42,9 @@
     }
   ],
   "footer": {
-    "blurb": "Strategic digital marketing and custom software for small and medium-scale businesses."
+    "blurb": "Strategic digital marketing and custom software for small and medium-scale businesses.",
+    "creditText": "Website by BISCS India",
+    "creditUrl": "https://www.biscsindia.com"
   },
   "launch": {
     "hidePlaceholderContent": false
