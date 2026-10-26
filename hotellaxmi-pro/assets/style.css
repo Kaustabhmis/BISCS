@@ -388,3 +388,5 @@ section { padding: 96px 0; scroll-margin-top: 80px; }
     .header .container { height: 66px; }
     .header .logo img.logo-img { height: 58px; }
 }
+.footer-bottom a { color: #d6d3cc; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(230, 207, 145, .5); }
+.footer-bottom a:hover { color: var(--gold-light); }
