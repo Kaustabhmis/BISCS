@@ -57,6 +57,21 @@ const paragraphs = (v) =>
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
 
+const CONTROL = /[\u0000-\u001f\u007f]/
+
+/** Links allowed on the website: /page, #section, http(s), mailto and tel. Blocks javascript: and similar. */
+export function isSafeUrl(value) {
+  const s = String(value ?? '')
+  if (!s || s.length > 500 || CONTROL.test(s) || /\s/.test(s)) return false
+  return /^(https?:\/\/[^/]|mailto:.|tel:\+?[\d().-]+$|\/(?!\/)|#)/i.test(s)
+}
+
+/** Images: site paths (/logo.webp) or http(s) links (downloaded during the build). */
+export function isSafeImage(value) {
+  const s = String(value ?? '')
+  return s.length <= 1000 && !CONTROL.test(s) && !/\s/.test(s) && /^(\/(?!\/)|https?:\/\/[^/])/i.test(s)
+}
+
 /** Turns Google Drive share links into direct download links. */
 export function directImageUrl(url) {
   const s = String(url ?? '').trim()
@@ -95,8 +110,23 @@ function parseCell(raw, type, opts, warn) {
       }
       return s.toUpperCase()
     }
-    case 'image':
-      return s ? directImageUrl(s) : undefined
+    case 'image': {
+      if (!s) return undefined
+      const url = directImageUrl(s)
+      if (!isSafeImage(url)) {
+        warn(`“${s}” is not an image link (use a Google Drive link, an https link or a path like /logo.webp)`)
+        return undefined
+      }
+      return url
+    }
+    case 'url': {
+      if (!s) return undefined
+      if (!isSafeUrl(s)) {
+        warn(`“${s}” is not a valid link (use /page, https://…, mailto:… or tel:…)`)
+        return undefined
+      }
+      return s
+    }
     case 'steps':
       return lines(s).map((l) => {
         const i = l.indexOf(':')
@@ -106,8 +136,13 @@ function parseCell(raw, type, opts, warn) {
       return lines(s)
         .map((l) => {
           const [a, b] = l.split('|').map((x) => x.trim())
-          if (b) return { label: a, href: b }
+          if (b) {
+            if (isSafeUrl(b)) return { label: a, href: b }
+            warn(`link “${b}” is not valid (use https://…, mailto:… or tel:…)`)
+            return null
+          }
           try {
+            if (!isSafeUrl(a) || !/^https?:/i.test(a)) throw new Error('unsafe')
             return { label: new URL(a).hostname.replace(/^www\./, ''), href: a }
           } catch {
             warn(`link “${l}” should look like: Label | https://…`)
@@ -188,7 +223,7 @@ export function tabsToContent(tabs, snapshot) {
       if (v === undefined) {
         // Empty optional numbers/images are removed; invalid colours keep the current value.
         if (row.type === 'int' || row.type === 'number') deletePath(content[row.file], row.path)
-        else if (row.type === 'image' || row.type === 'text') setPath(content[row.file], row.path, '')
+        else if (row.type === 'image' || row.type === 'text' || row.type === 'url') setPath(content[row.file], row.path, '')
         continue
       }
       if (row.type === 'image') images.add(v)

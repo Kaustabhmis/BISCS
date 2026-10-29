@@ -113,7 +113,7 @@ ${sitemapRoutes()
 </urlset>
 `
       const robots = isProductionContext
-        ? `User-agent: *\nAllow: /\n\nSitemap: ${url}/sitemap.xml\n`
+        ? `User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /api/\n\nSitemap: ${url}/sitemap.xml\n`
         : `User-agent: *\nDisallow: /\n`
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemap })
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robots })

@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { contentToTabs, directImageUrl, tabsToContent } from './convert.mjs'
+import { contentToTabs, directImageUrl, isSafeUrl, tabsToContent } from './convert.mjs'
 import { contentFiles } from './schema.mjs'
 
 const snapshot = Object.fromEntries(
@@ -80,5 +80,23 @@ describe('sheet ⇄ content', () => {
   it('converts Google Drive share links', () => {
     expect(directImageUrl('https://drive.google.com/open?id=XYZ1234567890')).toBe('https://drive.google.com/uc?export=download&id=XYZ1234567890')
     expect(directImageUrl('/logo.webp')).toBe('/logo.webp')
+  })
+})
+
+describe('link safety', () => {
+  it('accepts normal links and rejects script links', () => {
+    for (const ok of ['/contact', '/contact?service=seo', '#top', 'https://kunnectds.in', 'mailto:hi@kunnectds.in', 'tel:+917980871878']) expect(isSafeUrl(ok)).toBe(true)
+    for (const bad of ['javascript:alert(1)', 'JaVaScRiPt:alert(1)', 'data:text/html,x', '//evil.com', 'https://a b', 'vbscript:x', '']) expect(isSafeUrl(bad)).toBe(false)
+  })
+
+  it('drops unsafe links from the sheet with a warning', () => {
+    const tabs = contentToTabs(snapshot)
+    const row = tabs.Home.find((r) => r[0] === 'hero.button1_link')
+    row[2] = 'javascript:alert(1)'
+    tabs.Team = [['Show', 'Name', 'Role', 'Bio', 'Photo', 'Links', 'Placeholder'], ['Yes', 'Ravi', 'Lead', '', '', 'Bad | javascript:alert(1)\njavascript:alert(2)', '']]
+    const { content, warnings } = tabsToContent(tabs, snapshot)
+    expect(content.home.hero.primaryCta.href).toBe('')
+    expect(content.team.items[0].links).toBeUndefined()
+    expect(warnings.filter((w) => /not (a )?valid/.test(w)).length).toBeGreaterThanOrEqual(2)
   })
 })

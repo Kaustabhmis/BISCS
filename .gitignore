@@ -11,3 +11,4 @@ dist-ssr
 coverage
 dist-server
 *.zip
+public/content-version.json

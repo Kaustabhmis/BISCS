@@ -81,6 +81,9 @@ scripts/
   vite-site-plugin.ts  ← theme CSS, default <head> tags, Netlify form definitions, sitemap, robots
   prerender.mjs        ← writes static HTML for every route + 404.html + _redirects
   sheet/               ← Google Sheet schema, importer (pull.mjs), template builder
+src/admin/             ← admin panel UI (admin.html)
+netlify/functions/     ← admin API: login, session, content, upload, users
+cms/                   ← admin model + server helpers (auth, sheet client)
 google-sheets/         ← sheet template (.xlsx), Apps Script (Code.gs), setup guide
 public/                ← logo, favicons, og-image, _headers
 netlify.toml
@@ -91,37 +94,41 @@ Routes: `/`, `/services`, `/services/:slug` (one per service), `/about`,
 
 ---
 
-## Editing content with Google Sheets
+## Admin panel (kunnectds.in/admin.html) + Google Sheet database
 
-All content is edited in **one Google Sheet**. Nobody needs a GitHub account.
+Content is edited in a **WordPress-style admin panel** at
+**`/admin.html`**: log in with a username and password, edit forms, upload
+images, click **Save & publish**. Behind it, **a Google Sheet is the
+database**. The admin panel reads and writes it through a private Apps
+Script API, and every build reads the website content from it.
 
-| Sheet tab | What you edit there |
+| Admin section | What you edit |
 | --- | --- |
 | **Testimonials** | Customer reviews: quote, name, role, company, rating, photo, logo |
 | **Team** | Team members with photos, bios and links |
-| **Clients** | Logo strip: name, logo, client / partner / platform, website |
-| **Services** | All services: page text, benefits, deliverables, steps, images, buttons. New rows become new pages |
-| **Company** | Name, logo, tagline, email, phone, WhatsApp, address, hours, footer, and the **launch switch** |
-| **Home**, **Pages** | All page text: hero, “Who we are”, section headings, About, Services, Contact, Feedback, forms, legal pages |
-| **Highlights**, **Stats**, **Values**, **How We Work**, **Milestones**, **Achievements**, **Contact Steps**, **Social Links** | The smaller lists on each page |
-| **Colours** | Every brand colour (also used by the 3D scene) |
-| **SEO** | Website address, share image, page titles and descriptions |
+| **Clients & collaborators** | Logo strip: name, logo, client / partner / platform, website |
+| **Services** | All services: page text, benefits, deliverables, steps, images, buttons. New items become new pages |
+| **Home page**, **About page**, **Pages & forms** | All page text, highlights, stats, values, process, milestones, form messages, legal pages |
+| **Company & contact** | Name, logo, contact details, WhatsApp, social links, footer, and the **launch switch** |
+| **Colours**, **SEO** | Brand colours (also used by the 3D scene), page titles and descriptions |
+| **Users**, **My account** | Add or remove people who can log in; change your password |
 
-**How it works:** you edit the sheet, then choose **Website → Publish
-changes** (a menu added by the included Apps Script). Netlify rebuilds the
-site: the build reads the sheet through a private, password-protected link,
-copies images onto the website, and pre-renders every page. It goes live in
-about 2 minutes. If the sheet can't be read, the build stops and the current
-website stays online. Rows with problems (such as a missing required field or
-an invalid colour) are skipped and listed in the Netlify build log.
+**How it works:** the admin panel (`src/admin/`) talks to Netlify Functions
+(`netlify/functions/admin-*.mts`). They check the login, validate every
+value, and write to the Google Sheet through its Apps Script API
+(`google-sheets/Code.gs`). Save then triggers the Netlify build hook. The
+build reads the sheet, copies images onto the website, and pre-renders every
+page, live in about 2 minutes. If the sheet can't be read, the build stops and
+the current website stays online.
 
-**Setup and everyday editing:** see **[google-sheets/README.md](google-sheets/README.md)**.
-That folder contains the template (`Kunnect-Website-Content.xlsx`, pre-filled
-with the current content) and the Apps Script (`Code.gs`).
+**Setup and everyday use:** see **[google-sheets/README.md](google-sheets/README.md)**.
+It also contains the sheet template (`Kunnect-Website-Content.xlsx`,
+pre-filled with the current content) and the Apps Script.
 
 ### How it's built
 
-- `scripts/sheet/schema.mjs` maps every sheet tab, row and column to the content files.
+- `scripts/sheet/schema.mjs` maps every sheet tab, row and column to the content files. The admin forms are generated from it too.
+- `cms/model.mjs` converts between sheet rows and the admin forms; `cms/server/` holds the login (scrypt password hashes, signed HttpOnly session cookies), request checks and the Apps Script client.
 - `scripts/sheet/pull.mjs` runs first in `npm run build` when `CONTENT_SHEET_URL`
   is set. It writes `src/content/*.json` and downloads images to `public/uploads/sheet/`.
 - `scripts/sheet/make-template.mjs` (`npm run sheet:template`) regenerates the
@@ -225,10 +232,10 @@ the same name, phone and website.
 4. Complete the Forms steps above.
 
 To update the site later, rebuild and drop the new `dist` folder onto
-*Deploys* for the same site. Drag-and-drop sites can't rebuild themselves, so
-**Google Sheet publishing needs Option B**.
+*Deploys* for the same site. Drag-and-drop deploys can't run the admin
+panel's functions or rebuild themselves, so **the admin panel needs Option B**.
 
-### Option B — automatic builds (needed for Google Sheet publishing)
+### Option B — automatic builds (needed for the admin panel)
 
 Netlify builds the site from its code repository. This is a one-time
 connection; content editors never use it.
@@ -245,7 +252,10 @@ and security headers. Both work for either deploy option.
 ### Environment variables
 
 - `CONTENT_SHEET_URL`: the Google Sheet content link, including `?key=…`.
-  It's only used during the build and is never sent to visitors' browsers.
+  It's used by the build and the admin functions, and is never sent to browsers.
+- `NETLIFY_BUILD_HOOK`: build hook URL; Save & publish uses it to rebuild the site.
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD`: the owner login for `/admin.html`.
+- `SESSION_SECRET`: 40+ random characters used to sign admin sessions.
 - `VITE_SITE_URL` (optional): canonical origin. Defaults to the website address in the SEO tab.
 
 Variables starting with `VITE_` are public; never put secrets in them.
