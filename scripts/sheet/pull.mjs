@@ -92,8 +92,6 @@ async function main() {
   for (const f of contentFiles) {
     await fs.writeFile(path.join(contentDir, `${f}.json`), JSON.stringify(replaceStrings(content[f], map), null, 2) + '\n')
   }
-  // Lets the admin panel see when a saved change has gone live.
-  await fs.writeFile(path.join(root, 'public/content-version.json'), JSON.stringify({ revision: String(data.revision ?? ''), builtAt: new Date().toISOString() }) + '\n')
   console.log(`✓ Content updated from Google Sheets (${Object.keys(tabs).length} tabs, ${map.size} images).`)
   if (warnings.length) {
     console.warn(`⚠ ${warnings.length} warning(s) — fix these in the sheet:`)

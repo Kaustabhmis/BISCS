@@ -82,8 +82,9 @@ scripts/
   prerender.mjs        ← writes static HTML for every route + 404.html + _redirects
   sheet/               ← Google Sheet schema, importer (pull.mjs), template builder
 src/admin/             ← admin panel UI (admin.html)
-netlify/functions/     ← admin API: login, session, content, upload, users
-cms/                   ← admin model + server helpers (auth, sheet client)
+src/lib/liveContent.ts ← loads the live content from the Google Sheet in the browser
+cms/model.mjs          ← sheet rows ⇄ admin forms
+public/site-config.js  ← the Google Sheet (Apps Script /exec) URL
 google-sheets/         ← sheet template (.xlsx), Apps Script (Code.gs), setup guide
 public/                ← logo, favicons, og-image, _headers
 netlify.toml
@@ -96,41 +97,33 @@ Routes: `/`, `/services`, `/services/:slug` (one per service), `/about`,
 
 ## Admin panel (kunnectds.in/admin.html) + Google Sheet database
 
-Content is edited in a **WordPress-style admin panel** at
-**`/admin.html`**: log in with a username and password, edit forms, upload
-images, click **Save & publish**. Behind it, **a Google Sheet is the
-database**. The admin panel reads and writes it through a private Apps
-Script API, and every build reads the website content from it.
+All content lives in **one Google Sheet**. Editors use the **admin panel at
+`/admin.html`**: log in with a username and password, edit, click **Save**.
+The panel saves straight into the sheet through its Apps Script
+(`google-sheets/Code.gs`), and the website reads the sheet in the browser on
+every visit, so changes appear within about a minute. No builds, no
+server, no GitHub needed for editing.
 
 | Admin section | What you edit |
 | --- | --- |
-| **Testimonials** | Customer reviews: quote, name, role, company, rating, photo, logo |
-| **Team** | Team members with photos, bios and links |
-| **Clients & collaborators** | Logo strip: name, logo, client / partner / platform, website |
-| **Services** | All services: page text, benefits, deliverables, steps, images, buttons. New items become new pages |
+| **Testimonials**, **Team**, **Clients & collaborators**, **Services** | Add, edit, reorder, hide or delete items, with image uploads (stored in Google Drive) |
 | **Home page**, **About page**, **Pages & forms** | All page text, highlights, stats, values, process, milestones, form messages, legal pages |
-| **Company & contact** | Name, logo, contact details, WhatsApp, social links, footer, and the **launch switch** |
-| **Colours**, **SEO** | Brand colours (also used by the 3D scene), page titles and descriptions |
-| **Users**, **My account** | Add or remove people who can log in; change your password |
+| **Company & contact**, **Colours**, **SEO** | Contact details, WhatsApp, social links, footer, launch switch, brand colours, titles and descriptions |
+| **Users**, **My account** | People who can log in; change your password |
 
-**How it works:** the admin panel (`src/admin/`) talks to Netlify Functions
-(`netlify/functions/admin-*.mts`). They check the login, validate every
-value, and write to the Google Sheet through its Apps Script API
-(`google-sheets/Code.gs`). Save then triggers the Netlify build hook. The
-build reads the sheet, copies images onto the website, and pre-renders every
-page, live in about 2 minutes. If the sheet can't be read, the build stops and
-the current website stays online.
-
-**Setup and everyday use:** see **[google-sheets/README.md](google-sheets/README.md)**.
-It also contains the sheet template (`Kunnect-Website-Content.xlsx`,
-pre-filled with the current content) and the Apps Script.
+**Setup:** paste `google-sheets/Code.gs` into the sheet's Apps Script, deploy it
+as a web app, put its `/exec` URL in `site-config.js` (or Netlify snippet
+injection), and upload the site. Step by step:
+**[google-sheets/README.md](google-sheets/README.md)**.
 
 ### How it's built
 
-- `scripts/sheet/schema.mjs` maps every sheet tab, row and column to the content files. The admin forms are generated from it too.
-- `cms/model.mjs` converts between sheet rows and the admin forms; `cms/server/` holds the login (scrypt password hashes, signed HttpOnly session cookies), request checks and the Apps Script client.
-- `scripts/sheet/pull.mjs` runs first in `npm run build` when `CONTENT_SHEET_URL`
-  is set. It writes `src/content/*.json` and downloads images to `public/uploads/sheet/`.
+- `scripts/sheet/schema.mjs` maps every sheet tab, row and column to the content. The admin forms are generated from it.
+- `scripts/sheet/convert.mjs` turns sheet rows into website content (and checks it, e.g. rejects unsafe links). The website uses it in the browser (`src/lib/liveContent.ts`) and the admin uses it to check before saving.
+- `cms/model.mjs` converts between sheet rows and the admin forms.
+- `google-sheets/Code.gs` is the backend: public read-only content, admin logins (salted, iterated password hashes; signed 8-hour sessions; lockout after 5 wrong attempts), saving with conflict protection, image uploads to Drive, and users.
+- `scripts/sheet/pull.mjs` (optional) runs first in `npm run build` when `CONTENT_SHEET_URL`
+  is set, so the pre-built pages contain the latest sheet content. It writes `src/content/*.json` and downloads images to `public/uploads/sheet/`.
 - `scripts/sheet/make-template.mjs` (`npm run sheet:template`) regenerates the
   template from `src/content`.
 - Without `CONTENT_SHEET_URL`, builds use the JSON already in `src/content`
@@ -222,50 +215,39 @@ the same name, phone and website.
 
 ## Deploying to Netlify
 
-### Option A — drag and drop (quick start, no Google Sheet updates)
+### Drag and drop (recommended)
 
-1. Run `npm run build`, or use the ready-made zip of `dist/`.
-2. Go to **app.netlify.com → Add new site → Deploy manually** and drop the
-   `dist` folder (or the unzipped contents of the zip). The folder must
-   contain `index.html` at its top level.
-3. Add the domain **kunnectds.in** under *Domain management*.
-4. Complete the Forms steps above.
+1. Use the ready-made zip (or run `npm run build` and use the `dist` folder).
+2. Put your Apps Script `/exec` URL in `site-config.js` (or use Netlify
+   snippet injection; see [google-sheets/README.md](google-sheets/README.md)).
+3. **app.netlify.com → Add new site → Deploy manually** → drop the folder.
+   The folder must contain `index.html` at its top level.
+4. Add the domain **kunnectds.in** under *Domain management*.
+5. Enable **Forms → form detection**, re-upload once, and add email notifications.
 
-To update the site later, rebuild and drop the new `dist` folder onto
-*Deploys* for the same site. Drag-and-drop deploys can't run the admin
-panel's functions or rebuild themselves, so **the admin panel needs Option B**.
+Content edits never need a new upload: they go through the admin panel and the
+Google Sheet. Only code or design changes need a new zip.
 
-### Option B — automatic builds (needed for the admin panel)
+### Connecting the code repository (optional)
 
-Netlify builds the site from its code repository. This is a one-time
-connection; content editors never use it.
+You can also connect this repository in Netlify (*Add new site → Import an
+existing project*). `netlify.toml` sets the build command `npm run build`,
+publish directory `dist` and Node 22. `dist/_redirects` (real 404s) and
+`public/_headers` (caching and security headers) work either way.
 
-1. Netlify → **Add new site → Import an existing project**, then choose this repository.
-2. Netlify reads `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
-3. Choose the production branch. Every pull request gets a Deploy Preview.
-4. Add the domain and complete the Forms steps.
-5. Connect the Google Sheet: follow [google-sheets/README.md](google-sheets/README.md).
+### Optional build setting
 
-`dist/_redirects` (generated) handles real 404s; `public/_headers` sets caching
-and security headers. Both work for either deploy option.
-
-### Environment variables
-
-- `CONTENT_SHEET_URL`: the Google Sheet content link, including `?key=…`.
-  It's used by the build and the admin functions, and is never sent to browsers.
-- `NETLIFY_BUILD_HOOK`: build hook URL; Save & publish uses it to rebuild the site.
-- `ADMIN_USERNAME`, `ADMIN_PASSWORD`: the owner login for `/admin.html`.
-- `SESSION_SECRET`: 40+ random characters used to sign admin sessions.
-- `VITE_SITE_URL` (optional): canonical origin. Defaults to the website address in the SEO tab.
-
-Variables starting with `VITE_` are public; never put secrets in them.
+- `CONTENT_SHEET_URL` (build-time only): when set, `npm run build` copies the
+  current sheet content into the pre-built pages first, so search engines and
+  social previews see the latest text without JavaScript.
+- `VITE_SITE_URL`: canonical origin. Defaults to the website address in the SEO tab.
 
 ### Troubleshooting
 
-- **A form doesn't appear in Netlify:** enable form detection, then redeploy.
-- **Wrong canonical / OG URLs:** fix the website address in the sheet's SEO tab, or set `VITE_SITE_URL`.
-- **Sheet changes don't appear:** see *If something goes wrong* in [google-sheets/README.md](google-sheets/README.md).
-- **Build fails:** use Node 22 and run `npm ci` before `npm run build`.
+- **A form doesn't appear in Netlify:** enable form detection, then upload again.
+- **Wrong canonical / OG URLs:** fix the website address in the SEO section of the admin.
+- **Admin or live content problems:** see *If something goes wrong* in [google-sheets/README.md](google-sheets/README.md).
+- **Build fails (only when building yourself):** use Node 22 and run `npm ci` before `npm run build`.
 
 ---
 

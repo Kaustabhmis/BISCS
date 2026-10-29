@@ -13,7 +13,7 @@ import servicesJson from '../content/services.json' with { type: 'json' }
 type RawService = Partial<Service> & { slug: string; title: string }
 
 /** Service groups, in display order. */
-export const serviceCategories: string[] = servicesJson.categories ?? []
+export const serviceCategories: string[] = []
 
 const slugify = (s: string) =>
   s
@@ -22,8 +22,8 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 
-// Fill in defaults so an entry saved with empty lists can never break the build.
-export const services: Service[] = (servicesJson.items as RawService[]).map((s) => {
+// Fill in defaults so an entry saved with empty lists can never break the page.
+function normalise(s: RawService): Service {
   const slug = slugify(s.slug || s.title)
   return {
     placeholder: s.placeholder,
@@ -41,4 +41,14 @@ export const services: Service[] = (servicesJson.items as RawService[]).map((s) 
     caseStudy: s.caseStudy?.title ? s.caseStudy : undefined,
     cta: s.cta?.label ? s.cta : { label: 'Discuss this service', href: `/contact?service=${slug}` },
   }
-})
+}
+
+/** All services. Updated in place when live content arrives (see replaceSiteContent). */
+export const services: Service[] = []
+
+export function setServices(json: { categories?: string[]; items?: unknown[] }): void {
+  serviceCategories.splice(0, serviceCategories.length, ...(json.categories ?? []))
+  services.splice(0, services.length, ...((json.items ?? []) as RawService[]).filter((s) => s?.title).map(normalise))
+}
+
+setServices(servicesJson)

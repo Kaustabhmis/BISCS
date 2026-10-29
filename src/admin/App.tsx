@@ -25,7 +25,7 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { api, ApiError, type AdminUser, type Model } from './api'
 import { sectionProblems } from './checks'
 import { SectionEditor } from './editors'
@@ -158,7 +158,7 @@ function Login({ setupProblem, notice, onLogin }: { setupProblem: string | null;
 
 // ── Signed-in shell ─────────────────────────────────────────────────────────
 
-type SaveState = { kind: 'idle' } | { kind: 'saving' } | { kind: 'publishing'; revision: number; since: number } | { kind: 'live' } | { kind: 'saved-no-publish' } | { kind: 'error'; message: string; errors?: string[]; conflict?: boolean }
+type SaveState = { kind: 'idle' } | { kind: 'saving' } | { kind: 'live' } | { kind: 'error'; message: string; errors?: string[]; conflict?: boolean }
 
 function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boolean; onSignedOut: (notice?: string) => void }) {
   const [route, setRoute] = useState<Route>(routeFromHash)
@@ -216,24 +216,6 @@ function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boo
     return () => window.removeEventListener('beforeunload', warn)
   }, [dirty])
 
-  // After saving, watch the live website until the new content is published.
-  const pollRef = useRef<number | undefined>(undefined)
-  useEffect(() => {
-    if (save.kind !== 'publishing') return
-    const check = async () => {
-      try {
-        const res = await fetch(`/content-version.json?t=${Date.now()}`, { cache: 'no-store' })
-        const live = res.ok ? Number((await res.json()).revision) : NaN
-        if (live >= save.revision) return setSave({ kind: 'live' })
-      } catch {
-        /* keep waiting */
-      }
-      if (Date.now() - save.since < 8 * 60_000) pollRef.current = window.setTimeout(check, 10_000)
-    }
-    pollRef.current = window.setTimeout(check, 15_000)
-    return () => window.clearTimeout(pollRef.current)
-  }, [save])
-
   const setModel = useCallback((fn: (m: Model) => Model) => setModelState((m) => (m ? fn(m) : m)), [])
 
   const doSave = async () => {
@@ -244,7 +226,7 @@ function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boo
       setRevision(res.revision)
       setSaved(JSON.stringify(model))
       setSheetWarnings([])
-      setSave(res.publishing ? { kind: 'publishing', revision: Number(res.revision), since: Date.now() } : { kind: 'saved-no-publish' })
+      setSave({ kind: 'live' })
     } catch (e) {
       handleAuth(e)
       const err = e as ApiError
@@ -335,7 +317,7 @@ function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boo
                 {dirty && <span className="hidden text-sm font-medium text-amber-700 sm:inline">Unsaved changes</span>}
                 <button type="button" onClick={doSave} disabled={readOnly || !dirty || save.kind === 'saving'} className={btnPrimary}>
                   {save.kind === 'saving' ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
-                  {save.kind === 'saving' ? 'Saving…' : 'Save & publish'}
+                  {save.kind === 'saving' ? 'Saving…' : 'Save'}
                 </button>
               </>
             )}
@@ -346,7 +328,7 @@ function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boo
         <main className="mx-auto max-w-4xl px-4 py-8 md:px-8">
           {readOnly && (
             <p className="mb-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
-              This is a preview deploy, so editing is switched off here. Use the admin panel on the live website to make changes.
+              Editing is switched off here.
             </p>
           )}
           {loadError && (
@@ -369,7 +351,7 @@ function Shell({ user, readOnly, onSignedOut }: { user: AdminUser; readOnly: boo
             </details>
           )}
 
-          {route === 'dashboard' && <Dashboard model={model} user={user} readOnly={readOnly} onAuth={handleAuth} />}
+          {route === 'dashboard' && <Dashboard model={model} user={user} />}
           {route === 'users' && <UsersPage me={user} readOnly={readOnly} onAuth={handleAuth} />}
           {route === 'account' && <AccountPage me={user} readOnly={readOnly} onSignedOut={onSignedOut} />}
           {section && (
@@ -403,7 +385,7 @@ function NavItem({ href, active, icon: Icon, label, problems = 0 }: { href: stri
 function LoadingCard() {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-500">
-      <LoaderCircle className="size-5 animate-spin text-amber-500" aria-hidden="true" /> Loading content from Google Sheets…
+      <LoaderCircle className="size-5 animate-spin text-amber-500" aria-hidden="true" /> Loading content from the Google Sheet…
     </div>
   )
 }
@@ -415,18 +397,16 @@ function StatusBar({ save, onDismiss, onReload }: { save: SaveState; onDismiss: 
   return (
     <div role="status" className={`border-t px-4 py-3 text-sm md:px-8 ${tone}`}>
       <div className="flex items-start gap-3">
-        {save.kind === 'publishing' ? <LoaderCircle className="mt-0.5 size-4 shrink-0 animate-spin" aria-hidden="true" /> : save.kind === 'error' ? <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> : <CircleCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />}
+        {save.kind === 'error' ? <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> : <CircleCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />}
         <div className="flex-1">
-          {save.kind === 'publishing' && <p>Saved to Google Sheets. The website is updating — this usually takes about 2 minutes.</p>}
           {save.kind === 'live' && (
             <p>
-              Your changes are live.{' '}
+              Saved to Google Sheets — your changes are live. Visitors see them within about a minute (they may need to refresh).{' '}
               <a href="/" target="_blank" rel="noopener" className="font-semibold underline">
                 View website
               </a>
             </p>
           )}
-          {save.kind === 'saved-no-publish' && <p>Saved to Google Sheets. Publishing isn’t set up yet (NETLIFY_BUILD_HOOK), so the website will update on its next build.</p>}
           {save.kind === 'error' && (
             <>
               <p className="font-semibold">{save.message}</p>
@@ -455,8 +435,7 @@ function StatusBar({ save, onDismiss, onReload }: { save: SaveState; onDismiss: 
 
 // ── Dashboard ───────────────────────────────────────────────────────────────
 
-function Dashboard({ model, user, readOnly, onAuth }: { model: Model | null; user: AdminUser; readOnly: boolean; onAuth: (e: unknown) => void }) {
-  const [publishMsg, setPublishMsg] = useState('')
+function Dashboard({ model, user }: { model: Model | null; user: AdminUser }) {
   const count = (tab: string) => (model?.lists[tab] ?? []).filter((i) => i.show).length
   const cards = [
     { href: '#/testimonials', label: 'Testimonials', value: count('Testimonials'), icon: Quote },
@@ -472,7 +451,7 @@ function Dashboard({ model, user, readOnly, onAuth }: { model: Model | null; use
       <div className="rounded-2xl bg-zinc-950 p-7 text-white">
         <p className="text-sm text-amber-300">Welcome back</p>
         <h2 className="mt-1 text-2xl font-semibold">Hello, {user.name === 'Owner' ? user.username : user.name}</h2>
-        <p className="mt-2 max-w-xl text-zinc-400">Choose a section on the left, make your changes, then click Save &amp; publish. The website updates in about 2 minutes.</p>
+        <p className="mt-2 max-w-xl text-zinc-400">Choose a section on the left, make your changes, then click Save. They go into the Google Sheet and appear on the website within about a minute.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {cards.map((c) => (
@@ -499,26 +478,8 @@ function Dashboard({ model, user, readOnly, onAuth }: { model: Model | null; use
           <p className="mt-1 text-sm text-zinc-600">Reviews sent from the website arrive in Netlify → Forms → feedback. Add the approved ones under <a className="underline" href="#/testimonials">Testimonials</a>.</p>
         </div>
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h3 className="font-semibold">Rebuild the website</h3>
-          <p className="mt-1 text-sm text-zinc-600">Only needed if you edited the Google Sheet directly.</p>
-          <button
-            type="button"
-            disabled={readOnly}
-            className={`${btnDark} mt-3`}
-            onClick={async () => {
-              setPublishMsg('')
-              try {
-                await api.publish()
-                setPublishMsg('Publishing started — the website updates in about 2 minutes.')
-              } catch (e) {
-                onAuth(e)
-                setPublishMsg((e as Error).message)
-              }
-            }}
-          >
-            <RefreshCw className="size-4" aria-hidden="true" /> Publish now
-          </button>
-          {publishMsg && <p className="mt-2 text-sm text-zinc-700">{publishMsg}</p>}
+          <h3 className="font-semibold">How saving works</h3>
+          <p className="mt-1 text-sm text-zinc-600">Save writes your changes into the Google Sheet, and the website reads the sheet directly — no re-upload needed. You can also edit the sheet itself; changes appear the same way.</p>
         </div>
       </div>
     </div>
@@ -580,7 +541,7 @@ function UsersPage({ me, readOnly, onAuth }: { me: AdminUser; readOnly: boolean;
                 </span>
                 <span className="block truncate text-sm text-zinc-500">
                   {u.username}
-                  {u.owner ? ' · owner (managed in Netlify)' : u.createdBy ? ` · added by ${u.createdBy}` : ''}
+                  {u.owner ? ' · main admin (set in the Apps Script)' : u.createdBy ? ` · added by ${u.createdBy}` : ''}
                 </span>
               </span>
               {!u.owner && u.username !== me.username && (
@@ -648,7 +609,7 @@ function AccountPage({ me, readOnly, onSignedOut }: { me: AdminUser; readOnly: b
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm md:p-7">
         <h2 className="text-lg font-semibold">Owner account</h2>
         <p className="mt-2 text-sm text-zinc-600">
-          You’re signed in with the owner account <strong>{me.username}</strong>. Its password is set in Netlify → Site configuration → Environment variables (<code>ADMIN_PASSWORD</code>). Change it there and redeploy; everyone using the owner login is signed out.
+          You’re signed in with the main admin account <strong>{me.username}</strong>. Its password is set in the Google Sheet’s Apps Script (<code>ADMIN_PASSWORD</code> in Code.gs). Change it there and deploy a new version; everyone using this login is signed out.
         </p>
       </section>
     )

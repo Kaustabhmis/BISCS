@@ -2,12 +2,20 @@ import { useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { ScrollTrigger } from '../../lib/gsap'
 import { initialLoad } from '../../lib/hydration'
+import { loadLiveContent } from '../../lib/liveContent'
 import { Footer } from './Footer'
 import { Navbar } from './Navbar'
 
 export function Layout() {
   const { pathname, hash } = useLocation()
   const firstPath = useRef(pathname)
+
+  // Fetch the live content from the Google Sheet. This runs only after the
+  // page (including its lazily loaded code) has hydrated, so swapping in new
+  // content never conflicts with the pre-rendered HTML.
+  useEffect(() => {
+    loadLiveContent()
+  }, [])
 
   // Once the visitor navigates, pages are rendered client-side and animate normally.
   useEffect(() => {
