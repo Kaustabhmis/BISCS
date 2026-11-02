@@ -27,6 +27,12 @@ const SITE = {
   name: 'BISCS India',
   url: 'https://www.biscsindia.com',
   email: 'info@biscsindia.com',
+  socials: [
+    { name: 'LinkedIn', icon: 'linkedin', url: 'https://www.linkedin.com/in/biscs-india-7a0ab03a6' },
+    { name: 'Facebook', icon: 'facebook', url: 'https://www.facebook.com/share/1PyhN1vLey/' },
+    { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/biscsindia/' }
+  ],
+  published: '2026-11-02',
   address: { locality: 'Kolkata', region: 'West Bengal', postalCode: '700026', country: 'IN', countryName: 'India' },
   year: new Date().getFullYear(),
   version: '' // cache-buster for CSS/JS, set from asset contents below
@@ -44,6 +50,22 @@ const SITE = {
 }
 
 // ----------------------------------------------------------------- helpers
+const ORG_ID = SITE.url + '/#organization';
+const ORG = {
+  '@context': 'https://schema.org', '@type': 'Organization', '@id': ORG_ID, name: SITE.name,
+  alternateName: ['BISCS', 'biscsindia.com'], url: SITE.url + '/',
+  logo: { '@type': 'ImageObject', url: SITE.url + '/assets/img/icon-512.png', width: 512, height: 512 },
+  email: SITE.email,
+  description: 'BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.',
+  address: {
+    '@type': 'PostalAddress', addressLocality: 'Kolkata', addressRegion: 'West Bengal',
+    postalCode: '700026', addressCountry: 'IN'
+  },
+  areaServed: 'IN',
+  knowsAbout: ['PDF editing', 'GST', 'Income tax calculation', 'Image editing', 'Search engine optimisation', 'Generative engine optimisation', 'Office productivity'],
+  sameAs: SITE.socials.map((x) => x.url),
+  contactPoint: { '@type': 'ContactPoint', email: 'info@biscsindia.com', contactType: 'customer support', areaServed: 'IN', availableLanguage: ['English', 'Hindi', 'Bengali'] }
+};
 const addressLine = () => `${SITE.address.locality}, ${SITE.address.region}, ${SITE.address.countryName} ${SITE.address.postalCode}`;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const icon = (name, cls = '') =>
@@ -73,15 +95,17 @@ function miniLink(t, base) {
 }
 
 // ------------------------------------------------------------------ layout
-function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '' }) {
+function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '', ogType = 'website' }) {
   const nav = [
     ['pdf', 'PDF Tools'], ['finance', 'Finance'],
     ['ai', 'AI Photo'], ['video', 'Video'], ['office', 'Office'], ['design', 'Design'], ['seo', 'SEO']
   ];
   const navLinks = nav.map(([id, label]) =>
-    `<a href="${base}category/${id}/"${active === id ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+    `<a href="${base}category/${id}/"${active === id ? ' aria-current="page"' : ''}>${label}</a>`).join('') +
+    `<a href="${base}blog/"${active === 'blog' ? ' aria-current="page"' : ''}>Blog</a>`;
   const mobileLinks = CATEGORIES.map((c) =>
-    `<a href="${base}category/${c.id}/"><span class="mi" style="background:${c.color};width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff">${icon(c.icon)}</span>${esc(c.name)}</a>`).join('');
+    `<a href="${base}category/${c.id}/"><span class="mi" style="background:${c.color};width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff">${icon(c.icon)}</span>${esc(c.name)}</a>`).join('') +
+    `<a href="${base}blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff">${icon('newspaper')}</span>Blog &amp; Guides</a>`;
   const footCols = [
     ['PDF Tools', toolsIn('pdf').slice(0, 7)],
     ['Finance', toolsIn('finance').slice(0, 7)],
@@ -95,7 +119,7 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${SITE.url}${canonical}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="${ogType}">
 <meta property="og:site_name" content="${esc(SITE.name)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
@@ -105,6 +129,7 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <meta name="theme-color" content="#4f46e5">
 <link rel="icon" href="${base}favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="${base}site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="${esc(SITE.name)} Blog" href="${base}blog/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -144,10 +169,12 @@ ${body}
           <a href="mailto:${SITE.email}">${icon('mail')} ${SITE.email}</a>
           <span>${icon('map-pin')} ${esc(addressLine())}</span>
         </address>
+        <div class="socials">${SITE.socials.map((x) => `<a href="${x.url}" target="_blank" rel="noopener me" aria-label="BISCS India on ${x.name}" title="${x.name}">${icon(x.icon)}</a>`).join('')}</div>
       </div>
       ${footCols.map(([h, list]) => `<div><h2>${h}</h2><ul>${list.map((t) => `<li><a href="${base}tools/${t.id}/">${esc(t.name)}</a></li>`).join('')}</ul></div>`).join('')}
       <div><h2>Company</h2><ul>
         <li><a href="${base}about/">About</a></li>
+        <li><a href="${base}blog/">Blog &amp; Guides</a></li>
         <li><a href="${base}contact/">Contact</a></li>
         <li><a href="${base}privacy/">Privacy Policy</a></li>
         <li><a href="${base}terms/">Terms of Use</a></li>
@@ -234,6 +261,13 @@ function buildHome() {
   </div>
 </section>
 
+${ARTICLES.length ? `<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head reveal"><div><h2>Latest guides</h2><p>Step-by-step help for getting the most out of every tool.</p></div><a class="btn btn-sm" href="blog/">All ${ARTICLES.length} guides ${icon('arrow-right')}</a></div>
+    <div class="post-grid reveal">${ARTICLES.slice(0, 6).map((a) => articleCard(a, base)).join('')}</div>
+  </div>
+</section>` : ''}
+
 <section class="section" id="all-tools" style="padding-top:0">
   <div class="container">
     <div class="section-head"><div><h2>All ${TOOLS.length} tools</h2><p>Filter by category or search above.</p></div></div>
@@ -262,15 +296,7 @@ function buildHome() {
   const jsonld = [{
     '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url + '/',
     potentialAction: { '@type': 'SearchAction', target: SITE.url + '/?q={search_term_string}', 'query-input': 'required name=search_term_string' }
-  }, {
-    '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: SITE.url + '/',
-    logo: SITE.url + '/assets/img/icon-512.png', email: SITE.email,
-    address: {
-      '@type': 'PostalAddress', addressLocality: SITE.address.locality, addressRegion: SITE.address.region,
-      postalCode: SITE.address.postalCode, addressCountry: SITE.address.country
-    },
-    contactPoint: { '@type': 'ContactPoint', email: SITE.email, contactType: 'customer support', areaServed: 'IN', availableLanguage: ['English', 'Hindi', 'Bengali'] }
-  }];
+  }, ORG];
   write('index.html', layout({
     base, canonical: '/',
     title: `${SITE.name}: ${TOOLS.length} Free Online Tools (PDF, GST, EMI, Image & More)`,
@@ -302,6 +328,7 @@ function buildCategory(c) {
 </section>
 <section class="section" style="padding-top:0">
   <div class="container">
+    ${(() => { const gs = ARTICLES.filter((a) => a.cat === c.id).slice(0, 6); return gs.length ? `<h2>${esc(c.short)} guides</h2><div class="post-grid" style="margin:12px 0 36px">${gs.map((a) => articleCard(a, base)).join('')}</div>` : ''; })()}
     <h2>More free tools</h2>
     <div class="chips" style="margin-top:12px">${CATEGORIES.filter((o) => o.id !== c.id).map((o) => `<a class="chip" href="${base}category/${o.id}/"><span class="dot" style="background:${o.color}"></span>${esc(o.name)}</a>`).join('')}</div>
   </div>
@@ -375,6 +402,7 @@ function buildTool(t) {
 </div>
 <section class="howto">
   <div class="container">
+    ${(() => { const g = articleFor(t.id); return g ? `<a class="guide-link" href="${base}blog/${g.slug}/">${icon('book-open-text')}<span>Read the complete guide: ${esc(g.title)}</span>${icon('arrow-right')}</a>` : ''; })()}
     <div class="split">
       <div>
         <h2>How to use ${esc(t.name)}</h2>
@@ -425,6 +453,7 @@ function buildPage(slug, title, description, html, opts = {}) {
   write(`${slug}/index.html`, layout({
     base, canonical: `/${slug}/`, title: `${title} | ${SITE.name}`, description,
     extraHead: opts.noindex ? '<meta name="robots" content="noindex">' : '',
+    jsonld: opts.jsonld || [],
     body: `<div class="container"><article class="prose${opts.wide ? ' wide' : ''}"><nav class="crumbs"><a href="${base}">Home</a>${icon('chevron-right')}<span>${esc(title)}</span></nav><h1>${esc(title)}</h1>${html}</article></div>`
   }));
 }
@@ -432,13 +461,24 @@ function buildPage(slug, title, description, html, opts = {}) {
 function buildStaticPages() {
   const updated = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   buildPage('about', 'About Us', `About ${SITE.name}: free, private online tools for everyday work.`, `
-<p>${SITE.name} builds simple, fast and private tools for everyday work. The site offers ${TOOLS.length} free tools covering PDFs, finance and tax, text, images and development, made with Indian users in mind.</p>
+<p>${SITE.name} is a Kolkata-based team that builds simple, fast and private tools for everyday work. The site offers ${TOOLS.length} free tools covering PDFs, GST and income tax, images and AI photo editing, video, office documents, design, and SEO, GEO and AEO, made with Indian users in mind.</p>
 <h2>Why we built it</h2>
 <p>Most online tools ask you to upload your documents to someone else’s server. Our tools run entirely in your web browser, so your PDFs, photos and data stay on your device.</p>
 <h2>Our software</h2>
 <p>We also make <a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox</a>, a team task management system for Indian businesses.</p>
+<h2>Guides and editorial standards</h2>
+<p>Every tool has an in-depth <a href="../blog/">guide</a> written and maintained by the BISCS India team. Our standards:</p>
+<ul>
+<li><strong>Accurate:</strong> we describe only what our tools actually do, and we test them before publishing.</li>
+<li><strong>Careful with money and tax:</strong> GST, income tax, PF and similar figures follow official rules at the time of writing. We tell readers to confirm with the official source, because rules change.</li>
+<li><strong>No invented facts:</strong> no made-up statistics, reviews or testimonials.</li>
+<li><strong>Kept up to date:</strong> each guide shows when it was last updated, and we revise guides when tools or rules change.</li>
+</ul>
+<p>Spotted a mistake? <a href="../contact/">Tell us</a> and we’ll fix it.</p>
+<h2>Follow us</h2>
+<p>${SITE.socials.map((x) => `<a href="${x.url}" target="_blank" rel="noopener me">${x.name}</a>`).join(' · ')}</p>
 <h2>Get in touch</h2>
-<p>Have a suggestion for a new tool or found a bug? <a href="../contact/">Contact us</a>.</p>`);
+<p>Email <a href="mailto:${SITE.email}">${SITE.email}</a>, or use our <a href="../contact/">contact form</a>. We’re based in ${esc(addressLine())}.</p>`, { jsonld: [Object.assign({}, ORG), { '@context': 'https://schema.org', '@type': 'AboutPage', url: SITE.url + '/about/', name: 'About ' + SITE.name, about: { '@id': ORG_ID } }] });
 
   buildPage('contact', 'Contact Us', `Contact ${SITE.name} with feedback, tool requests or business enquiries.`, `
 <p>We’d love to hear from you, whether it’s a bug report, a request for a new tool or a business enquiry.</p>
@@ -480,6 +520,8 @@ function buildStaticPages() {
       <p>${icon('map-pin')} <span>${esc(addressLine())}</span></p>
     </div>
     <div class="card">
+      <h2 class="cf-title">Follow us</h2>
+      <div class="socials" style="margin:0 0 16px">${SITE.socials.map((x) => `<a href="${x.url}" target="_blank" rel="noopener me" aria-label="BISCS India on ${x.name}" title="${x.name}">${icon(x.icon)}</a>`).join('')}</div>
       <h2 class="cf-title">Response time</h2>
       <p class="muted" style="margin:0">We usually reply within two working days, Monday to Saturday.</p>
     </div>
@@ -536,13 +578,242 @@ function buildStaticPages() {
 
 function buildSitemap() {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = ['/', ...CATEGORIES.map((c) => `/category/${c.id}/`), ...TOOLS.map((t) => `/tools/${t.id}/`), '/about/', '/contact/', '/privacy/', '/terms/'];
+  const urls = ['/', ...CATEGORIES.map((c) => `/category/${c.id}/`), ...TOOLS.map((t) => `/tools/${t.id}/`), '/blog/', ...ARTICLES.map((a) => `/blog/${a.slug}/`), '/about/', '/contact/', '/privacy/', '/terms/'];
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE.url}${u}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
 </urlset>
 `);
-  write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);
+  // Search engines and AI assistants are welcome to crawl, cite and summarise the site.
+  const aiBots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bingbot', 'DuckAssistBot', 'Meta-ExternalAgent', 'Amazonbot', 'CCBot'];
+  write('robots.txt', `# ${SITE.name}: all crawlers welcome.\n# AI assistants: see ${SITE.url}/llms.txt for a site summary.\n\nUser-agent: *\nAllow: /\nDisallow: /contact/thanks/\n\n${aiBots.map((b) => `User-agent: ${b}`).join('\n')}\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);
+}
+
+// ------------------------------------------------------------------- blog
+/*
+ * Articles live in content/blog/<tool-id>.md: a JSON header, a line with
+ * "---", then Markdown. Rendered to blog/<slug>/index.html.
+ */
+const { marked } = require(path.join(ROOT, 'assets/vendor/marked.min.js'));
+const BLOG_DIR = path.join(ROOT, 'content/blog');
+
+const slugify = (s) => String(s).toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'section';
+
+function loadArticles() {
+  if (!fs.existsSync(BLOG_DIR)) return [];
+  const out = [], problems = [];
+  for (const f of fs.readdirSync(BLOG_DIR).filter((x) => x.endsWith('.md')).sort()) {
+    const raw = fs.readFileSync(path.join(BLOG_DIR, f), 'utf8').replace(/\r\n/g, '\n');
+    const cut = raw.indexOf('\n---\n');
+    if (cut < 0) { problems.push(`${f}: missing --- separator`); continue; }
+    let meta;
+    try { meta = JSON.parse(raw.slice(0, cut)); } catch (e) { problems.push(`${f}: bad JSON (${e.message})`); continue; }
+    const tool = TOOLS.find((t) => t.id === meta.tool);
+    if (!tool) { problems.push(`${f}: unknown tool ${meta.tool}`); continue; }
+    if (!meta.slug || !/^[a-z0-9-]+$/.test(meta.slug)) { problems.push(`${f}: bad slug`); continue; }
+    const md = raw.slice(cut + 5).trim();
+    const words = md.replace(/```[\s\S]*?```/g, ' ').split(/\s+/).filter(Boolean).length;
+    // Render, then give h2/h3 stable ids for the table of contents.
+    let html = marked.parse(md, { gfm: true });
+    const toc = [], used = {};
+    html = html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
+      let id = slugify(inner);
+      while (used[id]) id += '-2';
+      used[id] = true;
+      if (lvl === '2') toc.push({ id, text: inner.replace(/<[^>]+>/g, '') });
+      return `<h${lvl} id="${id}">${inner}</h${lvl}>`;
+    });
+    // Tables scroll on small screens; external links open safely.
+    html = html.replace(/<table>/g, '<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">').replace(/<\/table>/g, '</table></div>');
+    html = html.replace(/<a href="(https?:\/\/[^"]+)"/g, '<a href="$1" target="_blank" rel="noopener"');
+    out.push({ ...meta, file: f, toolObj: tool, cat: tool.cat, md, html, toc, words, mins: Math.max(1, Math.round(words / 220)),
+      date: meta.date || SITE.published, updated: meta.updated || meta.date || SITE.published });
+  }
+  const slugs = {};
+  out.forEach((a) => { if (slugs[a.slug]) problems.push(`duplicate slug ${a.slug} (${slugs[a.slug]}, ${a.file})`); slugs[a.slug] = a.file; });
+  if (problems.length) { console.error('Blog problems:\n  ' + problems.join('\n  ')); process.exitCode = 1; }
+  return out;
+}
+const ARTICLES = loadArticles();
+const articleFor = (toolId) => ARTICLES.find((a) => a.tool === toolId);
+const fmtDate = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+function articleCard(a, base) {
+  const c = cat(a.cat);
+  return `<a class="post-card" href="${base}blog/${a.slug}/" data-cat="${a.cat}" style="--c:${c.color}">
+  <span class="post-cat"><span class="dot" style="background:${c.color}"></span>${esc(c.short)}</span>
+  <h3>${esc(a.title)}</h3>
+  <p>${esc(a.description)}</p>
+  <span class="post-meta">${icon('clock')} ${a.mins} min read</span>
+</a>`;
+}
+
+function buildBlogIndex() {
+  const base = '../';
+  const cats = CATEGORIES.filter((c) => ARTICLES.some((a) => a.cat === c.id));
+  const body = `
+<section class="tool-hero">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="${base}">Home</a>${icon('chevron-right')}<span>Blog</span></nav>
+    <div class="tool-title" style="--c:#334155">
+      <span class="tool-icon">${icon('newspaper')}</span>
+      <div><h1>Guides &amp; Tutorials</h1><p>${ARTICLES.length} practical guides on PDFs, GST and money, images, AI photo editing, video, office work, design and SEO.</p></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="padding-top:20px">
+  <div class="container">
+    <div class="chips" role="toolbar" aria-label="Filter guides by category" style="margin-bottom:18px">
+      <button class="chip" type="button" data-post-chip="all" aria-pressed="true">All</button>
+      ${cats.map((c) => `<button class="chip" type="button" data-post-chip="${c.id}" aria-pressed="false"><span class="dot" style="background:${c.color}"></span>${esc(c.short)}</button>`).join('')}
+    </div>
+    <h2 class="sr-only">All guides</h2>
+    <div class="post-grid" data-post-grid>${ARTICLES.map((a) => articleCard(a, base)).join('\n')}</div>
+    <p class="muted small" style="margin-top:24px">${icon('rss')} Subscribe with the <a href="${base}blog/feed.xml">RSS feed</a>.</p>
+  </div>
+</section>
+<script>
+(function(){var chips=document.querySelectorAll('[data-post-chip]'),cards=document.querySelectorAll('[data-post-grid] .post-card');
+chips.forEach(function(ch){ch.addEventListener('click',function(){var c=ch.getAttribute('data-post-chip');
+chips.forEach(function(x){x.setAttribute('aria-pressed',x===ch?'true':'false')});
+cards.forEach(function(k){k.classList.toggle('hidden',c!=='all'&&k.getAttribute('data-cat')!==c)})})})})();
+</script>`;
+  write('blog/index.html', layout({
+    base, active: 'blog', canonical: '/blog/',
+    title: `Guides & Tutorials: PDF, GST, Image, AI & SEO How-tos | ${SITE.name}`,
+    description: `Free step-by-step guides from ${SITE.name}: PDFs, GST and income tax, images, AI photo editing, video, office documents, design and SEO, GEO and AEO.`,
+    body,
+    jsonld: [{
+      '@context': 'https://schema.org', '@type': 'Blog', '@id': SITE.url + '/blog/#blog', name: `${SITE.name} Guides`,
+      url: SITE.url + '/blog/', publisher: { '@id': ORG_ID }, inLanguage: 'en-IN',
+      blogPost: ARTICLES.map((a) => ({ '@type': 'BlogPosting', headline: a.title, url: `${SITE.url}/blog/${a.slug}/`, datePublished: a.date }))
+    }, {
+      '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE.url + '/blog/' }
+      ]
+    }, ORG]
+  }));
+}
+
+function buildArticle(a) {
+  const base = '../../';
+  const t = a.toolObj, c = cat(a.cat);
+  const url = `${SITE.url}/blog/${a.slug}/`;
+  const related = ARTICLES.filter((x) => x.cat === a.cat && x.slug !== a.slug).slice(0, 3);
+  const body = `
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="${base}">Home</a>${icon('chevron-right')}<a href="${base}blog/">Blog</a>${icon('chevron-right')}<a href="${base}category/${c.id}/">${esc(c.name)}</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:${c.color}"></span>${esc(c.name)}</span>
+    <h1>${esc(a.title)}</h1>
+    <p class="article-dek">${esc(a.description)}</p>
+    <div class="article-meta">
+      <span>${icon('user-round-pen')} By <a href="${base}about/" rel="author">BISCS India Editorial Team</a></span>
+      <span>${icon('calendar')} <time datetime="${a.updated}">Updated ${fmtDate(a.updated)}</time></span>
+      <span>${icon('clock')} ${a.mins} min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong>${icon('zap')} Quick answer</strong><p>${esc(a.summary)}</p></aside>
+      <div class="tool-cta" style="--c:${c.color}">
+        <span class="tool-icon">${icon(t.icon)}</span>
+        <div><strong>${esc(t.name)}</strong><p>${esc(t.desc)}</p></div>
+        <a class="btn btn-primary" href="${base}tools/${t.id}/">Open ${esc(t.name)} ${icon('arrow-right')}</a>
+      </div>
+      <div class="prose article-body">${a.html}</div>
+      ${a.faq && a.faq.length ? `<section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2>${a.faq.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>` : ''}
+      <div class="tool-cta" style="--c:${c.color}">
+        <span class="tool-icon">${icon(t.icon)}</span>
+        <div><strong>Try it now, free</strong><p>${esc(t.name)} runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="${base}tools/${t.id}/">Open the tool ${icon('arrow-right')}</a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="${base}contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      ${a.toc.length > 2 ? `<nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol>${a.toc.map((h) => `<li><a href="#${h.id}">${h.text}</a></li>`).join('')}${a.faq && a.faq.length ? '<li><a href="#faq">FAQ</a></li>' : ''}</ol></nav>` : ''}
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=${encodeURIComponent(a.title + ' ' + url)}" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&amp;text=${encodeURIComponent(a.title)}" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  ${related.length ? `<section class="section" style="padding-bottom:0"><h2>More ${esc(c.short)} guides</h2><div class="post-grid" style="margin-top:12px">${related.map((r) => articleCard(r, base)).join('')}</div></section>` : ''}
+</article>`;
+  const jsonld = [{
+    '@context': 'https://schema.org', '@type': 'BlogPosting', '@id': url + '#article',
+    headline: a.title, description: a.description, abstract: a.summary, url, mainEntityOfPage: url,
+    datePublished: a.date, dateModified: a.updated, inLanguage: 'en-IN', wordCount: a.words,
+    keywords: (a.keywords || []).join(', '), articleSection: c.name,
+    image: SITE.url + '/assets/img/og.png',
+    author: { '@type': 'Organization', '@id': ORG_ID, name: SITE.name, url: SITE.url + '/about/' },
+    publisher: { '@id': ORG_ID },
+    about: { '@type': 'SoftwareApplication', name: t.name, url: `${SITE.url}/tools/${t.id}/`, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' } }
+  }, {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE.url + '/blog/' },
+      { '@type': 'ListItem', position: 3, name: a.title, item: url }
+    ]
+  }, ORG];
+  if (a.faq && a.faq.length) jsonld.push({
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: a.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+  });
+  write(`blog/${a.slug}/index.html`, layout({
+    base, active: 'blog', canonical: `/blog/${a.slug}/`, ogType: 'article',
+    title: a.title.length <= 60 ? `${a.title} | ${SITE.name}` : a.title,
+    description: a.description, body, jsonld,
+    extraHead: `<meta property="article:published_time" content="${a.date}"><meta property="article:modified_time" content="${a.updated}"><meta property="article:section" content="${esc(c.name)}">`
+  }));
+}
+
+/** RSS 2.0 feed of all guides. */
+function buildFeed() {
+  const x = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  write('blog/feed.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>${x(SITE.name)} Guides</title>
+<link>${SITE.url}/blog/</link>
+<atom:link href="${SITE.url}/blog/feed.xml" rel="self" type="application/rss+xml"/>
+<description>Practical guides for free online tools: PDF, GST, images, AI photo editing, video, office, design and SEO.</description>
+<language>en-IN</language>
+${ARTICLES.map((a) => `<item><title>${x(a.title)}</title><link>${SITE.url}/blog/${a.slug}/</link><guid isPermaLink="true">${SITE.url}/blog/${a.slug}/</guid><pubDate>${new Date(a.date + 'T05:30:00Z').toUTCString()}</pubDate><category>${x(cat(a.cat).name)}</category><description>${x(a.summary)}</description></item>`).join('\n')}
+</channel>
+</rss>
+`);
+}
+
+/**
+ * llms.txt (llmstxt.org proposal) and llms-full.txt: a concise, link-rich
+ * map of the site for AI assistants and answer engines.
+ */
+function buildLlmsTxt() {
+  const lines = [`# ${SITE.name}`, '',
+    `> ${SITE.name} (biscsindia.com) offers ${TOOLS.length} free online tools that run entirely in the web browser, so files are never uploaded. Tools cover PDF editing and conversion, GST and income tax calculators for India, image and AI photo editing, video and audio, office documents, design, and SEO/GEO/AEO. Made by BISCS India, Kolkata, West Bengal.`, '',
+    `Contact: ${SITE.email}. Free to use, no sign-up. Guides explain how each tool works and when to use it. Social: ${SITE.socials.map((x) => x.url).join(', ')}.`, ''];
+  for (const c of CATEGORIES) {
+    lines.push(`## ${c.name}`, '');
+    for (const t of toolsIn(c.id)) {
+      const a = articleFor(t.id);
+      lines.push(`- [${t.name}](${SITE.url}/tools/${t.id}/): ${t.desc}${a ? ` Guide: ${SITE.url}/blog/${a.slug}/` : ''}`);
+    }
+    lines.push('');
+  }
+  lines.push('## Optional', '', `- [All guides](${SITE.url}/blog/): ${ARTICLES.length} how-to articles`, `- [About](${SITE.url}/about/)`, `- [Privacy Policy](${SITE.url}/privacy/)`, `- [Full guide text for AI assistants](${SITE.url}/llms-full.txt)`, '');
+  write('llms.txt', lines.join('\n'));
+
+  const full = [`# ${SITE.name}: full guide text`, '', `> Plain-text version of every guide on ${SITE.url}, for AI assistants. Each tool runs in the browser; files are not uploaded.`, ''];
+  for (const a of ARTICLES) {
+    full.push(`## ${a.title}`, '', `URL: ${SITE.url}/blog/${a.slug}/`, `Tool: ${a.toolObj.name} (${SITE.url}/tools/${a.tool}/)`, '', `Quick answer: ${a.summary}`, '', a.md.replace(/\]\(\/(tools|blog)\//g, `](${SITE.url}/$1/`), '');
+    if (a.faq) a.faq.forEach((f) => full.push(`Q: ${f.q}`, `A: ${f.a}`, ''));
+  }
+  write('llms-full.txt', full.join('\n'));
 }
 
 // -------------------------------------------------------------------- run
@@ -550,8 +821,14 @@ buildHome();
 CATEGORIES.forEach(buildCategory);
 TOOLS.forEach(buildTool);
 buildStaticPages();
+buildBlogIndex();
+ARTICLES.forEach(buildArticle);
+buildFeed();
+buildLlmsTxt();
 buildSitemap();
 
 const missing = [...new Set(TOOLS.map(fileFor))].filter((f) => !fs.existsSync(path.join(ROOT, `assets/js/tools/${f}.js`)));
-console.log(`Built ${TOOLS.length} tool pages, ${CATEGORIES.length} category pages.`);
+console.log(`Built ${TOOLS.length} tool pages, ${CATEGORIES.length} category pages, ${ARTICLES.length} articles.`);
+const noArticle = TOOLS.filter((t) => !articleFor(t.id)).map((t) => t.id);
+if (noArticle.length) console.warn(`Tools without an article (${noArticle.length}):`, noArticle.slice(0, 12).join(', ') + (noArticle.length > 12 ? ' …' : ''));
 if (missing.length) console.warn('Missing implementation files:', missing.join(', '));

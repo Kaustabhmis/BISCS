@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Convert JSON to CSV for Excel (Nested Data Too) | BISCS India</title>
+<meta name="description" content="Turn a JSON array into a CSV file that opens cleanly in Excel or Google Sheets. Flatten nested objects, keep Hindi text intact and avoid common mistakes.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/convert-json-to-csv-excel/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="How to Convert JSON to CSV for Excel (Nested Data Too) | BISCS India">
+<meta property="og:description" content="Turn a JSON array into a CSV file that opens cleanly in Excel or Google Sheets. Flatten nested objects, keep Hindi text intact and avoid common mistakes.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/convert-json-to-csv-excel/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=bfd8a88b38">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/convert-json-to-csv-excel/#article","headline":"How to Convert JSON to CSV for Excel (Nested Data Too)","description":"Turn a JSON array into a CSV file that opens cleanly in Excel or Google Sheets. Flatten nested objects, keep Hindi text intact and avoid common mistakes.","abstract":"To convert JSON to CSV, paste a JSON array of objects into a converter, which turns each object into a row and each key into a column. BISCS India's JSON to CSV tool also flattens nested objects into columns like address.city and adds a UTF-8 BOM so Excel shows Indian-language text correctly, all inside your browser.","url":"https://www.biscsindia.com/blog/convert-json-to-csv-excel/","mainEntityOfPage":"https://www.biscsindia.com/blog/convert-json-to-csv-excel/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":956,"keywords":"json to csv, convert json to excel, json to csv converter online, flatten nested json, json array to csv","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"JSON to CSV","url":"https://www.biscsindia.com/tools/json-to-csv/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Convert JSON to CSV for Excel (Nested Data Too)","item":"https://www.biscsindia.com/blog/convert-json-to-csv-excel/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What JSON structure converts best to CSV?","acceptedAnswer":{"@type":"Answer","text":"An array of flat objects, where every object has the same keys, maps perfectly to a table: one object per row, one key per column. Nested objects can be flattened into dotted column names. Deeply nested arrays of objects do not fit a flat table well and are written as JSON text inside a cell."}},{"@type":"Question","name":"Why does Excel show strange characters instead of Hindi or the ₹ symbol?","acceptedAnswer":{"@type":"Answer","text":"Excel on Windows may guess the wrong text encoding when opening a CSV. Adding a UTF-8 byte order mark (BOM) at the start of the file tells Excel the file is UTF-8. The BISCS India tool adds this by default when you download, so Devanagari, Bengali and ₹ display correctly."}},{"@type":"Question","name":"My JSON is an object, not an array. Can I still convert it?","acceptedAnswer":{"@type":"Answer","text":"Yes. If the object contains exactly one array of objects, such as a results or data field, the tool uses that array automatically and tells you which one it picked. Otherwise the single object becomes a one-row CSV with each key as a column."}},{"@type":"Question","name":"What happens to commas and line breaks inside values?","acceptedAnswer":{"@type":"Answer","text":"They are handled using standard CSV quoting. Any value containing the delimiter, a double quote or a line break is wrapped in double quotes, and inner quotes are doubled. Excel, Google Sheets and most programming libraries read this format correctly."}},{"@type":"Question","name":"Should I use a comma or semicolon delimiter?","acceptedAnswer":{"@type":"Answer","text":"Use a comma for most cases. Choose semicolon if your spreadsheet is set to a European locale where the comma is the decimal separator. Tab is useful when pasting directly into a spreadsheet, and pipe suits data that contains lots of commas and is read by scripts."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>How to Convert JSON to CSV for Excel (Nested Data Too)</h1>
+    <p class="article-dek">Turn a JSON array into a CSV file that opens cleanly in Excel or Google Sheets. Flatten nested objects, keep Hindi text intact and avoid common mistakes.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>To convert JSON to CSV, paste a JSON array of objects into a converter, which turns each object into a row and each key into a column. BISCS India&#39;s JSON to CSV tool also flattens nested objects into columns like address.city and adds a UTF-8 BOM so Excel shows Indian-language text correctly, all inside your browser.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" /></svg></span>
+        <div><strong>JSON to CSV</strong><p>Convert a JSON array of objects into CSV for Excel.</p></div>
+        <a class="btn btn-primary" href="../../tools/json-to-csv/">Open JSON to CSV <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>To convert JSON to CSV, you need JSON shaped like a list of records: an array of objects. Each object becomes one row and each key becomes a column header. Paste it into a converter, download the <code>.csv</code>, and open it in Excel or Google Sheets.</p>
+<p>The <a href="/tools/json-to-csv/">JSON to CSV</a> tool on BISCS India does this instantly in your browser. It also flattens nested objects, merges keys that only appear in some records, and adds a byte order mark so Excel does not garble Hindi names or the ₹ sign.</p>
+<h2 id="when-do-you-need-to-turn-json-into-a-spreadsheet">When do you need to turn JSON into a spreadsheet?</h2>
+<p>Developers live in JSON, but managers, accountants and clients usually want Excel. Common situations include:</p>
+<ul>
+<li>Exporting orders or leads from an API so the sales team can filter them.</li>
+<li>Sharing a list of form submissions with someone who does not code.</li>
+<li>Reconciling payment gateway data against your books.</li>
+<li>Loading data into a tool that only accepts CSV imports.</li>
+</ul>
+<p>CSV (comma-separated values) is the simplest common format both worlds understand. It is plain text, one record per line, with values separated by a delimiter.</p>
+<h2 id="how-the-conversion-works">How the conversion works</h2>
+<p>Take this JSON array of customers:</p>
+<pre><code class="language-json">[
+  { &quot;id&quot;: 1, &quot;name&quot;: &quot;Asha Verma&quot;, &quot;address&quot;: { &quot;city&quot;: &quot;Delhi&quot;, &quot;pin&quot;: &quot;110001&quot; }, &quot;tags&quot;: [&quot;admin&quot;, &quot;sales&quot;] },
+  { &quot;id&quot;: 2, &quot;name&quot;: &quot;Rohan Das&quot;, &quot;address&quot;: { &quot;city&quot;: &quot;Kolkata&quot; }, &quot;active&quot;: false }
+]
+</code></pre>
+<p>With <strong>Flatten nested objects</strong> switched on, the converter produces:</p>
+<pre><code class="language-text">id,name,address.city,address.pin,tags,active
+1,Asha Verma,Delhi,110001,&quot;admin, sales&quot;,
+2,Rohan Das,Kolkata,,,false
+</code></pre>
+<p>Notice three things. The nested <code>address</code> object became two columns using dot notation. The simple array <code>tags</code> became a single comma-separated value, quoted because it contains a comma. And <code>active</code>, which only Rohan’s record has, still gets a column; Asha’s cell is simply empty. The converter collects every key from every object, in the order it first sees them.</p>
+<h2 id="step-by-step-json-to-csv-with-biscs-india">Step-by-step: JSON to CSV with BISCS India</h2>
+<ol>
+<li>Open <a href="/tools/json-to-csv/">JSON to CSV</a>.</li>
+<li>Paste your JSON into the left box, or click <strong>Upload</strong> to load a <code>.json</code> file. You can also drag a file onto the box.</li>
+<li>Pick a <strong>Delimiter</strong>: comma, semicolon, tab or pipe.</li>
+<li>Leave <strong>Flatten nested objects (a.b.c)</strong> ticked unless you want nested objects stored as raw JSON text in one cell.</li>
+<li>Keep <strong>Header row</strong> ticked so the first line holds the column names.</li>
+<li>Check the table under <strong>Preview</strong>. It shows up to the first 100 rows so you can spot problems before downloading.</li>
+<li>Click <strong>Download .csv</strong>. With <strong>Excel-friendly download (UTF-8 BOM)</strong> ticked, the file opens correctly in Excel with a double-click.</li>
+</ol>
+<p>If the JSON has a syntax error, the tool shows the line and column instead of output. Fix it there, or run it through the <a href="/tools/json-formatter/">JSON Formatter</a> for a fuller view.</p>
+<h2 id="what-if-my-json-is-not-a-simple-array">What if my JSON is not a simple array?</h2>
+<p>Real API responses are rarely a bare array. They tend to look like this:</p>
+<pre><code class="language-json">{ &quot;status&quot;: &quot;ok&quot;, &quot;page&quot;: 1, &quot;results&quot;: [ { &quot;id&quot;: 1 }, { &quot;id&quot;: 2 } ] }
+</code></pre>
+<p>The converter looks for exactly one array of objects inside the top-level object. If it finds one, it uses it and shows a note such as &quot;Using the “results” array.&quot; If there are several such arrays, it cannot guess which one you mean, so it treats the whole object as one row. In that case, copy just the array you want into the input.</p>
+<p>An array of arrays, such as <code>[[1, &quot;a&quot;], [2, &quot;b&quot;]]</code>, is also accepted. Each inner array becomes a row, with generic <code>column_1</code>, <code>column_2</code> headers.</p>
+<h2 id="common-mistakes-when-converting-json-to-csv">Common mistakes when converting JSON to CSV</h2>
+<ul>
+<li><strong>Expecting deep nesting to flatten perfectly.</strong> Arrays of objects, such as order line items, cannot be flattened into a single row without losing structure. They are written as JSON text inside the cell. If you need one row per line item, reshape the data first.</li>
+<li><strong>Opening the CSV by double-clicking without a BOM.</strong> Excel may show <code>à¤…</code> style garbage instead of Hindi. Keep the BOM option on, or import via Excel’s Data tab and choose UTF-8.</li>
+<li><strong>Losing leading zeros.</strong> PIN codes are safe as text in the CSV, but Excel may strip a leading zero from values like <code>0042</code> or turn long numbers like account numbers into scientific notation. Import those columns as Text in Excel.</li>
+<li><strong>Mixing delimiters and locale.</strong> If Excel puts everything in column A, your regional settings probably expect semicolons. Re-download with the semicolon delimiter.</li>
+<li><strong>Forgetting that dates are just strings.</strong> JSON has no date type, so dates come through exactly as written, for example <code>2026-03-31T10:00:00Z</code>. Format them in the spreadsheet afterwards.</li>
+</ul>
+<h2 id="choosing-a-delimiter">Choosing a delimiter</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>Delimiter</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Comma <code>,</code></td>
+<td>Default; Excel and Google Sheets in Indian and US locales</td>
+</tr>
+<tr>
+<td>Semicolon <code>;</code></td>
+<td>Spreadsheets set to European locales</td>
+</tr>
+<tr>
+<td>Tab</td>
+<td>Pasting straight into a sheet; data full of commas</td>
+</tr>
+<tr>
+<td>Pipe</td>
+<td>Script-to-script transfers, legacy bank and ERP formats</td>
+</tr>
+</tbody></table></div>
+<h2 id="privacy-your-data-stays-on-your-device">Privacy: your data stays on your device</h2>
+<p>Exports of customers, employees or payments are exactly the kind of data you should not paste into random websites. This converter reads and transforms the JSON with JavaScript in your own browser. Nothing is uploaded, and the CSV is generated locally when you click download.</p>
+<h2 id="going-the-other-way-or-into-excel-directly">Going the other way, or into Excel directly</h2>
+<p>If you later receive a CSV and need JSON for an API or a script, use <a href="/tools/csv-to-json/">CSV to JSON</a>, which also detects numbers and booleans. For converting between CSV and real <code>.xlsx</code> workbooks, the <a href="/tools/excel-csv-converter/">Excel &amp; CSV Converter</a> handles the spreadsheet side.</p>
+<h2 id="tips-for-cleaner-output">Tips for cleaner output</h2>
+<p>Keep key names short and consistent before converting, because they become your column headers. <code>customer_name</code> in one record and <code>customerName</code> in another will produce two separate columns. If your data comes from multiple API versions, normalise the keys first.</p>
+<p>Finally, remember that the preview is your friend. Scroll it horizontally to check that every column you expect is there, and that nothing important ended up as a block of JSON text in a single cell.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>What JSON structure converts best to CSV?</summary><p>An array of flat objects, where every object has the same keys, maps perfectly to a table: one object per row, one key per column. Nested objects can be flattened into dotted column names. Deeply nested arrays of objects do not fit a flat table well and are written as JSON text inside a cell.</p></details><details><summary>Why does Excel show strange characters instead of Hindi or the ₹ symbol?</summary><p>Excel on Windows may guess the wrong text encoding when opening a CSV. Adding a UTF-8 byte order mark (BOM) at the start of the file tells Excel the file is UTF-8. The BISCS India tool adds this by default when you download, so Devanagari, Bengali and ₹ display correctly.</p></details><details><summary>My JSON is an object, not an array. Can I still convert it?</summary><p>Yes. If the object contains exactly one array of objects, such as a results or data field, the tool uses that array automatically and tells you which one it picked. Otherwise the single object becomes a one-row CSV with each key as a column.</p></details><details><summary>What happens to commas and line breaks inside values?</summary><p>They are handled using standard CSV quoting. Any value containing the delimiter, a double quote or a line break is wrapped in double quotes, and inner quotes are doubled. Excel, Google Sheets and most programming libraries read this format correctly.</p></details><details><summary>Should I use a comma or semicolon delimiter?</summary><p>Use a comma for most cases. Choose semicolon if your spreadsheet is set to a European locale where the comma is the decimal separator. Tab is useful when pasting directly into a spreadsheet, and pipe suits data that contains lots of commas and is read by scripts.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" /></svg></span>
+        <div><strong>Try it now, free</strong><p>JSON to CSV runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/json-to-csv/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#when-do-you-need-to-turn-json-into-a-spreadsheet">When do you need to turn JSON into a spreadsheet?</a></li><li><a href="#how-the-conversion-works">How the conversion works</a></li><li><a href="#step-by-step-json-to-csv-with-biscs-india">Step-by-step: JSON to CSV with BISCS India</a></li><li><a href="#what-if-my-json-is-not-a-simple-array">What if my JSON is not a simple array?</a></li><li><a href="#common-mistakes-when-converting-json-to-csv">Common mistakes when converting JSON to CSV</a></li><li><a href="#choosing-a-delimiter">Choosing a delimiter</a></li><li><a href="#privacy-your-data-stays-on-your-device">Privacy: your data stays on your device</a></li><li><a href="#going-the-other-way-or-into-excel-directly">Going the other way, or into Excel directly</a></li><li><a href="#tips-for-cleaner-output">Tips for cleaner output</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=How%20to%20Convert%20JSON%20to%20CSV%20for%20Excel%20(Nested%20Data%20Too)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fconvert-json-to-csv-excel%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fconvert-json-to-csv-excel%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fconvert-json-to-csv-excel%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fconvert-json-to-csv-excel%2F&amp;text=How%20to%20Convert%20JSON%20to%20CSV%20for%20Excel%20(Nested%20Data%20Too)" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/convert-csv-to-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Convert CSV to JSON Online (Quotes, Types, Headers)</h3>
+  <p>Convert CSV or Excel exports into a clean JSON array. Handle quoted commas, detect numbers and booleans, pick delimiters and keep PIN codes safe.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/format-validate-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Format and Validate JSON Online (With Error Lines)</h3>
+  <p>Pretty-print, validate and minify JSON in your browser. Learn to read JSON error messages, fix trailing commas and quotes, and keep API data private.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=bfd8a88b38" defer></script>
+<script src="../../assets/js/icons.js?v=bfd8a88b38" defer></script>
+<script src="../../assets/js/core.js?v=bfd8a88b38" defer></script>
+
+</body>
+</html>
