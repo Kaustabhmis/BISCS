@@ -82,6 +82,19 @@ Shuffle puts lines in random order using the browser's cryptographically secure 
 
 If you only need repeats removed and want to keep the existing order, use [Remove Duplicate Lines](/tools/remove-duplicate-lines/) instead.
 
+## Quick checklist for a clean sorted list
+
+Before you copy the result into a register, a report or a website, run through these points:
+
+- Every line holds one item only, with no stray tabs or commas joining two entries.
+- Numbers you care about are in the same position and format on every line.
+- **Trim spaces** and **Remove empty lines** are ticked unless you need blank lines.
+- **Ignore case** matches what you want: on for names, off for case-sensitive codes.
+- The first and last few lines look right. If not, try Natural instead of A → Z.
+- You have kept the original list somewhere in case you need to undo the sort.
+
+Sorting is quick to redo, so experiment with a couple of modes and compare. The tool updates instantly when you switch, which makes it easy to see which order suits your data best.
+
 ## Does the sorter upload my list?
 
 No. [Sort Lines](/tools/sort-lines/) runs completely inside your browser. The list you paste is not sent to BISCS India's servers or stored after you close the page, which makes it suitable for internal staff lists, customer data or exam marks.

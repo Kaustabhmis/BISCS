@@ -60,6 +60,10 @@ The quoted `"Das, Rohan"` stays a single value. The doubled quotes `""` turn int
 6. Check the table in **Preview** and the status line, which reports rows, columns, the delimiter used and any rows with missing cells.
 7. Click **Copy** or **Download .json**.
 
+### Tab-separated files
+
+TSV files, where values are separated by tabs, are common when data is copied straight out of a spreadsheet or exported from analytics tools. Paste them in exactly like CSV; auto-detect recognises the tab delimiter. You can even select a range of cells in Excel or Google Sheets, copy, and paste directly into the input box, because spreadsheets put tabs between cells on the clipboard.
+
 ## Array of objects or array of arrays?
 
 | Output | Looks like | Use it when |

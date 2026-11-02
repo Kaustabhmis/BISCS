@@ -86,6 +86,18 @@ An online line tool is quicker when:
 - you want to ignore case and stray spaces without writing formulas;
 - you are on a phone where spreadsheet menus are awkward.
 
+## A worked example: merging two contact lists
+
+Say a shop owner in Siliguri has customer numbers from two sources: an old diary typed into Notes, and a newer list exported from a billing app. Together they hold 640 lines, and many customers appear in both.
+
+1. Paste both lists into the left box, one after the other.
+2. If one list writes numbers as "+91 98320 11111" and the other as "9832011111", first use Find and Replace to remove "+91" and spaces so every number has the same 10-digit form.
+3. Leave **Trim spaces** and **Remove empty lines** ticked.
+4. Read the badge: for example, "212 duplicates removed" and "640 → 428 lines".
+5. Copy the 428 unique numbers into your broadcast list or contacts app.
+
+The same approach works for email lists, where **Ignore case** matters because "Priya@Example.com" and "priya@example.com" reach the same inbox.
+
 ## Is my data private?
 
 Yes. [Remove Duplicate Lines](/tools/remove-duplicate-lines/) does all of its work with JavaScript inside your browser tab. Your list is not uploaded to a server or saved by BISCS India, and it disappears when you clear the box or close the page.

@@ -10,7 +10,7 @@
     { "q": "Where should the robots.txt file be placed?", "a": "At the root of the domain, so it opens at https://yourdomain.com/robots.txt. Each subdomain needs its own file. A robots.txt placed in a subfolder is ignored by crawlers." },
     { "q": "Does Google follow Crawl-delay?", "a": "No. Googlebot ignores the Crawl-delay line. Bing and Yandex have historically respected it. If Google is genuinely overloading your server, there are other ways to manage this, such as temporarily returning 503 or 429 responses, explained in Google’s crawling documentation." },
     { "q": "Should I block AI crawlers like GPTBot?", "a": "It depends on your goals. Blocking them may keep future content out of some AI training or AI search features, but well-behaved bots follow robots.txt voluntarily, and blocking Google-Extended does not affect your Google Search ranking. Decide deliberately rather than by default." },
-    { "q": "Can a wrong robots.txt harm my SEO?", "a": "Yes. A single line like Disallow: / under User-agent: * blocks every compliant crawler from your entire site. Always review the final file and test important URLs in Google Search Console’s robots.txt report after uploading." }
+    { "q": "Can a wrong robots.txt harm my SEO?", "a": "Yes. A single line such as Disallow: / in the group for all user agents blocks every compliant crawler from your entire site. Always review the final file and test important URLs in Google Search Console’s robots.txt report after uploading." }
   ]
 }
 ---
@@ -29,15 +29,7 @@ The file uses a few simple directives:
 - `Allow:` makes an exception inside a disallowed folder.
 - `Sitemap:` gives the full URL of your XML sitemap.
 
-A simple, healthy file for a small business site often looks like this:
-
-```
-User-agent: *
-Disallow: /admin/
-Disallow: /cart/
-
-Sitemap: https://www.example.com/sitemap.xml
-```
+A simple, healthy file for a small business site often has just four lines: `User-agent: *`, then `Disallow: /admin/` and `Disallow: /cart/`, and finally `Sitemap: https://www.example.com/sitemap.xml`. In other words, every crawler may visit everything except the admin and cart areas, and here is the sitemap.
 
 ## What robots.txt cannot do
 

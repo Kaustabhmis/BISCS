@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MD5 and SHA-256 Hash Generator: Verify Files and Text | BISCS India</title>
+<meta name="description" content="Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="MD5 and SHA-256 Hash Generator: Verify Files and Text | BISCS India">
+<meta property="og:description" content="Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=30541d0951">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/#article","headline":"MD5 and SHA-256 Hash Generator: Verify Files and Text","description":"Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.","abstract":"A hash generator turns text or a file into a fixed-length fingerprint, such as a 64-character SHA-256 value, that changes completely if even one byte changes. Use it to verify downloads or compare files. BISCS India's Hash Generator computes MD5, SHA-1, SHA-256, SHA-384 and SHA-512, plus HMACs, on your device without uploading anything.","url":"https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/","mainEntityOfPage":"https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1021,"keywords":"sha256 hash generator, md5 hash online, file checksum, verify sha256 checksum, hmac generator","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"Hash Generator","url":"https://www.biscsindia.com/tools/hash-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"MD5 and SHA-256 Hash Generator: Verify Files and Text","item":"https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can a hash be reversed to get the original text?","acceptedAnswer":{"@type":"Answer","text":"No. Cryptographic hash functions are one-way by design. However, short or common inputs such as simple passwords can be found by looking them up in huge precomputed tables or by guessing quickly, especially with fast hashes like MD5 and SHA-1. That is why fast hashes must never be used to store passwords."}},{"@type":"Question","name":"Is MD5 still safe to use?","acceptedAnswer":{"@type":"Answer","text":"MD5 is broken for security purposes: researchers can deliberately create two different files with the same MD5 hash. It is still acceptable for spotting accidental corruption, such as checking a file copied correctly. For anything security-related, including verifying software downloads from untrusted mirrors, use SHA-256 or stronger."}},{"@type":"Question","name":"How should passwords be stored if not with SHA-256?","acceptedAnswer":{"@type":"Answer","text":"Use a slow, salted password hashing algorithm designed for the job, such as Argon2id, bcrypt or scrypt. These are intentionally expensive to compute, which makes large-scale guessing impractical. A plain SHA-256 of a password, even with a salt, can be tested billions of times per second on modern hardware."}},{"@type":"Question","name":"Why do I get a different hash for the same text in another tool?","acceptedAnswer":{"@type":"Answer","text":"Usually the inputs differ invisibly: a trailing newline, a space, Windows CRLF line endings instead of LF, or a different character encoding. This tool hashes the exact UTF-8 bytes of what is in the box. Also check whether the other tool shows uppercase hex, which is the same value written differently."}},{"@type":"Question","name":"What is an HMAC and when do I need one?","acceptedAnswer":{"@type":"Answer","text":"An HMAC is a hash combined with a secret key. Only someone who knows the key can produce the same value, so it proves a message was not tampered with and came from a key holder. Payment gateways and webhooks commonly sign requests with HMAC-SHA256, which you can test here."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>MD5 and SHA-256 Hash Generator: Verify Files and Text</h1>
+    <p class="article-dek">Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>A hash generator turns text or a file into a fixed-length fingerprint, such as a 64-character SHA-256 value, that changes completely if even one byte changes. Use it to verify downloads or compare files. BISCS India&#39;s Hash Generator computes MD5, SHA-1, SHA-256, SHA-384 and SHA-512, plus HMACs, on your device without uploading anything.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="9" y2="9" /><line x1="4" x2="20" y1="15" y2="15" /><line x1="10" x2="8" y1="3" y2="21" /><line x1="16" x2="14" y1="3" y2="21" /></svg></span>
+        <div><strong>Hash Generator</strong><p>MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or files.</p></div>
+        <a class="btn btn-primary" href="../../tools/hash-generator/">Open Hash Generator <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>A hash function turns any input, whether a word, a document or a 4 GB video, into a short fixed-length string called a hash, digest or checksum. The same input always gives the same hash. Change a single character and the hash changes completely.</p>
+<p>That makes hashes ideal for one job above all: checking that two things are identical without comparing them byte by byte. The <a href="/tools/hash-generator/">Hash Generator</a> on BISCS India calculates MD5, SHA-1, SHA-256, SHA-384 and SHA-512 for text or files, all at once, on your own device.</p>
+<h2 id="what-does-a-hash-look-like">What does a hash look like?</h2>
+<p>Here is the SHA-256 hash of the word <code>hello</code>, and of <code>Hello</code> with a capital H:</p>
+<pre><code class="language-text">hello  -&gt; 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+Hello  -&gt; 185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969
+</code></pre>
+<p>One letter changed, and there is no visible relationship between the two outputs. This &quot;avalanche effect&quot; is exactly what you want from a fingerprint.</p>
+<p>Different algorithms produce different lengths:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Output (hex characters)</th>
+<th>Status for security</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MD5</td>
+<td>32</td>
+<td>Broken; fine only for accidental-corruption checks</td>
+</tr>
+<tr>
+<td>SHA-1</td>
+<td>40</td>
+<td>Broken for collisions; avoid for new work</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>64</td>
+<td>Secure; the common default</td>
+</tr>
+<tr>
+<td>SHA-384</td>
+<td>96</td>
+<td>Secure</td>
+</tr>
+<tr>
+<td>SHA-512</td>
+<td>128</td>
+<td>Secure; can be faster on 64-bit machines</td>
+</tr>
+</tbody></table></div>
+<h2 id="what-are-hashes-used-for">What are hashes used for?</h2>
+<ul>
+<li><strong>Verifying downloads.</strong> Software publishers list a SHA-256 checksum next to the download. If your file’s hash matches, it arrived intact and unmodified.</li>
+<li><strong>Detecting duplicate files.</strong> Two photos or PDFs with the same SHA-256 are, for practical purposes, the same file, even if their names differ.</li>
+<li><strong>Checking a backup or copy.</strong> Hash a large file before and after copying it to a pen drive or cloud folder to be sure nothing was corrupted.</li>
+<li><strong>Webhook and API signatures.</strong> Payment gateways and many SaaS platforms sign webhook payloads with HMAC-SHA256 so your server can prove the request is genuine.</li>
+<li><strong>Cache keys and content addressing.</strong> Build tools often name files after the hash of their contents, so a changed file gets a new name automatically.</li>
+</ul>
+<h2 id="how-to-generate-a-hash-with-biscs-india">How to generate a hash with BISCS India</h2>
+<ol>
+<li>Open the <a href="/tools/hash-generator/">Hash Generator</a>.</li>
+<li>Choose <strong>Text</strong> or <strong>File</strong> as the input source.</li>
+<li>For text, type or paste into the box. For a file, choose it or drag it in. Files up to 1 GB can be hashed, and they are read on your device, not uploaded.</li>
+<li>All five hashes, MD5, SHA-1, SHA-256, SHA-384 and SHA-512, appear together. Tick <strong>Uppercase</strong> if the value you are comparing against uses capital letters.</li>
+<li>To verify a download, paste the publisher’s checksum into <strong>Compare with a hash</strong>. The matching row is highlighted, so you do not need to compare 64 characters by eye.</li>
+<li>To create an HMAC instead of a plain hash, enter a value in <strong>HMAC secret key</strong>.</li>
+<li>Copy whichever value you need.</li>
+</ol>
+<p>The SHA family uses your browser’s built-in Web Crypto API, which is only available on secure (HTTPS) pages. MD5 is not part of Web Crypto, so the tool includes its own implementation.</p>
+<h2 id="why-md5-and-sha-1-are-not-for-security">Why MD5 and SHA-1 are not for security</h2>
+<p>This is the point most often misunderstood. MD5 and SHA-1 still work as checksums: random corruption on a disk or network will not accidentally produce a matching hash. But both are <strong>cryptographically broken</strong>. Researchers can deliberately construct two different files that share an MD5 hash, and practical SHA-1 collisions have been demonstrated publicly.</p>
+<p>That means:</p>
+<ul>
+<li>Do not rely on MD5 or SHA-1 to prove that a file has not been tampered with by someone malicious.</li>
+<li>Do not use them for digital signatures or certificates.</li>
+<li><strong>Never</strong> use them, or even plain SHA-256, to store passwords.</li>
+</ul>
+<h2 id="hashing-is-not-how-you-store-passwords">Hashing is not how you store passwords</h2>
+<p>A fast hash is the wrong tool for passwords precisely because it is fast. A modern graphics card can test billions of MD5 or SHA-256 guesses per second, and lists of leaked passwords make common choices trivial to find. An unsalted MD5 of a weak password can often be looked up in seconds.</p>
+<p>Password storage needs algorithms built to be slow and salted: <strong>Argon2id</strong>, <strong>bcrypt</strong> or <strong>scrypt</strong>. Use the implementation your framework provides. If you are generating passwords for users, the <a href="/tools/password-generator/">Password Generator</a> creates strong random ones, and the <a href="/tools/password-strength-checker/">Password Strength Checker</a> estimates how hard a password is to guess.</p>
+<h2 id="verifying-a-checksum-a-worked-example">Verifying a checksum: a worked example</h2>
+<p>Say you downloaded an installer, and the publisher’s site lists:</p>
+<pre><code class="language-text">SHA256: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+</code></pre>
+<p>Choose the file in the tool, paste that value into <strong>Compare with a hash</strong>, and look for the highlighted match. If no row matches, do not run the file. Download it again from the official source, and if it still does not match, report it.</p>
+<p>On the command line, the equivalent checks are:</p>
+<pre><code class="language-text">certutil -hashfile installer.exe SHA256      (Windows)
+shasum -a 256 installer.dmg                  (macOS)
+sha256sum installer.deb                      (Linux)
+</code></pre>
+<h2 id="testing-a-webhook-hmac">Testing a webhook HMAC</h2>
+<p>Many payment and messaging providers sign each webhook with HMAC-SHA256 using a secret from your dashboard. When your signature check fails, it helps to calculate the expected value by hand. Paste the exact raw request body into the text box, enter the secret in <strong>HMAC secret key</strong>, and compare the HMAC-SHA256 output with the signature header.</p>
+<p>Mismatches are almost always caused by hashing a re-formatted body instead of the raw bytes, extra whitespace or newlines, or comparing hex against Base64. Check your provider’s documentation for which encoding they use.</p>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>Invisible whitespace.</strong> A trailing newline changes the hash entirely. Text copied from a terminal or editor often has one.</li>
+<li><strong>Line endings.</strong> Windows files use CRLF, Linux and macOS use LF. The same-looking text gives different hashes.</li>
+<li><strong>Case confusion.</strong> <code>ABC123…</code> and <code>abc123…</code> are the same hex value. Use the <strong>Uppercase</strong> toggle to match.</li>
+<li><strong>Comparing different algorithms.</strong> A 64-character value is SHA-256; a 32-character one is MD5. They will never match each other.</li>
+</ul>
+<h2 id="privacy">Privacy</h2>
+<p>Text and files are hashed locally in your browser. Even a 1 GB file never leaves your computer, which is important when you are checking confidential documents, database exports or private keys. If you also need to encode data for transport rather than fingerprint it, see <a href="/tools/base64-encoder/">Base64 Encode / Decode</a>.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Can a hash be reversed to get the original text?</summary><p>No. Cryptographic hash functions are one-way by design. However, short or common inputs such as simple passwords can be found by looking them up in huge precomputed tables or by guessing quickly, especially with fast hashes like MD5 and SHA-1. That is why fast hashes must never be used to store passwords.</p></details><details><summary>Is MD5 still safe to use?</summary><p>MD5 is broken for security purposes: researchers can deliberately create two different files with the same MD5 hash. It is still acceptable for spotting accidental corruption, such as checking a file copied correctly. For anything security-related, including verifying software downloads from untrusted mirrors, use SHA-256 or stronger.</p></details><details><summary>How should passwords be stored if not with SHA-256?</summary><p>Use a slow, salted password hashing algorithm designed for the job, such as Argon2id, bcrypt or scrypt. These are intentionally expensive to compute, which makes large-scale guessing impractical. A plain SHA-256 of a password, even with a salt, can be tested billions of times per second on modern hardware.</p></details><details><summary>Why do I get a different hash for the same text in another tool?</summary><p>Usually the inputs differ invisibly: a trailing newline, a space, Windows CRLF line endings instead of LF, or a different character encoding. This tool hashes the exact UTF-8 bytes of what is in the box. Also check whether the other tool shows uppercase hex, which is the same value written differently.</p></details><details><summary>What is an HMAC and when do I need one?</summary><p>An HMAC is a hash combined with a secret key. Only someone who knows the key can produce the same value, so it proves a message was not tampered with and came from a key holder. Payment gateways and webhooks commonly sign requests with HMAC-SHA256, which you can test here.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="9" y2="9" /><line x1="4" x2="20" y1="15" y2="15" /><line x1="10" x2="8" y1="3" y2="21" /><line x1="16" x2="14" y1="3" y2="21" /></svg></span>
+        <div><strong>Try it now, free</strong><p>Hash Generator runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/hash-generator/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#what-does-a-hash-look-like">What does a hash look like?</a></li><li><a href="#what-are-hashes-used-for">What are hashes used for?</a></li><li><a href="#how-to-generate-a-hash-with-biscs-india">How to generate a hash with BISCS India</a></li><li><a href="#why-md5-and-sha-1-are-not-for-security">Why MD5 and SHA-1 are not for security</a></li><li><a href="#hashing-is-not-how-you-store-passwords">Hashing is not how you store passwords</a></li><li><a href="#verifying-a-checksum-a-worked-example">Verifying a checksum: a worked example</a></li><li><a href="#testing-a-webhook-hmac">Testing a webhook HMAC</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=MD5%20and%20SHA-256%20Hash%20Generator%3A%20Verify%20Files%20and%20Text%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fmd5-sha256-hash-generator-checksum%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fmd5-sha256-hash-generator-checksum%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fmd5-sha256-hash-generator-checksum%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fmd5-sha256-hash-generator-checksum%2F&amp;text=MD5%20and%20SHA-256%20Hash%20Generator%3A%20Verify%20Files%20and%20Text" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/css-box-shadow-generator-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>CSS Box Shadow Generator: Soft, Layered and Inset Shadows</h3>
+  <p>Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/minify-css-html-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Minify CSS, HTML and JSON Online (and What It Saves)</h3>
+  <p>Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=30541d0951" defer></script>
+<script src="../../assets/js/icons.js?v=30541d0951" defer></script>
+<script src="../../assets/js/core.js?v=30541d0951" defer></script>
+
+</body>
+</html>

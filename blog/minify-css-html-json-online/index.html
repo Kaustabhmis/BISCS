@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Minify CSS, HTML and JSON Online (and What It Saves) | BISCS India</title>
+<meta name="description" content="Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/minify-css-html-json-online/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="How to Minify CSS, HTML and JSON Online (and What It Saves) | BISCS India">
+<meta property="og:description" content="Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/minify-css-html-json-online/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=30541d0951">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/minify-css-html-json-online/#article","headline":"How to Minify CSS, HTML and JSON Online (and What It Saves)","description":"Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.","abstract":"Minifying code removes whitespace, line breaks and comments that browsers do not need, making CSS, HTML and JSON files smaller and slightly faster to download. BISCS India's CSS / HTML / JSON Minifier does this in your browser, keeps licence comments and preformatted content intact, and shows exactly how many bytes you saved.","url":"https://www.biscsindia.com/blog/minify-css-html-json-online/","mainEntityOfPage":"https://www.biscsindia.com/blog/minify-css-html-json-online/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1065,"keywords":"css minifier, minify html online, json minify, compress css code, html minifier","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"CSS / HTML / JSON Minifier","url":"https://www.biscsindia.com/tools/code-minifier/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Minify CSS, HTML and JSON Online (and What It Saves)","item":"https://www.biscsindia.com/blog/minify-css-html-json-online/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does minifying CSS or HTML change how the page looks?","acceptedAnswer":{"@type":"Answer","text":"It should not. Minification only removes characters that have no effect on rendering, such as indentation, comments and redundant semicolons. Whitespace that matters, for example inside pre and textarea elements, is preserved. Always test the minified page once, because unusual markup or CSS hacks can occasionally behave differently."}},{"@type":"Question","name":"Is minification still worth it if my server uses gzip or Brotli?","acceptedAnswer":{"@type":"Answer","text":"Usually yes, but the gain is smaller. Compression already shrinks repeated whitespace very efficiently, so a file that is 30% smaller after minifying might be only a few percent smaller after compression. Minifying also removes comments, which can contain internal notes you would rather not publish."}},{"@type":"Question","name":"Can I minify JavaScript with this tool?","acceptedAnswer":{"@type":"Answer","text":"No. This tool handles CSS, HTML and JSON. Safely minifying JavaScript requires understanding variable scope and syntax in depth, which is the job of dedicated tools such as Terser or esbuild, usually run as part of a build process. Inline script blocks inside HTML are left unchanged."}},{"@type":"Question","name":"Can I un-minify code later?","acceptedAnswer":{"@type":"Answer","text":"You can re-format minified code so it is readable again, but comments and original formatting that were removed are gone for good. Always keep your original, readable source files and treat the minified version as a build output, never as the file you edit."}},{"@type":"Question","name":"What does Keep /*! licence */ comments mean?","acceptedAnswer":{"@type":"Answer","text":"By convention, a comment whose opening marker is followed by an exclamation mark holds a licence or copyright notice that should survive minification. Many open-source licences require that notice to stay with the code. With the option ticked, the minifier removes ordinary comments but keeps these special ones."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>How to Minify CSS, HTML and JSON Online (and What It Saves)</h1>
+    <p class="article-dek">Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>Minifying code removes whitespace, line breaks and comments that browsers do not need, making CSS, HTML and JSON files smaller and slightly faster to download. BISCS India&#39;s CSS / HTML / JSON Minifier does this in your browser, keeps licence comments and preformatted content intact, and shows exactly how many bytes you saved.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-6" /><path d="M12 8V2" /><path d="M4 12H2" /><path d="M10 12H8" /><path d="M16 12h-2" /><path d="M22 12h-2" /><path d="m15 19-3-3-3 3" /><path d="m15 5-3 3-3-3" /></svg></span>
+        <div><strong>CSS / HTML / JSON Minifier</strong><p>Minify CSS, HTML and JSON to reduce file size.</p></div>
+        <a class="btn btn-primary" href="../../tools/code-minifier/">Open CSS / HTML / JSON Minifier <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>Minifying code means stripping out everything a browser does not need: indentation, line breaks, comments and redundant characters. The page looks and works exactly the same, but the file is smaller, so it downloads and parses a little faster.</p>
+<p>The <a href="/tools/code-minifier/">CSS / HTML / JSON Minifier</a> on BISCS India handles all three formats in one place. Paste your code or upload a file, and it shows the minified output alongside the original size, the new size and the percentage saved.</p>
+<h2 id="what-does-minification-remove">What does minification remove?</h2>
+<p>Take this small piece of CSS:</p>
+<pre><code class="language-css">/* Card component */
+.card {
+  display: flex;
+  padding: 16px 20px;
+  color: #333333;
+}
+</code></pre>
+<p>Minified, it becomes:</p>
+<pre><code class="language-css">.card{display:flex;padding:16px 20px;color:#333333}
+</code></pre>
+<p>The comment, newlines and indentation are gone, spaces around <code>{</code>, <code>:</code> and <code>;</code> are removed, and the final semicolon before <code>}</code> is dropped because CSS does not require it. Every remaining character is needed.</p>
+<p>For HTML, the minifier collapses runs of whitespace between tags and removes ordinary comments. For JSON, it removes all whitespace between tokens.</p>
+<h2 id="how-to-minify-code-with-biscs-india">How to minify code with BISCS India</h2>
+<ol>
+<li>Open the <a href="/tools/code-minifier/">CSS / HTML / JSON Minifier</a>.</li>
+<li>Choose the language at the top: <strong>CSS</strong>, <strong>HTML</strong> or <strong>JSON</strong>.</li>
+<li>Paste your code, drop a file onto the input, or click <strong>Upload</strong> to load a <code>.css</code>, <code>.html</code>, <code>.htm</code> or <code>.json</code> file. <strong>Sample</strong> loads an example if you want to see it work first.</li>
+<li>For CSS, decide whether to tick *<em>Keep /</em>! licence <em>/ comments</em>*. It is on by default.</li>
+<li>The minified output appears immediately, with <strong>Original</strong>, <strong>Minified</strong> and <strong>Saved</strong> figures underneath.</li>
+<li>Copy the result or download it, and use it as your production file.</li>
+</ol>
+<p>When you upload a file, the tool picks the matching language from its extension, so a <code>.json</code> file switches to JSON mode automatically. The download button names the output sensibly too, for example <code>styles.min.css</code>, which keeps it clearly separate from your editable source.</p>
+<p>If you paste invalid JSON in JSON mode, the tool reports the error with its line and column instead of producing output.</p>
+<h2 id="what-the-html-minifier-is-careful-to-keep">What the HTML minifier is careful to keep</h2>
+<p>Whitespace in HTML is not always meaningless, so the minifier leaves certain things alone:</p>
+<ul>
+<li><strong>Content of <code>pre</code> and <code>textarea</code> elements</strong>, where spaces and line breaks are visible to users.</li>
+<li><strong>Inline <code>script</code> and <code>style</code> blocks</strong>, which are passed through unchanged rather than risk breaking code.</li>
+<li><strong>Conditional comments</strong> used for old Internet Explorer, in case your template still includes them.</li>
+<li><strong>A single space between inline elements</strong>, because removing it would glue words together, for example between a bold word and the next one.</li>
+</ul>
+<p>Ordinary comments such as <code>&lt;!-- page styles --&gt;</code> are removed. If you have template comments that a CMS or framework needs, check the output before publishing.</p>
+<h2 id="minification-vs-compression-what-is-the-difference">Minification vs compression: what is the difference?</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th></th>
+<th>Minification</th>
+<th>Gzip or Brotli compression</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Where it happens</td>
+<td>Once, before you upload the file</td>
+<td>On the server for every response (or pre-compressed)</td>
+</tr>
+<tr>
+<td>What it does</td>
+<td>Removes unnecessary characters</td>
+<td>Encodes repeated patterns more efficiently</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Still valid, readable-by-browser code</td>
+<td>Binary, decoded by the browser automatically</td>
+</tr>
+<tr>
+<td>Removes comments</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Typical setup</td>
+<td>Build tool or a minifier like this one</td>
+<td>Hosting or CDN setting</td>
+</tr>
+</tbody></table></div>
+<p>They work best together. Most hosting platforms, including popular static hosts and CDNs, apply compression automatically; minification is the part you control.</p>
+<h2 id="how-much-will-i-actually-save">How much will I actually save?</h2>
+<p>It depends on how the code was written. Heavily commented, well-indented CSS can shrink by a third or more. Already-compact code saves little. The <strong>Saved</strong> figure tells you the real number for your file, so there is no need to guess.</p>
+<p>Keep perspective, though. A 6 KB stylesheet becoming 4 KB is a nice tidy-up, but if your page also loads a 2 MB hero photo, compressing that image will matter far more. The <a href="/tools/image-compressor/">Compress Image</a> tool is a better first stop for slow pages.</p>
+<h2 id="when-should-you-minify">When should you minify?</h2>
+<ul>
+<li><strong>Small websites without a build step.</strong> A hand-written landing page or portfolio site can be minified manually before upload.</li>
+<li><strong>Email templates.</strong> Some email clients have size limits that clip long messages, so trimming HTML weight can help keep the whole email visible.</li>
+<li><strong>Embedding JSON in configuration.</strong> Environment variables and some API fields need JSON on a single line.</li>
+<li><strong>Quick checks.</strong> Even if your build pipeline minifies automatically, it is useful to see how much a stylesheet shrinks.</li>
+</ul>
+<p>If your project uses a framework or bundler such as Vite, Next.js or webpack, minification is usually already built into the production build. Use this tool for one-off files and for everything outside that pipeline.</p>
+<h2 id="a-simple-workflow-for-small-sites">A simple workflow for small sites</h2>
+<p>If you maintain a small business website by hand, a light routine keeps things tidy without a build system. Keep a <code>src</code> folder with your readable <code>style.css</code> and HTML pages. When you are ready to publish, minify each changed file, save the output into a separate <code>public</code> folder, upload that folder, and open the live site on your phone to check nothing broke. Next time you need a change, edit the files in <code>src</code> and repeat. It takes a minute and keeps your editable code and your published code from ever getting mixed up.</p>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>Editing the minified file.</strong> Always edit the readable source and minify again. Keep the minified file as an output, with a name like <code>style.min.css</code>.</li>
+<li><strong>Deleting licence notices.</strong> Many open-source licences require the copyright comment to stay. Keep the <code>/*!</code> option on for third-party CSS.</li>
+<li><strong>Minifying broken code.</strong> Errors become harder to spot on one long line. Validate first; for JSON, the <a href="/tools/json-formatter/">JSON Formatter</a> points to the exact error.</li>
+<li><strong>Forgetting to test.</strong> After replacing a stylesheet or template with its minified version, load the page once on desktop and mobile.</li>
+<li><strong>Expecting JavaScript support.</strong> Inline scripts are left untouched, and separate <code>.js</code> files need a dedicated JavaScript minifier.</li>
+</ul>
+<h2 id="readability-first-size-second">Readability first, size second</h2>
+<p>Write code for people, with clear indentation and helpful comments, and let tools make it small for machines. If you ever need to escape snippets of HTML for documentation rather than shrink them, the <a href="/tools/html-entity-encoder/">HTML Entity Encoder</a> is the right tool.</p>
+<h2 id="privacy">Privacy</h2>
+<p>Your code is processed entirely in the browser. Nothing is uploaded, which means unreleased designs, client templates and internal configuration files stay on your computer.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Does minifying CSS or HTML change how the page looks?</summary><p>It should not. Minification only removes characters that have no effect on rendering, such as indentation, comments and redundant semicolons. Whitespace that matters, for example inside pre and textarea elements, is preserved. Always test the minified page once, because unusual markup or CSS hacks can occasionally behave differently.</p></details><details><summary>Is minification still worth it if my server uses gzip or Brotli?</summary><p>Usually yes, but the gain is smaller. Compression already shrinks repeated whitespace very efficiently, so a file that is 30% smaller after minifying might be only a few percent smaller after compression. Minifying also removes comments, which can contain internal notes you would rather not publish.</p></details><details><summary>Can I minify JavaScript with this tool?</summary><p>No. This tool handles CSS, HTML and JSON. Safely minifying JavaScript requires understanding variable scope and syntax in depth, which is the job of dedicated tools such as Terser or esbuild, usually run as part of a build process. Inline script blocks inside HTML are left unchanged.</p></details><details><summary>Can I un-minify code later?</summary><p>You can re-format minified code so it is readable again, but comments and original formatting that were removed are gone for good. Always keep your original, readable source files and treat the minified version as a build output, never as the file you edit.</p></details><details><summary>What does Keep /*! licence */ comments mean?</summary><p>By convention, a comment whose opening marker is followed by an exclamation mark holds a licence or copyright notice that should survive minification. Many open-source licences require that notice to stay with the code. With the option ticked, the minifier removes ordinary comments but keeps these special ones.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-6" /><path d="M12 8V2" /><path d="M4 12H2" /><path d="M10 12H8" /><path d="M16 12h-2" /><path d="M22 12h-2" /><path d="m15 19-3-3-3 3" /><path d="m15 5-3 3-3-3" /></svg></span>
+        <div><strong>Try it now, free</strong><p>CSS / HTML / JSON Minifier runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/code-minifier/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#what-does-minification-remove">What does minification remove?</a></li><li><a href="#how-to-minify-code-with-biscs-india">How to minify code with BISCS India</a></li><li><a href="#what-the-html-minifier-is-careful-to-keep">What the HTML minifier is careful to keep</a></li><li><a href="#minification-vs-compression-what-is-the-difference">Minification vs compression: what is the difference?</a></li><li><a href="#how-much-will-i-actually-save">How much will I actually save?</a></li><li><a href="#when-should-you-minify">When should you minify?</a></li><li><a href="#a-simple-workflow-for-small-sites">A simple workflow for small sites</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#readability-first-size-second">Readability first, size second</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=How%20to%20Minify%20CSS%2C%20HTML%20and%20JSON%20Online%20(and%20What%20It%20Saves)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fminify-css-html-json-online%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fminify-css-html-json-online%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fminify-css-html-json-online%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fminify-css-html-json-online%2F&amp;text=How%20to%20Minify%20CSS%2C%20HTML%20and%20JSON%20Online%20(and%20What%20It%20Saves)" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/css-box-shadow-generator-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>CSS Box Shadow Generator: Soft, Layered and Inset Shadows</h3>
+  <p>Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/hex-rgb-hsl-color-converter-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>HEX to RGB and HSL Colour Converter (With Contrast Check)</h3>
+  <p>Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=30541d0951" defer></script>
+<script src="../../assets/js/icons.js?v=30541d0951" defer></script>
+<script src="../../assets/js/core.js?v=30541d0951" defer></script>
+
+</body>
+</html>

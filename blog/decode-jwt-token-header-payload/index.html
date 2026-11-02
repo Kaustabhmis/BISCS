@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Decode a JWT Token (and Why Decoding Isn’t Verifying) | BISCS India</title>
+<meta name="description" content="Decode a JSON Web Token’s header and payload, read exp and iat dates in IST, spot alg none and expired tokens, and learn why signatures must be verified.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/decode-jwt-token-header-payload/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="How to Decode a JWT Token (and Why Decoding Isn’t Verifying) | BISCS India">
+<meta property="og:description" content="Decode a JSON Web Token’s header and payload, read exp and iat dates in IST, spot alg none and expired tokens, and learn why signatures must be verified.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/decode-jwt-token-header-payload/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=30541d0951">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/#article","headline":"How to Decode a JWT Token (and Why Decoding Isn’t Verifying)","description":"Decode a JSON Web Token’s header and payload, read exp and iat dates in IST, spot alg none and expired tokens, and learn why signatures must be verified.","abstract":"To decode a JWT, split it at the two dots and Base64url-decode the first two parts: the header and the payload, both JSON. Decoding needs no key, which is why it never proves a token is genuine. BISCS India's JWT Decoder shows the claims, expiry in IST and algorithm, on your device without sending the token anywhere.","url":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/","mainEntityOfPage":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":973,"keywords":"jwt decoder, decode jwt token, jwt payload viewer, jwt expiry check, json web token explained","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"JWT Decoder","url":"https://www.biscsindia.com/tools/jwt-decoder/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Decode a JWT Token (and Why Decoding Isn’t Verifying)","item":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the data inside a JWT encrypted?","acceptedAnswer":{"@type":"Answer","text":"No, not in a standard signed JWT. The header and payload are only Base64url-encoded, so anyone holding the token can read them. Do not put passwords, Aadhaar numbers or other sensitive personal data in JWT claims. Encrypted tokens exist, called JWE, and have five parts instead of three."}},{"@type":"Question","name":"Does decoding a JWT verify it?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding only reads the contents. Verification means recalculating or checking the signature with the correct secret or public key, and confirming claims such as exp, iss and aud. Only your server, using a maintained JWT library, should decide whether a token is trusted."}},{"@type":"Question","name":"Why does my token show as expired when I just logged in?","acceptedAnswer":{"@type":"Answer","text":"Check the clock on the machine that issued the token and the one checking it, because exp is compared against the current time. Also confirm the exp value is in seconds, as the standard requires. A value in milliseconds would look like a date thousands of years away, not expired."}},{"@type":"Question","name":"Is it safe to paste a production JWT into an online decoder?","acceptedAnswer":{"@type":"Answer","text":"A valid token is like a temporary key to an account, so treat it carefully. The BISCS India decoder works entirely in your browser and does not upload the token. Even so, prefer test tokens, and if a live token may have been exposed, revoke it or let it expire."}},{"@type":"Question","name":"What does alg none mean in a JWT header?","acceptedAnswer":{"@type":"Answer","text":"It means the token claims to have no signature at all. Some old libraries once accepted such tokens as valid, letting attackers forge any claims. A secure server must reject alg none and should only accept the specific algorithms it expects. The decoder flags this case with a warning."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>How to Decode a JWT Token (and Why Decoding Isn’t Verifying)</h1>
+    <p class="article-dek">Decode a JSON Web Token’s header and payload, read exp and iat dates in IST, spot alg none and expired tokens, and learn why signatures must be verified.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>To decode a JWT, split it at the two dots and Base64url-decode the first two parts: the header and the payload, both JSON. Decoding needs no key, which is why it never proves a token is genuine. BISCS India&#39;s JWT Decoder shows the claims, expiry in IST and algorithm, on your device without sending the token anywhere.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /><circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></svg></span>
+        <div><strong>JWT Decoder</strong><p>Decode a JSON Web Token’s header and payload.</p></div>
+        <a class="btn btn-primary" href="../../tools/jwt-decoder/">Open JWT Decoder <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>A JSON Web Token (JWT) is three chunks of Base64url text joined by dots: <code>header.payload.signature</code>. Decoding it means turning the first two chunks back into the JSON they came from, so you can read who the token is for, who issued it and when it expires.</p>
+<p>The <a href="/tools/jwt-decoder/">JWT Decoder</a> on BISCS India does this instantly in your browser, converts timestamps like <code>exp</code> and <code>iat</code> into readable IST dates, and warns about expired tokens and unsafe algorithms. One thing it deliberately does not do is verify the signature, and understanding why is the most important part of working with JWTs.</p>
+<h2 id="what-is-inside-a-jwt">What is inside a JWT?</h2>
+<p>Here is a token split onto three lines for readability:</p>
+<pre><code class="language-text">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+.eyJzdWIiOiJ1c2VyXzEwMjQiLCJuYW1lIjoiUHJpeWEgU2hhcm1hIiwiZXhwIjoxNzk4NzM1NDAwfQ
+.k3X1oQ...signature...
+</code></pre>
+<p>The first part decodes to the <strong>header</strong>, which says how the token was signed:</p>
+<pre><code class="language-json">{ &quot;alg&quot;: &quot;HS256&quot;, &quot;typ&quot;: &quot;JWT&quot; }
+</code></pre>
+<p>The second part decodes to the <strong>payload</strong>, a set of claims:</p>
+<pre><code class="language-json">{ &quot;sub&quot;: &quot;user_1024&quot;, &quot;name&quot;: &quot;Priya Sharma&quot;, &quot;exp&quot;: 1798735400 }
+</code></pre>
+<p>The third part is the <strong>signature</strong>, binary data created from the first two parts and a key. It is what makes the token trustworthy, but only to someone who checks it with the right key.</p>
+<h2 id="decoding-is-not-verifying">Decoding is not verifying</h2>
+<p>Anyone can decode a JWT. There is no secret involved; it is just Base64url. That has two consequences every developer should remember:</p>
+<ol>
+<li><strong>The payload is public.</strong> Never put secrets, passwords or sensitive personal data in it. Anyone who intercepts or is given the token can read it.</li>
+<li><strong>The payload proves nothing on its own.</strong> An attacker can write any JSON they like, encode it, and attach a fake signature. A decoder will happily show <code>&quot;role&quot;: &quot;admin&quot;</code>. Only signature verification on the server reveals the forgery.</li>
+</ol>
+<p>So use a decoder for <strong>debugging and inspection</strong>, and let your backend library, such as <code>jsonwebtoken</code> in Node.js, PyJWT in Python or your framework’s built-in middleware, <strong>verify</strong> every token before trusting it. Verification should check the signature, the algorithm you expect, and the <code>exp</code>, <code>nbf</code>, <code>iss</code> and <code>aud</code> claims.</p>
+<h2 id="how-to-decode-a-jwt-with-biscs-india">How to decode a JWT with BISCS India</h2>
+<ol>
+<li>Open the <a href="/tools/jwt-decoder/">JWT Decoder</a>.</li>
+<li>Paste the token into the <strong>JSON Web Token</strong> box. A leading <code>Bearer </code> copied from an <code>Authorization</code> header is stripped automatically.</li>
+<li>The token is shown colour-coded by part, and the <strong>Status</strong> card shows whether it has expired, when it expires relative to now, and the signing algorithm.</li>
+<li>Read the <strong>Header</strong> and <strong>Payload</strong> cards. Standard claims are labelled in plain English, and time claims (<code>exp</code>, <code>nbf</code>, <code>iat</code>) are shown as IST dates with a relative time, alongside the raw number.</li>
+<li>Use <strong>Copy JSON</strong> on either card to grab the decoded content for a bug report or test.</li>
+</ol>
+<p>Click <strong>Sample</strong> to load an example token if you just want to explore.</p>
+<h2 id="the-standard-claims-explained">The standard claims, explained</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>Claim</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>iss</code></td>
+<td>Issuer</td>
+<td>Who created the token, often your auth server’s URL</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>Subject</td>
+<td>Who the token is about, usually a user ID</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>Audience</td>
+<td>Which application the token is meant for</td>
+</tr>
+<tr>
+<td><code>exp</code></td>
+<td>Expires</td>
+<td>Time after which the token must be rejected</td>
+</tr>
+<tr>
+<td><code>nbf</code></td>
+<td>Not before</td>
+<td>Time before which the token is not valid</td>
+</tr>
+<tr>
+<td><code>iat</code></td>
+<td>Issued at</td>
+<td>When the token was created</td>
+</tr>
+<tr>
+<td><code>jti</code></td>
+<td>Token ID</td>
+<td>Unique ID, useful for revocation lists</td>
+</tr>
+</tbody></table></div>
+<p>The time claims are <strong>Unix timestamps in seconds</strong>, not milliseconds. JavaScript’s <code>Date.now()</code> returns milliseconds, so a common bug is writing <code>exp: Date.now() + 3600</code> instead of <code>Math.floor(Date.now() / 1000) + 3600</code>. If you need to convert a timestamp by hand, the <a href="/tools/timestamp-converter/">Unix Timestamp Converter</a> shows it in IST and UTC.</p>
+<h2 id="warnings-the-decoder-shows">Warnings the decoder shows</h2>
+<ul>
+<li><strong>Expired.</strong> The <code>exp</code> time is in the past. Your server should reject this token; the client should refresh it.</li>
+<li><strong>No expiry (exp) claim.</strong> A token that never expires is a long-lived key. If it leaks, it works forever unless you rotate the signing secret.</li>
+<li><strong>alg: none.</strong> The token claims to be unsigned. A correct server must never accept it.</li>
+<li><strong>Five parts instead of three.</strong> That is an encrypted JWE token. Its payload cannot be read without the decryption key, and the tool tells you so.</li>
+<li><strong>Wrong number of parts or invalid Base64.</strong> Often a token truncated when copied from logs or a terminal.</li>
+</ul>
+<h2 id="common-mistakes-when-working-with-jwts">Common mistakes when working with JWTs</h2>
+<ul>
+<li><strong>Storing sensitive data in claims.</strong> Keep payloads to IDs, roles and expiry. Look everything else up on the server.</li>
+<li><strong>Trusting decoded claims in the front end for security decisions.</strong> Hiding an admin button based on a decoded <code>role</code> is fine for convenience, but the API must enforce permissions itself.</li>
+<li><strong>Long expiry with no revocation.</strong> Use short-lived access tokens, for example 15 minutes to an hour, plus refresh tokens.</li>
+<li><strong>Accepting any algorithm.</strong> Configure your verifier with an explicit list such as <code>[&quot;RS256&quot;]</code>, so an attacker cannot switch to <code>none</code> or swap an asymmetric algorithm for a symmetric one.</li>
+<li><strong>Sharing live tokens in tickets and chats.</strong> A pasted bearer token is a working credential until it expires.</li>
+</ul>
+<h2 id="how-the-decoding-actually-works">How the decoding actually works</h2>
+<p>If you want to decode a payload in code, it is a few lines, which shows how little protection encoding provides:</p>
+<pre><code class="language-js">const payload = JSON.parse(
+  new TextDecoder().decode(
+    Uint8Array.from(atob(token.split(&#39;.&#39;)[1].replace(/-/g, &#39;+&#39;).replace(/_/g, &#39;/&#39;)), c =&gt; c.charCodeAt(0))
+  )
+);
+</code></pre>
+<p><code>atob</code> needs standard Base64, so the URL-safe <code>-</code> and <code>_</code> characters are converted back first. Using <code>TextDecoder</code> keeps names in Hindi or other scripts intact. For decoding arbitrary Base64 strings rather than tokens, use the <a href="/tools/base64-encoder/">Base64 Encode / Decode</a> tool.</p>
+<h2 id="privacy">Privacy</h2>
+<p>A JWT can be a live credential, so where you paste it matters. This decoder runs entirely in your browser; the token is never sent to a server or stored. If you are building tokens for a test environment, generating random user IDs with the <a href="/tools/uuid-generator/">UUID Generator</a> keeps test data realistic without touching real accounts.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Is the data inside a JWT encrypted?</summary><p>No, not in a standard signed JWT. The header and payload are only Base64url-encoded, so anyone holding the token can read them. Do not put passwords, Aadhaar numbers or other sensitive personal data in JWT claims. Encrypted tokens exist, called JWE, and have five parts instead of three.</p></details><details><summary>Does decoding a JWT verify it?</summary><p>No. Decoding only reads the contents. Verification means recalculating or checking the signature with the correct secret or public key, and confirming claims such as exp, iss and aud. Only your server, using a maintained JWT library, should decide whether a token is trusted.</p></details><details><summary>Why does my token show as expired when I just logged in?</summary><p>Check the clock on the machine that issued the token and the one checking it, because exp is compared against the current time. Also confirm the exp value is in seconds, as the standard requires. A value in milliseconds would look like a date thousands of years away, not expired.</p></details><details><summary>Is it safe to paste a production JWT into an online decoder?</summary><p>A valid token is like a temporary key to an account, so treat it carefully. The BISCS India decoder works entirely in your browser and does not upload the token. Even so, prefer test tokens, and if a live token may have been exposed, revoke it or let it expire.</p></details><details><summary>What does alg none mean in a JWT header?</summary><p>It means the token claims to have no signature at all. Some old libraries once accepted such tokens as valid, letting attackers forge any claims. A secure server must reject alg none and should only accept the specific algorithms it expects. The decoder flags this case with a warning.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /><circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></svg></span>
+        <div><strong>Try it now, free</strong><p>JWT Decoder runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/jwt-decoder/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#what-is-inside-a-jwt">What is inside a JWT?</a></li><li><a href="#decoding-is-not-verifying">Decoding is not verifying</a></li><li><a href="#how-to-decode-a-jwt-with-biscs-india">How to decode a JWT with BISCS India</a></li><li><a href="#the-standard-claims-explained">The standard claims, explained</a></li><li><a href="#warnings-the-decoder-shows">Warnings the decoder shows</a></li><li><a href="#common-mistakes-when-working-with-jwts">Common mistakes when working with JWTs</a></li><li><a href="#how-the-decoding-actually-works">How the decoding actually works</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=How%20to%20Decode%20a%20JWT%20Token%20(and%20Why%20Decoding%20Isn%E2%80%99t%20Verifying)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F&amp;text=How%20to%20Decode%20a%20JWT%20Token%20(and%20Why%20Decoding%20Isn%E2%80%99t%20Verifying)" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/css-box-shadow-generator-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>CSS Box Shadow Generator: Soft, Layered and Inset Shadows</h3>
+  <p>Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/minify-css-html-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Minify CSS, HTML and JSON Online (and What It Saves)</h3>
+  <p>Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=30541d0951" defer></script>
+<script src="../../assets/js/icons.js?v=30541d0951" defer></script>
+<script src="../../assets/js/core.js?v=30541d0951" defer></script>
+
+</body>
+</html>

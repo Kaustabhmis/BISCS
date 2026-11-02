@@ -61,6 +61,12 @@ Every crop throws pixels away. A tight crop from a 12-megapixel photo is still l
 
 If the horizon is tilted, crop alone will not fix it. Straighten the photo with the fine-angle control in [Rotate & Flip Image](/tools/rotate-flip-image/), then crop away the angled edges.
 
+## Cropping screenshots and documents
+
+Crop is not only for photos. Free mode is ideal for tidying screenshots before you share them in a WhatsApp group, a presentation or a bug report. Trim away the status bar, the keyboard and any unrelated chats so the reader sees only what matters. It is also a simple privacy step: cropping removes other people’s names, phone numbers or notifications that happen to be on screen.
+
+For photographed documents, such as a bill, a rent agreement or a mark sheet shot on a table, crop tightly to the paper edges so the background disappears. If the page was photographed at an angle, cropping cannot correct the perspective; the [Scan to PDF](/tools/scan-to-pdf/) tool detects the corners and flattens the page for you. A clean crop also shrinks the file, because the pixels you remove no longer need to be stored.
+
 ## Cropping photos for application forms and ID cards
 
 Many Indian application portals, from university admissions to recruitment exams, ask for a recent passport-style photograph with the face clearly visible and a plain light background. Before resizing and compressing to meet the portal’s limits, crop properly:

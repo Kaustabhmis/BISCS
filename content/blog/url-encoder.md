@@ -76,6 +76,22 @@ This is handy for:
 
 If you build campaign links regularly, the [UTM Link Builder](/tools/utm-builder/) creates correctly encoded tracking URLs from a simple form.
 
+## Which characters are safe in a URL without encoding?
+
+The URL standard defines a small set of "unreserved" characters that never need encoding: the letters `A–Z` and `a–z`, the digits `0–9`, and four symbols, hyphen, full stop, underscore and tilde. Everything else either has a structural job (the reserved characters such as `/ ? # & =`) or is simply not allowed, like spaces, quotation marks, angle brackets and any non-ASCII character.
+
+That is why a well-chosen slug such as `/blog/gst-invoice-format` travels everywhere untouched, while a path like `/files/Annual Report 2025.pdf` has to become `/files/Annual%20Report%202025.pdf`. If you control the names of pages and files, sticking to lowercase letters, digits and hyphens avoids encoding problems entirely.
+
+## How do other languages encode URLs?
+
+Most programming languages have an equivalent of `encodeURIComponent`, but the defaults differ slightly, which is a common source of mismatched signatures and broken API calls:
+
+- **Python:** `urllib.parse.quote(value, safe='')` encodes a component; `urllib.parse.urlencode()` builds a whole query string and uses `+` for spaces.
+- **PHP:** `rawurlencode()` follows the standard with `%20` for spaces, while `urlencode()` uses `+`, form-style.
+- **Java:** `URLEncoder.encode(value, StandardCharsets.UTF_8)` is designed for form data, so it also turns spaces into `+`.
+
+When two systems disagree on a value, paste both versions into the decoder. If one shows `+` and the other `%20`, you have found the difference, and you can tick or untick **Spaces as +** to match the system you are talking to.
+
 ## What happens to Indian-language text?
 
 URLs travel as ASCII. Non-ASCII text is first converted to UTF-8 bytes, and each byte is percent-encoded. Devanagari, Bengali and Tamil characters use three bytes each, so a short Hindi word turns into a long string of `%E0%A4…` codes.

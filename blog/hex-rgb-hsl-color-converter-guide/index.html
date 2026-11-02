@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HEX to RGB and HSL Colour Converter (With Contrast Check) | BISCS India</title>
+<meta name="description" content="Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="HEX to RGB and HSL Colour Converter (With Contrast Check) | BISCS India">
+<meta property="og:description" content="Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=30541d0951">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/#article","headline":"HEX to RGB and HSL Colour Converter (With Contrast Check)","description":"Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.","abstract":"To convert a colour, enter it in any format, such as #4F46E5, rgb(79, 70, 229) or hsl(243, 75%, 59%), and read the equivalents in the others. BISCS India's Color Converter handles HEX, RGB, HSL, HSV and CMYK, shows tints and shades, and checks WCAG text contrast, all inside your browser.","url":"https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/","mainEntityOfPage":"https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1068,"keywords":"hex to rgb, color converter, rgb to hex, hsl color picker, wcag contrast checker","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"Color Converter","url":"https://www.biscsindia.com/tools/color-converter/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"HEX to RGB and HSL Colour Converter (With Contrast Check)","item":"https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between HEX and RGB?","acceptedAnswer":{"@type":"Answer","text":"None in the colour itself. Both describe the same red, green and blue values from 0 to 255. HEX writes each value as two hexadecimal digits, so rgb(255, 153, 51) becomes #FF9933. HEX is compact for CSS and design tools; RGB is easier to read and adjust by hand."}},{"@type":"Question","name":"Why should I use HSL in CSS?","acceptedAnswer":{"@type":"Answer","text":"HSL describes colour as hue, saturation and lightness, which matches how people think. To make a button darker on hover, you lower the lightness and keep the hue the same. Building a consistent palette is much easier than guessing new HEX values, and all modern browsers support it."}},{"@type":"Question","name":"Is the CMYK value accurate for printing?","acceptedAnswer":{"@type":"Answer","text":"It is a straightforward mathematical conversion, useful as a starting point. Real print colours depend on the printer, paper and colour profile, so a professional printer may give different values. For brand-critical printing, such as visiting cards or packaging, ask your printer for a proof or use their recommended profile."}},{"@type":"Question","name":"What contrast ratio do I need for readable text?","acceptedAnswer":{"@type":"Answer","text":"WCAG 2.1 level AA asks for at least 4.5:1 between normal body text and its background, and 3:1 for large text, roughly 18.66px bold or 24px regular and above. Level AAA raises these to 7:1 and 4.5:1. The converter shows the ratio against white and black for any colour."}},{"@type":"Question","name":"How do I pick a colour from a logo or website?","acceptedAnswer":{"@type":"Answer","text":"In Chrome and Edge on a computer, click Pick from screen and then click anywhere on your screen to capture that colour. In browsers without the EyeDropper feature, use the BISCS India Image Color Picker on a screenshot or image file instead."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>HEX to RGB and HSL Colour Converter (With Contrast Check)</h1>
+    <p class="article-dek">Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>To convert a colour, enter it in any format, such as #4F46E5, rgb(79, 70, 229) or hsl(243, 75%, 59%), and read the equivalents in the others. BISCS India&#39;s Color Converter handles HEX, RGB, HSL, HSV and CMYK, shows tints and shades, and checks WCAG text contrast, all inside your browser.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>
+        <div><strong>Color Converter</strong><p>Convert colours between HEX, RGB and HSL with a picker.</p></div>
+        <a class="btn btn-primary" href="../../tools/color-converter/">Open Color Converter <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>A colour converter translates one colour into every other format you might need. Type <code>#FF9933</code>, the saffron of the Indian flag, and you instantly get <code>rgb(255, 153, 51)</code>, <code>hsl(30, 100%, 60%)</code> and the rest, ready to paste into CSS, a design tool or a print brief.</p>
+<p>The <a href="/tools/color-converter/">Color Converter</a> on BISCS India accepts any CSS colour, including names like <code>teal</code>, and converts between HEX, RGB, HSL, HSV and CMYK. It also generates a row of tints and shades and checks text contrast against WCAG guidelines, which is where colour choices most often go wrong.</p>
+<h2 id="the-main-colour-formats-explained-simply">The main colour formats, explained simply</h2>
+<p>Screens make colour by mixing red, green and blue light. Every format below is just a different way of writing that mix.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>Format</th>
+<th>Example</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HEX</td>
+<td><code>#4F46E5</code></td>
+<td>CSS, design handoff, brand guides</td>
+</tr>
+<tr>
+<td>RGB</td>
+<td><code>rgb(79, 70, 229)</code></td>
+<td>Reading values, transparency with <code>rgba</code></td>
+</tr>
+<tr>
+<td>HSL</td>
+<td><code>hsl(243, 75%, 59%)</code></td>
+<td>Adjusting lightness, building palettes</td>
+</tr>
+<tr>
+<td>HSV / HSB</td>
+<td><code>hsv(243, 69%, 90%)</code></td>
+<td>Colour pickers in Photoshop and Figma</td>
+</tr>
+<tr>
+<td>CMYK</td>
+<td><code>cmyk(66%, 69%, 0%, 10%)</code></td>
+<td>A starting point for print</td>
+</tr>
+</tbody></table></div>
+<p><strong>HEX</strong> is RGB in hexadecimal: two digits each for red, green and blue, from <code>00</code> to <code>FF</code> (0 to 255). Short forms like <code>#FFF</code> expand to <code>#FFFFFF</code>, and an eight-digit form like <code>#4F46E580</code> adds transparency.</p>
+<p><strong>HSL</strong> stands for hue (the position on the colour wheel, 0–360 degrees), saturation (how vivid, 0–100%) and lightness (from black at 0% to white at 100%). It is the most intuitive format for making related colours.</p>
+<p><strong>HSV</strong>, also called HSB, uses value or brightness instead of lightness. Many design apps show it in their pickers, so the converter includes it for easy matching.</p>
+<p><strong>CMYK</strong> is the ink model used in printing: cyan, magenta, yellow and black.</p>
+<h2 id="how-to-convert-a-colour-with-biscs-india">How to convert a colour with BISCS India</h2>
+<ol>
+<li>Open the <a href="/tools/color-converter/">Color Converter</a>.</li>
+<li>Type or paste a colour into <strong>Any CSS colour (name, hex, rgb, hsl)</strong>, or edit any of the individual <strong>HEX</strong>, <strong>RGB</strong>, <strong>HSL</strong>, <strong>HSV / HSB</strong> or <strong>CMYK</strong> fields directly. All the others update instantly.</li>
+<li>Use the colour picker swatch for a visual choice, <strong>Random</strong> for inspiration, or <strong>Pick from screen</strong> (in browsers that support it) to grab a colour from anywhere on your display.</li>
+<li>Click the copy button next to any format to copy it.</li>
+<li>Look at <strong>Tints &amp; shades</strong>, a row of lighter and darker versions of your colour. Click any one to copy it.</li>
+<li>Check <strong>Contrast (WCAG 2.1)</strong> to see whether white or black text on your colour is readable.</li>
+</ol>
+<h2 id="converting-hex-to-rgb-by-hand">Converting HEX to RGB by hand</h2>
+<p>It is worth knowing how it works, if only to sanity-check a value. Split the HEX code into pairs and convert each from base 16 to base 10:</p>
+<pre><code class="language-text">#FF9933
+ FF -&gt; 15×16 + 15 = 255   (red)
+ 99 -&gt;  9×16 +  9 = 153   (green)
+ 33 -&gt;  3×16 +  3 =  51   (blue)
+= rgb(255, 153, 51)
+</code></pre>
+<p>In JavaScript:</p>
+<pre><code class="language-js">const hex = &#39;FF9933&#39;;
+const [r, g, b] = [0, 2, 4].map(i =&gt; parseInt(hex.slice(i, i + 2), 16));
+// [255, 153, 51]
+</code></pre>
+<p>For other base conversions, such as binary or octal, the <a href="/tools/number-base-converter/">Number Base Converter</a> does the arithmetic.</p>
+<h2 id="transparency-rgba-hsla-and-eight-digit-hex">Transparency: rgba, hsla and eight-digit HEX</h2>
+<p>Sometimes you need a colour you can see through, such as a dark overlay on a hero image so white text stays readable. CSS offers three equivalent ways to add an alpha (opacity) value from 0 (invisible) to 1 (solid): <code>rgba(0, 0, 0, 0.5)</code>, <code>hsla(0, 0%, 0%, 0.5)</code> and the eight-digit HEX <code>#00000080</code>, where the last two digits are the alpha on the 00–FF scale.</p>
+<p>The converter reads all three forms. Paste a semi-transparent colour and the alpha carries through to the RGB and HSL outputs, so you can switch notation without losing it. Keep in mind that contrast ratios for see-through colours depend on whatever sits behind them, so check the final, blended result on the real page.</p>
+<h2 id="why-contrast-matters">Why contrast matters</h2>
+<p>A colour can look great on a brand board and still be unreadable as a button label. Colour vision deficiency is common, particularly among men, and everyone struggles with low contrast on a phone in bright sunlight.</p>
+<p>The Web Content Accessibility Guidelines (WCAG) measure contrast as a ratio from 1:1 (no difference) to 21:1 (black on white). The common targets are:</p>
+<ul>
+<li><strong>4.5:1</strong> for normal text (level AA).</li>
+<li><strong>3:1</strong> for large text and for important interface elements like input borders and icons (level AA).</li>
+<li><strong>7:1</strong> for normal text at the stricter AAA level.</li>
+</ul>
+<p>The converter shows the ratio of your colour against white and against black, with a pass or fail for each level. If neither passes, darken or lighten the colour using the tints and shades row until one does.</p>
+<h2 id="building-a-palette-from-one-brand-colour">Building a palette from one brand colour</h2>
+<p>Most brands start with one or two colours. You need more: a lighter version for backgrounds, a darker one for hover states, and borders in between. The <strong>Tints &amp; shades</strong> row gives you that range in one click.</p>
+<p>A practical approach for a small business site:</p>
+<ul>
+<li>Use the base colour for primary buttons and links, only if white text on it passes 4.5:1.</li>
+<li>Use a very light tint for section backgrounds or highlighted boxes.</li>
+<li>Use a darker shade for hover and active states.</li>
+<li>Keep body text near-black, not your brand colour, for readability.</li>
+</ul>
+<p>Once you have colours, the <a href="/tools/css-gradient-generator/">CSS Gradient Generator</a> can blend two of them into a background.</p>
+<h2 id="common-mistakes-with-colour-codes">Common mistakes with colour codes</h2>
+<ul>
+<li><strong>Forgetting the <code>#</code>.</strong> CSS needs <code>#FF9933</code>, not <code>FF9933</code>.</li>
+<li><strong>Confusing HSL and HSV.</strong> <code>hsl(30, 100%, 60%)</code> and <code>hsv(30, 100%, 60%)</code> are different colours. Check which one your tool expects.</li>
+<li><strong>Trusting CMYK for print without a proof.</strong> On-screen conversion cannot know your printer’s inks and paper.</li>
+<li><strong>Picking text colour by eye.</strong> Always check the contrast ratio, especially for light greys and pastel brand colours.</li>
+<li><strong>Copying a colour from a compressed image.</strong> JPEG compression shifts colours slightly. Get official brand values from the source file or brand guide where possible.</li>
+</ul>
+<h2 id="picking-colours-from-images">Picking colours from images</h2>
+<p>The <strong>Pick from screen</strong> button uses the browser’s EyeDropper feature, currently available in Chromium-based browsers such as Chrome and Edge on desktop. If you do not see the button, your browser does not support it. In that case, take a screenshot and use the <a href="/tools/image-color-picker/">Image Color Picker</a>, which reads colours from any image file.</p>
+<h2 id="privacy">Privacy</h2>
+<p>Everything is calculated in your browser. No colours, screenshots or picks are sent anywhere, so you can work freely on unreleased brand identities and client projects.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>What is the difference between HEX and RGB?</summary><p>None in the colour itself. Both describe the same red, green and blue values from 0 to 255. HEX writes each value as two hexadecimal digits, so rgb(255, 153, 51) becomes #FF9933. HEX is compact for CSS and design tools; RGB is easier to read and adjust by hand.</p></details><details><summary>Why should I use HSL in CSS?</summary><p>HSL describes colour as hue, saturation and lightness, which matches how people think. To make a button darker on hover, you lower the lightness and keep the hue the same. Building a consistent palette is much easier than guessing new HEX values, and all modern browsers support it.</p></details><details><summary>Is the CMYK value accurate for printing?</summary><p>It is a straightforward mathematical conversion, useful as a starting point. Real print colours depend on the printer, paper and colour profile, so a professional printer may give different values. For brand-critical printing, such as visiting cards or packaging, ask your printer for a proof or use their recommended profile.</p></details><details><summary>What contrast ratio do I need for readable text?</summary><p>WCAG 2.1 level AA asks for at least 4.5:1 between normal body text and its background, and 3:1 for large text, roughly 18.66px bold or 24px regular and above. Level AAA raises these to 7:1 and 4.5:1. The converter shows the ratio against white and black for any colour.</p></details><details><summary>How do I pick a colour from a logo or website?</summary><p>In Chrome and Edge on a computer, click Pick from screen and then click anywhere on your screen to capture that colour. In browsers without the EyeDropper feature, use the BISCS India Image Color Picker on a screenshot or image file instead.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>
+        <div><strong>Try it now, free</strong><p>Color Converter runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/color-converter/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#the-main-colour-formats-explained-simply">The main colour formats, explained simply</a></li><li><a href="#how-to-convert-a-colour-with-biscs-india">How to convert a colour with BISCS India</a></li><li><a href="#converting-hex-to-rgb-by-hand">Converting HEX to RGB by hand</a></li><li><a href="#transparency-rgba-hsla-and-eight-digit-hex">Transparency: rgba, hsla and eight-digit HEX</a></li><li><a href="#why-contrast-matters">Why contrast matters</a></li><li><a href="#building-a-palette-from-one-brand-colour">Building a palette from one brand colour</a></li><li><a href="#common-mistakes-with-colour-codes">Common mistakes with colour codes</a></li><li><a href="#picking-colours-from-images">Picking colours from images</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=HEX%20to%20RGB%20and%20HSL%20Colour%20Converter%20(With%20Contrast%20Check)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fhex-rgb-hsl-color-converter-guide%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fhex-rgb-hsl-color-converter-guide%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fhex-rgb-hsl-color-converter-guide%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fhex-rgb-hsl-color-converter-guide%2F&amp;text=HEX%20to%20RGB%20and%20HSL%20Colour%20Converter%20(With%20Contrast%20Check)" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/css-box-shadow-generator-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>CSS Box Shadow Generator: Soft, Layered and Inset Shadows</h3>
+  <p>Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+</a><a class="post-card" href="../../blog/minify-css-html-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Minify CSS, HTML and JSON Online (and What It Saves)</h3>
+  <p>Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=30541d0951" defer></script>
+<script src="../../assets/js/icons.js?v=30541d0951" defer></script>
+<script src="../../assets/js/core.js?v=30541d0951" defer></script>
+
+</body>
+</html>

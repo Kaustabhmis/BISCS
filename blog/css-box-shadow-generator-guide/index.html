@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS Box Shadow Generator: Soft, Layered and Inset Shadows | BISCS India</title>
+<meta name="description" content="Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/css-box-shadow-generator-guide/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="CSS Box Shadow Generator: Soft, Layered and Inset Shadows | BISCS India">
+<meta property="og:description" content="Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/css-box-shadow-generator-guide/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=30541d0951">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/#article","headline":"CSS Box Shadow Generator: Soft, Layered and Inset Shadows","description":"Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.","abstract":"The CSS box-shadow property draws a shadow around an element using up to five parts: horizontal offset, vertical offset, blur, spread and colour, plus an optional inset keyword. BISCS India's Box Shadow Generator lets you adjust each value with sliders, stack up to eight layers and copy the finished CSS, all in your browser.","url":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/","mainEntityOfPage":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":958,"keywords":"box shadow generator, css box shadow, box-shadow examples, inset shadow css, layered shadow css","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"Box Shadow Generator","url":"https://www.biscsindia.com/tools/box-shadow-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"CSS Box Shadow Generator: Soft, Layered and Inset Shadows","item":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the order of values in box-shadow?","acceptedAnswer":{"@type":"Answer","text":"The order is horizontal offset, vertical offset, blur radius, spread radius and colour, for example 0 10px 30px -5px rgba(0, 0, 0, 0.18). Offsets are required; blur and spread are optional and default to zero. The inset keyword can go at the start or the end, and multiple shadows are separated by commas."}},{"@type":"Question","name":"What is the difference between blur and spread?","acceptedAnswer":{"@type":"Answer","text":"Blur controls how soft the shadow’s edge is: zero gives a hard edge, larger values fade it out over more pixels. Spread grows or shrinks the shadow before blurring. A positive spread makes it bigger than the element, and a negative spread pulls it inwards, which is the secret to soft, natural shadows."}},{"@type":"Question","name":"Does box-shadow slow down a website?","acceptedAnswer":{"@type":"Answer","text":"Static shadows are cheap for modern browsers. Problems arise mainly when very large, heavily blurred shadows are animated, or when hundreds of shadowed elements scroll on low-end phones. To animate a shadow smoothly, fade in a pseudo-element that already has the shadow, rather than animating box-shadow itself."}},{"@type":"Question","name":"Why use rgba instead of a solid colour for shadows?","acceptedAnswer":{"@type":"Answer","text":"Real shadows are partly transparent, letting the background show through. A solid grey shadow looks flat and wrong on coloured backgrounds. A black or dark-tinted colour at low opacity, typically 0.05 to 0.25, blends naturally with whatever is behind the element."}},{"@type":"Question","name":"What is the difference between box-shadow and drop-shadow?","acceptedAnswer":{"@type":"Answer","text":"box-shadow follows the element’s rectangular box, including rounded corners. The CSS filter drop-shadow follows the actual visible shape, including transparent areas of a PNG or SVG. Use box-shadow for cards and buttons, and drop-shadow for irregular shapes like icons or cut-out product photos."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/dev/">Developer Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer Tools</span>
+    <h1>CSS Box Shadow Generator: Soft, Layered and Inset Shadows</h1>
+    <p class="article-dek">Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>The CSS box-shadow property draws a shadow around an element using up to five parts: horizontal offset, vertical offset, blur, spread and colour, plus an optional inset keyword. BISCS India&#39;s Box Shadow Generator lets you adjust each value with sliders, stack up to eight layers and copy the finished CSS, all in your browser.</p></aside>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><path d="M10 16c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><rect width="8" height="8" x="14" y="14" rx="2" /></svg></span>
+        <div><strong>Box Shadow Generator</strong><p>Build CSS box shadows visually.</p></div>
+        <a class="btn btn-primary" href="../../tools/box-shadow-generator/">Open Box Shadow Generator <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>The CSS <code>box-shadow</code> property adds depth to flat elements: a card that seems to float, a button that looks pressable, an input that appears recessed. One line of CSS replaces what used to need image files and extra markup.</p>
+<p>The catch is that its five numbers interact in ways that are hard to picture. The <a href="/tools/box-shadow-generator/">Box Shadow Generator</a> on BISCS India solves that with sliders and a live preview. Adjust offset, blur, spread, colour and opacity, stack several layers, and copy the CSS once it looks right.</p>
+<h2 id="the-anatomy-of-a-box-shadow">The anatomy of a box-shadow</h2>
+<p>Here is a typical soft card shadow:</p>
+<pre><code class="language-css">box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.18);
+</code></pre>
+<p>Reading it left to right:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>Value</th>
+<th>Name</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0px</code></td>
+<td>X offset</td>
+<td>Moves the shadow right (positive) or left (negative)</td>
+</tr>
+<tr>
+<td><code>10px</code></td>
+<td>Y offset</td>
+<td>Moves it down (positive) or up (negative)</td>
+</tr>
+<tr>
+<td><code>30px</code></td>
+<td>Blur</td>
+<td>Softens the edge; 0 is a hard edge</td>
+</tr>
+<tr>
+<td><code>-5px</code></td>
+<td>Spread</td>
+<td>Grows (positive) or shrinks (negative) the shadow</td>
+</tr>
+<tr>
+<td><code>rgba(0, 0, 0, 0.18)</code></td>
+<td>Colour</td>
+<td>Usually black or a dark tint at low opacity</td>
+</tr>
+</tbody></table></div>
+<p>Add the keyword <code>inset</code> at the start and the shadow is drawn inside the element instead, making it look pressed in.</p>
+<h2 id="how-to-build-a-shadow-with-biscs-india">How to build a shadow with BISCS India</h2>
+<ol>
+<li>Open the <a href="/tools/box-shadow-generator/">Box Shadow Generator</a>.</li>
+<li>Click a preset to start: <strong>Soft</strong>, <strong>Medium</strong>, <strong>Large</strong>, <strong>Hard</strong>, <strong>Glow</strong>, <strong>Layered</strong>, <strong>Neumorphic</strong> or <strong>Inset</strong>.</li>
+<li>Fine-tune with the sliders or number fields: <strong>X offset</strong> and <strong>Y offset</strong> (−100 to 100 px), <strong>Blur</strong> (0 to 200 px), <strong>Spread</strong> (−100 to 100 px) and <strong>Opacity</strong> (0 to 1).</li>
+<li>Pick a shadow <strong>Colour</strong> and tick <strong>Inset</strong> if you want an inner shadow.</li>
+<li>Match the preview to your design by setting the <strong>Corner radius</strong>, <strong>Box colour</strong> and <strong>Background</strong>. A shadow that looks good on white can look heavy on a grey page.</li>
+<li>Click <strong>Add layer</strong> to stack another shadow (up to eight). Select a layer chip to edit it, or <strong>Remove layer</strong> to delete it.</li>
+<li>Click <strong>Copy CSS</strong>.</li>
+</ol>
+<h2 id="why-negative-spread-makes-shadows-look-natural">Why negative spread makes shadows look natural</h2>
+<p>Beginners often crank up the blur and wonder why the shadow looks like a grey cloud around the whole card. In real life, an object lifted off a surface casts a shadow mostly beneath it, not around its sides.</p>
+<p>A negative spread shrinks the shadow before it is blurred, so it hides behind the element at the sides and peeks out mainly at the bottom, thanks to the positive Y offset. Compare:</p>
+<pre><code class="language-css">/* Muddy halo */
+box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+
+/* Lifted card */
+box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.18);
+</code></pre>
+<h2 id="layered-shadows-for-realistic-depth">Layered shadows for realistic depth</h2>
+<p>Real shadows have a sharp, dark core close to the object and a wide, faint area further away. A single CSS shadow cannot do both, but several stacked shadows can. The <strong>Layered</strong> preset uses five shadows that double in size each time:</p>
+<pre><code class="language-css">box-shadow:
+  0 1px 1px rgba(0, 0, 0, 0.08),
+  0 2px 2px rgba(0, 0, 0, 0.08),
+  0 4px 4px rgba(0, 0, 0, 0.08),
+  0 8px 8px rgba(0, 0, 0, 0.08),
+  0 16px 16px rgba(0, 0, 0, 0.08);
+</code></pre>
+<p>Each layer is very light on its own; together they produce a smooth, believable falloff. This approach is popular in modern design systems because it looks good on any background.</p>
+<h2 id="shadow-styles-and-when-to-use-them">Shadow styles and when to use them</h2>
+<ul>
+<li><strong>Soft:</strong> cards, modals and dropdown menus on light backgrounds.</li>
+<li><strong>Medium:</strong> small UI elements like buttons and chips that need a gentle lift.</li>
+<li><strong>Large:</strong> pop-ups and dialogs that should feel clearly above the page.</li>
+<li><strong>Hard:</strong> zero blur and an offset, giving a flat, retro or &quot;neo-brutalist&quot; look.</li>
+<li><strong>Glow:</strong> a coloured shadow with no offset, useful for focus states or highlighting a primary call to action.</li>
+<li><strong>Neumorphic:</strong> a light shadow on one side and a dark one on the other, so the element seems extruded from the background. It only works when the element and background are the same colour, and it often has poor contrast, so use it sparingly.</li>
+<li><strong>Inset:</strong> input fields, toggles and pressed button states.</li>
+</ul>
+<h2 id="design-tips">Design tips</h2>
+<ul>
+<li><strong>Keep one light source.</strong> If shadows on your page point down, all of them should. Mixed directions look odd.</li>
+<li><strong>Use elevation levels.</strong> Define three or four shadows, for example resting, raised, floating and modal, and reuse them across the site instead of inventing new ones.</li>
+<li><strong>Tint shadows on coloured backgrounds.</strong> On a blue background, a dark blue shadow looks richer than pure black.</li>
+<li><strong>Respect dark mode.</strong> Shadows are barely visible on dark backgrounds. Many dark themes use lighter surface colours or subtle borders to show depth instead.</li>
+<li><strong>Do not rely on shadows alone.</strong> An outline or slight background difference helps people with low vision tell where a card begins.</li>
+</ul>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>Opacity too high.</strong> A shadow at 0.5 or more looks heavy and dated. Most interface shadows sit between 0.05 and 0.25.</li>
+<li><strong>Forgetting <code>border-radius</code>.</strong> The shadow follows the element’s corners. If the card is rounded but the shadow preview was square, the result will not match. Set the same radius in the generator.</li>
+<li><strong>Shadows cut off.</strong> A parent with <code>overflow: hidden</code> clips child shadows. Add padding to the parent or move the overflow rule.</li>
+<li><strong>Animating <code>box-shadow</code> directly.</strong> It can be janky on slower phones. Animate the opacity of a pseudo-element that carries the shadow instead.</li>
+<li><strong>Using shadows as borders.</strong> <code>0 0 0 1px</code> is a neat trick for a border that does not affect layout, but a real <code>border</code> or <code>outline</code> is clearer for accessibility tools.</li>
+</ul>
+<h2 id="pair-it-with-other-css-tools">Pair it with other CSS tools</h2>
+<p>Shadows look best with a thoughtful background. Try a subtle gradient from the <a href="/tools/css-gradient-generator/">CSS Gradient Generator</a> behind a white card, and choose a shadow tint that matches your palette using the <a href="/tools/color-converter/">Color Converter</a>.</p>
+<h2 id="privacy">Privacy</h2>
+<p>The preview is rendered by your browser and the CSS is generated on the page. Nothing is uploaded or saved, and there is no sign-up or watermark.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>What is the order of values in box-shadow?</summary><p>The order is horizontal offset, vertical offset, blur radius, spread radius and colour, for example 0 10px 30px -5px rgba(0, 0, 0, 0.18). Offsets are required; blur and spread are optional and default to zero. The inset keyword can go at the start or the end, and multiple shadows are separated by commas.</p></details><details><summary>What is the difference between blur and spread?</summary><p>Blur controls how soft the shadow’s edge is: zero gives a hard edge, larger values fade it out over more pixels. Spread grows or shrinks the shadow before blurring. A positive spread makes it bigger than the element, and a negative spread pulls it inwards, which is the secret to soft, natural shadows.</p></details><details><summary>Does box-shadow slow down a website?</summary><p>Static shadows are cheap for modern browsers. Problems arise mainly when very large, heavily blurred shadows are animated, or when hundreds of shadowed elements scroll on low-end phones. To animate a shadow smoothly, fade in a pseudo-element that already has the shadow, rather than animating box-shadow itself.</p></details><details><summary>Why use rgba instead of a solid colour for shadows?</summary><p>Real shadows are partly transparent, letting the background show through. A solid grey shadow looks flat and wrong on coloured backgrounds. A black or dark-tinted colour at low opacity, typically 0.05 to 0.25, blends naturally with whatever is behind the element.</p></details><details><summary>What is the difference between box-shadow and drop-shadow?</summary><p>box-shadow follows the element’s rectangular box, including rounded corners. The CSS filter drop-shadow follows the actual visible shape, including transparent areas of a PNG or SVG. Use box-shadow for cards and buttons, and drop-shadow for irregular shapes like icons or cut-out product photos.</p></details></section>
+      <div class="tool-cta" style="--c:#0090ff">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><path d="M10 16c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><rect width="8" height="8" x="14" y="14" rx="2" /></svg></span>
+        <div><strong>Try it now, free</strong><p>Box Shadow Generator runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/box-shadow-generator/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#the-anatomy-of-a-box-shadow">The anatomy of a box-shadow</a></li><li><a href="#how-to-build-a-shadow-with-biscs-india">How to build a shadow with BISCS India</a></li><li><a href="#why-negative-spread-makes-shadows-look-natural">Why negative spread makes shadows look natural</a></li><li><a href="#layered-shadows-for-realistic-depth">Layered shadows for realistic depth</a></li><li><a href="#shadow-styles-and-when-to-use-them">Shadow styles and when to use them</a></li><li><a href="#design-tips">Design tips</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#pair-it-with-other-css-tools">Pair it with other CSS tools</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=CSS%20Box%20Shadow%20Generator%3A%20Soft%2C%20Layered%20and%20Inset%20Shadows%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcss-box-shadow-generator-guide%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcss-box-shadow-generator-guide%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcss-box-shadow-generator-guide%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcss-box-shadow-generator-guide%2F&amp;text=CSS%20Box%20Shadow%20Generator%3A%20Soft%2C%20Layered%20and%20Inset%20Shadows" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>Base64 Encode and Decode Online: What It Is and When to Use It</h3>
+  <p>Learn what Base64 is, why it is encoding and not encryption, and how to encode or decode text and files, including URL-safe Base64 and Unicode text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/minify-css-html-json-online/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>How to Minify CSS, HTML and JSON Online (and What It Saves)</h3>
+  <p>Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/hex-rgb-hsl-color-converter-guide/" data-cat="dev" style="--c:#0090ff">
+  <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
+  <h3>HEX to RGB and HSL Colour Converter (With Contrast Check)</h3>
+  <p>Convert colours between HEX, RGB, HSL, HSV and CMYK, pick colours from your screen, build tints and shades, and check WCAG contrast for readable text.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=30541d0951" defer></script>
+<script src="../../assets/js/icons.js?v=30541d0951" defer></script>
+<script src="../../assets/js/core.js?v=30541d0951" defer></script>
+
+</body>
+</html>

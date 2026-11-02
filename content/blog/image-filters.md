@@ -2,7 +2,7 @@
   "tool": "image-filters",
   "slug": "photo-filters-brightness-contrast-online",
   "title": "Free Online Photo Filters: Brightness, Contrast and B&W",
-  "description": "Adjust brightness, contrast, saturation and hue, or apply vintage, noir, warm and black-and-white filters to photos in your browser. Tips for natural-looking edits.",
+  "description": "Adjust brightness, contrast, saturation and hue, or apply vintage, noir, warm and B&W filters to photos in your browser. Tips for natural-looking edits.",
   "keywords": ["photo filters online", "adjust brightness contrast online", "black and white photo converter", "sepia filter online", "photo editor free no download"],
   "summary": "To edit a photo with filters, open an online photo editor, pick a preset such as Vivid, Vintage or B&W, fine-tune brightness, contrast and saturation with sliders, then download. BISCS India’s Photo Filters tool does this in your browser with nine presets and nine adjustments, and your photo is never uploaded.",
   "faq": [
@@ -51,7 +51,7 @@ Each preset is only a starting point. After tapping one, the sliders show its va
 2. Tap a **preset** thumbnail to see that look applied to your own picture.
 3. Fine-tune with the sliders. Small moves of 5–15% usually make the difference between natural and overdone.
 4. Press and hold **Hold to compare** on the preview to see the original, and release to return to your edit.
-5. Use **Reset all** if you want to start again.
+5. Double-click any slider to reset just that one, or use **Reset all** to start again.
 6. Download the photo. It is rendered at full size with your chosen format and quality.
 
 ## Tips for natural-looking edits
@@ -72,6 +72,12 @@ Photos under tube lights can turn greenish, and some indoor bulbs make everythin
 
 If you are editing photos for a shop catalogue, a wedding album or an Instagram grid, note the slider values that worked on the first picture and apply the same ones to the rest. Consistency looks more professional than a different filter on every image.
 
+## Editing for social media and online shops
+
+On Instagram or Facebook, a slightly brighter, slightly more vivid image tends to look better in a busy feed, because phone screens show colour well and posts are viewed small. The Vivid preset with brightness pulled back a little is a reliable starting point for food, clothing and travel photos.
+
+For an online shop on a marketplace or your own website, accuracy matters more than drama. A customer who orders a maroon kurta and receives something that looks brown will be unhappy. Keep saturation close to normal, correct only obvious colour casts, and compare the edited photo with the real product in daylight. Use the same settings for every product photo in a collection so the colours look consistent next to each other.
+
 ## When filters are not the right tool
 
 Filters change the overall look of a picture. They are not designed for:
@@ -90,4 +96,4 @@ Filters change the overall look of a picture. They are not designed for:
 
 ## Your photos stay on your device
 
-The filters are applied using your browser’s own graphics features. Your photo is not uploaded, so there is no risk of personal pictures being stored on someone else’s server. If your browser lacks support for the canvas filter feature, a few effects may behave differently, but current versions of Chrome, Edge, Firefox and Safari handle them.
+The filters are applied using your browser’s own graphics features. Your photo is not uploaded, so there is no risk of personal pictures being stored on someone else’s server. If your browser lacks the canvas filter feature, the tool switches to a compatibility mode automatically, so the edits still work.

@@ -83,6 +83,16 @@ The tool does this for you. When decoding, it checks that the bytes are valid UT
 
 The decoder accepts either variant, ignores whitespace and line breaks, and strips a leading `data:…;base64,` prefix automatically.
 
+## How do I tell if a string is Base64?
+
+There is no foolproof test, because many ordinary words are technically valid Base64. But a few signs are strong hints:
+
+- The string uses only letters, digits, `+` and `/` (or `-` and `_` for the URL-safe form), with no spaces.
+- Its length is a multiple of 4, often ending in one or two `=` signs.
+- It starts with a familiar prefix. `iVBORw0KGgo` is the start of every PNG image, `/9j/` is a JPEG, `JVBERi0` is a PDF, and `eyJ` is how JSON beginning with `{"` followed by a letter usually encodes, which is why so many tokens start with those three letters.
+
+The quickest check is to paste it into the decoder. If the result is readable text or JSON, you have your answer. If the tool reports binary data, use **Download** and open the file to see what it contains.
+
 ## Common mistakes with Base64
 
 - **Treating it as security.** Covered above, but worth repeating.

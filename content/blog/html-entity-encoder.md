@@ -73,6 +73,18 @@ Encoding all non-ASCII characters is useful when:
 - You are pasting HTML into a system whose character encoding you do not control.
 - You need source files that contain only ASCII for a legacy toolchain.
 
+## Where escaping comes up in everyday work
+
+You do not have to be a security engineer to need this. Some very ordinary situations:
+
+- **Writing tutorials or documentation.** Any page that shows HTML, XML or JSX examples needs the angle brackets escaped, or the browser will try to render them.
+- **Pasting content into a CMS.** Some WordPress fields, e-commerce product descriptions and newsletter builders treat input as raw HTML. A product title like `Kurta <Size M> & Dupatta` can silently lose the part in angle brackets.
+- **Building XML feeds.** Sitemaps, RSS feeds and product feeds for marketplaces are XML, which is even stricter than HTML. A bare `&` in a product name, such as `Tea & Snacks`, makes the whole feed invalid.
+- **Reading scraped or exported data.** Text pulled from web pages or APIs often arrives full of `&amp;`, `&#39;` and `&quot;`. Decoding it gives you clean, readable text before you put it in a spreadsheet or report.
+- **Email templates.** HTML emails are rendered by many different clients. Using entities for symbols like ₹ and © is a safe habit when you cannot be sure every client respects UTF-8.
+
+In each case, the fix takes seconds: paste the text, copy the escaped or unescaped version, and move on.
+
 ## Escaping and security (XSS)
 
 Cross-site scripting (XSS) happens when an attacker gets their own script to run on your page, usually by submitting text that your site later inserts into HTML without escaping. A comment field containing a script tag, displayed raw, would execute in every visitor’s browser.
