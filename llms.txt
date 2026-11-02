@@ -11,7 +11,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Merge PDF](https://www.biscsindia.com/tools/merge-pdf/): Combine multiple PDF files into one, in the order you choose. Guide: https://www.biscsindia.com/blog/how-to-merge-pdf-files-free/
 - [Split PDF](https://www.biscsindia.com/tools/split-pdf/): Split a PDF by page ranges, every N pages, or into single pages. Guide: https://www.biscsindia.com/blog/split-pdf-by-page-range-free/
 - [Remove PDF Pages](https://www.biscsindia.com/tools/remove-pdf-pages/): Delete unwanted pages from a PDF document. Guide: https://www.biscsindia.com/blog/delete-pages-from-pdf-free/
-- [Extract PDF Pages](https://www.biscsindia.com/tools/extract-pdf-pages/): Pick pages from a PDF and save them as a new document.
+- [Extract PDF Pages](https://www.biscsindia.com/tools/extract-pdf-pages/): Pick pages from a PDF and save them as a new document. Guide: https://www.biscsindia.com/blog/extract-pages-from-pdf-free/
 - [Organize PDF](https://www.biscsindia.com/tools/organize-pdf/): Reorder, rotate and delete pages visually with drag and drop.
 - [Rotate PDF](https://www.biscsindia.com/tools/rotate-pdf/): Rotate all or selected pages of a PDF by 90, 180 or 270 degrees.
 - [Compress PDF](https://www.biscsindia.com/tools/compress-pdf/): Reduce PDF file size for email and upload portals.
@@ -32,8 +32,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 - [GST Calculator](https://www.biscsindia.com/tools/gst-calculator/): Add or remove GST at any rate (5%, 18%, 40% and more) with CGST/SGST split. Guide: https://www.biscsindia.com/blog/gst-calculator-add-remove-gst/
 - [EMI Calculator](https://www.biscsindia.com/tools/emi-calculator/): Monthly EMI, total interest and amortisation schedule for any loan. Guide: https://www.biscsindia.com/blog/emi-calculator-formula-home-loan/
-- [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/): Estimate the future value of your monthly mutual fund SIP.
-- [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/): Project the growth of a one-time investment.
+- [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/): Estimate the future value of your monthly mutual fund SIP. Guide: https://www.biscsindia.com/blog/sip-calculator-mutual-fund-returns/
+- [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/): Project the growth of a one-time investment. Guide: https://www.biscsindia.com/blog/lumpsum-calculator-one-time-investment/
 - [FD Calculator](https://www.biscsindia.com/tools/fd-calculator/): Maturity amount and interest earned on a fixed deposit.
 - [RD Calculator](https://www.biscsindia.com/tools/rd-calculator/): Maturity value of a recurring deposit with quarterly compounding.
 - [PPF Calculator](https://www.biscsindia.com/tools/ppf-calculator/): Public Provident Fund maturity over 15 years with yearly breakdown.
@@ -57,7 +57,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Age Calculator](https://www.biscsindia.com/tools/age-calculator/): Exact age in years, months and days, plus your next birthday. Guide: https://www.biscsindia.com/blog/calculate-exact-age-from-date-of-birth/
 - [BMI Calculator](https://www.biscsindia.com/tools/bmi-calculator/): Body Mass Index with healthy weight range for adults. Guide: https://www.biscsindia.com/blog/bmi-calculator-indian-cut-offs-explained/
 - [Calorie Calculator](https://www.biscsindia.com/tools/calorie-calculator/): Daily calorie needs (BMR and TDEE) for your goal. Guide: https://www.biscsindia.com/blog/how-many-calories-do-i-need-bmr-tdee/
-- [Date Difference](https://www.biscsindia.com/tools/date-difference-calculator/): Days, weeks, months and working days between two dates.
+- [Date Difference](https://www.biscsindia.com/tools/date-difference-calculator/): Days, weeks, months and working days between two dates. Guide: https://www.biscsindia.com/blog/count-days-between-two-dates/
 - [Add or Subtract Days](https://www.biscsindia.com/tools/date-add-calculator/): Find the date a number of days, weeks or months from any date.
 - [Unit Converter](https://www.biscsindia.com/tools/unit-converter/): Length, weight, temperature, area, volume, speed, time and data.
 - [Scientific Calculator](https://www.biscsindia.com/tools/scientific-calculator/): Trigonometry, logarithms, powers and roots with keyboard support.
@@ -73,8 +73,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Word Counter](https://www.biscsindia.com/tools/word-counter/): Count words, characters, sentences, paragraphs and reading time. Guide: https://www.biscsindia.com/blog/word-counter-characters-reading-time/
 - [Case Converter](https://www.biscsindia.com/tools/case-converter/): UPPER, lower, Title, Sentence, camelCase, snake_case and more. Guide: https://www.biscsindia.com/blog/convert-text-case-upper-lower-title/
 - [Lorem Ipsum Generator](https://www.biscsindia.com/tools/lorem-ipsum-generator/): Generate placeholder paragraphs, sentences or words. Guide: https://www.biscsindia.com/blog/lorem-ipsum-placeholder-text-generator/
-- [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/): Delete repeated lines from a list, keeping the first occurrence.
-- [Sort Lines](https://www.biscsindia.com/tools/sort-lines/): Sort lines alphabetically, numerically, by length, or shuffle.
+- [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/): Delete repeated lines from a list, keeping the first occurrence. Guide: https://www.biscsindia.com/blog/remove-duplicate-lines-from-list/
+- [Sort Lines](https://www.biscsindia.com/tools/sort-lines/): Sort lines alphabetically, numerically, by length, or shuffle. Guide: https://www.biscsindia.com/blog/sort-lines-alphabetically-numerically-online/
 - [Reverse Text](https://www.biscsindia.com/tools/reverse-text/): Reverse characters, words or line order.
 - [Find and Replace](https://www.biscsindia.com/tools/find-and-replace/): Find and replace text, with optional regex and case matching.
 - [Text Compare](https://www.biscsindia.com/tools/text-diff/): Compare two texts and highlight the differences line by line.
@@ -91,8 +91,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [JSON to CSV](https://www.biscsindia.com/tools/json-to-csv/): Convert a JSON array of objects into CSV for Excel. Guide: https://www.biscsindia.com/blog/convert-json-to-csv-excel/
 - [CSV to JSON](https://www.biscsindia.com/tools/csv-to-json/): Convert CSV data into a JSON array. Guide: https://www.biscsindia.com/blog/convert-csv-to-json-online/
 - [Base64 Encode / Decode](https://www.biscsindia.com/tools/base64-encoder/): Encode and decode Base64 with full Unicode support. Guide: https://www.biscsindia.com/blog/base64-encode-decode-explained/
-- [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/): Percent-encode or decode URLs and query strings.
-- [HTML Entity Encoder](https://www.biscsindia.com/tools/html-entity-encoder/): Escape and unescape HTML special characters.
+- [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/): Percent-encode or decode URLs and query strings. Guide: https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/
+- [HTML Entity Encoder](https://www.biscsindia.com/tools/html-entity-encoder/): Escape and unescape HTML special characters. Guide: https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/
 - [Hash Generator](https://www.biscsindia.com/tools/hash-generator/): MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or files.
 - [UUID Generator](https://www.biscsindia.com/tools/uuid-generator/): Generate random version 4 UUIDs in bulk.
 - [JWT Decoder](https://www.biscsindia.com/tools/jwt-decoder/): Decode a JSON Web Token’s header and payload.
@@ -110,7 +110,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Compress Image](https://www.biscsindia.com/tools/image-compressor/): Shrink JPG, PNG and WebP images, or hit a target size in KB. Guide: https://www.biscsindia.com/blog/compress-image-to-kb-online/
 - [Crop Image](https://www.biscsindia.com/tools/image-cropper/): Crop images freely or to a fixed aspect ratio. Guide: https://www.biscsindia.com/blog/crop-image-online-aspect-ratio/
 - [Rotate & Flip Image](https://www.biscsindia.com/tools/rotate-flip-image/): Rotate images by 90° steps and flip them horizontally or vertically. Guide: https://www.biscsindia.com/blog/rotate-flip-image-online-free/
-- [Photo Filters](https://www.biscsindia.com/tools/image-filters/): Adjust brightness, contrast and saturation; apply grayscale, sepia and blur.
+- [Photo Filters](https://www.biscsindia.com/tools/image-filters/): Adjust brightness, contrast and saturation; apply grayscale, sepia and blur. Guide: https://www.biscsindia.com/blog/photo-filters-brightness-contrast-online/
 - [Image to Base64](https://www.biscsindia.com/tools/image-to-base64/): Convert an image into a Base64 data URL for HTML or CSS.
 - [Favicon Generator](https://www.biscsindia.com/tools/favicon-generator/): Create every favicon and app icon size from one image.
 - [Watermark Image](https://www.biscsindia.com/tools/image-watermark/): Add a text watermark to your photos.
@@ -147,8 +147,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Meta Tag Generator](https://www.biscsindia.com/tools/meta-tag-generator/): Generate title, description, Open Graph and Twitter meta tags. Guide: https://www.biscsindia.com/blog/meta-tag-generator-title-description-og-tags/
 - [Google SERP Preview](https://www.biscsindia.com/tools/serp-preview/): See how your page will look in Google search results on desktop and mobile. Guide: https://www.biscsindia.com/blog/google-serp-snippet-preview-tool/
 - [Social Share Preview](https://www.biscsindia.com/tools/social-share-preview/): Preview link cards for WhatsApp, Facebook, LinkedIn and X. Guide: https://www.biscsindia.com/blog/preview-link-whatsapp-facebook-linkedin/
-- [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/): JSON-LD structured data for local business, FAQ, product, article and more.
-- [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/): Create a robots.txt file with crawler rules and your sitemap.
+- [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/): JSON-LD structured data for local business, FAQ, product, article and more. Guide: https://www.biscsindia.com/blog/schema-markup-generator-json-ld-guide/
+- [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/): Create a robots.txt file with crawler rules and your sitemap. Guide: https://www.biscsindia.com/blog/create-robots-txt-file-guide/
 - [XML Sitemap Generator](https://www.biscsindia.com/tools/sitemap-generator/): Turn a list of URLs into a valid XML sitemap.
 - [Keyword Density Checker](https://www.biscsindia.com/tools/keyword-density-checker/): Find the most used keywords and phrases in your content.
 - [UTM Link Builder](https://www.biscsindia.com/tools/utm-builder/): Build campaign tracking links for Google Analytics.
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 26 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 37 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

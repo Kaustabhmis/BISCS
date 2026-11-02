@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en-IN" data-base="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Create a robots.txt File (With Free Generator) | BISCS India</title>
+<meta name="description" content="Create a correct robots.txt with allow and disallow rules, sitemap links and optional AI crawler blocks. Learn what robots.txt can and cannot do for SEO.">
+<link rel="canonical" href="https://www.biscsindia.com/blog/create-robots-txt-file-guide/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="BISCS India">
+<meta property="og:title" content="How to Create a robots.txt File (With Free Generator) | BISCS India">
+<meta property="og:description" content="Create a correct robots.txt with allow and disallow rules, sitemap links and optional AI crawler blocks. Learn what robots.txt can and cannot do for SEO.">
+<meta property="og:url" content="https://www.biscsindia.com/blog/create-robots-txt-file-guide/">
+<meta property="og:image" content="https://www.biscsindia.com/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="BISCS India Blog" href="../../blog/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="../../assets/css/site.css?v=bfd8a88b38">
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/create-robots-txt-file-guide/#article","headline":"How to Create a robots.txt File (With Free Generator)","description":"Create a correct robots.txt with allow and disallow rules, sitemap links and optional AI crawler blocks. Learn what robots.txt can and cannot do for SEO.","abstract":"A robots.txt file sits at the root of your website and tells crawlers which paths they may or may not crawl. BISCS India’s free Robots.txt Generator builds the file from presets and custom rules, adds your sitemap URL, checks for common syntax errors and lets you download it ready to upload.","url":"https://www.biscsindia.com/blog/create-robots-txt-file-guide/","mainEntityOfPage":"https://www.biscsindia.com/blog/create-robots-txt-file-guide/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":988,"keywords":"robots.txt generator, create robots txt, robots.txt disallow, robots.txt for wordpress, block ai crawlers robots.txt","articleSection":"SEO, GEO & AEO Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"Robots.txt Generator","url":"https://www.biscsindia.com/tools/robots-txt-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Create a robots.txt File (With Free Generator)","item":"https://www.biscsindia.com/blog/create-robots-txt-file-guide/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://www.biscsindia.com/","logo":{"@type":"ImageObject","url":"https://www.biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does robots.txt stop a page from appearing in Google?","acceptedAnswer":{"@type":"Answer","text":"Not reliably. robots.txt controls crawling, not indexing. A blocked URL can still be indexed if other sites link to it, usually without a description. To keep a page out of search results, allow crawling and add a noindex meta tag instead."}},{"@type":"Question","name":"Where should the robots.txt file be placed?","acceptedAnswer":{"@type":"Answer","text":"At the root of the domain, so it opens at https://yourdomain.com/robots.txt. Each subdomain needs its own file. A robots.txt placed in a subfolder is ignored by crawlers."}},{"@type":"Question","name":"Does Google follow Crawl-delay?","acceptedAnswer":{"@type":"Answer","text":"No. Googlebot ignores the Crawl-delay line. Bing and Yandex have historically respected it. If Google is genuinely overloading your server, there are other ways to manage this, such as temporarily returning 503 or 429 responses, explained in Google’s crawling documentation."}},{"@type":"Question","name":"Should I block AI crawlers like GPTBot?","acceptedAnswer":{"@type":"Answer","text":"It depends on your goals. Blocking them may keep future content out of some AI training or AI search features, but well-behaved bots follow robots.txt voluntarily, and blocking Google-Extended does not affect your Google Search ranking. Decide deliberately rather than by default."}},{"@type":"Question","name":"Can a wrong robots.txt harm my SEO?","acceptedAnswer":{"@type":"Answer","text":"Yes. A single line like Disallow: / under User-agent: * blocks every compliant crawler from your entire site. Always review the final file and test important URLs in Google Search Console’s robots.txt report after uploading."}}]}</script>
+<meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="SEO, GEO &amp; AEO Tools">
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <div class="bar">
+      <a class="logo" href="../../" aria-label="BISCS India home"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+      <nav class="nav" aria-label="Main"><a href="../../category/pdf/">PDF Tools</a><a href="../../category/finance/">Finance</a><a href="../../category/ai/">AI Photo</a><a href="../../category/video/">Video</a><a href="../../category/office/">Office</a><a href="../../category/design/">Design</a><a href="../../category/seo/">SEO</a><a href="../../blog/" aria-current="page">Blog</a></nav>
+      <div class="header-actions">
+        <button class="search-trigger" data-search-open type="button"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg><span>Search tools…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn search-trigger-mobile" data-search-open type="button" aria-label="Search tools"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></button>
+        <button class="icon-btn" data-theme-toggle type="button" aria-label="Toggle dark mode"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></button>
+        <button class="icon-btn menu-btn" data-menu-toggle type="button" aria-label="Menu" aria-expanded="false"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" aria-label="Categories"><a href="../../category/pdf/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg></span>PDF Tools</a><a href="../../category/finance/"><span class="mi" style="background:#12a594;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg></span>Finance &amp; Tax</a><a href="../../category/calculators/"><span class="mi" style="background:#3e63dd;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg></span>Everyday Calculators</a><a href="../../category/text/"><span class="mi" style="background:#8e4ec6;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" x2="15" y1="20" y2="20" /><line x1="12" x2="12" y1="4" y2="20" /></svg></span>Text Tools</a><a href="../../category/dev/"><span class="mi" style="background:#0090ff;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></span>Developer Tools</a><a href="../../category/image/"><span class="mi" style="background:#f76b15;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg></span>Image Tools</a><a href="../../category/utility/"><span class="mi" style="background:#d6409f;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></svg></span>Generators &amp; Utilities</a><a href="../../category/ai/"><span class="mi" style="background:#6e56cf;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M9 13a4.5 4.5 0 0 0 3-4" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M6 18a4 4 0 0 1-1.967-.516" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /><path d="M16 8V5a2 2 0 0 1 2-2" /><circle cx="16" cy="13" r=".5" /><circle cx="18" cy="3" r=".5" /><circle cx="20" cy="21" r=".5" /><circle cx="20" cy="8" r=".5" /></svg></span>AI Photo Tools</a><a href="../../category/seo/"><span class="mi" style="background:#c2410c;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span>SEO, GEO &amp; AEO Tools</a><a href="../../category/video/"><span class="mi" style="background:#e5484d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /></svg></span>Video &amp; Audio</a><a href="../../category/office/"><span class="mi" style="background:#0e7490;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01" /><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M22 13a18.15 18.15 0 0 1-20 0" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg></span>Office &amp; Business</a><a href="../../category/design/"><span class="mi" style="background:#be185d;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg></span>Design Studio</a><a href="../../blog/"><span class="mi" style="background:#334155;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg></span>Blog &amp; Guides</a></nav>
+  </div>
+</header>
+<main id="main">
+
+<article class="container article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../blog/">Blog</a><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg><a href="../../category/seo/">SEO, GEO &amp; AEO Tools</a></nav>
+  <header class="article-head">
+    <span class="post-cat"><span class="dot" style="background:#c2410c"></span>SEO, GEO &amp; AEO Tools</span>
+    <h1>How to Create a robots.txt File (With Free Generator)</h1>
+    <p class="article-dek">Create a correct robots.txt with allow and disallow rules, sitemap links and optional AI crawler blocks. Learn what robots.txt can and cannot do for SEO.</p>
+    <div class="article-meta">
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 10.821-7.487" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="8" r="5" /></svg> By <a href="../../about/" rel="author">BISCS India Editorial Team</a></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> <time datetime="2026-11-02">Updated 2 November 2026</time></span>
+      <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 4 min read</span>
+    </div>
+  </header>
+  <div class="article-layout">
+    <div class="article-main">
+      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>A robots.txt file sits at the root of your website and tells crawlers which paths they may or may not crawl. BISCS India’s free Robots.txt Generator builds the file from presets and custom rules, adds your sitemap URL, checks for common syntax errors and lets you download it ready to upload.</p></aside>
+      <div class="tool-cta" style="--c:#c2410c">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" /></svg></span>
+        <div><strong>Robots.txt Generator</strong><p>Create a robots.txt file with crawler rules and your sitemap.</p></div>
+        <a class="btn btn-primary" href="../../tools/robots-txt-generator/">Open Robots.txt Generator <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <div class="prose article-body"><p>A robots.txt file is a plain text file at the root of your site that gives crawlers instructions about which parts of the site they may visit. It is one of the first files Googlebot requests, and a small mistake in it can hide an entire website from search.</p>
+<p>The <a href="/tools/robots-txt-generator/">Robots.txt Generator</a> from BISCS India builds the file for you from simple choices: a default policy, quick presets, custom rules and your sitemap URL. It checks each line as you go and explains what search engines will and will not do with it.</p>
+<h2 id="what-does-a-robots-txt-file-actually-do">What does a robots.txt file actually do?</h2>
+<p>Robots.txt is a set of polite requests, not a lock. Well-behaved crawlers like Googlebot and Bingbot read it and follow the rules. Badly behaved scrapers ignore it.</p>
+<p>The file uses a few simple directives:</p>
+<ul>
+<li><code>User-agent:</code> names the crawler a group of rules applies to. <code>*</code> means all crawlers.</li>
+<li><code>Disallow:</code> lists a path that crawler should not fetch.</li>
+<li><code>Allow:</code> makes an exception inside a disallowed folder.</li>
+<li><code>Sitemap:</code> gives the full URL of your XML sitemap.</li>
+</ul>
+<p>A simple, healthy file for a small business site often looks like this:</p>
+<pre><code>User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+
+Sitemap: https://www.example.com/sitemap.xml
+</code></pre>
+<h2 id="what-robots-txt-cannot-do">What robots.txt cannot do</h2>
+<p>This is where many site owners go wrong, so it is worth being clear:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">
+<thead>
+<tr>
+<th>You want to</th>
+<th>Use robots.txt?</th>
+<th>Better approach</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stop crawlers wasting time on cart or search pages</td>
+<td>Yes</td>
+<td>Disallow those paths</td>
+</tr>
+<tr>
+<td>Keep a page out of Google results</td>
+<td>No</td>
+<td>Add a <code>noindex</code> meta tag and let Google crawl it</td>
+</tr>
+<tr>
+<td>Hide private documents</td>
+<td>No</td>
+<td>Password protection or server-level restrictions</td>
+</tr>
+<tr>
+<td>Remove a page already indexed</td>
+<td>No</td>
+<td>noindex, or the removals tool in Search Console</td>
+</tr>
+<tr>
+<td>Tell crawlers where your sitemap is</td>
+<td>Yes</td>
+<td>Add a <code>Sitemap:</code> line</td>
+</tr>
+</tbody></table></div>
+<p>The robots.txt file itself is public. Anyone can open it in a browser, so listing a &quot;secret&quot; folder in it actually advertises that folder.</p>
+<h2 id="how-to-create-robots-txt-with-the-biscs-tool">How to create robots.txt with the BISCS tool</h2>
+<ol>
+<li>Open the <a href="/tools/robots-txt-generator/">Robots.txt Generator</a>.</li>
+<li>Choose the <strong>Default for all crawlers</strong>: <strong>Allow all</strong> for nearly every public website, or <strong>Disallow all</strong> for a staging or test site.</li>
+<li>Add <strong>Quick presets</strong> if they fit your site: block admin and login pages, block internal search results, or block cart and account pages for an online shop.</li>
+<li>Use <strong>Add rule</strong> for anything else. Pick a user-agent from the suggestion list (Googlebot, Bingbot and many others are included), choose Allow or Disallow, and type the path starting with <code>/</code>.</li>
+<li>Optionally enter a <strong>Crawl-delay</strong>. The tool reminds you that Google ignores it.</li>
+<li>Paste your <strong>Sitemap URL(s)</strong>, one per line, as full <code>https://</code> addresses.</li>
+<li>Read the messages under the output. Errors such as paths with spaces or missing user-agents are flagged.</li>
+<li>Press <strong>Download</strong> to save <code>robots.txt</code>, then upload it to the root of your site.</li>
+</ol>
+<p>Nothing is sent to a server while you build the file; it is assembled in your browser.</p>
+<h2 id="should-you-block-ai-crawlers">Should you block AI crawlers?</h2>
+<p>The generator includes an optional preset that blocks several AI-related crawlers: GPTBot, CCBot, Google-Extended, anthropic-ai, ClaudeBot and PerplexityBot. Whether you should use it depends on what you want.</p>
+<p>Some points to weigh:</p>
+<ul>
+<li><strong>These rules are voluntary.</strong> Reputable AI companies say their crawlers respect robots.txt, but it is not an enforcement mechanism.</li>
+<li><strong>Google-Extended is not a search crawler.</strong> It is a control token that tells Google whether your content may be used for training and grounding its Gemini models. Blocking it does not affect how your site ranks in Google Search.</li>
+<li><strong>Blocking can reduce visibility in AI answers.</strong> If you want ChatGPT, Perplexity or similar tools to cite your pages, blocking their crawlers works against that goal.</li>
+<li><strong>Bot names change.</strong> Companies add and rename user agents, so review the list now and then against each company&#39;s official documentation.</li>
+</ul>
+<p>To check how an existing file treats these bots, paste it into the <a href="/tools/ai-crawler-checker/">AI Crawler Access Checker</a>.</p>
+<h2 id="common-robots-txt-mistakes">Common robots.txt mistakes</h2>
+<ul>
+<li><strong>Leaving <code>Disallow: /</code> live after launch.</strong> Developers often block staging sites and forget to change the rule when the site goes live.</li>
+<li><strong>Blocking CSS and JavaScript folders.</strong> Google needs these to render your pages. Old advice to block <code>/wp-includes/</code> or <code>/assets/</code> can hurt how Google sees your site.</li>
+<li><strong>Paths without a leading slash.</strong> <code>Disallow: admin</code> is unclear; use <code>Disallow: /admin/</code>.</li>
+<li><strong>Using robots.txt to fix duplicate content.</strong> Use canonical tags instead, so Google can still see and consolidate the pages.</li>
+<li><strong>Relative sitemap URLs.</strong> The <code>Sitemap:</code> line must be a full URL. The tool checks this.</li>
+<li><strong>Wrong file name or location.</strong> It must be lowercase <code>robots.txt</code> at the domain root.</li>
+</ul>
+<h2 id="tips-for-wordpress-and-online-shops">Tips for WordPress and online shops</h2>
+<p>WordPress creates a virtual robots.txt automatically. If you upload a real file, it replaces the virtual one, so make sure it includes everything you need. The admin preset in the generator blocks <code>/wp-admin/</code> while still allowing <code>admin-ajax.php</code>, which some themes and plugins rely on.</p>
+<p>For WooCommerce or other shops, blocking cart, checkout and account pages saves crawl effort for the pages that matter. Faceted filter URLs (colour, size, price) can create thousands of near-duplicate pages; disallowing the filter parameters can help, but test carefully so you do not block category pages you want ranked.</p>
+<h2 id="after-you-upload-the-file">After you upload the file</h2>
+<p>Open <code>https://yourdomain.com/robots.txt</code> in a browser to confirm it is live. In Google Search Console, the robots.txt report shows the version Google fetched and any parsing problems.</p>
+<p>Then make sure the sitemap you referenced actually exists. If you do not have one yet, the <a href="/tools/sitemap-generator/">XML Sitemap Generator</a> can create it from a list of URLs. To confirm individual pages are not set to noindex by mistake, run them through the <a href="/tools/on-page-seo-checker/">On-Page SEO Checker</a>.</p>
+<p>A good robots.txt is usually short. Build yours in the <a href="/tools/robots-txt-generator/">Robots.txt Generator</a>, keep it simple, and revisit it whenever your site structure changes.</p>
+</div>
+      <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Does robots.txt stop a page from appearing in Google?</summary><p>Not reliably. robots.txt controls crawling, not indexing. A blocked URL can still be indexed if other sites link to it, usually without a description. To keep a page out of search results, allow crawling and add a noindex meta tag instead.</p></details><details><summary>Where should the robots.txt file be placed?</summary><p>At the root of the domain, so it opens at https://yourdomain.com/robots.txt. Each subdomain needs its own file. A robots.txt placed in a subfolder is ignored by crawlers.</p></details><details><summary>Does Google follow Crawl-delay?</summary><p>No. Googlebot ignores the Crawl-delay line. Bing and Yandex have historically respected it. If Google is genuinely overloading your server, there are other ways to manage this, such as temporarily returning 503 or 429 responses, explained in Google’s crawling documentation.</p></details><details><summary>Should I block AI crawlers like GPTBot?</summary><p>It depends on your goals. Blocking them may keep future content out of some AI training or AI search features, but well-behaved bots follow robots.txt voluntarily, and blocking Google-Extended does not affect your Google Search ranking. Decide deliberately rather than by default.</p></details><details><summary>Can a wrong robots.txt harm my SEO?</summary><p>Yes. A single line like Disallow: / under User-agent: * blocks every compliant crawler from your entire site. Always review the final file and test important URLs in Google Search Console’s robots.txt report after uploading.</p></details></section>
+      <div class="tool-cta" style="--c:#c2410c">
+        <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" /></svg></span>
+        <div><strong>Try it now, free</strong><p>Robots.txt Generator runs in your browser. Nothing is uploaded and there is no sign-up.</p></div>
+        <a class="btn btn-primary" href="../../tools/robots-txt-generator/">Open the tool <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+      </div>
+      <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
+    </div>
+    <aside class="article-side">
+      <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#what-does-a-robots-txt-file-actually-do">What does a robots.txt file actually do?</a></li><li><a href="#what-robots-txt-cannot-do">What robots.txt cannot do</a></li><li><a href="#how-to-create-robots-txt-with-the-biscs-tool">How to create robots.txt with the BISCS tool</a></li><li><a href="#should-you-block-ai-crawlers">Should you block AI crawlers?</a></li><li><a href="#common-robots-txt-mistakes">Common robots.txt mistakes</a></li><li><a href="#tips-for-wordpress-and-online-shops">Tips for WordPress and online shops</a></li><li><a href="#after-you-upload-the-file">After you upload the file</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
+      <div class="card"><h2>Share</h2><div class="share">
+        <a href="https://wa.me/?text=How%20to%20Create%20a%20robots.txt%20File%20(With%20Free%20Generator)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcreate-robots-txt-file-guide%2F" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcreate-robots-txt-file-guide%2F" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcreate-robots-txt-file-guide%2F" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fcreate-robots-txt-file-guide%2F&amp;text=How%20to%20Create%20a%20robots.txt%20File%20(With%20Free%20Generator)" target="_blank" rel="noopener">X</a>
+      </div></div>
+    </aside>
+  </div>
+  <section class="section" style="padding-bottom:0"><h2>More SEO &amp; GEO guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/meta-tag-generator-title-description-og-tags/" data-cat="seo" style="--c:#c2410c">
+  <span class="post-cat"><span class="dot" style="background:#c2410c"></span>SEO &amp; GEO</span>
+  <h3>Meta Tag Generator: Write Title, Description and OG Tags</h3>
+  <p>Create a page title, meta description, canonical, Open Graph and X card tags in one go. Learn what each tag does, ideal lengths and mistakes to avoid.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 6 min read</span>
+</a><a class="post-card" href="../../blog/schema-markup-generator-json-ld-guide/" data-cat="seo" style="--c:#c2410c">
+  <span class="post-cat"><span class="dot" style="background:#c2410c"></span>SEO &amp; GEO</span>
+  <h3>Schema Markup Generator: Create JSON-LD Without Coding</h3>
+  <p>Generate JSON-LD schema for local businesses, products, articles, events, breadcrumbs and more. Learn which types earn rich results and how to test them.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a><a class="post-card" href="../../blog/google-serp-snippet-preview-tool/" data-cat="seo" style="--c:#c2410c">
+  <span class="post-cat"><span class="dot" style="background:#c2410c"></span>SEO &amp; GEO</span>
+  <h3>Google SERP Preview: Check Title and Snippet Before You Publish</h3>
+  <p>See how your title, URL and meta description will look in Google on desktop and mobile. Fix truncation, bold your keyword and write snippets that get clicked.</p>
+  <span class="post-meta"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> 5 min read</span>
+</a></div></section>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="../../"><span class="logo-mark"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg></span><span>BISCS <em>India</em></span></a>
+        <p>149 free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <address class="footer-contact">
+          <a href="mailto:info@biscsindia.com"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg> info@biscsindia.com</a>
+          <span><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg> Kolkata, West Bengal, India 700026</span>
+        </address>
+        <div class="socials"><a href="https://www.linkedin.com/in/biscs-india-7a0ab03a6" target="_blank" rel="noopener me" aria-label="BISCS India on LinkedIn" title="LinkedIn"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg></a><a href="https://www.facebook.com/share/1PyhN1vLey/" target="_blank" rel="noopener me" aria-label="BISCS India on Facebook" title="Facebook"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a><a href="https://www.instagram.com/biscsindia/" target="_blank" rel="noopener me" aria-label="BISCS India on Instagram" title="Instagram"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg></a></div>
+      </div>
+      <div><h2>PDF Tools</h2><ul><li><a href="../../tools/pdf-editor/">Edit PDF</a></li><li><a href="../../tools/sign-pdf/">Sign PDF</a></li><li><a href="../../tools/merge-pdf/">Merge PDF</a></li><li><a href="../../tools/split-pdf/">Split PDF</a></li><li><a href="../../tools/remove-pdf-pages/">Remove PDF Pages</a></li><li><a href="../../tools/extract-pdf-pages/">Extract PDF Pages</a></li><li><a href="../../tools/organize-pdf/">Organize PDF</a></li></ul></div><div><h2>Finance</h2><ul><li><a href="../../tools/gst-calculator/">GST Calculator</a></li><li><a href="../../tools/emi-calculator/">EMI Calculator</a></li><li><a href="../../tools/sip-calculator/">SIP Calculator</a></li><li><a href="../../tools/lumpsum-calculator/">Lumpsum Calculator</a></li><li><a href="../../tools/fd-calculator/">FD Calculator</a></li><li><a href="../../tools/rd-calculator/">RD Calculator</a></li><li><a href="../../tools/ppf-calculator/">PPF Calculator</a></li></ul></div><div><h2>Popular</h2><ul><li><a href="../../tools/word-counter/">Word Counter</a></li><li><a href="../../tools/image-compressor/">Compress Image</a></li><li><a href="../../tools/qr-code-generator/">QR Code Generator</a></li><li><a href="../../tools/invoice-generator/">GST Invoice Generator</a></li><li><a href="../../tools/json-formatter/">JSON Formatter</a></li><li><a href="../../tools/age-calculator/">Age Calculator</a></li><li><a href="../../tools/password-generator/">Password Generator</a></li></ul></div>
+      <div><h2>Company</h2><ul>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../blog/">Blog &amp; Guides</a></li>
+        <li><a href="../../contact/">Contact</a></li>
+        <li><a href="../../privacy/">Privacy Policy</a></li>
+        <li><a href="../../terms/">Terms of Use</a></li>
+        <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
+  </div>
+</footer>
+<script src="../../assets/js/registry.js?v=bfd8a88b38" defer></script>
+<script src="../../assets/js/icons.js?v=bfd8a88b38" defer></script>
+<script src="../../assets/js/core.js?v=bfd8a88b38" defer></script>
+
+</body>
+</html>

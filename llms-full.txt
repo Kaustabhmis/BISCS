@@ -627,6 +627,115 @@ A: Yes, as long as the value is wrapped in double quotes in the CSV, which is th
 Q: What if some rows have fewer columns than the header?
 A: The missing cells are filled with empty strings, or null if you tick Empty cells as null. The status line warns you how many rows were short, which often signals an unquoted comma or a broken line in the source file.
 
+## How to Count Days Between Two Dates (Including Working Days)
+
+URL: https://www.biscsindia.com/blog/count-days-between-two-dates/
+Tool: Date Difference (https://www.biscsindia.com/tools/date-difference-calculator/)
+
+Quick answer: To count days between two dates, subtract the start date from the end date in calendar days, and add one if both the first and last day should count. BISCS India’s free Date Difference calculator does this instantly and also shows weeks, months, Monday-to-Friday working days and weekend days.
+
+To find the number of days between two dates, count the calendar days from the start date to the end date. If both the first and the last day should be counted, add one. From 1 January 2026 to 31 March 2026 is 89 days, or 90 days if you include 31 March.
+
+That "plus one" question is where most counting mistakes happen. The free [Date Difference calculator](https://www.biscsindia.com/tools/date-difference-calculator/) gives you a tick box for it, and shows the answer in days, weeks, months and working days at the same time.
+
+## When do you need to count days between dates?
+
+Day counts turn up in everyday Indian life more often than you might expect:
+
+- **Notice periods** at work, often 30, 60 or 90 days.
+- **Leave applications**, where both the first and last day are counted.
+- **Interest calculations** on fixed deposits or short loans, which are based on the number of days.
+- **Deadlines** for returns, replies to notices, refunds or warranty claims.
+- **Project timelines** and how many working days a task really has.
+- **Countdowns** to a wedding, exam or festival trip.
+
+## How to use the Date Difference calculator
+
+1. Open the [Date Difference calculator](https://www.biscsindia.com/tools/date-difference-calculator/).
+2. Pick the **start date**. It defaults to today.
+3. Pick the **end date**.
+4. Tick **Include the end date** if the last day should count, as with leave or inclusive periods.
+5. Read the total days at the top, with the same span written in years, months and days.
+6. Check the stats for weeks, total months, working days, weekend days, hours and minutes.
+
+If you enter the dates the wrong way round, the tool still works and tells you the end date is earlier. The **Swap dates** button flips them. Everything is calculated in your browser.
+
+## Worked examples
+
+### A quarter of the year
+
+From 1 January 2026 to 31 March 2026:
+
+- Without the end date: 89 days, which reads as 2 months and 30 days. There are 63 working days.
+- With the end date: 90 days, exactly 3 months, with 64 working days (31 March 2026 is a Tuesday).
+
+### A financial year
+
+India's financial year runs from 1 April to 31 March. From 1 April 2026 to 31 March 2027 is 364 days exclusive, or 365 days when you include the last day. Since February 2027 has 28 days, the inclusive count is a normal 365-day year.
+
+### A notice period
+
+You resign on 2 November 2026 and your last working day is 31 January 2027. That is 90 days between the dates, with 65 Monday-to-Friday days. Your HR policy decides whether the notice is measured in calendar days or working days, so check which one your contract uses.
+
+### A countdown
+
+From 2 November 2026 to Christmas Day, 25 December 2026, is 53 days.
+
+## Inclusive or exclusive: which should you use?
+
+| Situation | Count the end date? | Why |
+|---|---|---|
+| "How many days until…" | No | You want the gap between today and the event |
+| Leave from 10 to 14 March | Yes | Both the 10th and 14th are days off |
+| Hotel nights | No | Checking out on the last day is not a night stayed |
+| Interest on a deposit | Usually no | Banks typically count the days money was held; check your bank's method |
+| Event that runs "from … to …" | Yes | Both dates are part of the event |
+| Age or tenure | No | Measured as elapsed time |
+
+When in doubt, read the wording: "from X to Y inclusive" means both days count, while "within N days of X" normally starts counting the day after X. For legal or tax deadlines, follow the rule stated in the relevant law or notice.
+
+## How working days are counted
+
+The calculator counts **Monday to Friday** as working days and Saturday and Sunday as weekend days. It does not know about holidays, because national, state and company holidays vary across India. To get an accurate figure:
+
+1. Note the working days shown by the tool.
+2. Subtract public or company holidays that fall on weekdays in your range.
+3. If your office works on Saturdays, or on alternate Saturdays, add those days back.
+
+This is still much faster and safer than counting on a wall calendar.
+
+## Common date-counting mistakes
+
+- **Forgetting the plus one** for inclusive periods like leave or event days.
+- **Assuming 30 days per month.** A "one month" notice from 31 January ends on a different day from one starting on 1 March.
+- **Missing leap years.** 2028 has a 29 February, so spans crossing it gain a day.
+- **Counting weekends as working days** in project plans.
+- **Ignoring holidays** when estimating delivery or processing times.
+- **Mixing date formats.** 03/04 can be 3 April or 4 March. A date picker avoids this.
+
+## Tips for planning with date differences
+
+- Use the **weeks** figure for things measured in weeks, such as pregnancy check-ups or course schedules.
+- Use **total months** when billing or rent is monthly, but check how part-months are charged.
+- For SLAs and turnaround times, rely on **working days**, then subtract holidays.
+- Keep a note of whether a figure is inclusive or exclusive when you share it, so others read it the same way.
+
+If you know the start date and the number of days but need the end date, use [Add or Subtract Days](https://www.biscsindia.com/tools/date-add-calculator/) instead, which can also skip weekends. For someone's exact age on a date, the [Age Calculator](https://www.biscsindia.com/tools/age-calculator/) shows years, months and days with a birthday countdown. And if your deadline involves another country, the [Time Zone Converter](https://www.biscsindia.com/tools/time-zone-converter/) helps you line up the right local time.
+
+Counting days sounds simple until a deadline depends on it. The [Date Difference calculator](https://www.biscsindia.com/tools/date-difference-calculator/) takes the guesswork out, so you can focus on the plan rather than the calendar.
+
+Q: Should I include the end date when counting days?
+A: It depends on what you are measuring. For a duration such as “how long until” or interest periods, the end date is usually not counted. For inclusive spans like leave from 10 to 14 March or a hotel stay counted in days, include it. The calculator has a tick box that adds that extra day.
+
+Q: Does the working days count include public holidays?
+A: No. Working days are counted as Monday to Friday only. National, state and company holidays differ, so subtract any holidays that fall in your range yourself. If your office works on Saturdays, add those back as well.
+
+Q: Why do two websites give different month counts for the same dates?
+A: Months have 28 to 31 days, so “months between dates” depends on the method. The BISCS calculator counts whole calendar months first, then the remaining days. Other tools may divide total days by 30 or 30.44, which gives slightly different answers.
+
+Q: Can I count days backwards, if the end date is earlier?
+A: Yes. If the end date is before the start date, the calculator swaps them for the maths and shows a note that the end date is earlier. You can also use the Swap dates button to reverse them yourself.
+
 ## EMI Calculator: Formula, Examples and Amortisation Explained
 
 URL: https://www.biscsindia.com/blog/emi-calculator-formula-home-loan/
@@ -715,6 +824,102 @@ A: Lenders usually either increase the EMI or keep it the same and extend the te
 
 Q: Is a zero-interest EMI really free?
 A: Not always. Some no-cost EMI offers build the interest into the product price or pass on a discount you would otherwise have received, and processing fees or GST on interest may apply. Compare the total amount you will pay with the price for an outright purchase before deciding.
+
+## How to Extract Pages from a PDF and Save Them as a New File
+
+URL: https://www.biscsindia.com/blog/extract-pages-from-pdf-free/
+Tool: Extract PDF Pages (https://www.biscsindia.com/tools/extract-pdf-pages/)
+
+Quick answer: To extract pages from a PDF, open a page extractor, click the pages you want or type them as ranges such as 1-3, 8, then download them as a new PDF. You can also save each page as a separate file. BISCS India’s Extract PDF Pages tool does this in your browser without uploading the file.
+
+To extract pages from a PDF, open [Extract PDF Pages](https://www.biscsindia.com/tools/extract-pdf-pages/), click the pages you need (or type them as `1-3, 8`), and click **Extract pages**. You get a new, smaller PDF with only those pages. Prefer each page on its own? Tick **Save each page as a separate PDF** and download a ZIP instead.
+
+Your original stays unchanged, the pages keep their full quality, and the document never leaves your device.
+
+## Why extract instead of sending the whole file?
+
+Sharing only what is needed is good practice, both for privacy and for the person receiving the file. A few situations where it helps:
+
+- **Sending a single payslip.** HR sent a 12-month PDF, and the landlord's agent needs only the latest one.
+- **Sharing one chapter.** A teacher wants pages 45 to 60 of a textbook PDF for a class worksheet.
+- **Proof for a claim.** An insurance claim needs only the discharge summary and the final bill, not the full 30-page hospital file.
+- **A single property document page.** A society office asks for the page showing the flat number and owner names, not the entire sale deed.
+- **Interview preparation.** Pull the two relevant pages from a long company report to read on your phone.
+
+## How to extract PDF pages step by step
+
+1. Open [Extract PDF Pages](https://www.biscsindia.com/tools/extract-pdf-pages/) and choose the PDF.
+2. Click the thumbnails of the pages you want. Shift-click to select a whole run between two pages.
+3. Or type page numbers and ranges in **Pages to extract**, for example `2, 5-9, 14`.
+4. Use **Quick select** if helpful: All, None, Odd or Even.
+5. Decide on the output: one combined PDF (default) or each page as a separate PDF in a ZIP.
+6. Click **Extract pages** and download the result.
+
+## Extract vs split vs remove
+
+All three tools rebuild a PDF from chosen pages, but they suit different ways of thinking.
+
+| Tool | You tell it… | Output |
+|---|---|---|
+| Extract PDF Pages | Which pages to **keep** | One new PDF, or one PDF per page |
+| [Remove PDF Pages](https://www.biscsindia.com/tools/remove-pdf-pages/) | Which pages to **drop** | One new PDF |
+| [Split PDF](https://www.biscsindia.com/tools/split-pdf/) | Where to **cut** the document | Several PDFs covering the whole document |
+
+If you need 3 pages out of 80, extract. If you need 77 out of 80, remove. If you need all 80 broken into sections, split.
+
+## Combining extract with other tools
+
+Extraction is often the first step in a bigger task.
+
+**Building an application bundle.** Extract the relevant pages from several long documents (one page from your passport scan, two pages from a bank statement), then join them with [Merge PDF](https://www.biscsindia.com/tools/merge-pdf/).
+
+**Making a printable handout.** Extract the pages, then add numbering with [Add Page Numbers](https://www.biscsindia.com/tools/pdf-page-numbers/) so the new handout starts at page 1.
+
+**Reordering.** Extracted pages are saved in document order. If you need a different order, open the new file in Organize PDF and drag the pages around.
+
+## Common mistakes to avoid
+
+- **Going by printed footer numbers.** Many reports start numbering after the cover and contents pages. Always use the position shown under each thumbnail.
+- **Forgetting the separate-files option.** If you need ten pages as ten separate attachments, tick the option instead of extracting ten times.
+- **Assuming click order sets page order.** The output follows the original document order.
+- **Extracting part of a signed agreement as "proof".** A single page cut from a contract may not be accepted as the full document. Ask what the receiver actually needs.
+
+## Privacy: share less, and keep it local
+
+Extracting is itself a privacy tool. A loan document, a medical file or a property paper usually contains far more personal information than any single recipient needs. Sending only the relevant pages reduces what is exposed if an email is forwarded or a phone is lost.
+
+The tool adds a second layer of privacy: processing happens in your browser. Your PDF is not uploaded, so there is no copy sitting on a server somewhere. This is particularly reassuring for documents downloaded from DigiLocker or other sources that carry Aadhaar or PAN details.
+
+## Example: sending just the right pages to an employer
+
+Karthik is switching jobs, and his new employer's HR team asks for "the last three months' payslips and your relieving letter". His old company's portal let him download the whole year's payslips as one 12-page PDF, and the relieving letter came as page 3 of a 5-page exit document.
+
+He opens the payslip PDF, types `10-12` to select the last three months, and extracts them into a new file. Then he opens the exit document and extracts page 3 alone. Finally he merges the two results so HR receives a single, four-page PDF with exactly what they asked for and nothing else, no annual salary breakup, no tax projections, no personal exit feedback.
+
+This is a small thing, but it is the kind of care that makes paperwork go smoothly, and it keeps the rest of your financial details to yourself.
+
+## What happens to links, bookmarks and forms?
+
+The extracted pages look exactly like the originals. However, document-level extras such as the bookmark panel, which point to the whole original file, are not rebuilt for the new document. For most everyday uses (payslips, bills, certificates), this makes no difference, because those files rarely have bookmarks to begin with.
+
+## Tips for neat results
+
+- Rename the extracted file before sending, for example `Payslip-October.pdf` rather than `salary-extracted.pdf`.
+- For very large PDFs, typing ranges is faster than scrolling through hundreds of thumbnails.
+- If the extracted pages are scans and the file is still large, run it through Compress PDF before emailing.
+- Check the page count on the result screen; it confirms exactly how many pages were saved.
+
+Q: Can I extract pages from a PDF on my phone?
+A: Yes. The tool works in mobile browsers on Android and iPhone. Tap the page thumbnails you want, then download the new PDF. If you choose separate files, they come as a ZIP that your phone’s Files app can open.
+
+Q: Is the extracted page the same quality as the original?
+A: Yes. Pages are copied exactly as they are, with the same text, images and page size. Nothing is converted or compressed, so selectable text stays selectable and a scanned page stays as sharp as the original scan.
+
+Q: How do I select a run of pages quickly?
+A: Click the first page, then Shift-click the last page to select everything in between. You can also type ranges such as 4-12 in the box, or use the quick select buttons for all, none, odd or even pages.
+
+Q: Will the extracted pages keep their original order?
+A: The pages are saved in their original document order, regardless of the order you clicked them. If you need a different order, extract the pages first and then rearrange them with Organize PDF.
 
 ## How to Calculate GST: Add or Remove GST with CGST/SGST Split
 
@@ -820,6 +1025,119 @@ A: Generally GST is charged on the transaction value, so a discount shown on the
 
 Q: Why does my bill show GST to the paisa but the calculator rounds?
 A: The calculator shows amounts to two decimal places, which matches paisa-level billing. Businesses often round the final invoice total to the nearest rupee and show a small round-off line. That rounding is an accounting choice and does not change the tax rate applied.
+
+## HTML Entities: How to Escape and Unescape Special Characters
+
+URL: https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/
+Tool: HTML Entity Encoder (https://www.biscsindia.com/tools/html-entity-encoder/)
+
+Quick answer: HTML escaping replaces characters with special meaning in HTML, mainly <, >, & and quotes, with entities such as &lt; and &amp; so browsers show them as text instead of treating them as code. BISCS India's HTML Entity Encoder escapes and unescapes text in named, decimal or hex style, entirely in your browser.
+
+HTML entities are short codes that let you show special characters as plain text on a web page. The browser reads `<` as the start of a tag, so to display a literal less-than sign you write `&lt;`. Escaping is the process of swapping such characters for entities; unescaping turns them back.
+
+The [HTML Entity Encoder](https://www.biscsindia.com/tools/html-entity-encoder/) on BISCS India does both directions in your browser. It can encode just the essential characters, or every non-ASCII character too, in named, decimal or hexadecimal style.
+
+## Why do some characters need escaping?
+
+HTML uses a handful of characters as syntax. If they appear in your content unescaped, the browser may misread the page:
+
+| Character | Entity | Why it matters |
+| --- | --- | --- |
+| `&` | `&amp;` | Starts every entity |
+| `<` | `&lt;` | Starts a tag |
+| `>` | `&gt;` | Ends a tag |
+| `"` | `&quot;` | Ends a double-quoted attribute |
+| `'` | `&#39;` | Ends a single-quoted attribute |
+
+Suppose you are writing a blog post that shows a code sample. If you paste the raw markup into your page, the browser renders a button rather than displaying the code. Escaped, it shows exactly what you typed:
+
+```html
+<!-- What you want readers to see -->
+<button class="pay">Pay ₹499</button>
+
+<!-- What you put in the HTML source -->
+&lt;button class=&quot;pay&quot;&gt;Pay ₹499&lt;/button&gt;
+```
+
+## How to escape or unescape HTML with BISCS India
+
+1. Open the [HTML Entity Encoder](https://www.biscsindia.com/tools/html-entity-encoder/).
+2. Choose **Encode** to escape, or **Decode** to turn entities back into characters.
+3. For encoding, set the options:
+   - **Encode quotes** (on by default) escapes `"` and `'`, needed for attribute values.
+   - **Encode all non-ASCII** also converts characters like ₹, é or Hindi letters into entities.
+   - **Style** picks **Named where possible**, **Decimal** (`&#8377;`) or **Hex** (`&#x20B9;`).
+4. Paste your text into **Input**. The **Output** updates instantly, with a count of how many entities were created or decoded.
+5. Click **Copy**, or **Swap** to reverse the direction and check a round trip.
+
+## Named, decimal and hex entities
+
+The same character can be written three ways. The copyright sign, for example:
+
+```text
+&copy;     named
+&#169;     decimal code point
+&#xA9;     hexadecimal code point
+```
+
+Named entities are easier to read, but they exist only for a fixed list of characters. The rupee sign has no widely supported named entity, so it is written as `&#8377;` or `&#x20B9;`. Numeric entities work for any Unicode character, including emoji.
+
+## When should you encode all non-ASCII characters?
+
+For a modern website served as UTF-8, you usually do not need to. You can type ₹, नमस्ते or ধন্যবাদ straight into the HTML. Encoding everything just makes the source harder to read.
+
+Encoding all non-ASCII characters is useful when:
+
+- An email template or older CMS field corrupts special characters.
+- You are pasting HTML into a system whose character encoding you do not control.
+- You need source files that contain only ASCII for a legacy toolchain.
+
+## Escaping and security (XSS)
+
+Cross-site scripting (XSS) happens when an attacker gets their own script to run on your page, usually by submitting text that your site later inserts into HTML without escaping. A comment field containing a script tag, displayed raw, would execute in every visitor’s browser.
+
+Escaping `<`, `>`, `&` and quotes before inserting user text into HTML turns that attack into harmless visible text. But a few cautions apply:
+
+- **Context matters.** Escaping for an HTML text node is not enough for values placed inside a `href`, a `style` or a `<script>` block. Each context has its own rules.
+- **Use your framework.** React, Angular, Django, Laravel and most templating engines escape output by default. Bypassing that, for example with `innerHTML` or `dangerouslySetInnerHTML`, is where bugs creep in.
+- **This tool is for content, not a security layer.** It is ideal for preparing code samples, fixing CMS content or debugging, not for sanitising user input in a live application.
+
+In plain JavaScript, the safe way to insert user text is to set `textContent` rather than `innerHTML`:
+
+```js
+el.textContent = userComment;   // shown as text, never run as HTML
+```
+
+## Common mistakes
+
+- **Double escaping.** `&amp;amp;` on a page means something escaped twice. Decode once and fix the pipeline.
+- **Forgetting the ampersand in URLs.** Query strings in `href` attributes should technically have `&` written as `&amp;`. Browsers forgive this, but validators flag it.
+- **Escaping inside code fences in Markdown.** Most Markdown renderers escape code blocks for you. Escaping manually as well gives you visible `&lt;` on the page.
+- **Using entities for spacing.** A run of `&nbsp;` to indent text is fragile. Use CSS margin or padding instead.
+- **Assuming escaping equals sanitising.** Escaping makes HTML inert; sanitising removes dangerous parts while keeping some formatting. They are different jobs.
+
+## Related tools
+
+If you are cleaning up a page before publishing, the [CSS / HTML / JSON Minifier](https://www.biscsindia.com/tools/code-minifier/) can compress the final HTML. For characters in links rather than page content, use [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/), because URLs use percent-encoding, not HTML entities. And [Markdown Preview](https://www.biscsindia.com/tools/markdown-preview/) is handy for checking how escaped text will render in Markdown-based docs.
+
+## Privacy
+
+All conversion happens in your browser with JavaScript. Whatever you paste, whether email templates, internal pages or client copy, stays on your device.
+
+Q: Which characters must be escaped in HTML?
+A: At minimum, escape the ampersand as &amp;, the less-than sign as &lt; and the greater-than sign as &gt; in text. Inside attribute values, also escape double quotes as &quot; and single quotes as &#39;. Other characters such as ₹ or Hindi letters can be written directly if the page uses UTF-8.
+
+Q: Does escaping HTML prevent XSS attacks?
+A: Escaping untrusted text before inserting it into HTML is a core defence against cross-site scripting, but it must match the context. Text in an element body, an attribute, a URL and inline JavaScript each need different handling. Use your framework’s built-in escaping or templating rather than doing it by hand in production.
+
+Q: What is the difference between named and numeric entities?
+A: Named entities use a memorable word, such as &copy; for the copyright sign. Numeric entities use the character’s Unicode code point in decimal, like &#169;, or hexadecimal, like &#xA9;. All three display the same character. Numeric entities work for every character, while named ones exist only for a defined list.
+
+Q: Do I need entities for ₹ or Indian-language text?
+A: Not if your page is saved and served as UTF-8 with a meta charset tag, which is standard today. You can type ₹, Devanagari or Tamil directly. Entities like &#8377; are useful when an old system, email template or CMS field mangles non-ASCII characters.
+
+Q: Why does my page show &amp;amp; instead of &?
+A: The text was escaped twice. The first pass turned & into &amp;, and the second pass escaped that ampersand again. Decode the text once with the Decode mode, then make sure only one layer of your code performs escaping.
 
 ## How to Compress an Image to a Target Size in KB (Free)
 
@@ -1095,6 +1413,106 @@ A: Yes. Below the aspect ratio chips are X, Y, Width and Height fields in pixels
 
 Q: What is the difference between cropping and resizing?
 A: Cropping cuts away part of the picture and changes what is shown. Resizing keeps the whole picture but changes how many pixels it uses. For an exact size like 600 × 600, crop to the right shape first, then resize to the right dimensions.
+
+## Free Online Photo Filters: Brightness, Contrast and B&W
+
+URL: https://www.biscsindia.com/blog/photo-filters-brightness-contrast-online/
+Tool: Photo Filters (https://www.biscsindia.com/tools/image-filters/)
+
+Quick answer: To edit a photo with filters, open an online photo editor, pick a preset such as Vivid, Vintage or B&W, fine-tune brightness, contrast and saturation with sliders, then download. BISCS India’s Photo Filters tool does this in your browser with nine presets and nine adjustments, and your photo is never uploaded.
+
+Photo filters are adjustments that change the look of a picture: brighter or darker, more or less colourful, warmer or cooler, or converted to black and white. They are the quickest way to rescue a dull shot, give a set of photos a consistent mood, or create a vintage feel without installing an editing app.
+
+The [Photo Filters](https://www.biscsindia.com/tools/image-filters/) tool from BISCS India gives you nine one-tap presets and nine manual sliders. Everything is applied in your browser, and the final file is saved at full resolution.
+
+## What can you adjust?
+
+The sliders cover the edits most people actually use:
+
+- **Brightness** lifts or darkens the whole picture.
+- **Contrast** stretches the difference between light and dark areas. More contrast adds punch; less gives a soft, faded look.
+- **Saturation** controls how intense colours are. Zero gives black and white.
+- **Hue** shifts every colour around the colour wheel. Useful in small amounts to correct a tint, or in large amounts for creative effects.
+- **Blur** softens the whole image, handy for backgrounds behind text.
+- **Grayscale**, **Sepia** and **Invert** convert the picture partially or fully.
+- **Vignette** darkens the edges to frame the subject.
+
+## Which preset should you start with?
+
+| Preset | What it does | Good for |
+|---|---|---|
+| Vivid | More saturation and contrast, slightly brighter | Food, travel, festival and market photos |
+| B&W | Full grayscale with extra contrast | Portraits, street photography, documents |
+| Vintage | Light sepia, faded contrast, vignette | Nostalgic shots, invitations |
+| Warm | Golden tint, richer colour | Indoor portraits, sunsets, Diwali lights |
+| Cool | Slight blue shift, crisp contrast | Mountains, beaches, modern product shots |
+| Fade | Low contrast, lifted brightness, muted colour | Soft lifestyle images, backgrounds for text |
+| Dramatic | High contrast, deeper shadows, vignette | Moody skies, architecture |
+| Noir | Black and white, very high contrast, vignette | Striking portraits, poster-style images |
+
+Each preset is only a starting point. After tapping one, the sliders show its values so you can refine them.
+
+## How to apply filters step by step
+
+1. Open [Photo Filters](https://www.biscsindia.com/tools/image-filters/) and choose a photo, drop it in or paste it with Ctrl + V.
+2. Tap a **preset** thumbnail to see that look applied to your own picture.
+3. Fine-tune with the sliders. Small moves of 5–15% usually make the difference between natural and overdone.
+4. Press and hold **Hold to compare** on the preview to see the original, and release to return to your edit.
+5. Use **Reset all** if you want to start again.
+6. Download the photo. It is rendered at full size with your chosen format and quality.
+
+## Tips for natural-looking edits
+
+### Fix light before colour
+
+Get brightness and contrast right first. Colour adjustments look different on a dark photo than on a well-exposed one, so tuning saturation before brightness often means doing it twice.
+
+### Go easy on saturation
+
+Skin tones are the first thing to suffer. If faces start to look orange or red, pull saturation back. For portraits, warmth from the Warm preset often flatters more than raw saturation.
+
+### Use hue for colour casts, gently
+
+Photos under tube lights can turn greenish, and some indoor bulbs make everything yellow. A hue shift of just a few degrees can neutralise that. Large hue shifts make skin look unnatural.
+
+### Keep a consistent look across a set
+
+If you are editing photos for a shop catalogue, a wedding album or an Instagram grid, note the slider values that worked on the first picture and apply the same ones to the rest. Consistency looks more professional than a different filter on every image.
+
+## When filters are not the right tool
+
+Filters change the overall look of a picture. They are not designed for:
+
+- **Old, faded or noisy photos** that need dust removal, colour-cast correction and sharpening. The [Photo Enhancer](https://www.biscsindia.com/tools/ai-photo-enhancer/) is built for that.
+- **Blurring only the background** behind a person. Use the [AI Background Blur & Changer](https://www.biscsindia.com/tools/ai-background-changer/), which separates the subject first.
+- **Artistic effects** such as sketches, cartoons or pop-art. Try [Photo Art Effects](https://www.biscsindia.com/tools/photo-art-effects/).
+
+## Common mistakes
+
+- **Maximum contrast on a photo with a bright sky.** The clouds turn pure white and lose all detail.
+- **Heavy vignette on group photos.** People at the edges end up in the dark.
+- **Editing on a very dim screen.** Your photo will look too bright on everyone else’s phone. Check it at normal brightness.
+- **Using filters on documents for official upload.** Sepia, vintage or blur effects on an ID scan or certificate can lead to rejection. For documents, only use brightness and contrast to improve readability, or try B&W.
+- **Applying a filter, saving, and filtering again.** Each JPG save loses a little quality. Make all your adjustments in one session.
+
+## Your photos stay on your device
+
+The filters are applied using your browser’s own graphics features. Your photo is not uploaded, so there is no risk of personal pictures being stored on someone else’s server. If your browser lacks support for the canvas filter feature, a few effects may behave differently, but current versions of Chrome, Edge, Firefox and Safari handle them.
+
+Q: How do I make a photo black and white without it looking flat?
+A: Use the B&W or Noir preset rather than just setting saturation to zero. Both add extra contrast, which keeps the picture punchy. Then adjust brightness so the darkest areas are truly dark and the lightest areas are bright but not blown out.
+
+Q: Can photo filters fix a blurry or very dark picture?
+A: Filters can lighten a dark photo and add punch to a dull one, but they cannot recover detail that the camera never captured. For noise, colour casts and soft detail, the Photo Enhancer, which includes sharpening and noise reduction, is the better choice.
+
+Q: Do the filters reduce the resolution of my photo?
+A: No. The preview may be scaled to fit your screen, but the download is rendered at the photo’s full original size. Only the adjustments you choose are applied, so a 4000 pixel wide photo stays 4000 pixels wide.
+
+Q: What does the vignette slider do?
+A: A vignette gently darkens the corners and edges of the picture. It draws the eye towards the centre and gives portraits and moody shots a more finished look. Keep it subtle for everyday photos; strong vignettes quickly look dated.
+
+Q: Can I see the original while I am editing?
+A: Yes. Press and hold the Hold to compare button on the preview to see the unedited photo, then release it to return to your edit. It is the quickest way to check you have not overdone the contrast or saturation.
 
 ## How to Resize an Image in Pixels or Percentage, Free Online
 
@@ -1534,6 +1952,92 @@ A: The generator allows up to 100 paragraphs, 1,000 sentences or 10,000 words in
 Q: Should I use lorem ipsum or Hindi placeholder text for Indian designs?
 A: If the final content will be in Hindi or another Indian language, test with real sample text in that script, not Latin filler. Devanagari and other Indic scripts have different line heights, word lengths and font needs, and lorem ipsum will not reveal those problems.
 
+## Lumpsum Calculator: Project a One-Time Investment's Growth
+
+URL: https://www.biscsindia.com/blog/lumpsum-calculator-one-time-investment/
+Tool: Lumpsum Calculator (https://www.biscsindia.com/tools/lumpsum-calculator/)
+
+Quick answer: A lumpsum calculator applies compound growth to a single investment: future value = amount × (1 + return)^years. ₹1 lakh at 12% a year for 10 years grows to about ₹3.11 lakh. BISCS India's free Lumpsum Calculator also shows what that amount is worth in today's money after inflation, with a year-by-year growth table.
+
+A lumpsum calculator tells you what a single, one-time investment could be worth after a number of years at an assumed annual return. The formula is **future value = amount × (1 + r)^n**, where r is the yearly return as a decimal and n is the number of years. ₹1 lakh growing at 12% a year for 10 years becomes about ₹3.11 lakh.
+
+That headline number ignores rising prices, so the free [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/) also shows the result in today's rupees. At 6% inflation, the same ₹3.11 lakh would buy roughly what ₹1.73 lakh buys now.
+
+## How the lumpsum formula works
+
+Compounding means each year's growth is added to the base before the next year's growth is calculated. With ₹1,00,000 at 12%:
+
+- After year 1: ₹1,12,000
+- After year 2: ₹1,25,440
+- After year 3: ₹1,40,493
+- After year 10: ₹3,10,585
+
+The money grows about 3.1 times in ten years. Notice that the gain in year one is ₹12,000, but by year ten the yearly gain is over ₹33,000, because the base is so much larger. This acceleration is why time in the market matters more than almost anything else in long-term investing.
+
+## How to use the BISCS Lumpsum Calculator
+
+1. Open the [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/).
+2. Enter your **total investment**. The slider covers ₹1,000 to ₹1 crore.
+3. Set an **expected return** per year. Be realistic for the asset type.
+4. Choose the **time period** in years.
+5. Optionally change the **inflation** rate used for the "value in today's ₹" figure. It defaults to 6%.
+6. Read the estimated value, gain and growth multiple, then check the growth chart and year-by-year table.
+
+The tool compounds once a year and runs entirely in your browser, so your figures never leave your device.
+
+## Example: a ₹5 lakh bonus invested for 15 years
+
+Suppose Meera in Kolkata invests a ₹5 lakh bonus and leaves it for 15 years, assuming 10% a year.
+
+| Measure | Result |
+|---|---|
+| Amount invested | ₹5,00,000 |
+| Estimated value after 15 years | ₹20,88,624 |
+| Estimated gain | ₹15,88,624 |
+| Growth multiple | about 4.18× |
+| Value in today's money at 6% inflation | about ₹8,71,510 |
+
+The nominal number looks impressive, but in purchasing-power terms Meera's money has grown about 1.7 times. That is still meaningful growth, and it is a more honest basis for planning a goal like a home down payment.
+
+## Lumpsum or SIP: which grows more?
+
+At the same steady return, a lumpsum invested at the start always ends higher than a SIP of the same total, because every rupee compounds from day one. For example, ₹1.2 lakh invested at once at 12% for one year becomes ₹1,34,400, while ₹10,000 a month for twelve months becomes about ₹1,28,093 in the [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/).
+
+Real markets are not steady, though. A lumpsum invested just before a fall can take years to recover, while a SIP buys at many prices. That is why many investors with a large sum use a systematic transfer from a liquid or debt fund into equity over several months. The calculators show the arithmetic; the choice depends on your risk tolerance and timeline.
+
+## When to use a lumpsum calculator
+
+- **Investing a windfall** such as a bonus, gift, maturity proceeds or property sale.
+- **Checking an old investment:** enter the original amount and the years held to see what a given return would have produced, or use the [CAGR Calculator](https://www.biscsindia.com/tools/cagr-calculator/) to find the actual annual return from start and end values.
+- **Setting goal amounts:** pair it with the [Inflation Calculator](https://www.biscsindia.com/tools/inflation-calculator/) to see what your goal will cost in future.
+- **Comparing products:** try different returns for equity, debt or deposits to see how much the rate gap matters over 10 or 20 years.
+
+## Checklist before you trust the number
+
+- Is the return assumption reasonable for this type of investment, not just its best recent year?
+- Have you looked at the "today's money" figure, not only the nominal value?
+- Have you allowed for taxes on gains when you redeem, and any exit load?
+- Is your time horizon long enough for the asset's ups and downs?
+- If the money is for a near-term need, would a safer option such as a fixed deposit be more suitable? Compare it with the [FD Calculator](https://www.biscsindia.com/tools/fd-calculator/).
+
+## Limitations to keep in mind
+
+The tool assumes the same return every year, no withdrawals and no extra contributions. Market-linked investments rarely behave like that, and the sequence of returns matters if you need the money on a fixed date. The inflation adjustment uses one steady rate, whereas real inflation varies from year to year and between categories such as education and food.
+
+This guide offers general information and is not investment advice. Check scheme details on AMFI or your fund house's site, and talk to a SEBI-registered adviser before committing a large sum.
+
+Q: Is a lumpsum better than a SIP?
+A: If the return is the same, money invested earlier has longer to grow, so a lumpsum invested on day one ends higher than a SIP of the same total. In real markets, a lumpsum carries timing risk because you invest everything at one price. Many people split a large amount into a few tranches or a short SIP to manage that risk.
+
+Q: What does value in today's money mean?
+A: It is the future amount divided by the growth in prices over the same period. At 6% inflation, ₹3.11 lakh in 10 years buys roughly what ₹1.73 lakh buys today. It helps you judge whether an investment is truly growing your purchasing power, not just the number of rupees.
+
+Q: Can I use the lumpsum calculator for a fixed deposit?
+A: You can get a rough idea, but the lumpsum tool compounds once a year. Bank FDs usually compound quarterly, which gives a slightly higher maturity amount at the same rate. For deposits, the dedicated FD Calculator with a compounding frequency setting is more accurate.
+
+Q: How long does it take for money to double?
+A: A quick rule of thumb is to divide 72 by the annual return. At 12%, money roughly doubles in about 6 years; at 8%, in about 9 years. The rule is an approximation, and the calculator gives the exact figure for any rate and period you enter.
+
 ## How to Merge PDF Files Online for Free (Without Uploading)
 
 URL: https://www.biscsindia.com/blog/how-to-merge-pdf-files-free/
@@ -1569,7 +2073,7 @@ Almost every application in India now ends with an upload step, and many portals
 Getting the order and contents right first saves you from redoing the job.
 
 - Rename files with numbers (01-cover, 02-statement, 03-payslip) so they are easy to sort.
-- Rotate any sideways scans first with [Rotate PDF](https://www.biscsindia.com/tools/rotate-pdf/), because pages are merged exactly as they are.
+- Rotate any sideways scans first, because pages are merged exactly as they are and a sideways page stays sideways.
 - Delete blank or irrelevant pages before merging, or afterwards with [Remove PDF Pages](https://www.biscsindia.com/tools/remove-pdf-pages/).
 - Fill in any interactive forms before merging, since form fields are not carried over.
 - Check whether the portal has a file size limit, and keep an eye on the total size of what you are adding.
@@ -1597,6 +2101,20 @@ Merging never makes files smaller; the merged PDF is roughly the sum of its part
 | Take a few pages from one file into a new file | Extract PDF Pages |
 
 Merge is the quickest when each file already contains the right pages in the right order. If you need page-by-page control, start with [Organize PDF](https://www.biscsindia.com/tools/organize-pdf/) instead.
+
+## Example: building a home loan document pack
+
+Suppose Priya in Bengaluru is applying for a home loan. The bank's checklist asks for KYC, income proof and bank statements, and the online form has a single "Supporting documents" upload. Her files are scattered: a PAN card PDF from DigiLocker, an Aadhaar PDF, three monthly payslips from the HR portal, and a six-month statement from net banking.
+
+She opens the merger, adds all six files, and orders them the way the checklist does: PAN, Aadhaar, payslips from oldest to newest, then the statement. One click later she has a single 22-page PDF. Because the statement was a long digital file, the result is still small enough for the portal. Had it been a stack of scans, she would have compressed it before uploading.
+
+The point is that the order mirrors what the reviewer expects to see. A loan officer reading a well-ordered file can verify it quickly, which tends to mean fewer follow-up calls asking for "the missing document" that was actually on page 17.
+
+## What happens to file names and page sizes?
+
+Each page keeps its own size, so an A4 payslip and a Letter-size US document can sit side by side in the same PDF without being stretched. Portrait and landscape pages also keep their orientation.
+
+The output takes its name from the first file in the list, with "-merged" on the end. If you put the cover letter first, the result is named after the cover letter, which is often a sensible default.
 
 ## Tips for large batches
 
@@ -1938,6 +2456,106 @@ A: Divide the final amount by (1 + rate ÷ 100). If a price including 18% GST is
 Q: Is the percentage calculator free and private?
 A: Yes. The calculator is free to use without sign-up, and all the arithmetic happens in your browser as you type. The numbers you enter are not sent to a server, so you can use it for salary, marks or business figures without worry.
 
+## Remove Duplicate Lines from Any List Online (Free Tool)
+
+URL: https://www.biscsindia.com/blog/remove-duplicate-lines-from-list/
+Tool: Remove Duplicate Lines (https://www.biscsindia.com/tools/remove-duplicate-lines/)
+
+Quick answer: To remove duplicate lines, paste your list with one item per line into a duplicate remover and copy the cleaned result. BISCS India’s Remove Duplicate Lines tool keeps the first occurrence of each line in its original order, can ignore capital letters and stray spaces, and runs privately in your browser.
+
+To remove duplicate lines, paste your list (one item per line) into a duplicate remover and copy the result. Each repeated line is deleted, the first occurrence is kept, and the order of everything else stays the same.
+
+It is a two-second job that is surprisingly fiddly to do by hand, especially when the list has hundreds of entries or repeats hiding with different capital letters and extra spaces.
+
+## What does "remove duplicate lines" actually do?
+
+The tool treats each line of your text as one item. Reading from top to bottom, it remembers every line it has already seen. If a line appears again, it is dropped. If it is new, it is kept.
+
+So this list:
+
+- Mango
+- banana
+- Mango
+- Apple
+- Banana
+
+becomes **Mango, banana, Apple** with the default settings. Notice that "banana" stays in lower case because that was its first appearance.
+
+## How to remove duplicates from a list
+
+1. Open [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/).
+2. Paste your list into the left box, one item per line. Press **Sample** if you want to try it first.
+3. Choose your options: **Ignore case**, **Trim spaces** and **Remove empty lines** are all on by default.
+4. The unique list appears on the right immediately, with a badge showing how many duplicates were removed and the line count before and after.
+5. Click **Copy** or **Download** to save the result as a text file. **Use as input** moves the result back to the left if you want to run further changes.
+
+There is no button to press for processing. The result updates as you type or change an option.
+
+## Understanding the three options
+
+| Option | What it does | Turn it off when… |
+|---|---|---|
+| Ignore case | Treats "KOLKATA", "Kolkata" and "kolkata" as the same | Capitals carry meaning, like product codes or case-sensitive IDs |
+| Trim spaces | Removes spaces at the start and end of each line before comparing | Leading spaces matter, for example indented code |
+| Remove empty lines | Deletes blank lines completely | You need blank lines to separate groups |
+
+Trim spaces is more useful than it looks. Data copied from Excel, PDFs or WhatsApp often carries an invisible space at the end of some lines, so "9830012345" and "9830012345 " look identical but are not. With trimming on, they match.
+
+## Everyday uses in India
+
+People reach for this tool for all kinds of lists:
+
+- **WhatsApp broadcast or SMS lists**: merge numbers from several groups and remove repeats before sending, so nobody gets the same message twice.
+- **Wedding and event guest lists**: combine lists from both families and find who has been added twice.
+- **School and coaching records**: clean roll numbers or student names collected from multiple forms.
+- **GSTINs or invoice numbers**: check a ledger extract for duplicate entries before reconciling.
+- **SEO keyword research**: merge keyword lists from several tools into one unique set.
+- **Email lists**: tidy up newsletter sign-ups gathered from different sources.
+
+For lists that are buried inside messy text, such as an email thread or a web page, start with the [Email & URL Extractor](https://www.biscsindia.com/tools/text-extractor/). It pulls out emails, links and Indian mobile numbers and can remove duplicates itself.
+
+## Common mistakes when de-duplicating lists
+
+- **Expecting near-matches to merge.** "Amit Kumar" and "Kumar Amit", or "9830012345" and "+91 98300 12345", are different lines to the tool. Standardise the format first. The [Find and Replace](https://www.biscsindia.com/tools/find-and-replace/) tool can strip "+91 " or spaces across the whole list.
+- **Pasting several columns at once.** If each line holds a name and a phone number separated by a tab, the whole line must match exactly to count as a duplicate.
+- **Forgetting about invisible characters.** Text from PDFs and websites can contain zero-width spaces that make two lines look the same when they are not. If duplicates survive that should not, run the list through the [Whitespace Cleaner](https://www.biscsindia.com/tools/whitespace-cleaner/) with **Remove invisible characters** ticked.
+- **Losing the original.** Keep a copy of the raw list until you have checked the cleaned one, especially for financial records.
+
+## Remove duplicates and sort at the same time
+
+This tool deliberately keeps your original order, which matters for things like ranked lists or entries in date order. If you would rather have a neat alphabetical or numerical list, copy the result into [Sort Lines](https://www.biscsindia.com/tools/sort-lines/). It has its own **Remove duplicates** option, so for a quick sorted unique list you can do the whole job there in one step.
+
+## Excel, Google Sheets or an online tool?
+
+Spreadsheets can remove duplicates too, and for multi-column data they are the right choice. Excel has **Data → Remove Duplicates**, and Google Sheets has **Data → Data clean-up → Remove duplicates**.
+
+An online line tool is quicker when:
+
+- your data is not in a spreadsheet at all, such as a list typed in Notes or copied from a chat;
+- you want to ignore case and stray spaces without writing formulas;
+- you are on a phone where spreadsheet menus are awkward.
+
+## Is my data private?
+
+Yes. [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/) does all of its work with JavaScript inside your browser tab. Your list is not uploaded to a server or saved by BISCS India, and it disappears when you clear the box or close the page.
+
+If the list contains customers' personal details, you are still responsible for handling it lawfully, so keep copies only where you need them and delete exported files when the job is done.
+
+Q: Does removing duplicates change the order of my list?
+A: No. The tool reads your list from top to bottom and keeps the first time each line appears, dropping later repeats. Everything else stays in its original order. If you also want the list sorted alphabetically or numerically, use the Sort Lines tool afterwards.
+
+Q: Will Rahul and rahul be treated as duplicates?
+A: Only if Ignore case is ticked, which it is by default. With it on, lines that differ only in capital letters count as the same and the first version is kept. Untick it when capitalisation matters, for example with case-sensitive codes or passwords.
+
+Q: Can I remove duplicate rows from an Excel sheet with this?
+A: You can for a single column: copy the column, paste it in, and copy the unique list back. For whole rows with several columns, Excel’s own Remove Duplicates feature on the Data tab is better, because this tool compares each pasted line as one piece of text.
+
+Q: How many lines can the tool handle?
+A: Lists of tens of thousands of lines are processed almost instantly on a modern computer, because the comparison uses an efficient lookup in your browser. Very large pastes of several megabytes may feel slower on older phones, but nothing is uploaded, so there is no server limit.
+
+Q: Is it safe to paste customer phone numbers or emails?
+A: The tool runs entirely in your browser, so your list is not sent to or stored on BISCS India’s servers. That said, follow your organisation’s data rules and India’s data protection law when handling personal data, and avoid pasting it on shared computers.
+
 ## How to Delete Pages from a PDF for Free in Your Browser
 
 URL: https://www.biscsindia.com/blog/delete-pages-from-pdf-free/
@@ -2000,6 +2618,14 @@ Removing a page really removes it: the new PDF is built only from the pages you 
 
 However, information on the pages you keep stays as it is. If a page you need contains one sensitive line, such as a full account number, removing the page is not an option. In that case, recreate the document from its source, or use proper redaction software that permanently removes the text.
 
+## Example: cleaning up a scanned property file
+
+Meera in Hyderabad scanned her flat's purchase documents on the office copier to send to a bank for a top-up loan. The copier was set to double-sided, so the 18-page bundle came out as 36 pages, with a blank or near-blank back after most sheets. It also picked up the copier's own cover sheet as page 1.
+
+She opens the PDF, clicks page 1 and each blank back page while scanning the thumbnails, and the counter shows 19 pages selected. The status line says the new PDF will have 17 pages. That does not match the 18 sheets she scanned, so she looks again and spots that she clicked one page with a faint stamp on it. She deselects it, the count becomes 18, and she downloads a file that is half the original size.
+
+That small check, comparing the final page count with what you expect, is the best habit you can build with this tool.
+
 ## Tips for working faster
 
 - Zoom out in your browser (Ctrl and minus) to see more thumbnails at once in long documents.
@@ -2026,6 +2652,116 @@ A: Usually, yes. The removed pages and their images are not copied into the new 
 Q: How do I select many pages quickly?
 A: Type them in the box using commas and hyphens, for example 1, 4-9, 15. The thumbnails update to match. You can also click thumbnails directly, which is easier when you are spotting blank or duplicate pages by eye.
 
+## How to Create a robots.txt File (With Free Generator)
+
+URL: https://www.biscsindia.com/blog/create-robots-txt-file-guide/
+Tool: Robots.txt Generator (https://www.biscsindia.com/tools/robots-txt-generator/)
+
+Quick answer: A robots.txt file sits at the root of your website and tells crawlers which paths they may or may not crawl. BISCS India’s free Robots.txt Generator builds the file from presets and custom rules, adds your sitemap URL, checks for common syntax errors and lets you download it ready to upload.
+
+A robots.txt file is a plain text file at the root of your site that gives crawlers instructions about which parts of the site they may visit. It is one of the first files Googlebot requests, and a small mistake in it can hide an entire website from search.
+
+The [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/) from BISCS India builds the file for you from simple choices: a default policy, quick presets, custom rules and your sitemap URL. It checks each line as you go and explains what search engines will and will not do with it.
+
+## What does a robots.txt file actually do?
+
+Robots.txt is a set of polite requests, not a lock. Well-behaved crawlers like Googlebot and Bingbot read it and follow the rules. Badly behaved scrapers ignore it.
+
+The file uses a few simple directives:
+
+- `User-agent:` names the crawler a group of rules applies to. `*` means all crawlers.
+- `Disallow:` lists a path that crawler should not fetch.
+- `Allow:` makes an exception inside a disallowed folder.
+- `Sitemap:` gives the full URL of your XML sitemap.
+
+A simple, healthy file for a small business site often looks like this:
+
+```
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+
+Sitemap: https://www.example.com/sitemap.xml
+```
+
+## What robots.txt cannot do
+
+This is where many site owners go wrong, so it is worth being clear:
+
+| You want to | Use robots.txt? | Better approach |
+|---|---|---|
+| Stop crawlers wasting time on cart or search pages | Yes | Disallow those paths |
+| Keep a page out of Google results | No | Add a `noindex` meta tag and let Google crawl it |
+| Hide private documents | No | Password protection or server-level restrictions |
+| Remove a page already indexed | No | noindex, or the removals tool in Search Console |
+| Tell crawlers where your sitemap is | Yes | Add a `Sitemap:` line |
+
+The robots.txt file itself is public. Anyone can open it in a browser, so listing a "secret" folder in it actually advertises that folder.
+
+## How to create robots.txt with the BISCS tool
+
+1. Open the [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/).
+2. Choose the **Default for all crawlers**: **Allow all** for nearly every public website, or **Disallow all** for a staging or test site.
+3. Add **Quick presets** if they fit your site: block admin and login pages, block internal search results, or block cart and account pages for an online shop.
+4. Use **Add rule** for anything else. Pick a user-agent from the suggestion list (Googlebot, Bingbot and many others are included), choose Allow or Disallow, and type the path starting with `/`.
+5. Optionally enter a **Crawl-delay**. The tool reminds you that Google ignores it.
+6. Paste your **Sitemap URL(s)**, one per line, as full `https://` addresses.
+7. Read the messages under the output. Errors such as paths with spaces or missing user-agents are flagged.
+8. Press **Download** to save `robots.txt`, then upload it to the root of your site.
+
+Nothing is sent to a server while you build the file; it is assembled in your browser.
+
+## Should you block AI crawlers?
+
+The generator includes an optional preset that blocks several AI-related crawlers: GPTBot, CCBot, Google-Extended, anthropic-ai, ClaudeBot and PerplexityBot. Whether you should use it depends on what you want.
+
+Some points to weigh:
+
+- **These rules are voluntary.** Reputable AI companies say their crawlers respect robots.txt, but it is not an enforcement mechanism.
+- **Google-Extended is not a search crawler.** It is a control token that tells Google whether your content may be used for training and grounding its Gemini models. Blocking it does not affect how your site ranks in Google Search.
+- **Blocking can reduce visibility in AI answers.** If you want ChatGPT, Perplexity or similar tools to cite your pages, blocking their crawlers works against that goal.
+- **Bot names change.** Companies add and rename user agents, so review the list now and then against each company's official documentation.
+
+To check how an existing file treats these bots, paste it into the [AI Crawler Access Checker](https://www.biscsindia.com/tools/ai-crawler-checker/).
+
+## Common robots.txt mistakes
+
+- **Leaving `Disallow: /` live after launch.** Developers often block staging sites and forget to change the rule when the site goes live.
+- **Blocking CSS and JavaScript folders.** Google needs these to render your pages. Old advice to block `/wp-includes/` or `/assets/` can hurt how Google sees your site.
+- **Paths without a leading slash.** `Disallow: admin` is unclear; use `Disallow: /admin/`.
+- **Using robots.txt to fix duplicate content.** Use canonical tags instead, so Google can still see and consolidate the pages.
+- **Relative sitemap URLs.** The `Sitemap:` line must be a full URL. The tool checks this.
+- **Wrong file name or location.** It must be lowercase `robots.txt` at the domain root.
+
+## Tips for WordPress and online shops
+
+WordPress creates a virtual robots.txt automatically. If you upload a real file, it replaces the virtual one, so make sure it includes everything you need. The admin preset in the generator blocks `/wp-admin/` while still allowing `admin-ajax.php`, which some themes and plugins rely on.
+
+For WooCommerce or other shops, blocking cart, checkout and account pages saves crawl effort for the pages that matter. Faceted filter URLs (colour, size, price) can create thousands of near-duplicate pages; disallowing the filter parameters can help, but test carefully so you do not block category pages you want ranked.
+
+## After you upload the file
+
+Open `https://yourdomain.com/robots.txt` in a browser to confirm it is live. In Google Search Console, the robots.txt report shows the version Google fetched and any parsing problems.
+
+Then make sure the sitemap you referenced actually exists. If you do not have one yet, the [XML Sitemap Generator](https://www.biscsindia.com/tools/sitemap-generator/) can create it from a list of URLs. To confirm individual pages are not set to noindex by mistake, run them through the [On-Page SEO Checker](https://www.biscsindia.com/tools/on-page-seo-checker/).
+
+A good robots.txt is usually short. Build yours in the [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/), keep it simple, and revisit it whenever your site structure changes.
+
+Q: Does robots.txt stop a page from appearing in Google?
+A: Not reliably. robots.txt controls crawling, not indexing. A blocked URL can still be indexed if other sites link to it, usually without a description. To keep a page out of search results, allow crawling and add a noindex meta tag instead.
+
+Q: Where should the robots.txt file be placed?
+A: At the root of the domain, so it opens at https://yourdomain.com/robots.txt. Each subdomain needs its own file. A robots.txt placed in a subfolder is ignored by crawlers.
+
+Q: Does Google follow Crawl-delay?
+A: No. Googlebot ignores the Crawl-delay line. Bing and Yandex have historically respected it. If Google is genuinely overloading your server, there are other ways to manage this, such as temporarily returning 503 or 429 responses, explained in Google’s crawling documentation.
+
+Q: Should I block AI crawlers like GPTBot?
+A: It depends on your goals. Blocking them may keep future content out of some AI training or AI search features, but well-behaved bots follow robots.txt voluntarily, and blocking Google-Extended does not affect your Google Search ranking. Decide deliberately rather than by default.
+
+Q: Can a wrong robots.txt harm my SEO?
+A: Yes. A single line like Disallow: / under User-agent: * blocks every compliant crawler from your entire site. Always review the final file and test important URLs in Google Search Console’s robots.txt report after uploading.
+
 ## How to Rotate, Flip or Straighten a Photo Online for Free
 
 URL: https://www.biscsindia.com/blog/rotate-flip-image-online-free/
@@ -2043,7 +2779,7 @@ When you take a picture, your phone records which way it was held. Rather than r
 
 Your gallery app reads that tag and shows the photo correctly. But some websites, older desktop programs, document portals and print kiosks ignore it. The result: a photo that looked fine on your phone appears sideways after upload.
 
-The fix is to rotate the photo and save a fresh copy, so the correct orientation is part of the image itself rather than a hint in its metadata.
+The fix is to save a fresh copy with the correct orientation built into the pixels rather than left as a hint in the metadata. The BISCS India tool reads the orientation tag when it opens your photo, so if the preview already looks upright you can simply download it. If it is still sideways, the picture was genuinely taken that way and needs a rotate.
 
 ## How to rotate or flip an image
 
@@ -2086,7 +2822,7 @@ Fine rotation resamples the pixels, so there is a very slight softening. For exa
 ## Common mistakes to avoid
 
 - **Flipping when you meant to rotate.** A flipped portrait looks subtly wrong because faces are not perfectly symmetrical, and any text becomes mirrored. If you only wanted the photo upright, use rotate.
-- **Rotating a photo that only looks wrong in one app.** If it appears correctly in your gallery but sideways on one website, the website is ignoring the orientation tag. Saving a rotated copy here fixes it everywhere.
+- **Rotating a photo that only looks wrong in one app.** If it appears correctly in your gallery but sideways on one website, the website is ignoring the orientation tag. Open it here and check the preview before turning it, or you may end up rotating it twice.
 - **Straightening without cropping.** The angled empty corners look odd in the final image.
 - **Mirroring photos with logos or text for official use.** Mirrored certificates and ID documents will not be accepted.
 - **Repeated JPG saves.** Rotate once, from the original, rather than saving and re-rotating a JPG many times.
@@ -2106,6 +2842,103 @@ A: Many front cameras show a mirror image in the preview, and some also save it 
 
 Q: Does rotating a photo lose quality?
 A: Turning by exact 90 degree steps or flipping moves pixels without blending them, so the picture stays sharp. Small straightening angles require the pixels to be resampled, which softens the image very slightly. Saving as JPG also applies normal compression, so keep quality high.
+
+## Schema Markup Generator: Create JSON-LD Without Coding
+
+URL: https://www.biscsindia.com/blog/schema-markup-generator-json-ld-guide/
+Tool: Schema Markup Generator (https://www.biscsindia.com/tools/schema-markup-generator/)
+
+Quick answer: Schema markup is structured data, usually written as JSON-LD, that tells search engines exactly what a page describes, such as a business, product or article. BISCS India’s free Schema Markup Generator builds valid JSON-LD from a simple form for ten common types, flags missing required fields and lets you copy or download the script.
+
+Schema markup is a small block of code that describes your page in a language search engines understand precisely. Instead of guessing that "₹1,499" on a page is a price, Google reads a `price` property inside a `Product`. The most common format is JSON-LD, a script that sits in your HTML without changing how the page looks.
+
+The [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/) on BISCS India writes that JSON-LD for you. You choose a type, fill in a form, and copy a ready-to-paste script, with warnings for missing required fields.
+
+## What schema types can you create?
+
+The generator covers ten types that most small and medium websites actually need:
+
+| Type | Best for | Possible benefit |
+|---|---|---|
+| Local Business | Shops, clinics, CA firms, coaching centres, restaurants | Clear name, address, phone and opening hours for search and maps |
+| Organization | Company home or about page | Logo and official profiles linked to your brand |
+| Website (with search) | Home page | Helps Google show your preferred site name |
+| Product | Single product pages | Price, availability and genuine ratings in results |
+| Article / Blog post | Blog posts and news | Headline, image, author and dates understood correctly |
+| Breadcrumbs | Any page deep in your site | Readable breadcrumb path instead of a raw URL |
+| Event | Workshops, webinars, concerts, fests | Date, venue and ticket information |
+| Person | Author or professional profile pages | Connects a person to their work and profiles |
+| FAQ page | Pages with visible Q&As | Limited rich results today (see below) |
+| How-to | Step-by-step guides | Rich results retired by Google, still valid markup |
+
+The Local Business type offers sub-types such as ProfessionalService, Store, Restaurant, MedicalBusiness, FinancialService, LegalService and EducationalOrganization, so you can be specific about what you do.
+
+## How to generate schema markup step by step
+
+1. Open the [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/).
+2. Pick a **Schema type** from the dropdown, for example Local Business.
+3. Fill in the fields. Required fields are marked, and hints explain formats such as the two-letter country code `IN` or opening hours like `Mo-Fr 10:00-19:00`.
+4. For list-based types (FAQ questions, breadcrumb levels, how-to steps), use **Add** to create rows and the arrow button to reorder them.
+5. Watch the **JSON-LD** panel update live, and read the messages underneath. Errors must be fixed; warnings are advice.
+6. Press **Copy** for the full `<script type="application/ld+json">` block, **Copy JSON only** if your CMS wraps it for you, or **Download** to save it as a file.
+7. Paste it into your page, publish, and test the URL in Google's Rich Results Test.
+
+The tool runs entirely in your browser, so business details you are still finalising are never sent to a server.
+
+## Which rich results can you still get today?
+
+Search features change, so it is worth being realistic. Google has retired or restricted several rich results in recent years:
+
+- **FAQ rich results** were restricted in 2023 to well-known, authoritative government and health sites. Most business sites no longer get the expandable questions in search results.
+- **How-to rich results** were removed in 2023.
+- **The sitelinks search box** was retired in late 2024, although WebSite markup is still useful for site names.
+
+The markup itself remains valid schema.org vocabulary. Other search engines and AI systems may still read it to understand your content, so it is not wasted, but do not add FAQ or how-to schema expecting a visual change in Google.
+
+Types that commonly still produce visible features include Product (price, availability, ratings), Breadcrumbs, Event, Article and Local Business details. Eligibility is never guaranteed: Google decides whether to show them.
+
+## Local business schema for Indian businesses
+
+Local Business markup is the most valuable starting point for a shop or service in an Indian city. A few practical points:
+
+- **Use your full address**, including street, city, state and PIN code. The generator warns you when the street address is missing.
+- **Match your Google Business Profile exactly.** The same name, address and phone number everywhere builds trust.
+- **Add latitude and longitude** if you know them. You can copy them from Google Maps by right-clicking your location.
+- **Use the international phone format**, such as `+91 98XXXXXXXX`.
+- **List real social profiles** under sameAs: your Facebook page, LinkedIn company page or Instagram account.
+- **Set the price range** with something simple like ₹₹ if you want to signal affordability.
+
+## Common schema markup mistakes
+
+- **Marking up content that is not on the page.** If the FAQ questions or product price in your JSON-LD are not visible to visitors, Google treats it as misleading.
+- **Fake or self-written reviews.** The generator reminds you that ratings must come from real customers shown on the page. This is one of the quickest ways to get a manual penalty.
+- **Currency symbols in the price.** Prices must be plain numbers like `1499`, with the currency set separately as INR. The tool reports this as an error.
+- **Relative URLs.** Images and page URLs should be absolute, starting with `https://`.
+- **Several conflicting blocks.** Two plugins each adding an Organization block with different names confuses search engines. Check your final HTML with the [On-Page SEO Checker](https://www.biscsindia.com/tools/on-page-seo-checker/), which lists the structured data types it finds.
+- **Never updating it.** If your prices, hours or event dates change, the schema must change too.
+
+## Tips for getting more from structured data
+
+Start with the pages that matter most for enquiries: your home page (Organization or Local Business plus WebSite), your main service or product pages, and your contact page. Add Breadcrumbs on deeper pages so results show a readable path.
+
+For deeper entity work, such as linking an author to their LinkedIn profile and publications, the [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/) creates connected Organization and Person markup. If you have a page of genuine questions and answers, the [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/) builds the visible HTML and matching JSON-LD together so they always agree.
+
+Structured data is a quiet piece of SEO hygiene: it will not transform a weak page, but it removes guesswork for search engines. Build your first block in the [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/) and test it before you publish.
+
+Q: Does schema markup improve Google rankings?
+A: Structured data is not a direct ranking boost. It helps search engines understand your page and can make it eligible for rich results such as product prices, ratings, event dates and breadcrumbs, which can improve how your listing looks and how many people click it.
+
+Q: Is FAQ schema still worth adding?
+A: Google limited FAQ rich results in 2023 to well-known, authoritative government and health websites, so most sites will no longer see them. The markup is still valid schema.org and can help other search engines and AI systems understand question-and-answer content, as long as it matches visible text.
+
+Q: Where do I put JSON-LD on my page?
+A: Paste the script block into the page’s HTML, either in the head or the body. Google reads it in both places. On WordPress, use a plugin or a header-scripts field rather than editing theme files directly.
+
+Q: Can I add star ratings to my product schema?
+A: Only if the ratings come from real customers and are visible on the same page. Writing your own reviews or marking up ratings that visitors cannot see breaks Google’s structured data guidelines and can lead to a manual action.
+
+Q: How do I test my schema markup?
+A: Use Google’s Rich Results Test to see whether the page is eligible for rich results, and the Schema.org validator for general syntax checks. After publishing, Google Search Console reports structured data errors under its enhancements sections.
 
 ## Google SERP Preview: Check Title and Snippet Before You Publish
 
@@ -2293,6 +3126,87 @@ A: Sign on plain white paper with a dark pen, photograph it in good daylight, an
 Q: Can I add the date and my name next to the signature?
 A: Yes. The signing screen also has Add text and Tick tools, so you can type the date, your name, place or initials beside the signature before downloading the signed PDF.
 
+## SIP Calculator: How Much Will Your Monthly SIP Grow To?
+
+URL: https://www.biscsindia.com/blog/sip-calculator-mutual-fund-returns/
+Tool: SIP Calculator (https://www.biscsindia.com/tools/sip-calculator/)
+
+Quick answer: A SIP calculator compounds each monthly instalment at an assumed return. ₹10,000 a month for 10 years at 12% a year grows to about ₹23.2 lakh, of which ₹12 lakh is your own money. BISCS India's free SIP Calculator also handles yearly step-ups and shows year-by-year growth, but real fund returns are never guaranteed.
+
+A SIP (systematic investment plan) calculator estimates what a fixed monthly investment could grow to if it earns a steady return. Each instalment compounds for the months it stays invested, so early instalments grow the most. At an assumed 12% a year, ₹10,000 a month for 10 years builds to about ₹23.2 lakh, from ₹12 lakh invested.
+
+The free [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/) shows this in seconds, along with a step-up option and a year-by-year table. The key word is "assumed": mutual fund returns are market-linked, so the result is a planning estimate, not a promise.
+
+## How does a SIP calculator work?
+
+The BISCS tool adds your instalment at the start of each month and then grows the whole balance by one month's interest, which is the annual rate divided by 12. It repeats that for every month of the period. In formula terms, without a step-up, this equals:
+
+**FV = P × [((1 + i)^n − 1) ÷ i] × (1 + i)**
+
+where P is the monthly amount, i is the annual return ÷ 12 ÷ 100 and n is the number of months. The extra (1 + i) at the end reflects investing at the start of the month rather than the end.
+
+One subtle point: compounding 1% a month (12% ÷ 12) is slightly more than 12% a year in effective terms, about 12.68%. This is the convention most SIP calculators use, but it is worth knowing when you compare with an annual figure from a fund factsheet.
+
+## How to use the BISCS SIP Calculator
+
+1. Open the [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/).
+2. Set your **monthly investment**. The slider runs from ₹500 to ₹2 lakh.
+3. Enter an **expected return** per year. Start with a cautious figure.
+4. Choose the **time period** in years.
+5. Optionally add an **annual step-up** percentage to raise the SIP once a year.
+6. Read the estimated value, the amount invested and the estimated gain, then check the growth chart and the year-by-year table to see how the corpus builds.
+
+All maths runs in your browser. No account, no tracking of your goals and nothing uploaded.
+
+## Worked examples: time and step-ups matter
+
+| Plan | Invested | Estimated value at 12% | Gain |
+|---|---|---|---|
+| ₹10,000 a month, 10 years | ₹12.00 lakh | ₹23.23 lakh | ₹11.23 lakh |
+| ₹10,000 a month, 10 years, 10% yearly step-up | ₹19.12 lakh | ₹33.74 lakh | ₹14.62 lakh |
+| ₹5,000 a month, 20 years | ₹12.00 lakh | ₹49.96 lakh | ₹37.96 lakh |
+| ₹10,000 a month, 20 years | ₹24.00 lakh | ₹99.91 lakh | ₹75.91 lakh |
+
+Compare rows one and three. Both invest ₹12 lakh in total, but spreading it over 20 years at half the monthly amount roughly doubles the end value, because money has longer to compound. Doubling the SIP for 20 years (row four) takes the estimate close to ₹1 crore.
+
+The step-up row shows a practical habit. If your salary rises each April, raising your SIP by 10% keeps your savings rate steady. In this example the monthly instalment reaches about ₹23,579 in the tenth year.
+
+## When is a SIP calculator useful?
+
+- **Goal planning:** working backwards from a target, such as a child's college fund, by adjusting the monthly amount until the estimate meets it.
+- **Choosing a step-up:** seeing whether a 5% or 10% yearly increase closes the gap to your goal.
+- **Comparing with a lump sum:** if you have a bonus to invest, compare it with the [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/). Over the same period and return, a lump sum invested on day one earns more, but a SIP spreads your entry over time and fits a monthly income.
+- **Checking a fund's past growth:** use the [CAGR Calculator](https://www.biscsindia.com/tools/cagr-calculator/) to turn a starting and ending NAV into an annual growth rate, then test that rate here with caution.
+
+## Common SIP planning mistakes
+
+1. **Using a high return because a fund did well recently.** A few strong years can make 15% or more look normal. Test lower rates too.
+2. **Ignoring inflation.** ₹1 crore in 20 years will not buy what ₹1 crore buys today. Run your target through the [Inflation Calculator](https://www.biscsindia.com/tools/inflation-calculator/) first.
+3. **Stopping SIPs in a falling market.** The calculator's smooth growth hides that falls are when instalments buy more units. Stopping then can hurt long-term results.
+4. **Forgetting costs and taxes.** Expense ratios are already reflected in a fund's NAV, but exit loads and capital gains tax on redemption are not in this estimate.
+5. **Mixing goals in one SIP.** Separate SIPs for separate goals make it easier to choose suitable funds and timelines.
+
+## Honest limits of the estimate
+
+The calculator assumes the same return every month, no missed instalments and no withdrawals. Real portfolios are bumpy, and the order of good and bad years matters, particularly near the end of a goal. It also does not know which fund you hold or its risk level.
+
+So use it to understand scale and trade-offs, not to predict an exact figure. This article is general information and not investment advice. Read the scheme documents, check details on AMFI or your fund house's website, and consider a SEBI-registered investment adviser for decisions that matter to your family's future.
+
+Q: Is the SIP calculator result guaranteed?
+A: No. The calculator applies a steady assumed return every month, while real mutual fund returns move up and down with the market. Use the figure as a planning estimate, try a few different return rates, and remember that past performance of any fund does not promise future results.
+
+Q: What return rate should I assume for an equity SIP?
+A: There is no correct number. Many people test a conservative, a moderate and an optimistic rate, such as 8%, 10% and 12%, to see a range of outcomes. For debt or hybrid funds, lower assumptions are more sensible. Avoid planning important goals around the most optimistic case.
+
+Q: What is a step-up SIP?
+A: A step-up SIP increases the monthly instalment by a fixed percentage once a year, usually to keep pace with salary hikes. In the calculator, a 10% step-up turns a ₹10,000 SIP into about ₹23,579 a month by year ten, and the 10-year corpus rises from about ₹23.2 lakh to about ₹33.7 lakh at 12%.
+
+Q: Why does my fund statement show a different return from the calculator?
+A: Statements usually report XIRR, which accounts for the exact dates and amounts of every instalment and the actual fund value. The calculator assumes identical monthly growth and investment at the start of each month. Missed instalments, different dates and market swings all make the two figures differ.
+
+Q: Are SIP returns taxable?
+A: Yes, gains are taxed when you redeem units, under capital gains rules that depend on the type of fund and how long you held each instalment. Each SIP instalment has its own holding period. Rates and exemptions have changed in recent budgets, so check the current rules with the Income Tax Department or your adviser.
+
 ## Social Share Preview: Check Link Cards for WhatsApp and LinkedIn
 
 URL: https://www.biscsindia.com/blog/preview-link-whatsapp-facebook-linkedin/
@@ -2388,6 +3302,100 @@ A: No. An uploaded image is only used locally to draw the preview in your browse
 Q: Do Open Graph tags help SEO?
 A: They are not a Google ranking factor. Their value is in how your links look when shared, which affects how many people click them on social apps and messaging platforms. Google relies on your title tag and page content instead.
 
+## Sort Lines Alphabetically or by Number: Free Online Tool
+
+URL: https://www.biscsindia.com/blog/sort-lines-alphabetically-numerically-online/
+Tool: Sort Lines (https://www.biscsindia.com/tools/sort-lines/)
+
+Quick answer: To sort lines, paste a list with one item per line into a line sorter and pick an order such as A to Z, numeric or by length. BISCS India’s Sort Lines tool also offers natural sorting for item 2 before item 10, a fair shuffle, and duplicate removal, all inside your browser.
+
+To sort lines, paste a list with one item per line, choose an order such as **A → Z**, **Numeric** or **By length**, and copy the result. A good line sorter also handles the awkward cases, like putting "Flat 2" before "Flat 10" or ignoring the commas in "₹1,25,000".
+
+Below is how each sort mode works, which one to pick for common Indian lists, and the mistakes that lead to strange-looking results.
+
+## How to sort a list online
+
+1. Open [Sort Lines](https://www.biscsindia.com/tools/sort-lines/).
+2. Paste your list into the left box, one item per line.
+3. Pick a mode: **A → Z**, **Z → A**, **Natural**, **Numeric**, **By length**, **Reverse order** or **Shuffle**.
+4. Adjust the options if needed: **Remove duplicates**, **Trim spaces**, **Remove empty lines** and **Ignore case**.
+5. The sorted list appears on the right as you go. Click **Copy** or **Download**, or **Use as input** to sort it again a different way.
+
+If you chose Shuffle, a **Shuffle again** button appears so you can draw a fresh order.
+
+## Which sort order should you choose?
+
+Each mode solves a different problem. This table shows what each does with the same few lines.
+
+| Mode | Best for | Example result |
+|---|---|---|
+| A → Z | Names, cities, words | Agra, Bhopal, Chennai |
+| Z → A | Reverse alphabetical lists | Chennai, Bhopal, Agra |
+| Natural | Text with numbers inside | Flat 2, Flat 10, Flat 101 |
+| Numeric | Prices, scores, quantities | 7.5, 42, 100, 1,250 |
+| By length | Finding short or long entries | Tea, Coffee, Masala chai |
+| Reverse order | Flipping a list upside down | Last line becomes first |
+| Shuffle | Random order, draws, quiz questions | Different every time |
+
+### Alphabetical (A → Z and Z → A)
+
+These modes use your browser's language-aware comparison rather than raw computer codes. That means "apple" and "Apple" sit together instead of all capitals coming first, and accented names like "José" sort next to "Jose". With **Ignore case** off, lines that differ only in capitals are kept in a consistent order.
+
+### Natural
+
+Natural sort is the one most people actually want for anything with numbers in it. Plain A → Z puts "Roll 10" before "Roll 2", because it compares the character "1" with "2". Natural mode understands that 10 is bigger than 2. Use it for file names, invoice numbers like "INV-9" and "INV-12", flat numbers and chapter lists.
+
+### Numeric
+
+Numeric mode finds the first number in each line and sorts by its value. It ignores commas, so Indian-style figures like "1,25,000" are read correctly, and handles decimals and negative numbers. Lines without any number are moved to the bottom, which makes them easy to spot and fix.
+
+### By length
+
+Sorting by length, shortest first, is surprisingly useful. It quickly shows blank-looking entries, codes that are missing a digit (a 9-digit mobile number in a list of 10-digit ones) and over-long product names that will not fit on a label.
+
+### Shuffle
+
+Shuffle puts lines in random order using the browser's cryptographically secure random generator and the Fisher–Yates method, so every arrangement is equally likely. Teachers use it to mix quiz questions or seating plans, and offices use it for duty rosters or Secret Santa lists. For picking one or a few winners from a list, the [Random Picker](https://www.biscsindia.com/tools/random-picker/) is designed for that job.
+
+## Common mistakes and how to fix them
+
+- **Numbers sorted as text.** If "100" appears before "20", you are in A → Z mode. Switch to Natural or Numeric.
+- **Phone numbers in mixed formats.** "+91 98300 12345" and "9830012345" will not sort together. Standardise them first with [Find and Replace](https://www.biscsindia.com/tools/find-and-replace/).
+- **Hidden spaces at the start of lines.** A leading space can push an item to the top. Keep **Trim spaces** ticked.
+- **Dates in DD/MM/YYYY format.** Alphabetical sorting puts 01/12/2025 before 02/01/2025. For correct date order, write dates as YYYY-MM-DD before sorting, or sort them in a spreadsheet.
+- **Sorting multi-column data.** If each line has a name and an amount separated by a tab, the whole line is sorted by its start. For proper column sorting, open the data in a spreadsheet or the [Excel & CSV Converter](https://www.biscsindia.com/tools/excel-csv-converter/), which lets you sort by any column.
+
+## Practical examples
+
+**Alphabetical class list.** Paste student names, choose A → Z, tick Remove duplicates, and you have a clean register in seconds.
+
+**Price list from a supplier.** Paste lines like "Rice 25 kg – ₹1,450", choose Numeric, and the tool sorts by the first number it finds. Here that is 25, not the price, so put the price first in each line, or edit the text so the number you care about comes before any other.
+
+**Keyword lists.** SEO teams often merge keyword exports, remove duplicates and sort A → Z to group similar phrases together.
+
+**Random presentation order.** Paste team names, choose Shuffle, and share the result on the group chat.
+
+If you only need repeats removed and want to keep the existing order, use [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/) instead.
+
+## Does the sorter upload my list?
+
+No. [Sort Lines](https://www.biscsindia.com/tools/sort-lines/) runs completely inside your browser. The list you paste is not sent to BISCS India's servers or stored after you close the page, which makes it suitable for internal staff lists, customer data or exam marks.
+
+Q: Why does item 10 come before item 2 when I sort?
+A: Plain alphabetical sorting compares text character by character, so 1 in 10 comes before 2. Choose the Natural mode instead. It reads numbers inside text as whole numbers, so item 2 comes before item 10, the way people expect file names, roll numbers and flat numbers to be ordered.
+
+Q: How does numeric sort handle prices like ₹1,250?
+A: Numeric mode looks for the first number in each line, ignores the commas used as thousand separators, and sorts by its value. So ₹1,250 is read as 1250 and placed after ₹999. Lines with no number at all are moved to the end of the list.
+
+Q: Is the shuffle option random enough for a lucky draw?
+A: The shuffle uses your browser’s cryptographically secure random number generator with an unbiased algorithm, so every order is equally likely. For a public draw with prizes, also record the process, for example by screen recording, so participants can trust the result.
+
+Q: Can I sort Hindi or Bengali text?
+A: Yes. Alphabetical modes use your browser’s language-aware comparison, so text in Devanagari, Bengali and other scripts is ordered by that script’s character order instead of raw computer codes. Mixed lists usually place one script’s block before another’s.
+
+Q: Does the tool remove duplicates as well?
+A: It can. Tick Remove duplicates and repeated lines are dropped before sorting. Combine it with Ignore case so that Delhi and DELHI count as one entry. If you need to keep the original order instead, use the Remove Duplicate Lines tool.
+
 ## How to Split a PDF by Page Ranges, Every N Pages or Singly
 
 URL: https://www.biscsindia.com/blog/split-pdf-by-page-range-free/
@@ -2451,6 +3459,18 @@ Check the specific portal's instructions first. Some portals want a single file 
 - If the document has sideways pages, fix them first with [Rotate PDF](https://www.biscsindia.com/tools/rotate-pdf/); split copies pages as they are.
 - On phones, the ZIP lands in Downloads. Use your file manager to extract it before attaching parts to email or WhatsApp.
 
+## How the output files are named
+
+Each part is named after your original file plus the pages it contains, so `property-papers.pdf` split with ranges might give `property-papers-pages-1-4.pdf` and `property-papers-pages-5-12.pdf`. In All pages mode the parts are called `page-1`, `page-2` and so on, and in Every N or Pick mode they are numbered `part1`, `part2`.
+
+These names sort correctly in a file manager, which helps when you have dozens of parts. Still, a descriptive name helps the person who receives the file, so rename the important ones before you share them.
+
+## Example: separating a scanned bundle of documents
+
+Arjun, an accountant in Chennai, receives a 36-page scan from a client who fed every bill for the quarter into the office scanner at once. He needs each vendor's bills as a separate PDF for his records.
+
+He opens the file, switches to Pick mode, and clicks the last page of each vendor's set while glancing at the thumbnails: page 4, page 9, page 15 and so on. The status line confirms that eight files will be created. One click later he has a ZIP of eight PDFs, each starting at the right page. What would have taken twenty minutes with print-and-rescan is done in under two.
+
 ## Privacy and performance
 
 The splitting is done by a PDF library that runs in your browser tab. Your file is read from your device and the parts are written back to your device, with no upload in between. That makes it suitable for medical reports, legal bundles and anything carrying Aadhaar or PAN details.
@@ -2471,6 +3491,108 @@ A: No. Pages are copied exactly as they are into the new files, so text stays se
 
 Q: Can I split a scanned PDF?
 A: Yes. Splitting works on pages, not on text, so scanned and digital PDFs both split the same way. Scanned pages are often large, so if a part is still too big for an upload portal, compress it afterwards.
+
+## URL Encode and Decode: Percent-Encoding Explained Simply
+
+URL: https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/
+Tool: URL Encode / Decode (https://www.biscsindia.com/tools/url-encoder/)
+
+Quick answer: URL encoding, or percent-encoding, replaces characters that are unsafe in a web address with a % sign and their byte value in hex, so a space becomes %20 and & becomes %26. BISCS India's URL Encode / Decode tool converts both ways, supports component and full-URL modes, and breaks any URL into its parts in your browser.
+
+URL encoding, properly called percent-encoding, is how web addresses carry characters that would otherwise break them. A space becomes `%20`, an ampersand becomes `%26`, and the rupee sign becomes `%E2%82%B9`. Each `%XX` is one byte written in hexadecimal.
+
+You need it whenever you put user text, search terms or another URL inside a link. The [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/) tool on BISCS India converts both ways, lets you choose between component and full-URL encoding, and includes a URL parser that splits any address into its parts.
+
+## Why do URLs need encoding at all?
+
+A URL has structure. The `?` starts the query string, `&` separates parameters, `=` joins a key to its value, `#` starts a fragment and `/` separates path segments. If your data contains any of these characters, the browser and server cannot tell data from structure.
+
+Imagine a search for "salt & pepper" on a shopping site:
+
+```text
+https://shop.example.com/search?q=salt & pepper&sort=price
+```
+
+The server sees a parameter `q` with value `salt `, then a broken parameter called ` pepper`. Encoded properly, it is unambiguous:
+
+```text
+https://shop.example.com/search?q=salt%20%26%20pepper&sort=price
+```
+
+## encodeURIComponent vs encodeURI
+
+JavaScript has two built-in functions, and the tool offers both under **Type**.
+
+| Function | Leaves alone | Use for |
+| --- | --- | --- |
+| `encodeURIComponent` | Letters, digits and `- _ . ! ~ * ' ( )` | One parameter value, a path segment, a URL inside another URL |
+| `encodeURI` | All of the above plus `; , / ? : @ & = + $ #` | A whole URL that is already correctly built |
+
+The rule of thumb: encode each **piece** with `encodeURIComponent`, then join the pieces. Using `encodeURI` on a parameter value is a classic bug, because it leaves `&` and `=` unencoded.
+
+```js
+const city = 'Mumbai & Thane';
+const url = 'https://api.example.com/stores?city=' + encodeURIComponent(city);
+// https://api.example.com/stores?city=Mumbai%20%26%20Thane
+```
+
+For building URLs in code, the `URLSearchParams` object handles this for you and is usually the cleanest option.
+
+## How to encode or decode a URL with BISCS India
+
+1. Open [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/).
+2. Choose **Encode** or **Decode**.
+3. Select the **Type**: **Component (encodeURIComponent)** for a single value, or **Full URL (encodeURI)** for a whole address.
+4. Tick **Spaces as + (form encoding)** if you are working with HTML form data.
+5. Paste your text or URL into **Input**. The **Output** updates as you type.
+6. Click **Copy**, or **Swap** to move the output back into the input and reverse the direction.
+
+If decoding fails, for example because of a stray `%` not followed by two hex digits, the tool tells you instead of returning half-decoded text.
+
+## Using the URL parser
+
+Below the encoder is a **URL parser**. Paste any address and it breaks it into protocol, username, password, host, port, path, query and fragment, then lists every query parameter in a table with its decoded value.
+
+This is handy for:
+
+- Reading long tracking links from ad platforms or emails to see what is really in them.
+- Debugging an API call where one parameter seems to be missing.
+- Checking repeated parameters, such as `tags=silk&tags=wedding`, which the table shows as separate rows.
+
+If you build campaign links regularly, the [UTM Link Builder](https://www.biscsindia.com/tools/utm-builder/) creates correctly encoded tracking URLs from a simple form.
+
+## What happens to Indian-language text?
+
+URLs travel as ASCII. Non-ASCII text is first converted to UTF-8 bytes, and each byte is percent-encoded. Devanagari, Bengali and Tamil characters use three bytes each, so a short Hindi word turns into a long string of `%E0%A4…` codes.
+
+Modern browsers display the readable form in the address bar, but copy-paste often gives you the encoded form. The decoder turns it back. For website page addresses, plain English slugs are usually easier to share; the [Slug Generator](https://www.biscsindia.com/tools/slug-generator/) can create one from any title.
+
+## Common mistakes with URL encoding
+
+- **Double encoding.** Encoding an already-encoded string turns `%20` into `%2520`. If a server shows `%20` literally on the page, something encoded twice.
+- **Encoding the whole URL with encodeURIComponent.** This turns `https://` into `https%3A%2F%2F` and the link stops working. Only use component encoding on pieces.
+- **Forgetting to encode user input.** A customer name like `D'Souza & Sons` will break a query string if inserted raw.
+- **Mixing up + and %20.** In a path, `+` is a literal plus. In form-encoded query strings, it means space. Know which context you are in.
+- **Confusing URL encoding with Base64.** They solve different problems. For binary data in a URL, use URL-safe Base64 from the [Base64 Encode / Decode](https://www.biscsindia.com/tools/base64-encoder/) tool.
+
+## Privacy
+
+Links frequently contain session tokens, email addresses or reset codes in their query strings. The encoder and the parser run entirely in your browser using the standard `encodeURIComponent`, `decodeURIComponent` and `URL` functions, so nothing you paste is uploaded or logged.
+
+Q: What does %20 mean in a URL?
+A: %20 is the percent-encoded form of a space character. Spaces are not allowed in URLs, so they are replaced by a percent sign followed by the character’s hexadecimal byte value, which is 20 for a space. In HTML form submissions, a space may instead appear as a plus sign.
+
+Q: Should I use encodeURI or encodeURIComponent?
+A: Use encodeURIComponent for a single piece of a URL, such as one query parameter value or a path segment, because it also encodes reserved characters like &, = and /. Use encodeURI only for a complete URL that is already correctly structured, since it leaves those structural characters alone.
+
+Q: Why do I see a + instead of a space in some URLs?
+A: HTML forms submitted with the application/x-www-form-urlencoded format encode spaces as + rather than %20. Both are common in query strings. When decoding form data, tick the Spaces as + option so that plus signs are turned back into spaces instead of being kept as literal plus characters.
+
+Q: Why is my Hindi text in a URL shown as lots of % codes?
+A: Non-ASCII characters are first converted to UTF-8 bytes, and each byte is then percent-encoded. A single Devanagari letter takes three bytes in UTF-8, so it becomes three %XX groups. Browsers often display the readable version in the address bar but send the encoded form.
+
+Q: Can URL encoding break a link if done twice?
+A: Yes. Encoding an already-encoded URL turns each % into %25, so %20 becomes %2520 and the server receives the wrong text. If you see %25 in a link, it has probably been double-encoded. Decode it once and check that the result looks right.
 
 ## Free Word Counter: Count Words, Characters and Reading Time
 
