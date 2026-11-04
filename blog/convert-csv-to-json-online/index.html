@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
+<link rel="stylesheet" href="../../assets/css/site.css?v=86f7d54112">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/convert-csv-to-json-online/#article","headline":"How to Convert CSV to JSON Online (Quotes, Types, Headers)","description":"Convert CSV or Excel exports into a clean JSON array. Handle quoted commas, detect numbers and booleans, pick delimiters and keep PIN codes safe.","abstract":"To convert CSV to JSON, paste the CSV into a converter that reads the first row as headers and turns each following row into a JSON object. BISCS India's CSV to JSON tool auto-detects the delimiter, handles quoted commas and line breaks, optionally converts numbers and booleans, and runs fully in your browser.","url":"https://www.biscsindia.com/blog/convert-csv-to-json-online/","mainEntityOfPage":"https://www.biscsindia.com/blog/convert-csv-to-json-online/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":999,"keywords":"csv to json, convert csv to json online, csv to json array, excel to json, tsv to json","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"CSV to JSON","url":"https://www.biscsindia.com/tools/csv-to-json/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Convert CSV to JSON Online (Quotes, Types, Headers)","item":"https://www.biscsindia.com/blog/convert-csv-to-json-online/"}]}</script>
@@ -68,6 +68,7 @@
         <div><strong>CSV to JSON</strong><p>Convert CSV data into a JSON array.</p></div>
         <a class="btn btn-primary" href="../../tools/csv-to-json/">Open CSV to JSON <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
       </div>
+      <div class="ad-slot" data-ad="article-top"></div>
       <div class="prose article-body"><p>Converting CSV to JSON means reading a table and writing each row out as an object whose keys come from the header row. A two-line CSV like <code>name,city</code> / <code>Asha,Delhi</code> becomes <code>[{&quot;name&quot;: &quot;Asha&quot;, &quot;city&quot;: &quot;Delhi&quot;}]</code>.</p>
 <p>That sounds simple, until you meet a value with a comma in it, a note that spans two lines, or a semicolon-separated file from a European tool. The <a href="/tools/csv-to-json/">CSV to JSON</a> converter on BISCS India follows the CSV standard (RFC 4180) closely, so those cases come out right, and it all happens in your browser.</p>
 <h2 id="why-convert-csv-to-json">Why convert CSV to JSON?</h2>
@@ -155,6 +156,7 @@
 </ul>
 <p>Five seconds spent on this list saves a lot of head-scratching when the import fails later.</p>
 </div>
+      <div class="ad-slot" data-ad="article-end"></div>
       <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>How do I convert an Excel sheet to JSON?</summary><p>Save or export the sheet as CSV first (File, Save As, CSV UTF-8 in Excel, or File, Download, CSV in Google Sheets). Then paste or upload the CSV into the converter. If you have an .xlsx file and no Excel, the BISCS India Excel and CSV Converter can produce the CSV for you.</p></details><details><summary>Why did my PIN code or phone number lose its leading zero?</summary><p>With type detection on, a value like 0042 is kept as a string because numbers with leading zeros are not valid JSON numbers. However, the source CSV may already have lost the zero if Excel saved it as a number. Format such columns as Text in Excel before exporting.</p></details><details><summary>What does “Detect numbers, booleans &amp; null” do?</summary><p>CSV has no data types; every value is text. With this option on, values like 2500.50 become JSON numbers, true and false become booleans, and the word null becomes null. Turn it off when you need every value kept exactly as a string, for example IDs or codes.</p></details><details><summary>Can the converter handle commas inside a value?</summary><p>Yes, as long as the value is wrapped in double quotes in the CSV, which is the standard. For example, &quot;Das, Rohan&quot; stays one value. Double quotes inside a quoted value are written as two quotes, and line breaks inside quotes are also preserved.</p></details><details><summary>What if some rows have fewer columns than the header?</summary><p>The missing cells are filled with empty strings, or null if you tick Empty cells as null. The status line warns you how many rows were short, which often signals an unquoted comma or a broken line in the source file.</p></details></section>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18" /><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 9h18" /><path d="M3 15h18" /></svg></span>
@@ -216,9 +218,9 @@
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/registry.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/icons.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/core.js?v=86f7d54112" defer></script>
 
 </body>
 </html>

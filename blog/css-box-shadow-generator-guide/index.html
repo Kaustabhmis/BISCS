@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
+<link rel="stylesheet" href="../../assets/css/site.css?v=86f7d54112">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/#article","headline":"CSS Box Shadow Generator: Soft, Layered and Inset Shadows","description":"Build CSS box shadows visually: offset, blur, spread, colour, inset and multiple layers. Learn what each value does and copy clean CSS for cards and buttons.","abstract":"The CSS box-shadow property draws a shadow around an element using up to five parts: horizontal offset, vertical offset, blur, spread and colour, plus an optional inset keyword. BISCS India's Box Shadow Generator lets you adjust each value with sliders, stack up to eight layers and copy the finished CSS, all in your browser.","url":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/","mainEntityOfPage":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":958,"keywords":"box shadow generator, css box shadow, box-shadow examples, inset shadow css, layered shadow css","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"Box Shadow Generator","url":"https://www.biscsindia.com/tools/box-shadow-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"CSS Box Shadow Generator: Soft, Layered and Inset Shadows","item":"https://www.biscsindia.com/blog/css-box-shadow-generator-guide/"}]}</script>
@@ -68,6 +68,7 @@
         <div><strong>Box Shadow Generator</strong><p>Build CSS box shadows visually.</p></div>
         <a class="btn btn-primary" href="../../tools/box-shadow-generator/">Open Box Shadow Generator <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
       </div>
+      <div class="ad-slot" data-ad="article-top"></div>
       <div class="prose article-body"><p>The CSS <code>box-shadow</code> property adds depth to flat elements: a card that seems to float, a button that looks pressable, an input that appears recessed. One line of CSS replaces what used to need image files and extra markup.</p>
 <p>The catch is that its five numbers interact in ways that are hard to picture. The <a href="/tools/box-shadow-generator/">Box Shadow Generator</a> on BISCS India solves that with sliders and a live preview. Adjust offset, blur, spread, colour and opacity, stack several layers, and copy the CSS once it looks right.</p>
 <h2 id="the-anatomy-of-a-box-shadow">The anatomy of a box-shadow</h2>
@@ -170,6 +171,7 @@ box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.18);
 <h2 id="privacy">Privacy</h2>
 <p>The preview is rendered by your browser and the CSS is generated on the page. Nothing is uploaded or saved, and there is no sign-up or watermark.</p>
 </div>
+      <div class="ad-slot" data-ad="article-end"></div>
       <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>What is the order of values in box-shadow?</summary><p>The order is horizontal offset, vertical offset, blur radius, spread radius and colour, for example 0 10px 30px -5px rgba(0, 0, 0, 0.18). Offsets are required; blur and spread are optional and default to zero. The inset keyword can go at the start or the end, and multiple shadows are separated by commas.</p></details><details><summary>What is the difference between blur and spread?</summary><p>Blur controls how soft the shadow’s edge is: zero gives a hard edge, larger values fade it out over more pixels. Spread grows or shrinks the shadow before blurring. A positive spread makes it bigger than the element, and a negative spread pulls it inwards, which is the secret to soft, natural shadows.</p></details><details><summary>Does box-shadow slow down a website?</summary><p>Static shadows are cheap for modern browsers. Problems arise mainly when very large, heavily blurred shadows are animated, or when hundreds of shadowed elements scroll on low-end phones. To animate a shadow smoothly, fade in a pseudo-element that already has the shadow, rather than animating box-shadow itself.</p></details><details><summary>Why use rgba instead of a solid colour for shadows?</summary><p>Real shadows are partly transparent, letting the background show through. A solid grey shadow looks flat and wrong on coloured backgrounds. A black or dark-tinted colour at low opacity, typically 0.05 to 0.25, blends naturally with whatever is behind the element.</p></details><details><summary>What is the difference between box-shadow and drop-shadow?</summary><p>box-shadow follows the element’s rectangular box, including rounded corners. The CSS filter drop-shadow follows the actual visible shape, including transparent areas of a PNG or SVG. Use box-shadow for cards and buttons, and drop-shadow for irregular shapes like icons or cut-out product photos.</p></details></section>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><path d="M10 16c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2" /><rect width="8" height="8" x="14" y="14" rx="2" /></svg></span>
@@ -231,9 +233,9 @@ box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.18);
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/registry.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/icons.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/core.js?v=86f7d54112" defer></script>
 
 </body>
 </html>

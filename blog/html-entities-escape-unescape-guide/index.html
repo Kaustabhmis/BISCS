@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
+<link rel="stylesheet" href="../../assets/css/site.css?v=86f7d54112">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/#article","headline":"HTML Entities: How to Escape and Unescape Special Characters","description":"Learn which characters to escape in HTML, named vs numeric entities like &nbsp; and &#8377;, and how escaping helps prevent XSS. Free browser-based encoder.","abstract":"HTML escaping replaces characters with special meaning in HTML, mainly \u003c, >, & and quotes, with entities such as &lt; and &amp; so browsers show them as text instead of treating them as code. BISCS India's HTML Entity Encoder escapes and unescapes text in named, decimal or hex style, entirely in your browser.","url":"https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/","mainEntityOfPage":"https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1059,"keywords":"html entity encoder, html escape online, html unescape, html special characters, convert text to html entities","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"HTML Entity Encoder","url":"https://www.biscsindia.com/tools/html-entity-encoder/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"HTML Entities: How to Escape and Unescape Special Characters","item":"https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/"}]}</script>
@@ -68,6 +68,7 @@
         <div><strong>HTML Entity Encoder</strong><p>Escape and unescape HTML special characters.</p></div>
         <a class="btn btn-primary" href="../../tools/html-entity-encoder/">Open HTML Entity Encoder <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
       </div>
+      <div class="ad-slot" data-ad="article-top"></div>
       <div class="prose article-body"><p>HTML entities are short codes that let you show special characters as plain text on a web page. The browser reads <code>&lt;</code> as the start of a tag, so to display a literal less-than sign you write <code>&amp;lt;</code>. Escaping is the process of swapping such characters for entities; unescaping turns them back.</p>
 <p>The <a href="/tools/html-entity-encoder/">HTML Entity Encoder</a> on BISCS India does both directions in your browser. It can encode just the essential characters, or every non-ASCII character too, in named, decimal or hexadecimal style.</p>
 <h2 id="why-do-some-characters-need-escaping">Why do some characters need escaping?</h2>
@@ -175,6 +176,7 @@
 <h2 id="privacy">Privacy</h2>
 <p>All conversion happens in your browser with JavaScript. Whatever you paste, whether email templates, internal pages or client copy, stays on your device.</p>
 </div>
+      <div class="ad-slot" data-ad="article-end"></div>
       <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Which characters must be escaped in HTML?</summary><p>At minimum, escape the ampersand as &amp;amp;, the less-than sign as &amp;lt; and the greater-than sign as &amp;gt; in text. Inside attribute values, also escape double quotes as &amp;quot; and single quotes as &amp;#39;. Other characters such as ₹ or Hindi letters can be written directly if the page uses UTF-8.</p></details><details><summary>Does escaping HTML prevent XSS attacks?</summary><p>Escaping untrusted text before inserting it into HTML is a core defence against cross-site scripting, but it must match the context. Text in an element body, an attribute, a URL and inline JavaScript each need different handling. Use your framework’s built-in escaping or templating rather than doing it by hand in production.</p></details><details><summary>What is the difference between named and numeric entities?</summary><p>Named entities use a memorable word, such as &amp;copy; for the copyright sign. Numeric entities use the character’s Unicode code point in decimal, like &amp;#169;, or hexadecimal, like &amp;#xA9;. All three display the same character. Numeric entities work for every character, while named ones exist only for a defined list.</p></details><details><summary>Do I need entities for ₹ or Indian-language text?</summary><p>Not if your page is saved and served as UTF-8 with a meta charset tag, which is standard today. You can type ₹, Devanagari or Tamil directly. Entities like &amp;#8377; are useful when an old system, email template or CMS field mangles non-ASCII characters.</p></details><details><summary>Why does my page show &amp;amp;amp; instead of &amp;?</summary><p>The text was escaped twice. The first pass turned &amp; into &amp;amp;, and the second pass escaped that ampersand again. Decode the text once with the Decode mode, then make sure only one layer of your code performs escaping.</p></details></section>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 16 4-4-4-4" /><path d="m6 8-4 4 4 4" /><path d="m14.5 4-5 16" /></svg></span>
@@ -236,9 +238,9 @@
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/registry.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/icons.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/core.js?v=86f7d54112" defer></script>
 
 </body>
 </html>

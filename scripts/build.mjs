@@ -33,6 +33,17 @@ const SITE = {
     { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/biscsindia/' }
   ],
   published: '2026-11-02',
+  /*
+   * Google AdSense. Paste your publisher ID (from AdSense → Account →
+   * Account information), e.g. 'ca-pub-1234567890123456', then rebuild.
+   * With only `client` set, Auto ads work and Google picks placements.
+   * To use fixed placements as well, create "Display" ad units in AdSense and
+   * paste each unit's data-ad-slot number below.
+   */
+  adsense: {
+    client: '',
+    slots: { 'tool-top': '', 'tool-side': '', 'article-top': '', 'article-end': '' }
+  },
   address: { locality: 'Kolkata', region: 'West Bengal', postalCode: '700026', country: 'IN', countryName: 'India' },
   year: new Date().getFullYear(),
   version: '' // cache-buster for CSS/JS, set from asset contents below
@@ -50,6 +61,13 @@ const SITE = {
 }
 
 // ----------------------------------------------------------------- helpers
+/** An AdSense unit for a named placement, or an empty (hidden) slot. */
+function adSlot(name) {
+  const { client, slots } = SITE.adsense;
+  const id = slots[name];
+  if (!client || !id) return `<div class="ad-slot" data-ad="${name}"></div>`;
+  return `<div class="ad-slot ad-on" data-ad="${name}"><span class="ad-label">Advertisement</span><ins class="adsbygoogle" style="display:block" data-ad-client="${client}" data-ad-slot="${id}" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`;
+}
 const ORG_ID = SITE.url + '/#organization';
 const ORG = {
   '@context': 'https://schema.org', '@type': 'Organization', '@id': ORG_ID, name: SITE.name,
@@ -128,7 +146,9 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#4f46e5">
 <link rel="icon" href="${base}favicon.svg" type="image/svg+xml">
-<link rel="manifest" href="${base}site.webmanifest">
+<link rel="manifest" href="${base}site.webmanifest">${SITE.adsense.client ? `
+<meta name="google-adsense-account" content="${SITE.adsense.client}">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsense.client}" crossorigin="anonymous"></script>` : ''}
 <link rel="alternate" type="application/rss+xml" title="${esc(SITE.name)} Blog" href="${base}blog/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -388,14 +408,14 @@ function buildTool(t) {
 <div class="container">
   <div class="tool-layout${wide ? '' : ' has-aside'}">
     <div>
-      <div class="ad-slot" data-ad="tool-top"></div>
+      ${adSlot('tool-top')}
       <h2 class="sr-only">${esc(t.name)} tool</h2>
       <div id="tool-root" data-tool="${t.id}"><div class="loading"><span class="spinner"></span> Loading ${esc(t.name)}…</div></div>
       <noscript><p class="notice warn">Please enable JavaScript to use this tool.</p></noscript>
     </div>
     ${wide ? '' : `<aside class="tool-aside">
       <div class="card"><h3>Related tools</h3><div class="mini-list">${related.map((r) => miniLink(r, base)).join('')}</div></div>
-      <div class="ad-slot" data-ad="tool-side"></div>
+      ${adSlot('tool-side')}
       <div class="card promo"><h3>Manage your team with DomeBox</h3><p>A task management system built for Indian businesses.</p><a class="btn btn-sm" href="https://www.domebox.in" target="_blank" rel="noopener">Try DomeBox ${icon('external-link')}</a></div>
     </aside>`}
   </div>
@@ -579,6 +599,10 @@ function buildStaticPages() {
 function buildSitemap() {
   const today = new Date().toISOString().slice(0, 10);
   const urls = ['/', ...CATEGORIES.map((c) => `/category/${c.id}/`), ...TOOLS.map((t) => `/tools/${t.id}/`), '/blog/', ...ARTICLES.map((a) => `/blog/${a.slug}/`), '/about/', '/contact/', '/privacy/', '/terms/'];
+  // ads.txt authorises Google to sell ads on this domain (required by AdSense).
+  const pub = SITE.adsense.client.replace(/^ca-/, '');
+  if (pub) write('ads.txt', `google.com, ${pub}, DIRECT, f08c47fec0942fa0\n`);
+  else if (fs.existsSync(path.join(ROOT, 'ads.txt'))) fs.unlinkSync(path.join(ROOT, 'ads.txt'));
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE.url}${u}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
@@ -725,7 +749,9 @@ function buildArticle(a) {
         <div><strong>${esc(t.name)}</strong><p>${esc(t.desc)}</p></div>
         <a class="btn btn-primary" href="${base}tools/${t.id}/">Open ${esc(t.name)} ${icon('arrow-right')}</a>
       </div>
+      ${adSlot('article-top')}
       <div class="prose article-body">${a.html}</div>
+      ${adSlot('article-end')}
       ${a.faq && a.faq.length ? `<section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2>${a.faq.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>` : ''}
       <div class="tool-cta" style="--c:${c.color}">
         <span class="tool-icon">${icon(t.icon)}</span>

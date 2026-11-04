@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
+<link rel="stylesheet" href="../../assets/css/site.css?v=86f7d54112">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/minify-css-html-json-online/#article","headline":"How to Minify CSS, HTML and JSON Online (and What It Saves)","description":"Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.","abstract":"Minifying code removes whitespace, line breaks and comments that browsers do not need, making CSS, HTML and JSON files smaller and slightly faster to download. BISCS India's CSS / HTML / JSON Minifier does this in your browser, keeps licence comments and preformatted content intact, and shows exactly how many bytes you saved.","url":"https://www.biscsindia.com/blog/minify-css-html-json-online/","mainEntityOfPage":"https://www.biscsindia.com/blog/minify-css-html-json-online/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1065,"keywords":"css minifier, minify html online, json minify, compress css code, html minifier","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"CSS / HTML / JSON Minifier","url":"https://www.biscsindia.com/tools/code-minifier/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Minify CSS, HTML and JSON Online (and What It Saves)","item":"https://www.biscsindia.com/blog/minify-css-html-json-online/"}]}</script>
@@ -68,6 +68,7 @@
         <div><strong>CSS / HTML / JSON Minifier</strong><p>Minify CSS, HTML and JSON to reduce file size.</p></div>
         <a class="btn btn-primary" href="../../tools/code-minifier/">Open CSS / HTML / JSON Minifier <svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
       </div>
+      <div class="ad-slot" data-ad="article-top"></div>
       <div class="prose article-body"><p>Minifying code means stripping out everything a browser does not need: indentation, line breaks, comments and redundant characters. The page looks and works exactly the same, but the file is smaller, so it downloads and parses a little faster.</p>
 <p>The <a href="/tools/code-minifier/">CSS / HTML / JSON Minifier</a> on BISCS India handles all three formats in one place. Paste your code or upload a file, and it shows the minified output alongside the original size, the new size and the percentage saved.</p>
 <h2 id="what-does-minification-remove">What does minification remove?</h2>
@@ -166,6 +167,7 @@
 <h2 id="privacy">Privacy</h2>
 <p>Your code is processed entirely in the browser. Nothing is uploaded, which means unreleased designs, client templates and internal configuration files stay on your computer.</p>
 </div>
+      <div class="ad-slot" data-ad="article-end"></div>
       <section class="faq article-faq"><h2 id="faq">Frequently asked questions</h2><details><summary>Does minifying CSS or HTML change how the page looks?</summary><p>It should not. Minification only removes characters that have no effect on rendering, such as indentation, comments and redundant semicolons. Whitespace that matters, for example inside pre and textarea elements, is preserved. Always test the minified page once, because unusual markup or CSS hacks can occasionally behave differently.</p></details><details><summary>Is minification still worth it if my server uses gzip or Brotli?</summary><p>Usually yes, but the gain is smaller. Compression already shrinks repeated whitespace very efficiently, so a file that is 30% smaller after minifying might be only a few percent smaller after compression. Minifying also removes comments, which can contain internal notes you would rather not publish.</p></details><details><summary>Can I minify JavaScript with this tool?</summary><p>No. This tool handles CSS, HTML and JSON. Safely minifying JavaScript requires understanding variable scope and syntax in depth, which is the job of dedicated tools such as Terser or esbuild, usually run as part of a build process. Inline script blocks inside HTML are left unchanged.</p></details><details><summary>Can I un-minify code later?</summary><p>You can re-format minified code so it is readable again, but comments and original formatting that were removed are gone for good. Always keep your original, readable source files and treat the minified version as a build output, never as the file you edit.</p></details><details><summary>What does Keep /*! licence */ comments mean?</summary><p>By convention, a comment whose opening marker is followed by an exclamation mark holds a licence or copyright notice that should survive minification. Many open-source licences require that notice to stay with the code. With the option ticked, the minifier removes ordinary comments but keeps these special ones.</p></details></section>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-6" /><path d="M12 8V2" /><path d="M4 12H2" /><path d="M10 12H8" /><path d="M16 12h-2" /><path d="M22 12h-2" /><path d="m15 19-3-3-3 3" /><path d="m15 5-3 3-3-3" /></svg></span>
@@ -227,9 +229,9 @@
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
-<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/registry.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/icons.js?v=86f7d54112" defer></script>
+<script src="../../assets/js/core.js?v=86f7d54112" defer></script>
 
 </body>
 </html>
