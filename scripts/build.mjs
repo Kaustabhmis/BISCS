@@ -25,7 +25,7 @@ const ICONS = require(path.join(ROOT, 'assets/js/icons.js'));
 // ------------------------------------------------------------------ config
 const SITE = {
   name: 'BISCS India',
-  url: 'https://www.biscsindia.com',
+  url: 'https://biscsindia.com',
   email: 'info@biscsindia.com',
   socials: [
     { name: 'LinkedIn', icon: 'linkedin', url: 'https://www.linkedin.com/in/biscs-india-7a0ab03a6' },
@@ -33,6 +33,10 @@ const SITE = {
     { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/biscsindia/' }
   ],
   published: '2026-11-02',
+  // Last significant update of tool/category pages (sitemap <lastmod>). Bump when tools change.
+  updated: '2026-11-04',
+  // IndexNow key (Bing, Yandex, Seznam…): served as /<key>.txt so search engines can verify pings.
+  indexNowKey: 'a6d492ae7ff0369fd61ebfae366f2200',
   /*
    * Google AdSense. Paste your publisher ID (from AdSense → Account →
    * Account information), e.g. 'ca-pub-1234567890123456', then rebuild.
@@ -198,6 +202,7 @@ ${body}
         <li><a href="${base}contact/">Contact</a></li>
         <li><a href="${base}privacy/">Privacy Policy</a></li>
         <li><a href="${base}terms/">Terms of Use</a></li>
+        <li><a href="${base}sitemap/">Sitemap</a></li>
         <li><a href="https://www.domebox.in" target="_blank" rel="noopener">DomeBox ${icon('external-link')}</a></li>
       </ul></div>
     </div>
@@ -556,6 +561,13 @@ function buildStaticPages() {
 </div>
 <p style="margin-top:20px"><a class="btn" href="../../">${icon('arrow-left')} Back to all tools</a></p>`, { noindex: true });
 
+  buildPage('sitemap', 'Sitemap', `All ${TOOLS.length} free tools and ${ARTICLES.length} guides on ${SITE.name}, by category.`, `
+<p>Every page on ${SITE.name}. Search engines can also use our <a href="../sitemap.xml">XML sitemap</a>.</p>
+<h2>Main pages</h2>
+<ul><li><a href="../">Home</a></li><li><a href="../blog/">Blog &amp; Guides</a></li><li><a href="../about/">About</a></li><li><a href="../contact/">Contact</a></li><li><a href="../privacy/">Privacy Policy</a></li><li><a href="../terms/">Terms of Use</a></li></ul>
+${CATEGORIES.map((c) => `<h2><a href="../category/${c.id}/">${esc(c.name)}</a></h2>
+<ul>${toolsIn(c.id).map((t) => { const g = articleFor(t.id); return `<li><a href="../tools/${t.id}/">${esc(t.name)}</a>${g ? ` · <a href="../blog/${g.slug}/">guide</a>` : ''}</li>`; }).join('')}</ul>`).join('\n')}`, { wide: true });
+
   buildPage('privacy', 'Privacy Policy', `${SITE.name} privacy policy: our tools process your files locally in your browser.`, `
 <p class="muted">Last updated: ${updated}</p>
 <h2>Files and data you use with our tools</h2>
@@ -597,17 +609,37 @@ function buildStaticPages() {
 }
 
 function buildSitemap() {
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = ['/', ...CATEGORIES.map((c) => `/category/${c.id}/`), ...TOOLS.map((t) => `/tools/${t.id}/`), '/blog/', ...ARTICLES.map((a) => `/blog/${a.slug}/`), '/about/', '/contact/', '/privacy/', '/terms/'];
   // ads.txt authorises Google to sell ads on this domain (required by AdSense).
   const pub = SITE.adsense.client.replace(/^ca-/, '');
   if (pub) write('ads.txt', `google.com, ${pub}, DIRECT, f08c47fec0942fa0\n`);
   else if (fs.existsSync(path.join(ROOT, 'ads.txt'))) fs.unlinkSync(path.join(ROOT, 'ads.txt'));
-  write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
+
+  // Sitemap index with one sitemap per section, so Search Console and Bing
+  // Webmaster Tools report indexing per section.
+  const newest = (list) => list.reduce((m, d) => (d > m ? d : m), SITE.updated);
+  const pages = [
+    ['/', SITE.updated, '1.0'], ['/blog/', newest(ARTICLES.map((a) => a.updated)), '0.8'],
+    ...CATEGORIES.map((c) => [`/category/${c.id}/`, SITE.updated, '0.8']),
+    ['/about/', SITE.updated, '0.4'], ['/contact/', SITE.updated, '0.4'], ['/sitemap/', SITE.updated, '0.3'],
+    ['/privacy/', SITE.updated, '0.2'], ['/terms/', SITE.updated, '0.2']
+  ];
+  const tools = TOOLS.map((t) => [`/tools/${t.id}/`, SITE.updated, '0.9']);
+  const blog = ARTICLES.map((a) => [`/blog/${a.slug}/`, a.updated, '0.7']);
+  const urlset = (rows) => `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${SITE.url}${u}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
+${rows.map(([u, d, pr]) => `  <url><loc>${SITE.url}${u}</loc><lastmod>${d}</lastmod><priority>${pr}</priority></url>`).join('\n')}
 </urlset>
+`;
+  const maps = [['sitemap-pages.xml', pages], ['sitemap-tools.xml', tools], ['sitemap-blog.xml', blog]];
+  maps.forEach(([f, rows]) => write(f, urlset(rows)));
+  write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${maps.map(([f, rows]) => `  <sitemap><loc>${SITE.url}/${f}</loc><lastmod>${newest(rows.map((r) => r[1]))}</lastmod></sitemap>`).join('\n')}
+</sitemapindex>
 `);
+  // IndexNow key file.
+  if (SITE.indexNowKey) write(`${SITE.indexNowKey}.txt`, SITE.indexNowKey);
+
   // Search engines and AI assistants are welcome to crawl, cite and summarise the site.
   const aiBots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bingbot', 'DuckAssistBot', 'Meta-ExternalAgent', 'Amazonbot', 'CCBot'];
   write('robots.txt', `# ${SITE.name}: all crawlers welcome.\n# AI assistants: see ${SITE.url}/llms.txt for a site summary.\n\nUser-agent: *\nAllow: /\nDisallow: /contact/thanks/\n\n${aiBots.map((b) => `User-agent: ${b}`).join('\n')}\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);

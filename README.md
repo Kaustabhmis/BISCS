@@ -44,6 +44,20 @@ The generated HTML is committed, so no build step is needed. Choose either optio
 - `_headers` adds security headers and caching.
 - **Contact form:** in Netlify, open **Forms** and click **Enable form detection**, then redeploy once. Messages appear under Forms → `contact`. To get them by email, open **Forms → Form notifications → Add notification → Email notification** and enter `info@biscsindia.com`.
 
+## Submitting to Google and Bing
+
+The site's address is `https://biscsindia.com` (no www). The sitemap is an index at
+`https://biscsindia.com/sitemap.xml` with three parts: `sitemap-pages.xml`,
+`sitemap-tools.xml` and `sitemap-blog.xml`. `robots.txt` points to it.
+
+- **Google Search Console:** add a Domain property for `biscsindia.com` (DNS verification),
+  open **Sitemaps** and submit `sitemap.xml`.
+- **Bing Webmaster Tools:** sign in and use **Import from Google Search Console**, or add the
+  site and submit `https://biscsindia.com/sitemap.xml` under **Sitemaps**.
+- **IndexNow (Bing, Yandex and others):** the key file is served at
+  `/<SITE.indexNowKey>.txt`. To announce a new or updated page, open
+  `https://api.indexnow.org/indexnow?url=<page URL>&key=<SITE.indexNowKey>` in a browser.
+
 ## Adding or changing a tool
 
 1. Add an entry to `assets/js/registry.js` (id, name, category, icon, description).

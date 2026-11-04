@@ -1134,7 +1134,7 @@
   });
 
   // ======================================================== markdown-preview
-  var MD_SAMPLE = '# Markdown Preview\n\nWrite **Markdown** on the left and see the *formatted* result on the right — instantly.\n\n## Features\n\n- Live preview as you type\n- GitHub-flavoured tables and task lists\n- Export a clean, styled **HTML** file\n\n### Task list\n\n- [x] Write the draft\n- [ ] Review with the team\n\n### Table\n\n| Plan | Price (₹) | Users |\n|------|----------:|:-----:|\n| Free | 0 | 1 |\n| Pro | 499 | 5 |\n\n> Tip: Markdown is plain text, so it works great with Git.\n\n```js\nfunction greet(name) {\n  return `Namaste, ${name}!`;\n}\n```\n\nVisit [BISCS India](https://www.biscsindia.com) for more free tools.\n';
+  var MD_SAMPLE = '# Markdown Preview\n\nWrite **Markdown** on the left and see the *formatted* result on the right — instantly.\n\n## Features\n\n- Live preview as you type\n- GitHub-flavoured tables and task lists\n- Export a clean, styled **HTML** file\n\n### Task list\n\n- [x] Write the draft\n- [ ] Review with the team\n\n### Table\n\n| Plan | Price (₹) | Users |\n|------|----------:|:-----:|\n| Free | 0 | 1 |\n| Pro | 499 | 5 |\n\n> Tip: Markdown is plain text, so it works great with Git.\n\n```js\nfunction greet(name) {\n  return `Namaste, ${name}!`;\n}\n```\n\nVisit [BISCS India](https://biscsindia.com) for more free tools.\n';
   BT.impl('markdown-preview', function (root) {
     css();
     root.innerHTML = '<div class="card"><div class="toolbar">' +
@@ -1351,7 +1351,7 @@
       if (a === 'sample') {
         ta.value = 'Hi team, please contact Priya at priya.sharma@example.co.in or Rahul (RAHUL@Example.com) for details.\n' +
           'Call +91 98765 43210, 09123456789 or 8800-123-456 before 5 pm. Office landline: 022 2345 6789.\n' +
-          'Docs: https://www.example.com/docs?ref=mail and www.biscsindia.com/tools (see also https://en.wikipedia.org/wiki/India_(disambiguation)).\n' +
+          'Docs: https://www.example.com/docs?ref=mail and biscsindia.com/tools (see also https://en.wikipedia.org/wiki/India_(disambiguation)).\n' +
           'Budget: ₹1,25,000 for Q3, 15.5% growth, 42 new users. #DigitalIndia #StartupIndia #डिजिटल_भारत — thanks @biscs_india!\n' +
           'Duplicate: priya.sharma@example.co.in';
         run();

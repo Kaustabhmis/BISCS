@@ -6,192 +6,192 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## PDF Tools
 
-- [Edit PDF](https://www.biscsindia.com/tools/pdf-editor/): Add text, images, shapes, highlights, whiteout and drawings to any PDF. Guide: https://www.biscsindia.com/blog/edit-pdf-online-free-add-text/
-- [Sign PDF](https://www.biscsindia.com/tools/sign-pdf/): Draw, type or upload your signature and place it on a PDF. Guide: https://www.biscsindia.com/blog/sign-pdf-online-free-draw-signature/
-- [Merge PDF](https://www.biscsindia.com/tools/merge-pdf/): Combine multiple PDF files into one, in the order you choose. Guide: https://www.biscsindia.com/blog/how-to-merge-pdf-files-free/
-- [Split PDF](https://www.biscsindia.com/tools/split-pdf/): Split a PDF by page ranges, every N pages, or into single pages. Guide: https://www.biscsindia.com/blog/split-pdf-by-page-range-free/
-- [Remove PDF Pages](https://www.biscsindia.com/tools/remove-pdf-pages/): Delete unwanted pages from a PDF document. Guide: https://www.biscsindia.com/blog/delete-pages-from-pdf-free/
-- [Extract PDF Pages](https://www.biscsindia.com/tools/extract-pdf-pages/): Pick pages from a PDF and save them as a new document. Guide: https://www.biscsindia.com/blog/extract-pages-from-pdf-free/
-- [Organize PDF](https://www.biscsindia.com/tools/organize-pdf/): Reorder, rotate and delete pages visually with drag and drop. Guide: https://www.biscsindia.com/blog/rearrange-pdf-pages-drag-drop/
-- [Rotate PDF](https://www.biscsindia.com/tools/rotate-pdf/): Rotate all or selected pages of a PDF by 90, 180 or 270 degrees. Guide: https://www.biscsindia.com/blog/rotate-pdf-pages-permanently-free/
-- [Compress PDF](https://www.biscsindia.com/tools/compress-pdf/): Reduce PDF file size for email and upload portals. Guide: https://www.biscsindia.com/blog/reduce-pdf-file-size-free/
-- [Images to PDF](https://www.biscsindia.com/tools/jpg-to-pdf/): Convert JPG, PNG and WebP images into a single PDF. Guide: https://www.biscsindia.com/blog/convert-jpg-images-to-pdf-free/
-- [PDF to Images](https://www.biscsindia.com/tools/pdf-to-jpg/): Convert every PDF page into a high quality JPG or PNG image. Guide: https://www.biscsindia.com/blog/convert-pdf-to-jpg-images-free/
-- [Add Page Numbers](https://www.biscsindia.com/tools/pdf-page-numbers/): Insert page numbers into a PDF with custom position and format. Guide: https://www.biscsindia.com/blog/add-page-numbers-to-pdf-free/
-- [Watermark PDF](https://www.biscsindia.com/tools/watermark-pdf/): Stamp text or an image watermark over your PDF pages. Guide: https://www.biscsindia.com/blog/add-watermark-to-pdf-free/
-- [PDF to Text](https://www.biscsindia.com/tools/pdf-to-text/): Extract all selectable text from a PDF document. Guide: https://www.biscsindia.com/blog/extract-text-from-pdf-free/
-- [Crop PDF](https://www.biscsindia.com/tools/crop-pdf/): Trim the margins of PDF pages. Guide: https://www.biscsindia.com/blog/crop-pdf-margins-online-free/
-- [PDF Metadata Editor](https://www.biscsindia.com/tools/pdf-metadata/): View and edit a PDF’s title, author, subject and keywords. Guide: https://www.biscsindia.com/blog/edit-pdf-metadata-title-author/
-- [Grayscale PDF](https://www.biscsindia.com/tools/grayscale-pdf/): Convert a colour PDF to black and white for printing. Guide: https://www.biscsindia.com/blog/convert-pdf-to-black-and-white/
-- [Text to PDF](https://www.biscsindia.com/tools/text-to-pdf/): Turn plain text into a clean, printable PDF. Guide: https://www.biscsindia.com/blog/convert-text-to-pdf-free/
-- [Fill PDF Form](https://www.biscsindia.com/tools/fill-pdf-form/): Fill in PDF form fields and optionally flatten them. Guide: https://www.biscsindia.com/blog/fill-pdf-form-online-free/
-- [PDF to Word](https://www.biscsindia.com/tools/pdf-to-word/): Convert PDF text and basic layout into an editable Word (DOCX) file. Guide: https://www.biscsindia.com/blog/convert-pdf-to-word-editable-docx/
-- [Scan to PDF](https://www.biscsindia.com/tools/scan-to-pdf/): Use your camera to scan documents, auto-crop and enhance them, and save a PDF. Guide: https://www.biscsindia.com/blog/scan-documents-to-pdf-phone-camera/
+- [Edit PDF](https://biscsindia.com/tools/pdf-editor/): Add text, images, shapes, highlights, whiteout and drawings to any PDF. Guide: https://biscsindia.com/blog/edit-pdf-online-free-add-text/
+- [Sign PDF](https://biscsindia.com/tools/sign-pdf/): Draw, type or upload your signature and place it on a PDF. Guide: https://biscsindia.com/blog/sign-pdf-online-free-draw-signature/
+- [Merge PDF](https://biscsindia.com/tools/merge-pdf/): Combine multiple PDF files into one, in the order you choose. Guide: https://biscsindia.com/blog/how-to-merge-pdf-files-free/
+- [Split PDF](https://biscsindia.com/tools/split-pdf/): Split a PDF by page ranges, every N pages, or into single pages. Guide: https://biscsindia.com/blog/split-pdf-by-page-range-free/
+- [Remove PDF Pages](https://biscsindia.com/tools/remove-pdf-pages/): Delete unwanted pages from a PDF document. Guide: https://biscsindia.com/blog/delete-pages-from-pdf-free/
+- [Extract PDF Pages](https://biscsindia.com/tools/extract-pdf-pages/): Pick pages from a PDF and save them as a new document. Guide: https://biscsindia.com/blog/extract-pages-from-pdf-free/
+- [Organize PDF](https://biscsindia.com/tools/organize-pdf/): Reorder, rotate and delete pages visually with drag and drop. Guide: https://biscsindia.com/blog/rearrange-pdf-pages-drag-drop/
+- [Rotate PDF](https://biscsindia.com/tools/rotate-pdf/): Rotate all or selected pages of a PDF by 90, 180 or 270 degrees. Guide: https://biscsindia.com/blog/rotate-pdf-pages-permanently-free/
+- [Compress PDF](https://biscsindia.com/tools/compress-pdf/): Reduce PDF file size for email and upload portals. Guide: https://biscsindia.com/blog/reduce-pdf-file-size-free/
+- [Images to PDF](https://biscsindia.com/tools/jpg-to-pdf/): Convert JPG, PNG and WebP images into a single PDF. Guide: https://biscsindia.com/blog/convert-jpg-images-to-pdf-free/
+- [PDF to Images](https://biscsindia.com/tools/pdf-to-jpg/): Convert every PDF page into a high quality JPG or PNG image. Guide: https://biscsindia.com/blog/convert-pdf-to-jpg-images-free/
+- [Add Page Numbers](https://biscsindia.com/tools/pdf-page-numbers/): Insert page numbers into a PDF with custom position and format. Guide: https://biscsindia.com/blog/add-page-numbers-to-pdf-free/
+- [Watermark PDF](https://biscsindia.com/tools/watermark-pdf/): Stamp text or an image watermark over your PDF pages. Guide: https://biscsindia.com/blog/add-watermark-to-pdf-free/
+- [PDF to Text](https://biscsindia.com/tools/pdf-to-text/): Extract all selectable text from a PDF document. Guide: https://biscsindia.com/blog/extract-text-from-pdf-free/
+- [Crop PDF](https://biscsindia.com/tools/crop-pdf/): Trim the margins of PDF pages. Guide: https://biscsindia.com/blog/crop-pdf-margins-online-free/
+- [PDF Metadata Editor](https://biscsindia.com/tools/pdf-metadata/): View and edit a PDF’s title, author, subject and keywords. Guide: https://biscsindia.com/blog/edit-pdf-metadata-title-author/
+- [Grayscale PDF](https://biscsindia.com/tools/grayscale-pdf/): Convert a colour PDF to black and white for printing. Guide: https://biscsindia.com/blog/convert-pdf-to-black-and-white/
+- [Text to PDF](https://biscsindia.com/tools/text-to-pdf/): Turn plain text into a clean, printable PDF. Guide: https://biscsindia.com/blog/convert-text-to-pdf-free/
+- [Fill PDF Form](https://biscsindia.com/tools/fill-pdf-form/): Fill in PDF form fields and optionally flatten them. Guide: https://biscsindia.com/blog/fill-pdf-form-online-free/
+- [PDF to Word](https://biscsindia.com/tools/pdf-to-word/): Convert PDF text and basic layout into an editable Word (DOCX) file. Guide: https://biscsindia.com/blog/convert-pdf-to-word-editable-docx/
+- [Scan to PDF](https://biscsindia.com/tools/scan-to-pdf/): Use your camera to scan documents, auto-crop and enhance them, and save a PDF. Guide: https://biscsindia.com/blog/scan-documents-to-pdf-phone-camera/
 
 ## Finance & Tax
 
-- [GST Calculator](https://www.biscsindia.com/tools/gst-calculator/): Add or remove GST at any rate (5%, 18%, 40% and more) with CGST/SGST split. Guide: https://www.biscsindia.com/blog/gst-calculator-add-remove-gst/
-- [EMI Calculator](https://www.biscsindia.com/tools/emi-calculator/): Monthly EMI, total interest and amortisation schedule for any loan. Guide: https://www.biscsindia.com/blog/emi-calculator-formula-home-loan/
-- [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/): Estimate the future value of your monthly mutual fund SIP. Guide: https://www.biscsindia.com/blog/sip-calculator-mutual-fund-returns/
-- [Lumpsum Calculator](https://www.biscsindia.com/tools/lumpsum-calculator/): Project the growth of a one-time investment. Guide: https://www.biscsindia.com/blog/lumpsum-calculator-one-time-investment/
-- [FD Calculator](https://www.biscsindia.com/tools/fd-calculator/): Maturity amount and interest earned on a fixed deposit. Guide: https://www.biscsindia.com/blog/fd-calculator-maturity-interest/
-- [RD Calculator](https://www.biscsindia.com/tools/rd-calculator/): Maturity value of a recurring deposit with quarterly compounding. Guide: https://www.biscsindia.com/blog/rd-calculator-recurring-deposit-maturity/
-- [PPF Calculator](https://www.biscsindia.com/tools/ppf-calculator/): Public Provident Fund maturity over 15 years with yearly breakdown. Guide: https://www.biscsindia.com/blog/ppf-calculator-maturity-15-years/
-- [Income Tax Calculator](https://www.biscsindia.com/tools/income-tax-calculator/): Compare new vs old regime tax for FY 2025-26 (AY 2026-27). Guide: https://www.biscsindia.com/blog/income-tax-calculator-new-vs-old-regime/
-- [HRA Exemption Calculator](https://www.biscsindia.com/tools/hra-calculator/): Work out the tax-exempt part of your House Rent Allowance. Guide: https://www.biscsindia.com/blog/hra-exemption-calculation-rules/
-- [Gratuity Calculator](https://www.biscsindia.com/tools/gratuity-calculator/): Gratuity payable under the Payment of Gratuity Act. Guide: https://www.biscsindia.com/blog/gratuity-calculation-formula-india/
-- [Compound Interest](https://www.biscsindia.com/tools/compound-interest-calculator/): Compound interest with any compounding frequency and contributions. Guide: https://www.biscsindia.com/blog/compound-interest-formula-calculator/
-- [Simple Interest](https://www.biscsindia.com/tools/simple-interest-calculator/): Simple interest and total amount for any principal, rate and time. Guide: https://www.biscsindia.com/blog/simple-interest-formula-examples/
-- [CAGR Calculator](https://www.biscsindia.com/tools/cagr-calculator/): Compound annual growth rate between two values. Guide: https://www.biscsindia.com/blog/cagr-formula-calculator-explained/
-- [Inflation Calculator](https://www.biscsindia.com/tools/inflation-calculator/): See what money today will be worth in the future, and vice versa. Guide: https://www.biscsindia.com/blog/inflation-calculator-future-cost-india/
-- [Profit Margin Calculator](https://www.biscsindia.com/tools/profit-margin-calculator/): Margin, markup and selling price from cost and revenue. Guide: https://www.biscsindia.com/blog/profit-margin-vs-markup-calculator/
-- [Discount Calculator](https://www.biscsindia.com/tools/discount-calculator/): Final price and savings after one or two stacked discounts. Guide: https://www.biscsindia.com/blog/discount-calculator-stacked-offers/
-- [GSTIN Validator](https://www.biscsindia.com/tools/gstin-validator/): Check a GST number’s format and checksum, and see its state and PAN. Guide: https://www.biscsindia.com/blog/gstin-validator-check-gst-number/
-- [PAN & IFSC Checker](https://www.biscsindia.com/tools/pan-ifsc-validator/): Validate PAN and IFSC code formats and identify the holder type and bank. Guide: https://www.biscsindia.com/blog/pan-ifsc-code-format-check/
-- [HSN & SAC Code Finder](https://www.biscsindia.com/tools/hsn-code-finder/): Search HSN chapters and SAC service codes for GST invoices. Guide: https://www.biscsindia.com/blog/find-hsn-sac-code-gst/
-- [GST Due Date Calendar](https://www.biscsindia.com/tools/gst-due-date-calendar/): GSTR-1, GSTR-3B, CMP-08 and annual return due dates, with calendar reminders. Guide: https://www.biscsindia.com/blog/gst-return-due-dates-calendar/
+- [GST Calculator](https://biscsindia.com/tools/gst-calculator/): Add or remove GST at any rate (5%, 18%, 40% and more) with CGST/SGST split. Guide: https://biscsindia.com/blog/gst-calculator-add-remove-gst/
+- [EMI Calculator](https://biscsindia.com/tools/emi-calculator/): Monthly EMI, total interest and amortisation schedule for any loan. Guide: https://biscsindia.com/blog/emi-calculator-formula-home-loan/
+- [SIP Calculator](https://biscsindia.com/tools/sip-calculator/): Estimate the future value of your monthly mutual fund SIP. Guide: https://biscsindia.com/blog/sip-calculator-mutual-fund-returns/
+- [Lumpsum Calculator](https://biscsindia.com/tools/lumpsum-calculator/): Project the growth of a one-time investment. Guide: https://biscsindia.com/blog/lumpsum-calculator-one-time-investment/
+- [FD Calculator](https://biscsindia.com/tools/fd-calculator/): Maturity amount and interest earned on a fixed deposit. Guide: https://biscsindia.com/blog/fd-calculator-maturity-interest/
+- [RD Calculator](https://biscsindia.com/tools/rd-calculator/): Maturity value of a recurring deposit with quarterly compounding. Guide: https://biscsindia.com/blog/rd-calculator-recurring-deposit-maturity/
+- [PPF Calculator](https://biscsindia.com/tools/ppf-calculator/): Public Provident Fund maturity over 15 years with yearly breakdown. Guide: https://biscsindia.com/blog/ppf-calculator-maturity-15-years/
+- [Income Tax Calculator](https://biscsindia.com/tools/income-tax-calculator/): Compare new vs old regime tax for FY 2025-26 (AY 2026-27). Guide: https://biscsindia.com/blog/income-tax-calculator-new-vs-old-regime/
+- [HRA Exemption Calculator](https://biscsindia.com/tools/hra-calculator/): Work out the tax-exempt part of your House Rent Allowance. Guide: https://biscsindia.com/blog/hra-exemption-calculation-rules/
+- [Gratuity Calculator](https://biscsindia.com/tools/gratuity-calculator/): Gratuity payable under the Payment of Gratuity Act. Guide: https://biscsindia.com/blog/gratuity-calculation-formula-india/
+- [Compound Interest](https://biscsindia.com/tools/compound-interest-calculator/): Compound interest with any compounding frequency and contributions. Guide: https://biscsindia.com/blog/compound-interest-formula-calculator/
+- [Simple Interest](https://biscsindia.com/tools/simple-interest-calculator/): Simple interest and total amount for any principal, rate and time. Guide: https://biscsindia.com/blog/simple-interest-formula-examples/
+- [CAGR Calculator](https://biscsindia.com/tools/cagr-calculator/): Compound annual growth rate between two values. Guide: https://biscsindia.com/blog/cagr-formula-calculator-explained/
+- [Inflation Calculator](https://biscsindia.com/tools/inflation-calculator/): See what money today will be worth in the future, and vice versa. Guide: https://biscsindia.com/blog/inflation-calculator-future-cost-india/
+- [Profit Margin Calculator](https://biscsindia.com/tools/profit-margin-calculator/): Margin, markup and selling price from cost and revenue. Guide: https://biscsindia.com/blog/profit-margin-vs-markup-calculator/
+- [Discount Calculator](https://biscsindia.com/tools/discount-calculator/): Final price and savings after one or two stacked discounts. Guide: https://biscsindia.com/blog/discount-calculator-stacked-offers/
+- [GSTIN Validator](https://biscsindia.com/tools/gstin-validator/): Check a GST number’s format and checksum, and see its state and PAN. Guide: https://biscsindia.com/blog/gstin-validator-check-gst-number/
+- [PAN & IFSC Checker](https://biscsindia.com/tools/pan-ifsc-validator/): Validate PAN and IFSC code formats and identify the holder type and bank. Guide: https://biscsindia.com/blog/pan-ifsc-code-format-check/
+- [HSN & SAC Code Finder](https://biscsindia.com/tools/hsn-code-finder/): Search HSN chapters and SAC service codes for GST invoices. Guide: https://biscsindia.com/blog/find-hsn-sac-code-gst/
+- [GST Due Date Calendar](https://biscsindia.com/tools/gst-due-date-calendar/): GSTR-1, GSTR-3B, CMP-08 and annual return due dates, with calendar reminders. Guide: https://biscsindia.com/blog/gst-return-due-dates-calendar/
 
 ## Everyday Calculators
 
-- [Percentage Calculator](https://www.biscsindia.com/tools/percentage-calculator/): X% of Y, percentage change, and what percent one number is of another. Guide: https://www.biscsindia.com/blog/how-to-calculate-percentage-easily/
-- [Age Calculator](https://www.biscsindia.com/tools/age-calculator/): Exact age in years, months and days, plus your next birthday. Guide: https://www.biscsindia.com/blog/calculate-exact-age-from-date-of-birth/
-- [BMI Calculator](https://www.biscsindia.com/tools/bmi-calculator/): Body Mass Index with healthy weight range for adults. Guide: https://www.biscsindia.com/blog/bmi-calculator-indian-cut-offs-explained/
-- [Calorie Calculator](https://www.biscsindia.com/tools/calorie-calculator/): Daily calorie needs (BMR and TDEE) for your goal. Guide: https://www.biscsindia.com/blog/how-many-calories-do-i-need-bmr-tdee/
-- [Date Difference](https://www.biscsindia.com/tools/date-difference-calculator/): Days, weeks, months and working days between two dates. Guide: https://www.biscsindia.com/blog/count-days-between-two-dates/
-- [Add or Subtract Days](https://www.biscsindia.com/tools/date-add-calculator/): Find the date a number of days, weeks or months from any date. Guide: https://www.biscsindia.com/blog/add-days-to-date-calculator-guide/
-- [Unit Converter](https://www.biscsindia.com/tools/unit-converter/): Length, weight, temperature, area, volume, speed, time and data. Guide: https://www.biscsindia.com/blog/unit-converter-feet-cm-kg-acres-guide/
-- [Scientific Calculator](https://www.biscsindia.com/tools/scientific-calculator/): Trigonometry, logarithms, powers and roots with keyboard support. Guide: https://www.biscsindia.com/blog/how-to-use-scientific-calculator-online/
-- [Tip & Bill Splitter](https://www.biscsindia.com/tools/bill-split-calculator/): Split a bill between friends, with tip and tax. Guide: https://www.biscsindia.com/blog/how-to-split-a-bill-with-tip/
-- [Number to Words](https://www.biscsindia.com/tools/number-to-words/): Write numbers in words in Indian (lakh, crore) or international format. Guide: https://www.biscsindia.com/blog/number-to-words-lakh-crore-cheque/
-- [Roman Numerals](https://www.biscsindia.com/tools/roman-numeral-converter/): Convert between numbers and Roman numerals. Guide: https://www.biscsindia.com/blog/roman-numerals-chart-and-converter/
-- [Number Base Converter](https://www.biscsindia.com/tools/number-base-converter/): Convert between binary, octal, decimal and hexadecimal. Guide: https://www.biscsindia.com/blog/binary-decimal-hex-octal-conversion-guide/
-- [Average & Statistics](https://www.biscsindia.com/tools/statistics-calculator/): Mean, median, mode, range and standard deviation of a list. Guide: https://www.biscsindia.com/blog/mean-median-mode-standard-deviation-guide/
-- [Time Zone Converter](https://www.biscsindia.com/tools/time-zone-converter/): Convert a time between IST and cities around the world. Guide: https://www.biscsindia.com/blog/convert-ist-to-world-time-zones/
+- [Percentage Calculator](https://biscsindia.com/tools/percentage-calculator/): X% of Y, percentage change, and what percent one number is of another. Guide: https://biscsindia.com/blog/how-to-calculate-percentage-easily/
+- [Age Calculator](https://biscsindia.com/tools/age-calculator/): Exact age in years, months and days, plus your next birthday. Guide: https://biscsindia.com/blog/calculate-exact-age-from-date-of-birth/
+- [BMI Calculator](https://biscsindia.com/tools/bmi-calculator/): Body Mass Index with healthy weight range for adults. Guide: https://biscsindia.com/blog/bmi-calculator-indian-cut-offs-explained/
+- [Calorie Calculator](https://biscsindia.com/tools/calorie-calculator/): Daily calorie needs (BMR and TDEE) for your goal. Guide: https://biscsindia.com/blog/how-many-calories-do-i-need-bmr-tdee/
+- [Date Difference](https://biscsindia.com/tools/date-difference-calculator/): Days, weeks, months and working days between two dates. Guide: https://biscsindia.com/blog/count-days-between-two-dates/
+- [Add or Subtract Days](https://biscsindia.com/tools/date-add-calculator/): Find the date a number of days, weeks or months from any date. Guide: https://biscsindia.com/blog/add-days-to-date-calculator-guide/
+- [Unit Converter](https://biscsindia.com/tools/unit-converter/): Length, weight, temperature, area, volume, speed, time and data. Guide: https://biscsindia.com/blog/unit-converter-feet-cm-kg-acres-guide/
+- [Scientific Calculator](https://biscsindia.com/tools/scientific-calculator/): Trigonometry, logarithms, powers and roots with keyboard support. Guide: https://biscsindia.com/blog/how-to-use-scientific-calculator-online/
+- [Tip & Bill Splitter](https://biscsindia.com/tools/bill-split-calculator/): Split a bill between friends, with tip and tax. Guide: https://biscsindia.com/blog/how-to-split-a-bill-with-tip/
+- [Number to Words](https://biscsindia.com/tools/number-to-words/): Write numbers in words in Indian (lakh, crore) or international format. Guide: https://biscsindia.com/blog/number-to-words-lakh-crore-cheque/
+- [Roman Numerals](https://biscsindia.com/tools/roman-numeral-converter/): Convert between numbers and Roman numerals. Guide: https://biscsindia.com/blog/roman-numerals-chart-and-converter/
+- [Number Base Converter](https://biscsindia.com/tools/number-base-converter/): Convert between binary, octal, decimal and hexadecimal. Guide: https://biscsindia.com/blog/binary-decimal-hex-octal-conversion-guide/
+- [Average & Statistics](https://biscsindia.com/tools/statistics-calculator/): Mean, median, mode, range and standard deviation of a list. Guide: https://biscsindia.com/blog/mean-median-mode-standard-deviation-guide/
+- [Time Zone Converter](https://biscsindia.com/tools/time-zone-converter/): Convert a time between IST and cities around the world. Guide: https://biscsindia.com/blog/convert-ist-to-world-time-zones/
 
 ## Text Tools
 
-- [Word Counter](https://www.biscsindia.com/tools/word-counter/): Count words, characters, sentences, paragraphs and reading time. Guide: https://www.biscsindia.com/blog/word-counter-characters-reading-time/
-- [Case Converter](https://www.biscsindia.com/tools/case-converter/): UPPER, lower, Title, Sentence, camelCase, snake_case and more. Guide: https://www.biscsindia.com/blog/convert-text-case-upper-lower-title/
-- [Lorem Ipsum Generator](https://www.biscsindia.com/tools/lorem-ipsum-generator/): Generate placeholder paragraphs, sentences or words. Guide: https://www.biscsindia.com/blog/lorem-ipsum-placeholder-text-generator/
-- [Remove Duplicate Lines](https://www.biscsindia.com/tools/remove-duplicate-lines/): Delete repeated lines from a list, keeping the first occurrence. Guide: https://www.biscsindia.com/blog/remove-duplicate-lines-from-list/
-- [Sort Lines](https://www.biscsindia.com/tools/sort-lines/): Sort lines alphabetically, numerically, by length, or shuffle. Guide: https://www.biscsindia.com/blog/sort-lines-alphabetically-numerically-online/
-- [Reverse Text](https://www.biscsindia.com/tools/reverse-text/): Reverse characters, words or line order. Guide: https://www.biscsindia.com/blog/reverse-text-backwards-upside-down/
-- [Find and Replace](https://www.biscsindia.com/tools/find-and-replace/): Find and replace text, with optional regex and case matching. Guide: https://www.biscsindia.com/blog/find-and-replace-text-online-regex/
-- [Text Compare](https://www.biscsindia.com/tools/text-diff/): Compare two texts and highlight the differences line by line. Guide: https://www.biscsindia.com/blog/compare-two-texts-find-differences/
-- [Slug Generator](https://www.biscsindia.com/tools/slug-generator/): Create clean, SEO-friendly URL slugs from titles. Guide: https://www.biscsindia.com/blog/url-slug-generator-seo-friendly/
-- [Whitespace Cleaner](https://www.biscsindia.com/tools/whitespace-cleaner/): Remove extra spaces, tabs, blank lines and line breaks. Guide: https://www.biscsindia.com/blog/remove-extra-spaces-line-breaks-text/
-- [Text to Speech](https://www.biscsindia.com/tools/text-to-speech/): Read text aloud using your device’s voices, including Indian English and Hindi. Guide: https://www.biscsindia.com/blog/text-to-speech-online-hindi-indian-english/
-- [Markdown Preview](https://www.biscsindia.com/tools/markdown-preview/): Write Markdown and see the formatted result live; export HTML. Guide: https://www.biscsindia.com/blog/markdown-editor-live-preview-html/
-- [Fancy Text Generator](https://www.biscsindia.com/tools/fancy-text-generator/): Stylish Unicode fonts for Instagram bios, WhatsApp and more. Guide: https://www.biscsindia.com/blog/fancy-text-generator-instagram-whatsapp-fonts/
-- [Email & URL Extractor](https://www.biscsindia.com/tools/text-extractor/): Pull email addresses, links and phone numbers out of any text. Guide: https://www.biscsindia.com/blog/extract-emails-urls-phone-numbers-from-text/
+- [Word Counter](https://biscsindia.com/tools/word-counter/): Count words, characters, sentences, paragraphs and reading time. Guide: https://biscsindia.com/blog/word-counter-characters-reading-time/
+- [Case Converter](https://biscsindia.com/tools/case-converter/): UPPER, lower, Title, Sentence, camelCase, snake_case and more. Guide: https://biscsindia.com/blog/convert-text-case-upper-lower-title/
+- [Lorem Ipsum Generator](https://biscsindia.com/tools/lorem-ipsum-generator/): Generate placeholder paragraphs, sentences or words. Guide: https://biscsindia.com/blog/lorem-ipsum-placeholder-text-generator/
+- [Remove Duplicate Lines](https://biscsindia.com/tools/remove-duplicate-lines/): Delete repeated lines from a list, keeping the first occurrence. Guide: https://biscsindia.com/blog/remove-duplicate-lines-from-list/
+- [Sort Lines](https://biscsindia.com/tools/sort-lines/): Sort lines alphabetically, numerically, by length, or shuffle. Guide: https://biscsindia.com/blog/sort-lines-alphabetically-numerically-online/
+- [Reverse Text](https://biscsindia.com/tools/reverse-text/): Reverse characters, words or line order. Guide: https://biscsindia.com/blog/reverse-text-backwards-upside-down/
+- [Find and Replace](https://biscsindia.com/tools/find-and-replace/): Find and replace text, with optional regex and case matching. Guide: https://biscsindia.com/blog/find-and-replace-text-online-regex/
+- [Text Compare](https://biscsindia.com/tools/text-diff/): Compare two texts and highlight the differences line by line. Guide: https://biscsindia.com/blog/compare-two-texts-find-differences/
+- [Slug Generator](https://biscsindia.com/tools/slug-generator/): Create clean, SEO-friendly URL slugs from titles. Guide: https://biscsindia.com/blog/url-slug-generator-seo-friendly/
+- [Whitespace Cleaner](https://biscsindia.com/tools/whitespace-cleaner/): Remove extra spaces, tabs, blank lines and line breaks. Guide: https://biscsindia.com/blog/remove-extra-spaces-line-breaks-text/
+- [Text to Speech](https://biscsindia.com/tools/text-to-speech/): Read text aloud using your device’s voices, including Indian English and Hindi. Guide: https://biscsindia.com/blog/text-to-speech-online-hindi-indian-english/
+- [Markdown Preview](https://biscsindia.com/tools/markdown-preview/): Write Markdown and see the formatted result live; export HTML. Guide: https://biscsindia.com/blog/markdown-editor-live-preview-html/
+- [Fancy Text Generator](https://biscsindia.com/tools/fancy-text-generator/): Stylish Unicode fonts for Instagram bios, WhatsApp and more. Guide: https://biscsindia.com/blog/fancy-text-generator-instagram-whatsapp-fonts/
+- [Email & URL Extractor](https://biscsindia.com/tools/text-extractor/): Pull email addresses, links and phone numbers out of any text. Guide: https://biscsindia.com/blog/extract-emails-urls-phone-numbers-from-text/
 
 ## Developer Tools
 
-- [JSON Formatter](https://www.biscsindia.com/tools/json-formatter/): Format, validate and minify JSON with clear error messages. Guide: https://www.biscsindia.com/blog/format-validate-json-online/
-- [JSON to CSV](https://www.biscsindia.com/tools/json-to-csv/): Convert a JSON array of objects into CSV for Excel. Guide: https://www.biscsindia.com/blog/convert-json-to-csv-excel/
-- [CSV to JSON](https://www.biscsindia.com/tools/csv-to-json/): Convert CSV data into a JSON array. Guide: https://www.biscsindia.com/blog/convert-csv-to-json-online/
-- [Base64 Encode / Decode](https://www.biscsindia.com/tools/base64-encoder/): Encode and decode Base64 with full Unicode support. Guide: https://www.biscsindia.com/blog/base64-encode-decode-explained/
-- [URL Encode / Decode](https://www.biscsindia.com/tools/url-encoder/): Percent-encode or decode URLs and query strings. Guide: https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/
-- [HTML Entity Encoder](https://www.biscsindia.com/tools/html-entity-encoder/): Escape and unescape HTML special characters. Guide: https://www.biscsindia.com/blog/html-entities-escape-unescape-guide/
-- [Hash Generator](https://www.biscsindia.com/tools/hash-generator/): MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or files. Guide: https://www.biscsindia.com/blog/md5-sha256-hash-generator-checksum/
-- [UUID Generator](https://www.biscsindia.com/tools/uuid-generator/): Generate random version 4 UUIDs in bulk. Guide: https://www.biscsindia.com/blog/uuid-v4-vs-v7-generator/
-- [JWT Decoder](https://www.biscsindia.com/tools/jwt-decoder/): Decode a JSON Web Token’s header and payload. Guide: https://www.biscsindia.com/blog/decode-jwt-token-header-payload/
-- [Regex Tester](https://www.biscsindia.com/tools/regex-tester/): Test regular expressions with live match highlighting. Guide: https://www.biscsindia.com/blog/regex-tester-javascript-patterns-india/
-- [Unix Timestamp Converter](https://www.biscsindia.com/tools/timestamp-converter/): Convert Unix timestamps to dates and back, in IST or UTC. Guide: https://www.biscsindia.com/blog/unix-timestamp-to-date-ist/
-- [Color Converter](https://www.biscsindia.com/tools/color-converter/): Convert colours between HEX, RGB and HSL with a picker. Guide: https://www.biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/
-- [CSS Gradient Generator](https://www.biscsindia.com/tools/css-gradient-generator/): Design linear and radial gradients and copy the CSS. Guide: https://www.biscsindia.com/blog/css-gradient-generator-linear-radial/
-- [Box Shadow Generator](https://www.biscsindia.com/tools/box-shadow-generator/): Build CSS box shadows visually. Guide: https://www.biscsindia.com/blog/css-box-shadow-generator-guide/
-- [CSS / HTML / JSON Minifier](https://www.biscsindia.com/tools/code-minifier/): Minify CSS, HTML and JSON to reduce file size. Guide: https://www.biscsindia.com/blog/minify-css-html-json-online/
+- [JSON Formatter](https://biscsindia.com/tools/json-formatter/): Format, validate and minify JSON with clear error messages. Guide: https://biscsindia.com/blog/format-validate-json-online/
+- [JSON to CSV](https://biscsindia.com/tools/json-to-csv/): Convert a JSON array of objects into CSV for Excel. Guide: https://biscsindia.com/blog/convert-json-to-csv-excel/
+- [CSV to JSON](https://biscsindia.com/tools/csv-to-json/): Convert CSV data into a JSON array. Guide: https://biscsindia.com/blog/convert-csv-to-json-online/
+- [Base64 Encode / Decode](https://biscsindia.com/tools/base64-encoder/): Encode and decode Base64 with full Unicode support. Guide: https://biscsindia.com/blog/base64-encode-decode-explained/
+- [URL Encode / Decode](https://biscsindia.com/tools/url-encoder/): Percent-encode or decode URLs and query strings. Guide: https://biscsindia.com/blog/url-encode-decode-percent-encoding/
+- [HTML Entity Encoder](https://biscsindia.com/tools/html-entity-encoder/): Escape and unescape HTML special characters. Guide: https://biscsindia.com/blog/html-entities-escape-unescape-guide/
+- [Hash Generator](https://biscsindia.com/tools/hash-generator/): MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or files. Guide: https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/
+- [UUID Generator](https://biscsindia.com/tools/uuid-generator/): Generate random version 4 UUIDs in bulk. Guide: https://biscsindia.com/blog/uuid-v4-vs-v7-generator/
+- [JWT Decoder](https://biscsindia.com/tools/jwt-decoder/): Decode a JSON Web Token’s header and payload. Guide: https://biscsindia.com/blog/decode-jwt-token-header-payload/
+- [Regex Tester](https://biscsindia.com/tools/regex-tester/): Test regular expressions with live match highlighting. Guide: https://biscsindia.com/blog/regex-tester-javascript-patterns-india/
+- [Unix Timestamp Converter](https://biscsindia.com/tools/timestamp-converter/): Convert Unix timestamps to dates and back, in IST or UTC. Guide: https://biscsindia.com/blog/unix-timestamp-to-date-ist/
+- [Color Converter](https://biscsindia.com/tools/color-converter/): Convert colours between HEX, RGB and HSL with a picker. Guide: https://biscsindia.com/blog/hex-rgb-hsl-color-converter-guide/
+- [CSS Gradient Generator](https://biscsindia.com/tools/css-gradient-generator/): Design linear and radial gradients and copy the CSS. Guide: https://biscsindia.com/blog/css-gradient-generator-linear-radial/
+- [Box Shadow Generator](https://biscsindia.com/tools/box-shadow-generator/): Build CSS box shadows visually. Guide: https://biscsindia.com/blog/css-box-shadow-generator-guide/
+- [CSS / HTML / JSON Minifier](https://biscsindia.com/tools/code-minifier/): Minify CSS, HTML and JSON to reduce file size. Guide: https://biscsindia.com/blog/minify-css-html-json-online/
 
 ## Image Tools
 
-- [Resize Image](https://www.biscsindia.com/tools/image-resizer/): Resize images by pixels or percentage, keeping the aspect ratio. Guide: https://www.biscsindia.com/blog/resize-image-pixels-online-free/
-- [Convert Image](https://www.biscsindia.com/tools/image-converter/): Convert images between JPG, PNG and WebP. Guide: https://www.biscsindia.com/blog/convert-png-jpg-webp-online/
-- [Compress Image](https://www.biscsindia.com/tools/image-compressor/): Shrink JPG, PNG and WebP images, or hit a target size in KB. Guide: https://www.biscsindia.com/blog/compress-image-to-kb-online/
-- [Crop Image](https://www.biscsindia.com/tools/image-cropper/): Crop images freely or to a fixed aspect ratio. Guide: https://www.biscsindia.com/blog/crop-image-online-aspect-ratio/
-- [Rotate & Flip Image](https://www.biscsindia.com/tools/rotate-flip-image/): Rotate images by 90° steps and flip them horizontally or vertically. Guide: https://www.biscsindia.com/blog/rotate-flip-image-online-free/
-- [Photo Filters](https://www.biscsindia.com/tools/image-filters/): Adjust brightness, contrast and saturation; apply grayscale, sepia and blur. Guide: https://www.biscsindia.com/blog/photo-filters-brightness-contrast-online/
-- [Image to Base64](https://www.biscsindia.com/tools/image-to-base64/): Convert an image into a Base64 data URL for HTML or CSS. Guide: https://www.biscsindia.com/blog/convert-image-to-base64-data-url/
-- [Favicon Generator](https://www.biscsindia.com/tools/favicon-generator/): Create every favicon and app icon size from one image. Guide: https://www.biscsindia.com/blog/favicon-generator-ico-apple-touch-icon/
-- [Watermark Image](https://www.biscsindia.com/tools/image-watermark/): Add a text watermark to your photos. Guide: https://www.biscsindia.com/blog/add-text-watermark-to-photo-online/
-- [Image Color Picker](https://www.biscsindia.com/tools/image-color-picker/): Pick colours from an image and extract its palette. Guide: https://www.biscsindia.com/blog/pick-color-from-image-hex-code/
-- [Meme Generator](https://www.biscsindia.com/tools/meme-generator/): Add classic top and bottom captions to any image. Guide: https://www.biscsindia.com/blog/make-meme-online-top-bottom-text/
-- [Passport Photo Maker](https://www.biscsindia.com/tools/passport-photo-maker/): Crop to 35×45 mm and print multiple passport photos on one sheet. Guide: https://www.biscsindia.com/blog/make-passport-size-photo-print-sheet/
+- [Resize Image](https://biscsindia.com/tools/image-resizer/): Resize images by pixels or percentage, keeping the aspect ratio. Guide: https://biscsindia.com/blog/resize-image-pixels-online-free/
+- [Convert Image](https://biscsindia.com/tools/image-converter/): Convert images between JPG, PNG and WebP. Guide: https://biscsindia.com/blog/convert-png-jpg-webp-online/
+- [Compress Image](https://biscsindia.com/tools/image-compressor/): Shrink JPG, PNG and WebP images, or hit a target size in KB. Guide: https://biscsindia.com/blog/compress-image-to-kb-online/
+- [Crop Image](https://biscsindia.com/tools/image-cropper/): Crop images freely or to a fixed aspect ratio. Guide: https://biscsindia.com/blog/crop-image-online-aspect-ratio/
+- [Rotate & Flip Image](https://biscsindia.com/tools/rotate-flip-image/): Rotate images by 90° steps and flip them horizontally or vertically. Guide: https://biscsindia.com/blog/rotate-flip-image-online-free/
+- [Photo Filters](https://biscsindia.com/tools/image-filters/): Adjust brightness, contrast and saturation; apply grayscale, sepia and blur. Guide: https://biscsindia.com/blog/photo-filters-brightness-contrast-online/
+- [Image to Base64](https://biscsindia.com/tools/image-to-base64/): Convert an image into a Base64 data URL for HTML or CSS. Guide: https://biscsindia.com/blog/convert-image-to-base64-data-url/
+- [Favicon Generator](https://biscsindia.com/tools/favicon-generator/): Create every favicon and app icon size from one image. Guide: https://biscsindia.com/blog/favicon-generator-ico-apple-touch-icon/
+- [Watermark Image](https://biscsindia.com/tools/image-watermark/): Add a text watermark to your photos. Guide: https://biscsindia.com/blog/add-text-watermark-to-photo-online/
+- [Image Color Picker](https://biscsindia.com/tools/image-color-picker/): Pick colours from an image and extract its palette. Guide: https://biscsindia.com/blog/pick-color-from-image-hex-code/
+- [Meme Generator](https://biscsindia.com/tools/meme-generator/): Add classic top and bottom captions to any image. Guide: https://biscsindia.com/blog/make-meme-online-top-bottom-text/
+- [Passport Photo Maker](https://biscsindia.com/tools/passport-photo-maker/): Crop to 35×45 mm and print multiple passport photos on one sheet. Guide: https://biscsindia.com/blog/make-passport-size-photo-print-sheet/
 
 ## Generators & Utilities
 
-- [Password Generator](https://www.biscsindia.com/tools/password-generator/): Strong, random passwords generated securely on your device. Guide: https://www.biscsindia.com/blog/generate-strong-random-password/
-- [Password Strength Checker](https://www.biscsindia.com/tools/password-strength-checker/): Check how strong a password is, without sending it anywhere. Guide: https://www.biscsindia.com/blog/check-password-strength-safely/
-- [QR Code Generator](https://www.biscsindia.com/tools/qr-code-generator/): QR codes for links, text, Wi-Fi, UPI payments and contacts. Guide: https://www.biscsindia.com/blog/create-qr-code-upi-wifi-link/
-- [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/): Generate Code 128, EAN-13, UPC and other barcodes. Guide: https://www.biscsindia.com/blog/how-to-make-barcode-ean-13-code-128/
-- [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats. Guide: https://www.biscsindia.com/blog/random-number-generator-fair-draws/
-- [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice. Guide: https://www.biscsindia.com/blog/flip-a-coin-roll-dice-online/
-- [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams. Guide: https://www.biscsindia.com/blog/random-name-picker-team-generator/
-- [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode. Guide: https://www.biscsindia.com/blog/online-stopwatch-timer-pomodoro-guide/
-- [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF. Guide: https://www.biscsindia.com/blog/create-gst-invoice-online-free/
-- [Signature Maker](https://www.biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG. Guide: https://www.biscsindia.com/blog/create-transparent-signature-png-online/
+- [Password Generator](https://biscsindia.com/tools/password-generator/): Strong, random passwords generated securely on your device. Guide: https://biscsindia.com/blog/generate-strong-random-password/
+- [Password Strength Checker](https://biscsindia.com/tools/password-strength-checker/): Check how strong a password is, without sending it anywhere. Guide: https://biscsindia.com/blog/check-password-strength-safely/
+- [QR Code Generator](https://biscsindia.com/tools/qr-code-generator/): QR codes for links, text, Wi-Fi, UPI payments and contacts. Guide: https://biscsindia.com/blog/create-qr-code-upi-wifi-link/
+- [Barcode Generator](https://biscsindia.com/tools/barcode-generator/): Generate Code 128, EAN-13, UPC and other barcodes. Guide: https://biscsindia.com/blog/how-to-make-barcode-ean-13-code-128/
+- [Random Number Generator](https://biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats. Guide: https://biscsindia.com/blog/random-number-generator-fair-draws/
+- [Coin Flip & Dice Roller](https://biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice. Guide: https://biscsindia.com/blog/flip-a-coin-roll-dice-online/
+- [Random Name Picker](https://biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams. Guide: https://biscsindia.com/blog/random-name-picker-team-generator/
+- [Stopwatch & Timer](https://biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode. Guide: https://biscsindia.com/blog/online-stopwatch-timer-pomodoro-guide/
+- [GST Invoice Generator](https://biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF. Guide: https://biscsindia.com/blog/create-gst-invoice-online-free/
+- [Signature Maker](https://biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG. Guide: https://biscsindia.com/blog/create-transparent-signature-png-online/
 
 ## AI Photo Tools
 
-- [AI Background Remover](https://www.biscsindia.com/tools/ai-background-remover/): Remove the background from photos automatically and download a transparent PNG. Guide: https://www.biscsindia.com/blog/remove-background-from-photo-free/
-- [AI Background Blur & Changer](https://www.biscsindia.com/tools/ai-background-changer/): Blur your background like a portrait camera, or replace it with a colour or image. Guide: https://www.biscsindia.com/blog/blur-change-photo-background-ai/
-- [AI Image Upscaler](https://www.biscsindia.com/tools/ai-image-upscaler/): Enlarge photos 2× or 4× with AI super-resolution for sharper results. Guide: https://www.biscsindia.com/blog/ai-image-upscaler-increase-resolution/
-- [AI Face Blur](https://www.biscsindia.com/tools/ai-face-blur/): Detect faces automatically and blur or pixelate them for privacy. Guide: https://www.biscsindia.com/blog/blur-faces-in-photo-automatically/
-- [AI Passport Photo](https://www.biscsindia.com/tools/ai-passport-photo/): Auto-crops your face to 35×45 mm and makes the background white. Guide: https://www.biscsindia.com/blog/ai-passport-photo-white-background/
-- [Photo Enhancer](https://www.biscsindia.com/tools/ai-photo-enhancer/): One-click fix for dull, dark or noisy photos: colour, light, sharpness and noise. Guide: https://www.biscsindia.com/blog/enhance-photo-quality-online-free/
-- [Image to Text (OCR)](https://www.biscsindia.com/tools/image-to-text/): Extract text from photos, screenshots and scanned PDFs in English, Hindi and Bengali. Guide: https://www.biscsindia.com/blog/extract-text-from-image-ocr-hindi-bengali/
-- [Smart Object Eraser](https://www.biscsindia.com/tools/object-eraser/): Brush over unwanted objects, text or blemishes and fill them in naturally. Guide: https://www.biscsindia.com/blog/remove-unwanted-objects-from-photo/
+- [AI Background Remover](https://biscsindia.com/tools/ai-background-remover/): Remove the background from photos automatically and download a transparent PNG. Guide: https://biscsindia.com/blog/remove-background-from-photo-free/
+- [AI Background Blur & Changer](https://biscsindia.com/tools/ai-background-changer/): Blur your background like a portrait camera, or replace it with a colour or image. Guide: https://biscsindia.com/blog/blur-change-photo-background-ai/
+- [AI Image Upscaler](https://biscsindia.com/tools/ai-image-upscaler/): Enlarge photos 2× or 4× with AI super-resolution for sharper results. Guide: https://biscsindia.com/blog/ai-image-upscaler-increase-resolution/
+- [AI Face Blur](https://biscsindia.com/tools/ai-face-blur/): Detect faces automatically and blur or pixelate them for privacy. Guide: https://biscsindia.com/blog/blur-faces-in-photo-automatically/
+- [AI Passport Photo](https://biscsindia.com/tools/ai-passport-photo/): Auto-crops your face to 35×45 mm and makes the background white. Guide: https://biscsindia.com/blog/ai-passport-photo-white-background/
+- [Photo Enhancer](https://biscsindia.com/tools/ai-photo-enhancer/): One-click fix for dull, dark or noisy photos: colour, light, sharpness and noise. Guide: https://biscsindia.com/blog/enhance-photo-quality-online-free/
+- [Image to Text (OCR)](https://biscsindia.com/tools/image-to-text/): Extract text from photos, screenshots and scanned PDFs in English, Hindi and Bengali. Guide: https://biscsindia.com/blog/extract-text-from-image-ocr-hindi-bengali/
+- [Smart Object Eraser](https://biscsindia.com/tools/object-eraser/): Brush over unwanted objects, text or blemishes and fill them in naturally. Guide: https://biscsindia.com/blog/remove-unwanted-objects-from-photo/
 
 ## SEO, GEO & AEO Tools
 
-- [Meta Tag Generator](https://www.biscsindia.com/tools/meta-tag-generator/): Generate title, description, Open Graph and Twitter meta tags. Guide: https://www.biscsindia.com/blog/meta-tag-generator-title-description-og-tags/
-- [Google SERP Preview](https://www.biscsindia.com/tools/serp-preview/): See how your page will look in Google search results on desktop and mobile. Guide: https://www.biscsindia.com/blog/google-serp-snippet-preview-tool/
-- [Social Share Preview](https://www.biscsindia.com/tools/social-share-preview/): Preview link cards for WhatsApp, Facebook, LinkedIn and X. Guide: https://www.biscsindia.com/blog/preview-link-whatsapp-facebook-linkedin/
-- [Schema Markup Generator](https://www.biscsindia.com/tools/schema-markup-generator/): JSON-LD structured data for local business, FAQ, product, article and more. Guide: https://www.biscsindia.com/blog/schema-markup-generator-json-ld-guide/
-- [Robots.txt Generator](https://www.biscsindia.com/tools/robots-txt-generator/): Create a robots.txt file with crawler rules and your sitemap. Guide: https://www.biscsindia.com/blog/create-robots-txt-file-guide/
-- [XML Sitemap Generator](https://www.biscsindia.com/tools/sitemap-generator/): Turn a list of URLs into a valid XML sitemap. Guide: https://www.biscsindia.com/blog/create-xml-sitemap-from-url-list/
-- [Keyword Density Checker](https://www.biscsindia.com/tools/keyword-density-checker/): Find the most used keywords and phrases in your content. Guide: https://www.biscsindia.com/blog/keyword-density-checker-ideal-percentage/
-- [UTM Link Builder](https://www.biscsindia.com/tools/utm-builder/): Build campaign tracking links for Google Analytics. Guide: https://www.biscsindia.com/blog/utm-link-builder-campaign-tracking/
-- [On-Page SEO Checker](https://www.biscsindia.com/tools/on-page-seo-checker/): Paste a page’s HTML to check titles, headings, alt text, links and more. Guide: https://www.biscsindia.com/blog/on-page-seo-checker-audit-html/
-- [Backlink & Listing Helper](https://www.biscsindia.com/tools/backlink-outreach-helper/): Checklist of genuine places to list your business, plus outreach templates. Guide: https://www.biscsindia.com/blog/get-backlinks-business-listings-india/
-- [llms.txt Generator](https://www.biscsindia.com/tools/llms-txt-generator/): Create an llms.txt file that tells AI assistants what your website is about. Guide: https://www.biscsindia.com/blog/what-is-llms-txt-how-to-create/
-- [AI Crawler Access Checker](https://www.biscsindia.com/tools/ai-crawler-checker/): Paste a robots.txt to see which AI bots (GPTBot, ClaudeBot, PerplexityBot…) can crawl your site. Guide: https://www.biscsindia.com/blog/check-block-ai-crawlers-robots-txt/
-- [GEO Content Analyzer](https://www.biscsindia.com/tools/geo-content-analyzer/): Score your content for citation by ChatGPT, Gemini, Perplexity and Google AI Overviews. Guide: https://www.biscsindia.com/blog/generative-engine-optimization-content-checklist/
-- [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes. Guide: https://www.biscsindia.com/blog/answer-engine-optimization-featured-snippets/
-- [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML. Guide: https://www.biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
-- [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://www.biscsindia.com/blog/find-questions-people-ask-content-ideas/
-- [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice. Guide: https://www.biscsindia.com/blog/readability-checker-flesch-score-guide/
-- [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs. Guide: https://www.biscsindia.com/blog/organization-author-schema-entity-seo/
-- [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages. Guide: https://www.biscsindia.com/blog/hreflang-tags-multilingual-website-guide/
+- [Meta Tag Generator](https://biscsindia.com/tools/meta-tag-generator/): Generate title, description, Open Graph and Twitter meta tags. Guide: https://biscsindia.com/blog/meta-tag-generator-title-description-og-tags/
+- [Google SERP Preview](https://biscsindia.com/tools/serp-preview/): See how your page will look in Google search results on desktop and mobile. Guide: https://biscsindia.com/blog/google-serp-snippet-preview-tool/
+- [Social Share Preview](https://biscsindia.com/tools/social-share-preview/): Preview link cards for WhatsApp, Facebook, LinkedIn and X. Guide: https://biscsindia.com/blog/preview-link-whatsapp-facebook-linkedin/
+- [Schema Markup Generator](https://biscsindia.com/tools/schema-markup-generator/): JSON-LD structured data for local business, FAQ, product, article and more. Guide: https://biscsindia.com/blog/schema-markup-generator-json-ld-guide/
+- [Robots.txt Generator](https://biscsindia.com/tools/robots-txt-generator/): Create a robots.txt file with crawler rules and your sitemap. Guide: https://biscsindia.com/blog/create-robots-txt-file-guide/
+- [XML Sitemap Generator](https://biscsindia.com/tools/sitemap-generator/): Turn a list of URLs into a valid XML sitemap. Guide: https://biscsindia.com/blog/create-xml-sitemap-from-url-list/
+- [Keyword Density Checker](https://biscsindia.com/tools/keyword-density-checker/): Find the most used keywords and phrases in your content. Guide: https://biscsindia.com/blog/keyword-density-checker-ideal-percentage/
+- [UTM Link Builder](https://biscsindia.com/tools/utm-builder/): Build campaign tracking links for Google Analytics. Guide: https://biscsindia.com/blog/utm-link-builder-campaign-tracking/
+- [On-Page SEO Checker](https://biscsindia.com/tools/on-page-seo-checker/): Paste a page’s HTML to check titles, headings, alt text, links and more. Guide: https://biscsindia.com/blog/on-page-seo-checker-audit-html/
+- [Backlink & Listing Helper](https://biscsindia.com/tools/backlink-outreach-helper/): Checklist of genuine places to list your business, plus outreach templates. Guide: https://biscsindia.com/blog/get-backlinks-business-listings-india/
+- [llms.txt Generator](https://biscsindia.com/tools/llms-txt-generator/): Create an llms.txt file that tells AI assistants what your website is about. Guide: https://biscsindia.com/blog/what-is-llms-txt-how-to-create/
+- [AI Crawler Access Checker](https://biscsindia.com/tools/ai-crawler-checker/): Paste a robots.txt to see which AI bots (GPTBot, ClaudeBot, PerplexityBot…) can crawl your site. Guide: https://biscsindia.com/blog/check-block-ai-crawlers-robots-txt/
+- [GEO Content Analyzer](https://biscsindia.com/tools/geo-content-analyzer/): Score your content for citation by ChatGPT, Gemini, Perplexity and Google AI Overviews. Guide: https://biscsindia.com/blog/generative-engine-optimization-content-checklist/
+- [AEO Answer Optimizer](https://biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes. Guide: https://biscsindia.com/blog/answer-engine-optimization-featured-snippets/
+- [FAQ Schema Generator](https://biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML. Guide: https://biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
+- [Question & Topic Generator](https://biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://biscsindia.com/blog/find-questions-people-ask-content-ideas/
+- [Readability Checker](https://biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice. Guide: https://biscsindia.com/blog/readability-checker-flesch-score-guide/
+- [Entity & Author Schema Builder](https://biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs. Guide: https://biscsindia.com/blog/organization-author-schema-entity-seo/
+- [Hreflang Tag Generator](https://biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages. Guide: https://biscsindia.com/blog/hreflang-tags-multilingual-website-guide/
 
 ## Video & Audio
 
-- [Screen Recorder](https://www.biscsindia.com/tools/screen-recorder/): Record your screen, a window or a tab, with webcam and microphone. No watermark. Guide: https://www.biscsindia.com/blog/record-screen-online-no-watermark/
-- [Video Compressor](https://www.biscsindia.com/tools/video-compressor/): Shrink videos for WhatsApp, email and upload limits. Guide: https://www.biscsindia.com/blog/compress-video-for-whatsapp-email/
-- [Video Trimmer](https://www.biscsindia.com/tools/video-trimmer/): Cut the start and end of a video, or extract a clip. Guide: https://www.biscsindia.com/blog/trim-cut-video-online-free/
-- [Video Converter & MP3](https://www.biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3. Guide: https://www.biscsindia.com/blog/convert-video-mp4-extract-mp3/
-- [Video to GIF](https://www.biscsindia.com/tools/video-to-gif/): Turn a video clip into an animated GIF. Guide: https://www.biscsindia.com/blog/convert-video-to-gif-online/
-- [Audio Recorder & Converter](https://www.biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A. Guide: https://www.biscsindia.com/blog/online-voice-recorder-mp3-converter/
+- [Screen Recorder](https://biscsindia.com/tools/screen-recorder/): Record your screen, a window or a tab, with webcam and microphone. No watermark. Guide: https://biscsindia.com/blog/record-screen-online-no-watermark/
+- [Video Compressor](https://biscsindia.com/tools/video-compressor/): Shrink videos for WhatsApp, email and upload limits. Guide: https://biscsindia.com/blog/compress-video-for-whatsapp-email/
+- [Video Trimmer](https://biscsindia.com/tools/video-trimmer/): Cut the start and end of a video, or extract a clip. Guide: https://biscsindia.com/blog/trim-cut-video-online-free/
+- [Video Converter & MP3](https://biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3. Guide: https://biscsindia.com/blog/convert-video-mp4-extract-mp3/
+- [Video to GIF](https://biscsindia.com/tools/video-to-gif/): Turn a video clip into an animated GIF. Guide: https://biscsindia.com/blog/convert-video-to-gif-online/
+- [Audio Recorder & Converter](https://biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A. Guide: https://biscsindia.com/blog/online-voice-recorder-mp3-converter/
 
 ## Office & Business
 
-- [Resume Builder](https://www.biscsindia.com/tools/resume-builder/): Create a professional resume from templates and download it as PDF. Guide: https://www.biscsindia.com/blog/ats-friendly-resume-builder-india/
-- [Salary Slip Generator](https://www.biscsindia.com/tools/salary-slip-generator/): Payslips with PF, ESI, professional tax and TDS, ready to print as PDF. Guide: https://www.biscsindia.com/blog/salary-slip-format-pf-esi-professional-tax/
-- [Rent Receipt Generator](https://www.biscsindia.com/tools/rent-receipt-generator/): Monthly rent receipts for HRA claims, with landlord PAN and revenue stamp space. Guide: https://www.biscsindia.com/blog/rent-receipt-format-hra-claim/
-- [Excel & CSV Converter](https://www.biscsindia.com/tools/excel-csv-converter/): View Excel and CSV files and convert between XLSX, CSV and JSON. Guide: https://www.biscsindia.com/blog/convert-excel-to-csv-json-online/
-- [Word to PDF](https://www.biscsindia.com/tools/word-to-pdf/): Convert DOCX documents to PDF in your browser. Guide: https://www.biscsindia.com/blog/convert-word-docx-to-pdf-free/
+- [Resume Builder](https://biscsindia.com/tools/resume-builder/): Create a professional resume from templates and download it as PDF. Guide: https://biscsindia.com/blog/ats-friendly-resume-builder-india/
+- [Salary Slip Generator](https://biscsindia.com/tools/salary-slip-generator/): Payslips with PF, ESI, professional tax and TDS, ready to print as PDF. Guide: https://biscsindia.com/blog/salary-slip-format-pf-esi-professional-tax/
+- [Rent Receipt Generator](https://biscsindia.com/tools/rent-receipt-generator/): Monthly rent receipts for HRA claims, with landlord PAN and revenue stamp space. Guide: https://biscsindia.com/blog/rent-receipt-format-hra-claim/
+- [Excel & CSV Converter](https://biscsindia.com/tools/excel-csv-converter/): View Excel and CSV files and convert between XLSX, CSV and JSON. Guide: https://biscsindia.com/blog/convert-excel-to-csv-json-online/
+- [Word to PDF](https://biscsindia.com/tools/word-to-pdf/): Convert DOCX documents to PDF in your browser. Guide: https://biscsindia.com/blog/convert-word-docx-to-pdf-free/
 
 ## Design Studio
 
-- [Collage Maker](https://www.biscsindia.com/tools/collage-maker/): Combine photos into beautiful grid and freestyle collages. Guide: https://www.biscsindia.com/blog/make-photo-collage-online-free/
-- [Photo to Sketch & Art](https://www.biscsindia.com/tools/photo-art-effects/): Turn photos into pencil sketches, cartoons, oil paintings and more. Guide: https://www.biscsindia.com/blog/convert-photo-to-pencil-sketch-art/
-- [Instagram Grid & Story Maker](https://www.biscsindia.com/tools/social-post-maker/): Split photos into grid posts and design stories and posts in the right sizes. Guide: https://www.biscsindia.com/blog/instagram-grid-splitter-story-maker/
-- [Logo Maker](https://www.biscsindia.com/tools/logo-maker/): Design a simple logo with icons, fonts and colours, and download SVG or PNG. Guide: https://www.biscsindia.com/blog/make-simple-logo-free-svg-png/
-- [Device Mockup Generator](https://www.biscsindia.com/tools/mockup-generator/): Place your screenshot inside phone, laptop and browser frames. Guide: https://www.biscsindia.com/blog/device-mockup-generator-screenshot-frame/
+- [Collage Maker](https://biscsindia.com/tools/collage-maker/): Combine photos into beautiful grid and freestyle collages. Guide: https://biscsindia.com/blog/make-photo-collage-online-free/
+- [Photo to Sketch & Art](https://biscsindia.com/tools/photo-art-effects/): Turn photos into pencil sketches, cartoons, oil paintings and more. Guide: https://biscsindia.com/blog/convert-photo-to-pencil-sketch-art/
+- [Instagram Grid & Story Maker](https://biscsindia.com/tools/social-post-maker/): Split photos into grid posts and design stories and posts in the right sizes. Guide: https://biscsindia.com/blog/instagram-grid-splitter-story-maker/
+- [Logo Maker](https://biscsindia.com/tools/logo-maker/): Design a simple logo with icons, fonts and colours, and download SVG or PNG. Guide: https://biscsindia.com/blog/make-simple-logo-free-svg-png/
+- [Device Mockup Generator](https://biscsindia.com/tools/mockup-generator/): Place your screenshot inside phone, laptop and browser frames. Guide: https://biscsindia.com/blog/device-mockup-generator-screenshot-frame/
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 149 how-to articles
-- [About](https://www.biscsindia.com/about/)
-- [Privacy Policy](https://www.biscsindia.com/privacy/)
-- [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)
+- [All guides](https://biscsindia.com/blog/): 149 how-to articles
+- [About](https://biscsindia.com/about/)
+- [Privacy Policy](https://biscsindia.com/privacy/)
+- [Full guide text for AI assistants](https://biscsindia.com/llms-full.txt)

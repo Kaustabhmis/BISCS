@@ -1106,7 +1106,7 @@
     'Ship to: 221B MG Road, Pune 411001. Alt PIN 560034\n' +
     'PAN: ABCDE1234F   GSTIN: 27ABCDE1234F1Z5   IFSC: HDFC0001234\n' +
     'Invoice dated 15/08/2025, due 2025-09-14. Server 192.168.1.20 replied.\n' +
-    'Visit https://www.biscsindia.com/tools?ref=regex — brand colour #4f46e5 #DigitalIndia';
+    'Visit https://biscsindia.com/tools?ref=regex — brand colour #4f46e5 #DigitalIndia';
   BT.impl('regex-tester', function (root) {
     css();
     var FLAGS = [['g', 'global'], ['i', 'ignore case'], ['m', 'multiline'], ['s', 'dotAll'], ['u', 'unicode'], ['y', 'sticky']];

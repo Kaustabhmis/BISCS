@@ -718,7 +718,7 @@
         BT.toast('Imported ' + plural(fresh.length, 'link'));
       },
       sample: function () {
-        var B = 'https://www.biscsindia.com/';
+        var B = 'https://biscsindia.com/';
         S = {
           name: 'BISCS India', mode: S.mode,
           summary: 'BISCS India is a technology company based in Kolkata, India. Its BISCS Tools website offers free, browser-based tools for PDFs, GST and income-tax calculations, images, text, SEO and developers; files are processed on the user’s device and never uploaded.',
@@ -1702,7 +1702,7 @@
         BT.$('#fq-title', root).value = S.title;
         S.items = [
           { q: 'Are BISCS Tools free to use?', a: 'Yes. Every tool is **free**, with no sign-up and no watermark on your files.' },
-          { q: 'Are my files uploaded to a server?', a: 'No. Files are processed inside your browser, on your own device, so they never leave your computer or phone.\n\nRead our [privacy policy](https://www.biscsindia.com/privacy/) for details.' },
+          { q: 'Are my files uploaded to a server?', a: 'No. Files are processed inside your browser, on your own device, so they never leave your computer or phone.\n\nRead our [privacy policy](https://biscsindia.com/privacy/) for details.' },
           { q: 'Which GST rates does the GST calculator support?', a: 'It supports the main GST slabs:\n- 5%\n- 18%\n- 40% (special rate)\n\nYou can also enter a custom rate.' },
           { q: 'Where is BISCS India based?', a: 'BISCS India is based in Kolkata, West Bengal, and serves clients across India.' }
         ];

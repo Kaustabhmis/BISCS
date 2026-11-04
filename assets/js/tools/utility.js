@@ -534,7 +534,7 @@
     injectCSS();
     var S = { type: 'url', ecl: 'M', size: 512, margin: 4, fg: '#111827', bg: '#ffffff', logo: null, logoImg: null, logoPct: 22 };
     var vals = {
-      url: 'https://www.biscsindia.com', text: 'Hello from BISCS India!', ssid: '', wpass: '', sec: 'WPA', hidden: false,
+      url: 'https://biscsindia.com', text: 'Hello from BISCS India!', ssid: '', wpass: '', sec: 'WPA', hidden: false,
       pa: '', pn: '', am: '', tn: '', first: '', last: '', org: '', title: '', tel: '', email: '', web: '', adr: '',
       to: '', subject: '', body: '', smsTo: '', smsMsg: '', phone: '+91'
     };

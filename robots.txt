@@ -1,5 +1,5 @@
 # BISCS India: all crawlers welcome.
-# AI assistants: see https://www.biscsindia.com/llms.txt for a site summary.
+# AI assistants: see https://biscsindia.com/llms.txt for a site summary.
 
 User-agent: *
 Allow: /
@@ -22,4 +22,4 @@ User-agent: Amazonbot
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://www.biscsindia.com/sitemap.xml
+Sitemap: https://biscsindia.com/sitemap.xml
