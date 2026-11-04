@@ -41,7 +41,7 @@ const SITE = {
    * paste each unit's data-ad-slot number below.
    */
   adsense: {
-    client: '',
+    client: 'ca-pub-9359278521160680',
     slots: { 'tool-top': '', 'tool-side': '', 'article-top': '', 'article-end': '' }
   },
   address: { locality: 'Kolkata', region: 'West Bengal', postalCode: '700026', country: 'IN', countryName: 'India' },

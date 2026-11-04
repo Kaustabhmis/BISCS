@@ -56,7 +56,8 @@ for (const t of list) {
   });
   page.off('pageerror', onErr);
   page.off('console', onConsole);
-  const bad = errors.filter((e) => !/favicon|fonts\.g/.test(e));
+  // Third-party resources (fonts, AdSense) may be unreachable in test sandboxes.
+  const bad = errors.filter((e) => !/favicon|fonts\.g|googlesyndication|adsbygoogle|ERR_TUNNEL_CONNECTION_FAILED|ERR_NAME_NOT_RESOLVED/.test(e));
   if (state.loading || state.error || state.size < 50 || bad.length) {
     failed++;
     console.log(`FAIL ${t.id}`, JSON.stringify({ ...state, errors: bad }));
