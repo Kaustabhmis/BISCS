@@ -48,6 +48,15 @@ It all runs in your browser, so there is nothing to sign up for and nothing is s
 
 The interest in the first row may look small next to an FD at the same rate. That is because the average rupee in an RD is deposited for only about half the tenure. A ₹60,000 FD for a year at 7% would earn more, but you would need the whole ₹60,000 on day one.
 
+## RD or FD for the same money?
+
+Compare like with like. Suppose you can save ₹60,000 over the next year.
+
+- **As an RD:** ₹5,000 a month for 12 months at 7% gives about ₹62,311.
+- **As an FD:** if you already had ₹60,000 today, a one-year FD at 7% compounded quarterly would give about ₹64,312.
+
+The FD earns more because the whole amount is invested for the full year. But that is not really a fair choice if the money arrives from your salary month by month. An RD is the fixed-return way to invest money you do not have yet; an FD is for money you already have. Many families use both: an FD for an emergency fund or a bonus, and an RD for steady monthly saving towards a specific expense.
+
 ## When does an RD make sense?
 
 - **Saving towards a known expense** such as school fees due next April, a Diwali purchase or an insurance premium.

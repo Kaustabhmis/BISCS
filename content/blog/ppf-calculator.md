@@ -60,6 +60,12 @@ The extension rows show where PPF really shines. Five extra years with deposits 
 
 Because these rules are set by the government and can change, confirm current details with India Post, your bank or the National Savings Institute before acting.
 
+## Why tax-free interest matters
+
+A PPF rate can look similar to an FD rate, but the comparison changes after tax. FD interest is taxed every year at your slab rate. For someone in the 30% slab, adding 4% cess, a 7% FD keeps only about 4.8% after tax. PPF interest at 7.1% is tax-free, so the full amount stays in the account and compounds.
+
+Over 15 years, that gap compounds into a large difference. This is why PPF remains popular with salaried people in higher tax brackets who want a guaranteed-return component in their savings, even though the money is locked in for a long time. For people with income below the taxable limit, the tax advantage matters less, and liquidity may matter more. If you are comparing options, run the deposit through the [FD Calculator](/tools/fd-calculator/) and then reduce the interest by your tax rate to compare fairly.
+
 ## Tips to get more from your PPF
 
 1. **Deposit early in the year.** Paying by 5 April each year earns interest for twelve months rather than fewer.

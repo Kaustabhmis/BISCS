@@ -59,6 +59,16 @@ The step-up row shows a practical habit. If your salary rises each April, raisin
 - **Comparing with a lump sum:** if you have a bonus to invest, compare it with the [Lumpsum Calculator](/tools/lumpsum-calculator/). Over the same period and return, a lump sum invested on day one earns more, but a SIP spreads your entry over time and fits a monthly income.
 - **Checking a fund's past growth:** use the [CAGR Calculator](/tools/cagr-calculator/) to turn a starting and ending NAV into an annual growth rate, then test that rate here with caution.
 
+## How much SIP do you need for a goal?
+
+The calculator projects forward, but you can use it backwards with a little trial and error. Say Neha in Hyderabad wants ₹50 lakh in 15 years for her daughter's higher education, and assumes 12% a year.
+
+1. Set the period to 15 years and the return to 12%.
+2. Start with a round figure, such as ₹10,000 a month. The estimate comes to about ₹50.46 lakh.
+3. Nudge the amount down until the estimate just meets the goal. The answer is a little under ₹9,910 a month.
+
+Now repeat at 10%. The required SIP rises noticeably, which is the point of the exercise: a cautious return assumption tells you how much buffer to build in. If the higher amount is not affordable today, try a smaller SIP with a 5% or 10% yearly step-up instead. And remember that ₹50 lakh in 15 years is a nominal target; set it after adjusting today's cost for inflation.
+
 ## Common SIP planning mistakes
 
 1. **Using a high return because a fund did well recently.** A few strong years can make 15% or more look normal. Test lower rates too.

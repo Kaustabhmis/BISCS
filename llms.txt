@@ -122,7 +122,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 - [Password Generator](https://www.biscsindia.com/tools/password-generator/): Strong, random passwords generated securely on your device. Guide: https://www.biscsindia.com/blog/generate-strong-random-password/
 - [Password Strength Checker](https://www.biscsindia.com/tools/password-strength-checker/): Check how strong a password is, without sending it anywhere. Guide: https://www.biscsindia.com/blog/check-password-strength-safely/
-- [QR Code Generator](https://www.biscsindia.com/tools/qr-code-generator/): QR codes for links, text, Wi-Fi, UPI payments and contacts.
+- [QR Code Generator](https://www.biscsindia.com/tools/qr-code-generator/): QR codes for links, text, Wi-Fi, UPI payments and contacts. Guide: https://www.biscsindia.com/blog/create-qr-code-upi-wifi-link/
 - [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/): Generate Code 128, EAN-13, UPC and other barcodes.
 - [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats.
 - [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice.
@@ -157,7 +157,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [llms.txt Generator](https://www.biscsindia.com/tools/llms-txt-generator/): Create an llms.txt file that tells AI assistants what your website is about. Guide: https://www.biscsindia.com/blog/what-is-llms-txt-how-to-create/
 - [AI Crawler Access Checker](https://www.biscsindia.com/tools/ai-crawler-checker/): Paste a robots.txt to see which AI bots (GPTBot, ClaudeBot, PerplexityBot…) can crawl your site. Guide: https://www.biscsindia.com/blog/check-block-ai-crawlers-robots-txt/
 - [GEO Content Analyzer](https://www.biscsindia.com/tools/geo-content-analyzer/): Score your content for citation by ChatGPT, Gemini, Perplexity and Google AI Overviews. Guide: https://www.biscsindia.com/blog/generative-engine-optimization-content-checklist/
-- [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes.
+- [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes. Guide: https://www.biscsindia.com/blog/answer-engine-optimization-featured-snippets/
 - [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML.
 - [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning.
 - [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice.
@@ -168,8 +168,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 - [Screen Recorder](https://www.biscsindia.com/tools/screen-recorder/): Record your screen, a window or a tab, with webcam and microphone. No watermark. Guide: https://www.biscsindia.com/blog/record-screen-online-no-watermark/
 - [Video Compressor](https://www.biscsindia.com/tools/video-compressor/): Shrink videos for WhatsApp, email and upload limits. Guide: https://www.biscsindia.com/blog/compress-video-for-whatsapp-email/
-- [Video Trimmer](https://www.biscsindia.com/tools/video-trimmer/): Cut the start and end of a video, or extract a clip.
-- [Video Converter & MP3](https://www.biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3.
+- [Video Trimmer](https://www.biscsindia.com/tools/video-trimmer/): Cut the start and end of a video, or extract a clip. Guide: https://www.biscsindia.com/blog/trim-cut-video-online-free/
+- [Video Converter & MP3](https://www.biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3. Guide: https://www.biscsindia.com/blog/convert-video-mp4-extract-mp3/
 - [Video to GIF](https://www.biscsindia.com/tools/video-to-gif/): Turn a video clip into an animated GIF.
 - [Audio Recorder & Converter](https://www.biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A.
 
@@ -177,8 +177,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 - [Resume Builder](https://www.biscsindia.com/tools/resume-builder/): Create a professional resume from templates and download it as PDF. Guide: https://www.biscsindia.com/blog/ats-friendly-resume-builder-india/
 - [Salary Slip Generator](https://www.biscsindia.com/tools/salary-slip-generator/): Payslips with PF, ESI, professional tax and TDS, ready to print as PDF. Guide: https://www.biscsindia.com/blog/salary-slip-format-pf-esi-professional-tax/
-- [Rent Receipt Generator](https://www.biscsindia.com/tools/rent-receipt-generator/): Monthly rent receipts for HRA claims, with landlord PAN and revenue stamp space.
-- [Excel & CSV Converter](https://www.biscsindia.com/tools/excel-csv-converter/): View Excel and CSV files and convert between XLSX, CSV and JSON.
+- [Rent Receipt Generator](https://www.biscsindia.com/tools/rent-receipt-generator/): Monthly rent receipts for HRA claims, with landlord PAN and revenue stamp space. Guide: https://www.biscsindia.com/blog/rent-receipt-format-hra-claim/
+- [Excel & CSV Converter](https://www.biscsindia.com/tools/excel-csv-converter/): View Excel and CSV files and convert between XLSX, CSV and JSON. Guide: https://www.biscsindia.com/blog/convert-excel-to-csv-json-online/
 - [Word to PDF](https://www.biscsindia.com/tools/word-to-pdf/): Convert DOCX documents to PDF in your browser.
 
 ## Design Studio
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 128 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 134 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

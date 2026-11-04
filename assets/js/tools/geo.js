@@ -1557,5 +1557,278 @@
     run();
   });
 
-  /*__PART_D__*/
+  // ==================================================== faq-schema-generator
+  /** Block Markdown (paragraphs, - lists, 1. lists, line breaks) to safe HTML. */
+  function mdToHtml(s) {
+    return String(s || '').trim().split(/\n\s*\n/).map(function (b) {
+      var ls = b.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+      if (!ls.length) return '';
+      if (ls.every(function (l) { return /^[-*•]\s+/.test(l); })) return '<ul>' + ls.map(function (l) { return '<li>' + inlineMd(l.replace(/^[-*•]\s+/, '')) + '</li>'; }).join('') + '</ul>';
+      if (ls.every(function (l) { return /^\d+[.)]\s+/.test(l); })) return '<ol>' + ls.map(function (l) { return '<li>' + inlineMd(l.replace(/^\d+[.)]\s+/, '')) + '</li>'; }).join('') + '</ol>';
+      return '<p>' + ls.map(inlineMd).join('<br>') + '</p>';
+    }).filter(Boolean).join('');
+  }
+  /** Import "Q: … A: …" or question-line / answer-paragraph text. */
+  function parseFaqText(txt) {
+    var L = String(txt || '').replace(/\r/g, '').split('\n'), out = [], cur = null, mode = null;
+    var hasQA = /^\s*(?:Q\d*[:.)]|Question\s*\d*:)/im.test(txt);
+    function push() { if (cur && (cur.q.trim() || cur.a.trim())) out.push({ q: oneLine(cur.q), a: cur.a.trim() }); cur = null; }
+    L.forEach(function (l) {
+      var t = l.trim();
+      var qm = t.match(/^(?:Q\d*[:.)]|Question\s*\d*:)\s*(.*)$/i), am = t.match(/^(?:A\d*[:.)]|Ans(?:wer)?\s*\d*:)\s*(.*)$/i);
+      if (hasQA) {
+        if (qm) { push(); cur = { q: qm[1], a: '' }; mode = 'q'; return; }
+        if (am && cur) { cur.a = am[1]; mode = 'a'; return; }
+        if (!cur) return;
+        if (mode === 'q' && t) cur.q += ' ' + t;
+        else if (mode === 'a') cur.a += '\n' + l;
+      } else {
+        var isQ = /\?\s*$/.test(t) && t.length <= 200 && !LIST_LINE.test(t);
+        if (isQ) { push(); cur = { q: t.replace(/^(?:#+|\d+[.)])\s*/, ''), a: '' }; return; }
+        if (!cur) return;
+        cur.a += '\n' + l;
+      }
+    });
+    push();
+    return out.map(function (x) { return { q: x.q, a: x.a.replace(/\n{3,}/g, '\n\n').trim() }; });
+  }
+
+  impl('faq-schema-generator', function (root) {
+    css();
+    var KEY = 'geo-faq-v1';
+    var S = lsGet(KEY, null);
+    if (!S || !Array.isArray(S.items)) S = { title: 'Frequently asked questions', items: [{ q: '', a: '' }, { q: '', a: '' }] };
+    var outMode = 'html';
+    root.innerHTML = '<div class="split">' +
+      '<div style="min-width:0"><div class="card"><div class="card-title"><h2 class="geo-h">Questions &amp; answers</h2><div class="btn-group">' +
+      btn('data-a="sample"', 'sparkles', 'Sample', 'btn-ghost') + btn('data-a="clear"', 'trash-2', 'Clear', 'btn-ghost') + '</div></div>' +
+      field('fq-title', 'Section heading', inp('fq-title', 'text', 'Frequently asked questions', S.title)) +
+      '<div id="fq-rows" class="geo-rows"></div>' + btn('data-a="add"', 'plus', 'Add question') +
+      '<p class="muted small" style="margin:10px 0 0">Answers support **bold**, *italic*, [links](https://…), “- ” bullet lists and blank lines between paragraphs.</p>' +
+      '<details class="geo-imp"><summary>' + BT.icon('list-checks') + ' Bulk import from text</summary>' +
+      field('fq-imp', 'Paste Q&amp;A text', ta('fq-imp', 'Q: Do you offer refunds?\nA: Yes, within 30 days of purchase.\n\nor\n\nDo you deliver in Kolkata?\nYes. We deliver across Kolkata within 2 days.', 6, 'mono'), 'Formats: “Q: … A: …” pairs, or a question line ending in “?” followed by its answer.') +
+      '<div class="btn-group">' + btn('data-a="imp" data-m="append"', 'plus', 'Append', 'btn-primary') + btn('data-a="imp" data-m="replace"', 'replace', 'Replace all') + '</div>' +
+      '</details></div></div>' +
+      '<div style="min-width:0"><div class="card geo-sticky"><div class="card-title"><h2 class="geo-h">Output</h2>' + seg('fq-mode', [['html', 'HTML'], ['schema', 'JSON-LD'], ['both', 'Combined'], ['preview', 'Preview']], outMode, 'Output') + '</div>' +
+      '<div class="geo-toolbar">' + chk('fq-open', 'First answer open', false) + '<span class="spacer"></span>' + btn('data-a="copy"', 'copy', 'Copy', 'btn-primary') + btn('data-a="dl"', 'download', 'Download') + '</div>' +
+      '<label for="fq-out" class="sr-only">Generated code</label><textarea id="fq-out" class="mono geo-out" readonly spellcheck="false"></textarea>' +
+      '<div id="fq-pv" class="geo-faqpv hidden" aria-live="polite"></div>' +
+      '<div id="fq-msgs" class="geo-msgs" aria-live="polite"></div>' +
+      '<p class="muted small" style="margin:12px 0 0">Place the HTML where visitors can read it and the JSON-LD anywhere on the same page. Schema must match the visible questions and answers. Google currently shows FAQ rich results only for well-known government and health websites, but the markup still describes your content clearly to search engines and AI systems.</p>' +
+      '</div></div></div>';
+    var rows = BT.$('#fq-rows', root), out = BT.$('#fq-out', root), pv = BT.$('#fq-pv', root);
+
+    function renderRows() {
+      var n = S.items.length;
+      rows.innerHTML = n ? S.items.map(function (it, i) {
+        return '<div class="geo-rowc"><div class="geo-rowh"><span>Question ' + (i + 1) + '</span><span class="geo-acts">' +
+          upbtn('data-a="up" data-i="' + i + '"' + (i === 0 ? ' disabled' : ''), 'Move question ' + (i + 1) + ' up') +
+          ibtn('data-a="down" data-i="' + i + '"' + (i === n - 1 ? ' disabled' : ''), 'chevron-down', 'Move question ' + (i + 1) + ' down') +
+          ibtn('data-a="del" data-i="' + i + '"', 'trash-2', 'Remove question ' + (i + 1)) + '</span></div>' +
+          '<div class="field"><label for="fq-q' + i + '">Question</label><input type="text" id="fq-q' + i + '" data-i="' + i + '" data-k="q" value="' + esc(it.q) + '" placeholder="e.g. How long does delivery take?"></div>' +
+          '<div class="field" style="margin:0"><div class="geo-lrow"><label for="fq-a' + i + '">Answer</label><span class="geo-count" id="fq-c' + i + '"></span></div><textarea id="fq-a' + i + '" data-i="' + i + '" data-k="a" rows="3" style="min-height:84px" placeholder="A direct, complete answer. 40–80 words is a good target.">' + esc(it.a) + '</textarea></div></div>';
+      }).join('') : '<p class="muted small" style="margin:0">No questions yet.</p>';
+      update();
+    }
+    function valid() { return S.items.filter(function (it) { return it.q.trim() && it.a.trim(); }); }
+    function buildHtml() {
+      var items = valid();
+      if (!items.length) return '';
+      var open = val(root, 'fq-open');
+      return '<section class="faq" aria-labelledby="faq-heading">\n  <h2 id="faq-heading">' + esc(oneLine(S.title) || 'Frequently asked questions') + '</h2>\n' + items.map(function (it, i) {
+        return '  <details' + (open && i === 0 ? ' open' : '') + '>\n    <summary>' + esc(oneLine(it.q)) + '</summary>\n    <div>' + mdToHtml(it.a) + '</div>\n  </details>';
+      }).join('\n') + '\n</section>';
+    }
+    function buildSchema() {
+      var items = valid();
+      if (!items.length) return '';
+      return jsonLd({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(function (it) {
+        return { '@type': 'Question', name: oneLine(it.q), acceptedAnswer: { '@type': 'Answer', text: mdToHtml(it.a) } };
+      }) });
+    }
+    var save = BT.debounce(function () { lsSet(KEY, S); }, 400);
+    function update() {
+      var h = buildHtml(), j = buildSchema();
+      out.value = outMode === 'html' ? h : outMode === 'schema' ? j : h && j ? h + '\n\n' + j : '';
+      out.classList.toggle('hidden', outMode === 'preview');
+      pv.classList.toggle('hidden', outMode !== 'preview');
+      if (outMode === 'preview') pv.innerHTML = h || '<p class="muted">Add a question and an answer to see the preview.</p>';
+      var msgs = [], seen = {};
+      S.items.forEach(function (it, i) {
+        var n = i + 1, q = oneLine(it.q), aw = wordsOf(stripTags(mdToHtml(it.a))).length;
+        var c = BT.$('#fq-c' + i, root);
+        if (c) c.innerHTML = aw ? aw + ' words' + (aw > 300 ? ' <span class="badge danger">Very long</span>' : aw > 150 ? ' <span class="badge warn">Long</span>' : '') : '';
+        if (!q && !it.a.trim()) return;
+        if (!q) msgs.push(['error', 'Question ' + n + ' is empty.']);
+        if (!it.a.trim()) msgs.push(['error', 'Question ' + n + ' has no answer. It is left out of the output.']);
+        var k = q.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ');
+        if (q && seen[k]) msgs.push(['warn', 'Question ' + n + ' duplicates question ' + seen[k] + '. Each question should appear only once on the page.']);
+        else if (q) seen[k] = n;
+        if (q && !/\?$/.test(q)) msgs.push(['', 'Question ' + n + ' does not end with “?”. Write it as a real question.']);
+        if (aw > 300) msgs.push(['warn', 'Answer ' + n + ' is ' + aw + ' words. Keep FAQ answers concise (under about 300 words) and link to a full guide for more.']);
+        if (/\[[^\]]+\]\((?!https?:\/\/|mailto:|\/)/.test(it.a)) msgs.push(['warn', 'Answer ' + n + ' has a link that is not https://, mailto: or a /path, so it is shown as text.']);
+      });
+      var nv = valid().length;
+      if (nv && !msgs.some(function (m) { return m[0] === 'error'; })) msgs.unshift(['ok', plural(nv, 'question') + ' ready. JSON-LD and HTML match.']);
+      if (nv === 1) msgs.push(['', 'An FAQ section usually has at least 2–3 questions.']);
+      BT.$('#fq-msgs', root).innerHTML = msgsHTML(msgs);
+      save();
+    }
+    rows.addEventListener('input', function (e) {
+      var t = e.target, i = t.getAttribute('data-i'), k = t.getAttribute('data-k');
+      if (i == null || !k) return;
+      S.items[+i][k] = t.value;
+      update();
+    });
+    BT.$('#fq-title', root).addEventListener('input', function (e) { S.title = e.target.value; update(); });
+    BT.$('#fq-open', root).addEventListener('change', update);
+    wireSeg(BT.$('#fq-mode', root), function (v) { outMode = v; update(); });
+    function mv(i, d) { var j = i + d; if (j < 0 || j >= S.items.length) return; var x = S.items[i]; S.items[i] = S.items[j]; S.items[j] = x; renderRows(); }
+    onClickA(root, Object.assign({
+      add: function () { S.items.push({ q: '', a: '' }); renderRows(); BT.$('#fq-q' + (S.items.length - 1), root).focus(); },
+      del: function (b) { S.items.splice(+b.getAttribute('data-i'), 1); renderRows(); },
+      up: function (b) { mv(+b.getAttribute('data-i'), -1); },
+      down: function (b) { mv(+b.getAttribute('data-i'), 1); },
+      imp: function (b) {
+        var got = parseFaqText(BT.$('#fq-imp', root).value);
+        if (!got.length) { BT.toast('No questions found. Use “Q: … A: …” or end questions with “?”', 'error'); return; }
+        if (b.getAttribute('data-m') === 'replace') S.items = got;
+        else S.items = S.items.filter(function (it) { return it.q.trim() || it.a.trim(); }).concat(got);
+        renderRows();
+        BT.toast('Imported ' + plural(got.length, 'question'));
+      },
+      sample: function () {
+        S.title = 'Frequently asked questions';
+        BT.$('#fq-title', root).value = S.title;
+        S.items = [
+          { q: 'Are BISCS Tools free to use?', a: 'Yes. Every tool is **free**, with no sign-up and no watermark on your files.' },
+          { q: 'Are my files uploaded to a server?', a: 'No. Files are processed inside your browser, on your own device, so they never leave your computer or phone.\n\nRead our [privacy policy](https://www.biscsindia.com/privacy/) for details.' },
+          { q: 'Which GST rates does the GST calculator support?', a: 'It supports the main GST slabs:\n- 5%\n- 18%\n- 40% (special rate)\n\nYou can also enter a custom rate.' },
+          { q: 'Where is BISCS India based?', a: 'BISCS India is based in Kolkata, West Bengal, and serves clients across India.' }
+        ];
+        renderRows();
+      },
+      clear: function () { if (!window.confirm('Remove all questions?')) return; S.items = [{ q: '', a: '' }]; renderRows(); }
+    }, wireCopyDl(root, function () { return outMode === 'preview' ? buildHtml() : out.value; }, function () { return 'faq.html'; }, 'text/html')));
+    renderRows();
+  });
+
+  // ====================================================== question-generator
+  // Each group: [label, intent, templates]. Template: [text, fit] where fit is
+  // 'faq' (short factual answer) or 'article' (needs a full page). {k} keyword,
+  // {loc} location, {aud} audience: templates with an unset slot are skipped.
+  var QGROUPS = [
+    ['What', 'Informational', [['What is {k}?', 'faq'], ['What is {k} used for?', 'faq'], ['What are the benefits of {k}?', 'article'], ['What are the different types of {k}?', 'article'], ['What does {k} include?', 'faq'], ['What should I know before choosing {k}?', 'article'], ['What is {k} in {loc}?', 'faq'], ['What is the future of {k}?', 'article']]],
+    ['Why', 'Informational', [['Why is {k} important?', 'faq'], ['Why do businesses need {k}?', 'article'], ['Why is {k} important for {aud}?', 'faq'], ['Why does {k} fail?', 'article'], ['Why choose {k} over alternatives?', 'article']]],
+    ['How', 'Informational', [['How does {k} work?', 'article'], ['How to get started with {k}?', 'article'], ['How to choose the right {k}?', 'article'], ['How to use {k} effectively?', 'article'], ['How can {aud} benefit from {k}?', 'article'], ['How to measure the results of {k}?', 'article'], ['How is {k} done in {loc}?', 'article']]],
+    ['Can / Is / Does', 'Informational', [['Is {k} worth it?', 'faq'], ['Is {k} safe?', 'faq'], ['Is {k} suitable for {aud}?', 'faq'], ['Is {k} legal in {loc}?', 'faq'], ['Can I do {k} myself?', 'faq'], ['Can {k} be done online?', 'faq'], ['Does {k} really work?', 'faq'], ['Do I need {k}?', 'faq']]],
+    ['Which / Best', 'Commercial', [['Which {k} is best?', 'article'], ['What is the best {k} for {aud}?', 'article'], ['Best {k} in {loc}', 'article'], ['Which {k} is right for me?', 'article'], ['Top {k} options compared', 'article']]],
+    ['Comparisons (vs)', 'Commercial', [['{k} vs alternatives: which is better?', 'article'], ['{k} vs doing it yourself', 'article'], ['Pros and cons of {k}', 'article'], ['What are the alternatives to {k}?', 'article'], ['Free vs paid {k}: what is the difference?', 'article']]],
+    ['Cost & price', 'Commercial', [['How much does {k} cost?', 'faq'], ['How much does {k} cost in {loc}?', 'faq'], ['Is {k} expensive?', 'faq'], ['What affects the price of {k}?', 'article'], ['Is there an affordable {k} for {aud}?', 'faq'], ['How to save money on {k}?', 'article']]],
+    ['Near me & local', 'Local', [['{k} near me', 'faq'], ['Where can I find {k} near me?', 'faq'], ['{k} in {loc}', 'article'], ['Who offers {k} in {loc}?', 'faq'], ['How to find a reliable {k} provider in {loc}?', 'article']]],
+    ['For beginners', 'Informational', [['{k} for beginners', 'article'], ['{k} basics explained', 'article'], ['How to learn {k} as a beginner?', 'article'], ['What is the easiest way to start with {k}?', 'faq'], ['{k} guide for {aud}', 'article']]],
+    ['Without', 'Informational', [['Can I do {k} without experience?', 'faq'], ['How to do {k} without spending money?', 'article'], ['Is {k} possible without a professional?', 'faq'], ['{k} without technical knowledge', 'article']]],
+    ['Free & online', 'Transactional', [['Free {k}', 'faq'], ['Is there a free {k}?', 'faq'], ['{k} online', 'faq'], ['Best free {k} tools', 'article'], ['Can I get {k} online in {loc}?', 'faq']]],
+    ['Mistakes', 'Informational', [['Common {k} mistakes to avoid', 'article'], ['What are the biggest mistakes in {k}?', 'article'], ['What should you not do in {k}?', 'faq'], ['{k} mistakes {aud} make', 'article']]],
+    ['Examples', 'Informational', [['{k} examples', 'article'], ['What is an example of {k}?', 'faq'], ['Real-life examples of {k}', 'article'], ['{k} examples for {aud}', 'article'], ['{k} case studies from {loc}', 'article']]],
+    ['Steps & process', 'Informational', [['{k} step by step', 'article'], ['What are the steps involved in {k}?', 'article'], ['{k} checklist', 'article'], ['What documents are needed for {k}?', 'faq'], ['What is the process for {k} in {loc}?', 'article']]],
+    ['Time', 'Informational', [['How long does {k} take?', 'faq'], ['When is the best time for {k}?', 'faq'], ['How often should you do {k}?', 'faq'], ['How long before {k} shows results?', 'faq']]],
+    ['Prepositions', 'Mixed', [['{k} for small businesses', 'article'], ['{k} for {aud}', 'article'], ['{k} for students', 'article'], ['{k} with examples', 'article'], ['{k} with free tools', 'article'], ['{k} without experience', 'article'], ['{k} near {loc}', 'faq'], ['{k} vs alternatives', 'article'], ['How to switch to {k}', 'article']]]
+  ];
+  function genQuestions(k, loc, aud) {
+    var out = [], seen = {};
+    k = oneLine(k); loc = oneLine(loc); aud = oneLine(aud);
+    if (!k) return out;
+    QGROUPS.forEach(function (g) {
+      g[2].forEach(function (t) {
+        if ((/\{loc\}/.test(t[0]) && !loc) || (/\{aud\}/.test(t[0]) && !aud)) return;
+        var s = t[0].replace(/\{k\}/g, k).replace(/\{loc\}/g, loc).replace(/\{aud\}/g, aud);
+        s = ucFirst(s.replace(/\s+/g, ' ').trim());
+        var key = s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim();
+        if (seen[key]) return;
+        seen[key] = 1;
+        out.push({ text: s, group: g[0], intent: /near|in \{loc\}|\{loc\}/.test(t[0]) && loc ? 'Local' : g[1], fit: t[1], key: key });
+      });
+    });
+    return out;
+  }
+
+  impl('question-generator', function (root) {
+    css();
+    var QS = [], starred = lsGet('geo-q-stars', {}) || {}, fitF = 'all';
+    root.innerHTML = '<div class="card"><div class="row cols-3">' +
+      field('qg-k', 'Seed keyword', inp('qg-k', 'text', 'e.g. GST registration'), 'A topic, product or service.') +
+      field('qg-loc', 'Location (optional)', inp('qg-loc', 'text', 'e.g. India or Kolkata', '', ' list="qg-locs"') + '<datalist id="qg-locs">' + ['India', 'Kolkata', 'West Bengal', 'Mumbai', 'Delhi', 'Bengaluru', 'Chennai', 'Hyderabad', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow'].map(function (c) { return '<option value="' + c + '">'; }).join('') + '</datalist>') +
+      field('qg-aud', 'Audience (optional)', inp('qg-aud', 'text', 'e.g. small businesses', '', ' list="qg-auds"') + '<datalist id="qg-auds">' + ['small businesses', 'startups', 'students', 'freelancers', 'beginners', 'homeowners', 'parents', 'doctors', 'shop owners', 'exporters'].map(function (c) { return '<option value="' + c + '">'; }).join('') + '</datalist>') +
+      '</div><div class="notice">' + BT.icon('info') + '<span><strong>Idea generation only.</strong> Questions are built offline from curated templates, so there is no search volume or ranking data. Check demand in Google Search Console, the “People also ask” box, or a keyword tool before writing.</span></div></div>' +
+      '<div class="card"><div class="geo-toolbar"><span class="geo-count" id="qg-count" aria-live="polite"></span><span class="spacer"></span>' +
+      seg('qg-fit', [['all', 'All'], ['faq', 'FAQ'], ['article', 'Article'], ['star', '★ Starred']], fitF, 'Filter questions') + '</div>' +
+      '<div class="geo-toolbar"><label class="sr-only" for="qg-filter">Filter questions</label><input type="search" id="qg-filter" placeholder="Filter questions…" style="max-width:260px;min-height:36px;padding:6px 10px">' + '<span class="spacer"></span>' +
+      btn('data-a="copy"', 'copy', 'Copy') + btn('data-a="txt"', 'download', 'TXT') + btn('data-a="csv"', 'sheet', 'CSV', 'btn-primary') + '</div>' +
+      '<p class="muted small" style="margin:0 0 12px">Star the questions you want to use; exports include starred questions only when you have starred some. <strong>FAQ</strong> = a short, direct answer works (FAQ section or snippet). <strong>Article</strong> = needs its own page or a full section.</p>' +
+      '<div id="qg-res"></div></div>';
+    var res = BT.$('#qg-res', root);
+    function key() { return val(root, 'qg-k').toLowerCase(); }
+    function visible() {
+      var f = val(root, 'qg-filter').toLowerCase();
+      return QS.filter(function (q) {
+        if (fitF === 'star') { if (!starred[q.key]) return false; } else if (fitF !== 'all' && q.fit !== fitF) return false;
+        return !f || q.text.toLowerCase().indexOf(f) > -1;
+      });
+    }
+    function hl(t) {
+      var k = val(root, 'qg-k');
+      if (!k) return esc(t);
+      var i = t.toLowerCase().indexOf(k.toLowerCase());
+      return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<b>' + esc(t.slice(i, i + k.length)) + '</b>' + esc(t.slice(i + k.length));
+    }
+    function run() {
+      QS = genQuestions(val(root, 'qg-k'), val(root, 'qg-loc'), val(root, 'qg-aud'));
+      render();
+    }
+    function render() {
+      var list = visible(), nStar = QS.filter(function (q) { return starred[q.key]; }).length;
+      BT.$('#qg-count', root).innerHTML = QS.length ? '<strong>' + list.length + '</strong> of ' + plural(QS.length, 'idea') + ' · ' + nStar + ' starred' : '';
+      if (!key()) { res.innerHTML = '<p class="muted" style="margin:0">Type a seed keyword to generate question ideas.</p>'; return; }
+      if (!list.length) { res.innerHTML = '<p class="muted" style="margin:0">No questions match this filter.</p>'; return; }
+      var groups = {}, order = [];
+      list.forEach(function (q) { if (!groups[q.group]) { groups[q.group] = []; order.push(q.group); } groups[q.group].push(q); });
+      res.innerHTML = '<div class="geo-qgrid">' + order.map(function (g) {
+        return '<section class="geo-qg"><h3>' + esc(g) + ' <span class="badge">' + esc(groups[g][0].intent) + '</span></h3>' + groups[g].map(function (q) {
+          var on = !!starred[q.key];
+          return '<div class="geo-qi"><button type="button" class="geo-star" data-a="star" data-k="' + esc(q.key) + '" aria-pressed="' + on + '" aria-label="Star: ' + esc(q.text) + '">' + BT.icon('star') + '</button>' +
+            '<span class="tx">' + hl(q.text) + '</span><span class="fit">' + (q.fit === 'faq' ? 'FAQ' : 'Article') + '</span></div>';
+        }).join('') + '</section>';
+      }).join('') + '</div>';
+    }
+    function exportList() {
+      var anyStar = QS.some(function (q) { return starred[q.key]; });
+      return anyStar ? QS.filter(function (q) { return starred[q.key]; }) : visible();
+    }
+    function csvCell(s) { s = String(s); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+    var deb = BT.debounce(run, 150);
+    ['qg-k', 'qg-loc', 'qg-aud'].forEach(function (id) { BT.$('#' + id, root).addEventListener('input', deb); });
+    BT.$('#qg-filter', root).addEventListener('input', BT.debounce(render, 100));
+    wireSeg(BT.$('#qg-fit', root), function (v) { fitF = v; render(); });
+    onClickA(root, {
+      star: function (b) {
+        var k = b.getAttribute('data-k');
+        if (starred[k]) delete starred[k]; else starred[k] = 1;
+        lsSet('geo-q-stars', starred);
+        b.setAttribute('aria-pressed', starred[k] ? 'true' : 'false');
+        if (fitF === 'star') render(); else BT.$('#qg-count', root).innerHTML = '<strong>' + visible().length + '</strong> of ' + plural(QS.length, 'idea') + ' · ' + Object.keys(starred).filter(function (x) { return QS.some(function (q) { return q.key === x; }); }).length + ' starred';
+      },
+      copy: function () { var l = exportList(); if (!l.length) { BT.toast('No questions to copy', 'error'); return; } BT.copy(l.map(function (q) { return q.text; }).join('\n'), 'Copied ' + plural(l.length, 'question')); },
+      txt: function () { var l = exportList(); if (!l.length) { BT.toast('No questions to export', 'error'); return; } BT.download(l.map(function (q) { return q.text; }).join('\n') + '\n', 'questions.txt', 'text/plain;charset=utf-8'); },
+      csv: function () {
+        var l = exportList();
+        if (!l.length) { BT.toast('No questions to export', 'error'); return; }
+        var rows = [['Question', 'Group', 'Intent', 'Best as', 'Starred']].concat(l.map(function (q) { return [q.text, q.group, q.intent, q.fit === 'faq' ? 'FAQ answer' : 'Full article', starred[q.key] ? 'yes' : '']; }));
+        BT.download('﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n') + '\r\n', 'questions.csv', 'text/csv;charset=utf-8');
+      }
+    });
+    run();
+  });
+
+  /*__PART_E__*/
 })();

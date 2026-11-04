@@ -64,6 +64,17 @@ The threshold and feather sliders change the whole outline. If only one area is 
 
 A cut-out placed on a dark background reveals any light fringe left from the original wall, and vice versa. Preview your subject on the colour you will actually use before downloading.
 
+## Product photos for online selling
+
+Indian marketplaces and social commerce, from big platforms to Instagram and WhatsApp catalogues, reward clean, consistent product images. A practical routine for a small seller:
+
+1. Photograph each product on a plain table near a window, at the same angle and distance.
+2. Remove the background in **Object** mode, clicking the product.
+3. Choose **Colour** with white, or another shade that suits your brand, and save as JPG.
+4. Use the same background for the whole catalogue so the grid looks uniform.
+
+Each marketplace sets its own rules for main images, such as background colour and how much of the frame the product should fill, so check the seller guidelines of the platform you use.
+
 ## Honest limits
 
 - **Hair and transparent materials** are the hardest part. Expect to touch up wispy hair, nets and glass.

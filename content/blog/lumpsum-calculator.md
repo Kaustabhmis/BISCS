@@ -59,6 +59,20 @@ At the same steady return, a lumpsum invested at the start always ends higher th
 
 Real markets are not steady, though. A lumpsum invested just before a fall can take years to recover, while a SIP buys at many prices. That is why many investors with a large sum use a systematic transfer from a liquid or debt fund into equity over several months. The calculators show the arithmetic; the choice depends on your risk tolerance and timeline.
 
+## How long does it take to double your money?
+
+A handy shortcut is the Rule of 72: divide 72 by the yearly return to estimate the years needed to double. Here is how the shortcut compares with the exact answer from compound growth:
+
+| Annual return | Rule of 72 estimate | Exact years to double |
+|---|---|---|
+| 6% | 12.0 | 11.90 |
+| 8% | 9.0 | 9.01 |
+| 10% | 7.2 | 7.27 |
+| 12% | 6.0 | 6.12 |
+| 15% | 4.8 | 4.96 |
+
+The rule is close enough for quick mental maths in the range most people care about. It also shows why return assumptions matter so much: at 6%, ₹1 lakh doubles roughly once in 12 years; at 12%, it doubles about twice in the same time and becomes nearly ₹3.9 lakh. To check any specific case, type the amount, rate and years into the calculator and watch the growth multiple in the result.
+
 ## When to use a lumpsum calculator
 
 - **Investing a windfall** such as a bonus, gift, maturity proceeds or property sale.

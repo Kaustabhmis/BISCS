@@ -70,6 +70,14 @@ TDS is not the final tax. If your slab rate is higher, you pay the difference wh
 4. **Ignoring inflation.** If inflation is close to your FD rate, your real return after tax may be near zero or negative.
 5. **Putting everything in one bank above the insurance limit.** DICGC cover is ₹5 lakh per depositor per bank.
 
+## Tips for getting more from fixed deposits
+
+- **Ladder your deposits.** Instead of one ₹5 lakh FD for five years, split it into five FDs of ₹1 lakh maturing in years one to five. Something always matures soon, so you rarely need to break an FD early, and you can reinvest at whatever rates are on offer then.
+- **Check senior citizen rates.** Many banks pay senior citizens an extra margin on FDs. If a parent is above 60, an FD in their name may earn more, though the interest is then their income for tax purposes.
+- **Match the tenure to the need.** Some banks have special tenures, such as 400 or 444 days, with slightly higher rates. Use the days field in the calculator to compare them with a standard one-year FD.
+- **Use a nominee.** Adding a nominee makes it much easier for your family to claim the deposit if something happens to you.
+- **Keep TDS in view.** If you expect interest above the TDS threshold at one bank, spreading deposits does not change your tax, but it can change when tax is deducted. Plan your advance tax and return accordingly.
+
 ## FD, RD or something else?
 
 If you have a lump sum, an FD is the natural fit. If you want to save a fixed amount every month, the [RD Calculator](/tools/rd-calculator/) shows how a recurring deposit grows with quarterly compounding. And to see compounding over longer periods or with regular top-ups, the [Compound Interest](/tools/compound-interest-calculator/) calculator gives more flexibility.
