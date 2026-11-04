@@ -79,6 +79,12 @@ The average total with two dice is **7**. Roll a few dozen times and watch the h
 
 Every flip and die face is chosen with the browser's `crypto.getRandomValues`, using a method that avoids the small bias some simple random generators introduce. The animation is decoration only; the result is decided first and the coin or dice are then turned to show it. That means fancy-looking spins cannot be "nudged" by timing your taps.
 
+## Is a virtual toss as good as a real one?
+
+For deciding things fairly, yes. A real coin's outcome depends on how hard it is flicked, how it is caught and the surface it lands on, which is why people sometimes argue about a "bad toss". A physical die can be slightly uneven, especially cheap ones with scooped-out dots. A secure random generator has none of these quirks.
+
+What a virtual toss lacks is the ceremony and the feeling that everyone saw it. If that matters, put the screen where everyone can see it before pressing the button, and agree on the call first. In a formal match or competition, follow whatever method the organisers or rules require.
+
 ## A quick classroom experiment
 
 Probability makes more sense when you see it happen:

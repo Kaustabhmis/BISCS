@@ -161,7 +161,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML. Guide: https://www.biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
 - [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://www.biscsindia.com/blog/find-questions-people-ask-content-ideas/
 - [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice. Guide: https://www.biscsindia.com/blog/readability-checker-flesch-score-guide/
-- [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs.
+- [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs. Guide: https://www.biscsindia.com/blog/organization-author-schema-entity-seo/
 - [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages.
 
 ## Video & Audio
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 144 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 145 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

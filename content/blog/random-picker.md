@@ -2,7 +2,7 @@
   "tool": "random-picker",
   "slug": "random-name-picker-team-generator",
   "title": "Random Name Picker and Team Generator for Draws and Classes",
-  "description": "Pick random winners from a list of names or split people into fair, random teams. Ideal for lucky draws, classrooms, office games and sports, with tips for fairness.",
+  "description": "Pick random winners from a list of names or split people into fair, random teams. Ideal for lucky draws, classrooms, office games and sports.",
   "keywords": ["random name picker", "random team generator", "lucky draw name picker", "pick a random name from a list", "random group generator"],
   "summary": "To pick a random name, paste your list with one name per line and let the picker choose so every entry has an equal chance. BISCS India’s free Random Name Picker selects one or more winners, can remove them from the list for the next round, and can split everyone into random teams of a chosen number or size.",
   "faq": [
@@ -75,6 +75,20 @@ Fairness is also about being seen to be fair:
 5. **Save the result** by copying it into the event group or taking a screenshot.
 
 If entries are tickets with numbers rather than names, the [Random Number Generator](/tools/random-number-generator/) may be simpler: draw numbers in the ticket range without repeats.
+
+## Preparing your list
+
+A clean list makes the draw quicker and avoids disputes:
+
+- **One entry per line.** Blank lines are ignored, and spaces at the start or end of a line are trimmed.
+- **Use full names** where two people share a first name, such as "Riya S" and "Riya M".
+- **Copy straight from a spreadsheet.** Paste a single column from Excel or Google Sheets and each cell becomes one line.
+- **Add weight deliberately.** If someone bought three tickets, enter their name three times with a ticket number, such as "Anil – 1", "Anil – 2", "Anil – 3". Each line is then a separate, valid entry.
+- **Items work too.** The picker does not care whether entries are people. Use it for topics, chores, restaurant options or quiz questions.
+
+## Picking a random order
+
+Sometimes you need a sequence rather than a winner: presentation order in a class, batting order in gully cricket, or the order of interviews for the day. Press **Shuffle list** and the whole list is rearranged at random in the entry box. Copy it, or pick winners equal to the total number of entries to get a numbered order you can share.
 
 ## Common mistakes
 
