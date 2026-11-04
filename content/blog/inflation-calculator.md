@@ -67,6 +67,10 @@ Two things stand out. First, the difference between 4% and 8% inflation is enorm
 - **Long-term goals** like education, a house or retirement need targets set in future rupees, not today's.
 - **Salary hikes** below inflation mean a real pay cut, even if the number on your payslip rises.
 
+## Is your salary hike beating inflation?
+
+A quick real-pay check: divide (1 + hike) by (1 + inflation) and subtract 1. If Anjali's salary rises 5% in a year when prices rise 6%, her real pay change is 1.05 ÷ 1.06 − 1, about −0.94%. Her payslip shows more rupees, but they buy slightly less than last year's salary did. Over several years of below-inflation increments, the gap adds up, so it is worth running your own numbers before an appraisal conversation.
+
 ## Using inflation with investment calculators
 
 A good habit is to work in two steps. First, use this calculator to turn your goal into future rupees. Then use the [SIP Calculator](/tools/sip-calculator/) or [Lumpsum Calculator](/tools/lumpsum-calculator/) to see how much you need to invest to reach that figure. The lumpsum tool also shows a "value in today's ₹" result using an inflation rate you choose.

@@ -75,6 +75,10 @@ Switching from yearly to daily compounding over 10 years added under ₹7,000. S
 
 The same maths applies to debt. As a purely hypothetical illustration, if an unpaid balance of ₹50,000 grew at 3% a month with nothing repaid, after 12 months it would be about ₹71,288, which is over 42% more in a single year. Real card and loan charges depend on your agreement, fees and repayments, but the lesson is clear: high-interest debt that compounds monthly should usually be cleared before you invest for modest returns.
 
+## How to compare two offers with different compounding
+
+Suppose one deposit pays 7.9% compounded yearly and another 7.75% compounded quarterly. Put each into the calculator and read the effective annual rate: the quarterly one works out to about 7.98%, so it edges ahead despite the lower headline rate. Comparing effective rates, or the final amounts over the same period, is the fair way to choose.
+
 ## Where you meet compound interest in real life
 
 - **Fixed deposits:** banks commonly compound quarterly. The [FD Calculator](/tools/fd-calculator/) adds tenure in years, months and days.

@@ -85,6 +85,10 @@ Freelancers and agencies can use the same idea with time as the cost. If a desig
 - **Use margin** when you look at profitability, compare products or talk to lenders and investors, since financial statements report margins on sales.
 - **Use both** when negotiating with distributors and retailers, who may quote "margin" but mean markup. Always confirm which one is meant.
 
+## What happens when costs rise?
+
+If your supplier raises the cost from ₹750 to ₹800 and you keep the price at ₹1,000, your margin drops from 25% to 20%. To restore a 25% margin, the new price is 800 ÷ 0.75 = ₹1,066.67. Checking this every time a purchase price changes keeps small cost increases from silently eating your profit.
+
 ## Pricing tips for small businesses
 
 1. **Price before GST.** Work out margin on the taxable value, then add GST with the [GST Calculator](/tools/gst-calculator/).

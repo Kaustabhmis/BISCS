@@ -136,7 +136,7 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="${base}assets/css/site.css?v=${SITE.version}">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
-${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join('\n')}
+${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c')}</script>`).join('\n')}
 ${extraHead}
 </head>
 <body>

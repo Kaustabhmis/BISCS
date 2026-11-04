@@ -898,6 +898,12 @@ There is no app to install and no account to create. The recording never leaves 
 
 The original take is saved in the format your browser records natively, usually WebM or M4A audio. MP3 and M4A export use an audio and video engine of about 32 MB that downloads once and is then cached.
 
+## Trimming: why it matters more than you think
+
+Almost every recording starts with a second or two of silence and the click of the mouse, and ends with you reaching for the Stop button. Those moments are small, but they make a recording feel unpolished, especially in a voice message or presentation voice-over.
+
+The editor draws the waveform of your take, so silence and speech are easy to tell apart: flat stretches are quiet, tall shapes are sound. Drag the start handle to just before the first word and the end handle to just after the last, play the selection to check, and export. Exporting only the kept part also makes the file smaller, which helps when you are sending it on a slow mobile connection.
+
 ## Converting an existing audio file
 
 Below the recorder, **Convert an existing file** accepts MP3, WAV, M4A, OGG, AAC, FLAC, Opus and more, and even video files such as MP4, from which it takes the sound. Each file appears as a take that you can trim and export just like a fresh recording.
@@ -2040,6 +2046,117 @@ A: You can re-format minified code so it is readable again, but comments and ori
 Q: What does Keep /*! licence */ comments mean?
 A: By convention, a comment whose opening marker is followed by an exclamation mark holds a licence or copyright notice that should survive minification. Many open-source licences require that notice to stay with the code. With the option ticked, the minifier removes ordinary comments but keeps these special ones.
 
+## Flip a Coin or Roll Dice Online: Fair Tosses and Real Odds
+
+URL: https://www.biscsindia.com/blog/flip-a-coin-roll-dice-online/
+Tool: Coin Flip & Dice Roller (https://www.biscsindia.com/tools/coin-dice-roller/)
+
+Quick answer: An online coin flip or dice roll picks a result at random so each side has an equal chance: 50% for heads or tails, and one in six for each face of a die. BISCS India’s free Coin Flip & Dice Roller uses your browser’s secure randomness, animates each toss, and keeps a running history and tally.
+
+An online coin flip gives **heads or tails with an equal 50% chance**, and an online dice roller gives **each face from 1 to 6 an equal one-in-six chance**. Good tools use a proper random source, so the result is as fair as a real coin or die, and often fairer.
+
+The free [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/) does both. It animates each toss, keeps a tally and history, and uses your browser's cryptographically secure random generator. Nothing is sent to a server.
+
+## When is a virtual coin or dice useful?
+
+- **Settling a decision** between two equal options: which film, which restaurant, who goes first.
+- **Gully cricket and sports,** when nobody has a coin handy for the toss.
+- **Board games** like Ludo or Snakes and Ladders when the dice have gone missing.
+- **Classroom probability lessons,** where students can toss hundreds of times and see the tally settle.
+- **Role-playing and party games** that need several dice at once.
+
+## How to flip a coin
+
+1. Open the [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/). The **Coin flip** tab is selected.
+2. Press **Flip coin**. The coin spins and lands on **Heads** or **Tails**.
+3. Check the **History** card for the number of heads and tails, their percentages and the current streak.
+4. Press **Reset** to clear the tally and start fresh.
+
+The history strip shows your most recent 40 flips as H and T, so you can see streaks at a glance.
+
+## How to roll dice
+
+1. Switch to the **Dice roller** tab.
+2. Choose the **Number of dice**, from 1 to 10.
+3. Press **Roll dice**. Each die tumbles and lands, and the result reads like "4 + 6 = 10".
+4. Look at the **History** table for every roll, plus the total number of rolls, the average total and the highest total.
+5. Press **Reset** to clear.
+
+If your device is set to reduce motion, the animations are skipped and results appear immediately.
+
+## The real odds behind coins and dice
+
+### Coins
+
+- Heads or tails: **1 in 2 (50%)** on every toss.
+- Two heads in a row: 1 in 4 (25%).
+- Five heads in a row: **1 in 32 (about 3.1%)**.
+
+That last figure surprises people. In a long session of tossing, runs of five or more are common. They do not mean the coin is broken.
+
+### One die
+
+Each face has a **1 in 6** chance, about 16.7%. The average roll over time is **3.5**.
+
+In Ludo, you often need a 6 to move a piece out. The chance of getting at least one 6 in three rolls is about **42%**, and in four rolls about **52%**. So waiting several turns for a 6 is completely normal.
+
+### Two dice
+
+With two dice there are 36 equally likely combinations, but the totals are not equally likely:
+
+| Total | Ways to make it | Chance |
+|---|---|---|
+| 2 or 12 | 1 | About 2.8% each |
+| 3 or 11 | 2 | About 5.6% each |
+| 4 or 10 | 3 | About 8.3% each |
+| 5 or 9 | 4 | About 11.1% each |
+| 6 or 8 | 5 | About 13.9% each |
+| 7 | 6 | About 16.7% |
+
+The average total with two dice is **7**. Roll a few dozen times and watch the history's average total drift towards it.
+
+## How the tool keeps it fair
+
+Every flip and die face is chosen with the browser's `crypto.getRandomValues`, using a method that avoids the small bias some simple random generators introduce. The animation is decoration only; the result is decided first and the coin or dice are then turned to show it. That means fancy-looking spins cannot be "nudged" by timing your taps.
+
+## A quick classroom experiment
+
+Probability makes more sense when you see it happen:
+
+1. Ask the class to predict how many heads they will get in 10 flips, then in 100.
+2. Flip 10 times and note the result. It may well be 3 or 7 heads.
+3. Keep going to 100 flips. The percentage will usually move much closer to 50%.
+4. Discuss why small samples swing widely and large samples settle, which is the law of large numbers.
+5. Switch to two dice and test whether 7 really appears most often.
+
+## Common misunderstandings
+
+- **"Tails is due."** Past tosses never change the next one.
+- **"The app is rigged because I got 7 heads out of 10."** That happens about 12% of the time with a fair coin.
+- **"All dice totals are equally likely."** With two or more dice, middle totals are far more common.
+- **"Animations decide the outcome."** The result is chosen randomly; the animation just shows it.
+
+## Tips for using it
+
+- Agree on what heads and tails mean **before** flipping, so nobody argues afterwards.
+- For a best-of-three decision, keep the tally visible on screen.
+- For dice with more sides, such as a d20, use the [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/) with a range of 1 to 20.
+- To pick a person rather than a side, the [Random Name Picker](https://www.biscsindia.com/tools/random-picker/) chooses from a list, and can split the group into teams.
+
+Whether it is a cricket toss on the street or a Ludo game with missing dice, the [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/) gives you a fair result in a second.
+
+Q: Is an online coin toss really 50/50?
+A: Yes. The BISCS tool picks heads or tails using your browser’s cryptographically secure random generator, with exactly equal chances. Real coins are very close to 50/50 too, though studies suggest tiny biases from how they are flipped. Over a small number of tosses, uneven tallies are normal and do not indicate unfairness.
+
+Q: After five heads in a row, is tails more likely?
+A: No. Each toss is independent, so the next one is still exactly 50/50. Believing a result is overdue is called the gambler’s fallacy. A streak of five heads has a 1 in 32 chance from any given starting point, so streaks like this happen regularly over a long session.
+
+Q: What is the most common total with two dice?
+A: Seven. There are six ways to make it out of 36 possible combinations, so it comes up about one time in six. Totals of 2 and 12 are the rarest, with only one combination each, about one time in 36.
+
+Q: Can I roll more than two dice?
+A: Yes. Choose from 1 to 10 standard six-sided dice. The tool shows each die, the total, and a history table of every roll along with the average and highest total. For dice with other numbers of sides, use the Random Number Generator with the range you need.
+
 ## How to Make a Photo Collage Online Free (No Upload, No Watermark)
 
 URL: https://www.biscsindia.com/blog/make-photo-collage-online-free/
@@ -2328,6 +2445,10 @@ Switching from yearly to daily compounding over 10 years added under ₹7,000. S
 ## When compounding works against you
 
 The same maths applies to debt. As a purely hypothetical illustration, if an unpaid balance of ₹50,000 grew at 3% a month with nothing repaid, after 12 months it would be about ₹71,288, which is over 42% more in a single year. Real card and loan charges depend on your agreement, fees and repayments, but the lesson is clear: high-interest debt that compounds monthly should usually be cleared before you invest for modest returns.
+
+## How to compare two offers with different compounding
+
+Suppose one deposit pays 7.9% compounded yearly and another 7.75% compounded quarterly. Put each into the calculator and read the effective annual rate: the quarterly one works out to about 7.98%, so it edges ahead despite the lower headline rate. Comparing effective rates, or the final amounts over the same period, is the fair way to choose.
 
 ## Where you meet compound interest in real life
 
@@ -3616,6 +3737,12 @@ To polish individual answers for snippets and voice search, the [AEO Answer Opti
 - **Very long answers.** If an answer needs 400 words, it probably deserves its own article.
 - **Markup without the section.** Pasting JSON-LD into a page with no visible FAQ goes against Google's guidelines.
 - **Two FAQPage blocks on one page**, often from a plugin plus manual code. Check your final HTML with the [On-Page SEO Checker](https://www.biscsindia.com/tools/on-page-seo-checker/), which lists structured data types it finds.
+
+## An example FAQ for a local business
+
+A dental clinic in Bhubaneswar might answer questions such as "Do you accept walk-in patients?", "How much does a root canal cost?", "Is parking available near the clinic?" and "Do you treat children?". Each answer is two or three sentences: a direct reply, the key condition, and a link to book or to a detailed treatment page. Prices are shown as a range with "currently" and a note that the final cost depends on the examination.
+
+That section helps anxious patients decide, reduces repeated phone calls, and gives search engines clean question-and-answer pairs, whether or not a rich result ever appears.
 
 ## Where to place your FAQ section
 
@@ -4950,6 +5077,18 @@ The rule under current CBIC notifications depends on your aggregate turnover in 
 
 HSN-wise summaries are also reported in GSTR-1, so using consistent codes on every invoice makes return filing easier.
 
+## Goods or services? Tricky cases
+
+Choosing between an HSN and a SAC code is usually obvious, but a few situations catch people out:
+
+- **Restaurants and takeaways** supply a service, so they use SAC 996331, even though the customer receives food.
+- **Repairs and maintenance** are services. A shop that repairs laptops uses a SAC code, such as 998713, for the labour, and an HSN code for any spare parts it sells separately on the invoice.
+- **Software** can be goods or a service depending on how it is supplied, for example packaged media versus a subscription or development work.
+- **Construction** is generally a service under SAC group 9954, while selling building materials alone is a supply of goods.
+- **Job work** on someone else's goods is a service, even though the result is a physical product.
+
+Where an invoice mixes goods and services, each line needs its own code. If one supply naturally bundles several items, GST has rules for composite and mixed supplies that decide which rate applies; this is worth confirming with a practitioner.
+
 ## Why the finder does not show GST rates
 
 GST rates were rationalised with effect from 22 September 2025, with most goods and services moving into the 5% and 18% slabs and a 40% rate for certain luxury and sin goods. Rates for specific items continue to change by notification. Rather than risk showing a stale rate, the finder focuses on getting the code right. Once you have it, look up the rate on the CBIC website and use the [GST Calculator](https://www.biscsindia.com/tools/gst-calculator/) to work out the tax.
@@ -6137,6 +6276,10 @@ Two things stand out. First, the difference between 4% and 8% inflation is enorm
 - **Fixed deposits** can barely keep pace once tax is deducted. Check your FD's maturity with the [FD Calculator](https://www.biscsindia.com/tools/fd-calculator/), then convert it to today's money here.
 - **Long-term goals** like education, a house or retirement need targets set in future rupees, not today's.
 - **Salary hikes** below inflation mean a real pay cut, even if the number on your payslip rises.
+
+## Is your salary hike beating inflation?
+
+A quick real-pay check: divide (1 + hike) by (1 + inflation) and subtract 1. If Anjali's salary rises 5% in a year when prices rise 6%, her real pay change is 1.05 ÷ 1.06 − 1, about −0.94%. Her payslip shows more rupees, but they buy slightly less than last year's salary did. Over several years of below-inflation increments, the gap adds up, so it is worth running your own numbers before an appraisal conversation.
 
 ## Using inflation with investment calculators
 
@@ -9630,6 +9773,10 @@ Freelancers and agencies can use the same idea with time as the cost. If a desig
 - **Use margin** when you look at profitability, compare products or talk to lenders and investors, since financial statements report margins on sales.
 - **Use both** when negotiating with distributors and retailers, who may quote "margin" but mean markup. Always confirm which one is meant.
 
+## What happens when costs rise?
+
+If your supplier raises the cost from ₹750 to ₹800 and you keep the price at ₹1,000, your margin drops from 25% to 20%. To restore a 25% margin, the new price is 800 ÷ 0.75 = ₹1,066.67. Checking this every time a purchase price changes keeps small cost increases from silently eating your profit.
+
 ## Pricing tips for small businesses
 
 1. **Price before GST.** Work out margin on the taxable value, then add GST with the [GST Calculator](https://www.biscsindia.com/tools/gst-calculator/).
@@ -9851,6 +9998,12 @@ For each answer, lead with a direct reply in the first sentence, then add detail
 - **Burying the answer.** If the heading asks "How much does it cost?", the first sentence should give a figure or range.
 - **Ignoring local wording.** People in India often search with city names, Hindi or Hinglish phrasing, or terms like "near me". Use the location field and your own customer language.
 - **Forgetting to update.** Costs, rules and timelines change; review answers regularly.
+
+## An example: a home bakery in Pune
+
+Suppose a home baker enters "custom birthday cake" with Pune as the location and parents as the audience. Among the ideas are questions like "How much does a custom birthday cake cost in Pune?", "How long does a custom birthday cake take?" and "Is a custom birthday cake suitable for parents planning a first birthday?".
+
+The cost and timing questions become short FAQ answers on the order page, with a price range in ₹ and the notice period needed. "How to choose the right custom birthday cake" becomes a blog post with photos of past designs, flavour options and serving sizes. In one sitting, the baker has a small, realistic content plan built around what customers actually want to know.
 
 ## Tips for better ideas
 

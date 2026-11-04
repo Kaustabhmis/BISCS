@@ -87,6 +87,12 @@ To polish individual answers for snippets and voice search, the [AEO Answer Opti
 - **Markup without the section.** Pasting JSON-LD into a page with no visible FAQ goes against Google's guidelines.
 - **Two FAQPage blocks on one page**, often from a plugin plus manual code. Check your final HTML with the [On-Page SEO Checker](/tools/on-page-seo-checker/), which lists structured data types it finds.
 
+## An example FAQ for a local business
+
+A dental clinic in Bhubaneswar might answer questions such as "Do you accept walk-in patients?", "How much does a root canal cost?", "Is parking available near the clinic?" and "Do you treat children?". Each answer is two or three sentences: a direct reply, the key condition, and a link to book or to a detailed treatment page. Prices are shown as a range with "currently" and a note that the final cost depends on the examination.
+
+That section helps anxious patients decide, reduces repeated phone calls, and gives search engines clean question-and-answer pairs, whether or not a rich result ever appears.
+
 ## Where to place your FAQ section
 
 Put it near the end of a service or product page, after the main content, or on a dedicated help page. Keep the heading clear, use your own brand voice, and link from answers to the pages that explain more.

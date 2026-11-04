@@ -83,6 +83,12 @@ For each answer, lead with a direct reply in the first sentence, then add detail
 - **Ignoring local wording.** People in India often search with city names, Hindi or Hinglish phrasing, or terms like "near me". Use the location field and your own customer language.
 - **Forgetting to update.** Costs, rules and timelines change; review answers regularly.
 
+## An example: a home bakery in Pune
+
+Suppose a home baker enters "custom birthday cake" with Pune as the location and parents as the audience. Among the ideas are questions like "How much does a custom birthday cake cost in Pune?", "How long does a custom birthday cake take?" and "Is a custom birthday cake suitable for parents planning a first birthday?".
+
+The cost and timing questions become short FAQ answers on the order page, with a price range in ₹ and the notice period needed. "How to choose the right custom birthday cake" becomes a blog post with photos of past designs, flavour options and serving sizes. In one sitting, the baker has a small, realistic content plan built around what customers actually want to know.
+
 ## Tips for better ideas
 
 Try several seed keywords: the formal term ("income tax return filing"), the casual one ("ITR filing") and the problem ("missed ITR deadline"). Each produces a different set of questions. Change the audience too; questions from students differ from those of business owners.

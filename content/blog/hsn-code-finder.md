@@ -65,6 +65,18 @@ The rule under current CBIC notifications depends on your aggregate turnover in 
 
 HSN-wise summaries are also reported in GSTR-1, so using consistent codes on every invoice makes return filing easier.
 
+## Goods or services? Tricky cases
+
+Choosing between an HSN and a SAC code is usually obvious, but a few situations catch people out:
+
+- **Restaurants and takeaways** supply a service, so they use SAC 996331, even though the customer receives food.
+- **Repairs and maintenance** are services. A shop that repairs laptops uses a SAC code, such as 998713, for the labour, and an HSN code for any spare parts it sells separately on the invoice.
+- **Software** can be goods or a service depending on how it is supplied, for example packaged media versus a subscription or development work.
+- **Construction** is generally a service under SAC group 9954, while selling building materials alone is a supply of goods.
+- **Job work** on someone else's goods is a service, even though the result is a physical product.
+
+Where an invoice mixes goods and services, each line needs its own code. If one supply naturally bundles several items, GST has rules for composite and mixed supplies that decide which rate applies; this is worth confirming with a practitioner.
+
 ## Why the finder does not show GST rates
 
 GST rates were rationalised with effect from 22 September 2025, with most goods and services moving into the 5% and 18% slabs and a 40% rate for certain luxury and sin goods. Rates for specific items continue to change by notification. Rather than risk showing a stale rate, the finder focuses on getting the code right. Once you have it, look up the rate on the CBIC website and use the [GST Calculator](/tools/gst-calculator/) to work out the tax.

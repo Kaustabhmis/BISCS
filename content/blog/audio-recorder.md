@@ -39,6 +39,12 @@ There is no app to install and no account to create. The recording never leaves 
 
 The original take is saved in the format your browser records natively, usually WebM or M4A audio. MP3 and M4A export use an audio and video engine of about 32 MB that downloads once and is then cached.
 
+## Trimming: why it matters more than you think
+
+Almost every recording starts with a second or two of silence and the click of the mouse, and ends with you reaching for the Stop button. Those moments are small, but they make a recording feel unpolished, especially in a voice message or presentation voice-over.
+
+The editor draws the waveform of your take, so silence and speech are easy to tell apart: flat stretches are quiet, tall shapes are sound. Drag the start handle to just before the first word and the end handle to just after the last, play the selection to check, and export. Exporting only the kept part also makes the file smaller, which helps when you are sending it on a slow mobile connection.
+
 ## Converting an existing audio file
 
 Below the recorder, **Convert an existing file** accepts MP3, WAV, M4A, OGG, AAC, FLAC, Opus and more, and even video files such as MP4, from which it takes the sound. Each file appears as a take that you can trim and export just like a fresh recording.
