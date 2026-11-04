@@ -613,3 +613,5 @@ table.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-va
 .guide-link:hover { text-decoration: none; border-color: var(--brand); }
 .guide-link .icon { color: var(--brand); }
 .guide-link span { flex: 1; }
+
+.muted a, .small a, .article-note a { text-decoration: underline; text-underline-offset: 2px; }

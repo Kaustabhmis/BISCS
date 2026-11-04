@@ -6513,6 +6513,127 @@ A: Your real return is roughly the interest rate minus inflation, and after tax 
 Q: Where can I find official inflation figures for India?
 A: The Consumer Price Index (CPI) is published monthly by the National Statistics Office under the Ministry of Statistics and Programme Implementation. The Reserve Bank of India uses CPI inflation for its monetary policy target. Both websites publish current and historical data you can use to choose a rate.
 
+## How to Create a GST Invoice: CGST, SGST, IGST and Format
+
+URL: https://www.biscsindia.com/blog/create-gst-invoice-online-free/
+Tool: GST Invoice Generator (https://www.biscsindia.com/tools/invoice-generator/)
+
+Quick answer: A GST tax invoice lists the supplier and buyer details, GSTINs, a unique invoice number and date, place of supply, HSN or SAC codes, taxable value and tax. Charge CGST plus SGST when supplier and place of supply are in the same state, and IGST when they differ. BISCS India’s free GST Invoice Generator applies this split automatically and saves the invoice as PDF.
+
+A GST tax invoice is the bill a registered business issues when it supplies goods or services. It must show the **supplier's and buyer's details and GSTINs**, a **unique invoice number and date**, the **place of supply**, **HSN or SAC codes**, the **taxable value**, and the **tax charged**. That tax is split as **CGST + SGST** when the supplier and the place of supply are in the same state, and charged as **IGST** when they are in different states.
+
+The free [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/) builds a professional A4 invoice with these fields, applies the right tax split automatically, and lets you save it as a PDF. Your data stays in your browser.
+
+**Note:** this guide explains general GST invoicing practice as at the time of writing. GST rules and rates change, so confirm specifics for your business on the official GST portal or with a chartered accountant.
+
+## CGST + SGST or IGST: the core rule
+
+The deciding question is whether the supply is **intra-state** or **inter-state**:
+
+| Supplier's state | Place of supply | Supply type | Tax charged |
+|---|---|---|---|
+| West Bengal | West Bengal | Intra-state | CGST + SGST, each half the rate |
+| West Bengal | Karnataka | Inter-state | IGST at the full rate |
+| Delhi | Delhi | Intra-state | CGST + SGST (Delhi has its own legislature) |
+| Maharashtra | Chandigarh | Inter-state | IGST |
+
+In union territories without their own legislature, such as Chandigarh, an intra-state supply attracts **CGST + UTGST** instead of SGST.
+
+The **place of supply** is decided by GST law. For goods it is generally where the movement of goods ends, and for many services to registered businesses it is the recipient's location. Unusual cases, such as events, transport or exports, have their own rules, so check if you are unsure.
+
+The total tax is the same either way. Only the heads change, which affects where the tax is credited and how the buyer claims input tax credit.
+
+## What must a GST tax invoice contain?
+
+Under the GST invoice rules, a tax invoice should include:
+
+- Supplier's name, address and GSTIN
+- A consecutive **invoice number**, unique for the financial year, of up to 16 characters
+- **Date** of issue
+- Buyer's name and address, and **GSTIN if registered**
+- **Place of supply** with the state name, for inter-state supplies
+- **HSN** (goods) or **SAC** (services) code
+- Description, **quantity** and unit
+- **Taxable value** after any discount
+- **Tax rate** and amount for CGST, SGST/UTGST or IGST
+- Whether tax is payable on **reverse charge**
+- **Signature** of the supplier or authorised signatory
+
+The BISCS template covers each of these, and adds a tax summary by rate, the total in words, and optional bank and UPI details.
+
+## How to make a GST invoice with the BISCS tool
+
+1. Open the [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/). A sample invoice is loaded so you can see the layout.
+2. Fill in **From (your business)**: name, address, state, GSTIN, phone, email and an optional logo. A valid GSTIN sets the state automatically and is checked for format and check digit.
+3. Fill in **Bill to (customer)**, including the **Place of supply**. A badge shows whether the supply is intra-state (CGST + SGST) or inter-state (IGST).
+4. Set the **invoice number**, **date** and **due date**.
+5. Add **items** with description, HSN/SAC, quantity, rate, discount % and GST %. Line totals update as you type.
+6. Add **notes, terms**, bank details, UPI ID and the signature line text.
+7. Check the **live A4 preview**, then press **Download PDF** and choose "Save as PDF" in the print dialog.
+
+Your draft saves automatically on your device. **New invoice** keeps your business and bank details, clears the customer and items, and moves to the next invoice number.
+
+## Worked example: same items, two customers
+
+A Kolkata agency (West Bengal) bills three items:
+
+| Item | Qty × Rate | Discount | Taxable value | GST rate | Tax |
+|---|---|---|---|---|---|
+| Website maintenance | 1 × ₹40,000 | — | ₹40,000.00 | 18% | ₹7,200.00 |
+| Training sessions | 12 × ₹1,250 | 10% | ₹13,500.00 | 18% | ₹2,430.00 |
+| Printed manuals | 3 × ₹499 | — | ₹1,497.00 | 5% | ₹74.85 |
+| **Total** | | | **₹54,997.00** | | **₹9,704.85** |
+
+The rates here are for illustration. Always use the correct rate for your actual HSN or SAC code.
+
+**Customer in Kolkata (intra-state):** CGST ₹4,852.42 + SGST ₹4,852.43. The odd paisa arises because ₹74.85 cannot be halved exactly, so the tool rounds one half and puts the remainder in the other, keeping the total exact. Invoice value ₹64,701.85, rounded off by +₹0.15 to **₹64,702**.
+
+**Customer in Bengaluru (inter-state):** IGST ₹9,704.85. Same invoice value, **₹64,702** after rounding.
+
+## A note on GST rates
+
+GST rates were rationalised with effect from 22 September 2025, and most goods and services now fall in the 5% or 18% slabs, with a higher rate of 40% for certain goods. Some special rates, such as those on precious metals, also exist. The generator offers 0%, 0.25%, 3%, 5%, 12%, 18%, 28% and 40% so you can match the rate that applies, including for older transactions. Confirm current rates for your HSN or SAC code on the official GST sources.
+
+## E-invoicing: when a PDF is not enough
+
+Businesses whose aggregate turnover in any financial year exceeds the notified threshold must issue **e-invoices** for B2B supplies. At the time of writing that threshold is **₹5 crore**. E-invoicing means reporting each invoice to the government's Invoice Registration Portal, which returns an **IRN** and a signed QR code to print on the invoice.
+
+This tool does not connect to the portal or generate IRNs. If you are above the threshold, use e-invoicing through the official portal or your accounting software, and check the latest threshold and timelines on the official e-invoice website.
+
+## Common GST invoicing mistakes
+
+- **Charging IGST on a local sale,** or CGST + SGST on an out-of-state one.
+- **Wrong place of supply,** especially when the billing and delivery addresses are in different states.
+- **Reusing or skipping invoice numbers** within a financial year.
+- **Missing the buyer's GSTIN** on B2B invoices, which can block their input tax credit.
+- **Applying GST before the discount** instead of on the discounted taxable value.
+- **Using a tax invoice when composition or unregistered,** which is not allowed.
+- **Wrong HSN/SAC or rate,** which causes mismatches in returns.
+
+## Practical tips
+
+- Use a number format that resets each financial year, such as `INV/2026-27/001`.
+- Keep a PDF of every invoice; the browser draft is only a convenience.
+- Validate customer GSTINs with the [GSTIN Validator](https://www.biscsindia.com/tools/gstin-validator/) and look up codes with the [HSN Code Finder](https://www.biscsindia.com/tools/hsn-code-finder/).
+- Track your filing deadlines with the [GST Due Date Calendar](https://www.biscsindia.com/tools/gst-due-date-calendar/).
+
+A correct invoice protects both you and your customer's tax credit. Create yours with the [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/), and check any doubtful rule with your tax adviser.
+
+Q: When do I charge CGST and SGST, and when IGST?
+A: Compare the supplier’s state with the place of supply. If both are in the same state, it is an intra-state supply and the GST rate is split equally into CGST and SGST, or UTGST in some union territories. If they are in different states, it is an inter-state supply and the full rate is charged as IGST. The total tax is the same either way.
+
+Q: Does this tool generate e-invoices with an IRN?
+A: No. It creates a regular tax invoice as a PDF. Businesses whose aggregate turnover exceeds the notified e-invoicing threshold, currently ₹5 crore at the time of writing, must report B2B invoices to the Invoice Registration Portal to get an IRN and signed QR code. Check the current threshold and rules on the official GST and e-invoice portals.
+
+Q: How many digits of HSN code must I show?
+A: Under the current notification, businesses with aggregate turnover up to ₹5 crore in the previous year must show at least 4-digit HSN codes on B2B tax invoices, and those above ₹5 crore must show 6 digits. Services use SAC codes. Rules can change, so confirm the current requirement on the GST portal or with your tax adviser.
+
+Q: Can a composition dealer or unregistered business use this tool?
+A: Only GST-registered regular taxpayers can issue a tax invoice and charge GST. A composition taxpayer issues a bill of supply without charging GST, and an unregistered business cannot collect GST at all. They can still use the layout as a simple bill by setting the GST rate to 0%, but should not label it or present it as a tax invoice.
+
+Q: Where is my invoice data saved?
+A: Your draft is saved only in your own browser on this device, so your business and bank details are there next time. Nothing is uploaded to a server. Download each invoice as a PDF for your records, because clearing browser data or switching devices will remove the draft.
+
 ## How to Convert JPG, PNG and Photos to a Single PDF (Free)
 
 URL: https://www.biscsindia.com/blog/convert-jpg-images-to-pdf-free/
@@ -12444,6 +12565,107 @@ A: Sign on plain white paper with a dark pen, photograph it in good daylight, an
 Q: Can I add the date and my name next to the signature?
 A: Yes. The signing screen also has Add text and Tick tools, so you can type the date, your name, place or initials beside the signature before downloading the signed PDF.
 
+## How to Create a Transparent Signature PNG Online, Free
+
+URL: https://www.biscsindia.com/blog/create-transparent-signature-png-online/
+Tool: Signature Maker (https://www.biscsindia.com/tools/signature-maker/)
+
+Quick answer: To create a signature image, draw it with your mouse, finger or stylus, or type your name in a handwriting-style font, then download it as a transparent PNG. BISCS India’s free Signature Maker does this in your browser. A signature image is not a Digital Signature Certificate, so use DSC or Aadhaar eSign where the law requires one.
+
+To create a signature image, draw your signature with a mouse, finger or stylus, or type your name in a handwriting-style font, then download it as a **transparent PNG**. You can place that image on PDFs, letters, invoices and forms, and it will sit cleanly over the signature line without a white box.
+
+The free [Signature Maker](https://www.biscsindia.com/tools/signature-maker/) does this in your browser. Your signature is never uploaded, and the exported image is automatically trimmed and saved at high resolution.
+
+**Important:** a signature image is not a **Digital Signature Certificate (DSC)** or **Aadhaar eSign**. Where a law, portal or contract requires those, an image will not do. More on this below.
+
+## When is a signature image useful?
+
+- Signing **PDF letters, quotations and offer letters** before emailing them.
+- Adding a signature to **invoices, rent receipts and salary slips**.
+- Signing **internal forms**, leave applications and declarations that accept scanned signatures.
+- Creating an **email signature** or a sign-off for a letterhead template.
+- Avoiding the print, sign and scan routine for everyday paperwork.
+
+## How to draw your signature
+
+1. Open the [Signature Maker](https://www.biscsindia.com/tools/signature-maker/). The **Draw** tab is selected.
+2. Pick an **ink colour**: black, blue, green, red, or a custom colour. Blue is common for signatures in India because it shows a signature is original rather than photocopied.
+3. Set the **pen thickness**.
+4. Sign above the line in the pad, using a mouse, a finger on a touchscreen, or a stylus.
+5. Use **Undo** to remove the last stroke, or **Clear** to start again.
+6. Press **Download PNG**. The image is trimmed to your signature with a small margin.
+
+## How to type a signature
+
+1. Switch to the **Type** tab.
+2. Enter your name, up to 60 characters.
+3. Choose one of six handwriting styles: **Great Vibes, Dancing Script, Allura, Sacramento, Satisfy or Homemade Apple**. Each button previews your own name.
+4. Adjust the **size** with the slider.
+5. Press **Download PNG**.
+
+A typed signature looks neat, but it will not match your real handwritten signature. Use it where a stylised name is acceptable, such as email sign-offs or informal documents, and draw your real signature where it needs to match your bank or ID records.
+
+## Getting a clean, professional result
+
+- **Sign big.** Use the full width of the pad; the export is scaled at high resolution and trimmed, so it stays crisp when shrunk on a page.
+- **Use a stylus or finger** on a phone or tablet if you can. A mouse tends to make shaky lines.
+- **Keep a steady pace.** Very fast strokes can look jagged; very slow ones can wobble.
+- **Choose a slightly thicker pen** if your signature looks thin when placed on a document.
+- **Leave transparency on** unless a system specifically needs a white background, in which case tick **White background instead of transparent**.
+- **Save the PNG somewhere private,** such as an encrypted folder, not your phone's public gallery.
+
+## Signature image, DSC or eSign: what is the difference?
+
+| Method | What it is | Typical uses | Legal weight |
+|---|---|---|---|
+| Signature image | A picture of your signature placed on a document | Letters, quotations, internal forms, informal agreements | Depends on what the other party accepts; easy to copy |
+| Digital Signature Certificate (DSC) | A cryptographic certificate issued by a licensed Certifying Authority, usually on a USB token | Company and tax filings, tenders, many government portals | Recognised under the Information Technology Act, 2000 |
+| Aadhaar eSign | An online electronic signature authenticated with Aadhaar OTP through a licensed provider | Agreements, account opening, consent forms | Recognised under the Information Technology Act, 2000 |
+
+A DSC or eSign is mathematically tied to the document, so any later change is detectable. An image can be copied onto any file by anyone who has it. So for contracts of real value or government filings that demand a DSC or eSign, use those methods. For everyday paperwork, a clean image is often all that is needed. When unsure, ask the person or organisation receiving the document what they accept.
+
+## Placing your signature on different documents
+
+- **PDFs:** use a PDF signing tool to drop the PNG on the signature line and resize it. Keep it roughly the size of a real handwritten signature, about 4 to 5 cm wide on an A4 page.
+- **Word or Google Docs:** insert the PNG as an image, set text wrapping to "in front of text" so it can sit over the line, then resize.
+- **Invoices and receipts:** many invoice and receipt templates have a signatory line. Place the signature just above it, next to the "For company name" text.
+- **Scanned forms:** if you are signing a scanned page, make sure the signature colour contrasts with the scan, and export the final document as PDF.
+
+Whatever the document, zoom in before sending to check that the signature is not covering important text and that the edges look clean.
+
+## Common mistakes
+
+- **Sending your signature PNG to people who do not need it.** Treat it like a key.
+- **Using a typed font where your real signature is required,** such as bank documents.
+- **Placing the image too large** so it overlaps text or the signature box.
+- **Using a white background** on coloured letterheads, which leaves a visible box.
+- **Assuming an image counts as a digital signature** for statutory filings.
+- **Signing on a dirty or cracked touchscreen,** which causes broken strokes.
+
+## Protecting your signature
+
+- When you share a signed copy, send a PDF rather than the signature file itself.
+- For documents you share widely, consider adding a visible watermark such as "Copy for KYC only – not valid for other use" with the [Image Watermark](https://www.biscsindia.com/tools/image-watermark/) tool or [Watermark PDF](https://www.biscsindia.com/tools/watermark-pdf/).
+- Keep the original PNG offline and delete copies from downloads folders on shared computers.
+
+## Next step: putting the signature on a PDF
+
+Once you have your PNG, you can place it on a document with [Sign PDF](https://www.biscsindia.com/tools/sign-pdf/), which lets you position and resize the signature on any page, all in your browser.
+
+A neat signature image saves a surprising amount of printing and scanning. Create yours once with the [Signature Maker](https://www.biscsindia.com/tools/signature-maker/) and keep it safe for the documents that accept it.
+
+Q: Is a signature image legally the same as a digital signature?
+A: No. A picture of your signature is simply an image placed on a document. In India, the electronic signatures recognised under the Information Technology Act include Digital Signature Certificates and Aadhaar-based eSign. Many informal documents accept a signature image, but filings and contracts that require a DSC or eSign need those methods.
+
+Q: Why should the background be transparent?
+A: A transparent PNG has no white box around the ink, so it sits naturally on top of lines, stamps and coloured letterheads. A white background can cover text underneath. If a form or system rejects transparent images, tick the option for a white background before downloading.
+
+Q: Is my signature uploaded anywhere?
+A: No. Drawing, typing and exporting all happen in your browser, and the PNG is created on your device. In Type mode, the handwriting fonts are downloaded from Google Fonts so they can display, but your name and signature are not sent to BISCS India.
+
+Q: How can I make my drawn signature look smoother?
+A: Use a stylus or your finger on a phone or tablet rather than a mouse, sign larger than you need, and draw at a steady speed. A slightly thicker pen setting hides small wobbles. Use Undo to remove a bad stroke instead of starting again, and the tool trims extra space automatically on export.
+
 ## Simple Interest Calculator: SI = P × R × T ÷ 100 Explained
 
 URL: https://www.biscsindia.com/blog/simple-interest-formula-examples/
@@ -13475,6 +13697,12 @@ There are limits worth knowing:
 - **Muted devices** will not play the beeps. Check your volume first.
 
 For important alarms, keep the screen on and the tab open, or use your phone's built-in clock app as a backup.
+
+## Reading your lap times
+
+Laps are more useful than a single total when you want to improve. Suppose you run four laps of a park track and record 2:05, 1:58, 2:11 and 2:24. The tool marks 1:58 as your best lap and 2:24 as your worst. The pattern shows you started a little fast and faded at the end, so next time you might hold back slightly on the first two laps.
+
+The same idea works for a mock exam: tap Lap after each section to see where your time actually goes.
 
 ## Common mistakes
 

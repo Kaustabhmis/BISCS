@@ -89,6 +89,12 @@ There are limits worth knowing:
 
 For important alarms, keep the screen on and the tab open, or use your phone's built-in clock app as a backup.
 
+## Reading your lap times
+
+Laps are more useful than a single total when you want to improve. Suppose you run four laps of a park track and record 2:05, 1:58, 2:11 and 2:24. The tool marks 1:58 as your best lap and 2:24 as your worst. The pattern shows you started a little fast and faded at the end, so next time you might hold back slightly on the first two laps.
+
+The same idea works for a mock exam: tap Lap after each section to see where your time actually goes.
+
 ## Common mistakes
 
 - Pressing Start before setting the time, then wondering why it shows the previous value. Set first, then start.

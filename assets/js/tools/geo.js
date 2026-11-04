@@ -646,7 +646,7 @@
       var sum = oneLine(S.summary), c = BT.$('#ll-sum-c', root);
       c.innerHTML = sum ? sum.length + ' chars' + (sum.length > 400 ? ' <span class="badge warn">Long, keep it to a short paragraph</span>' : sum.length < 50 ? ' <span class="badge warn">A little short</span>' : ' <span class="badge ok">Good</span>') : '';
       var msgs = validateLlms(txt, S.mode === 'full');
-      if (!oneLine(S.name)) msgs.unshift(['error', 'Enter your site or project name for the H1.']);
+      if (!oneLine(S.name)) msgs.unshift(['warn', 'Enter your site or project name for the H1.']);
       if (/^#{1,6}\s/m.test(S.details)) msgs.push(['warn', 'Your details contain Markdown headings. A <code>#</code> line adds a second H1 and <code>##</code> starts a new section.']);
       if (S.mode === 'full') msgs.push(['', '<strong>llms-full.txt</strong> is a companion file containing the full text of your key pages in one Markdown document, so an assistant can read everything without following links. Fill in “Page content” under each link.']);
       BT.$('#ll-msgs', root).innerHTML = msgsHTML(msgs);

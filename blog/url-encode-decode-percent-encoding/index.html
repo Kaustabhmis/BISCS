@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=955a1577b4">
+<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/#article","headline":"URL Encode and Decode: Percent-Encoding Explained Simply","description":"What %20 and %26 mean, when to use encodeURIComponent vs encodeURI, why spaces become + in forms, and how to encode or decode URLs safely online.","abstract":"URL encoding, or percent-encoding, replaces characters that are unsafe in a web address with a % sign and their byte value in hex, so a space becomes %20 and & becomes %26. BISCS India's URL Encode / Decode tool converts both ways, supports component and full-URL modes, and breaks any URL into its parts in your browser.","url":"https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/","mainEntityOfPage":"https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":1025,"keywords":"url encode, url decode online, percent encoding, encodeuricomponent vs encodeuri, query string encoder","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"URL Encode / Decode","url":"https://www.biscsindia.com/tools/url-encoder/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"URL Encode and Decode: Percent-Encoding Explained Simply","item":"https://www.biscsindia.com/blog/url-encode-decode-percent-encoding/"}]}</script>
@@ -62,7 +62,7 @@
   </header>
   <div class="article-layout">
     <div class="article-main">
-      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>URL encoding, or percent-encoding, replaces characters that are unsafe in a web address with a % sign and their byte value in hex, so a space becomes %20 and &amp; becomes %26. BISCS India&#39;s URL Encode / Decode tool converts both ways, supports component and full-URL modes, and breaks any URL into its parts in your browser.</p></aside>
+      <div class="quick-answer" role="note" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>URL encoding, or percent-encoding, replaces characters that are unsafe in a web address with a % sign and their byte value in hex, so a space becomes %20 and &amp; becomes %26. BISCS India&#39;s URL Encode / Decode tool converts both ways, supports component and full-URL modes, and breaks any URL into its parts in your browser.</p></div>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg></span>
         <div><strong>URL Encode / Decode</strong><p>Percent-encode or decode URLs and query strings.</p></div>
@@ -157,7 +157,7 @@ const url = &#39;https://api.example.com/stores?city=&#39; + encodeURIComponent(
       </div>
       <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
     </div>
-    <aside class="article-side">
+    <div class="article-side">
       <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#why-do-urls-need-encoding-at-all">Why do URLs need encoding at all?</a></li><li><a href="#encodeuricomponent-vs-encodeuri">encodeURIComponent vs encodeURI</a></li><li><a href="#how-to-encode-or-decode-a-url-with-biscs-india">How to encode or decode a URL with BISCS India</a></li><li><a href="#using-the-url-parser">Using the URL parser</a></li><li><a href="#which-characters-are-safe-in-a-url-without-encoding">Which characters are safe in a URL without encoding?</a></li><li><a href="#how-do-other-languages-encode-urls">How do other languages encode URLs?</a></li><li><a href="#what-happens-to-indian-language-text">What happens to Indian-language text?</a></li><li><a href="#common-mistakes-with-url-encoding">Common mistakes with URL encoding</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
       <div class="card"><h2>Share</h2><div class="share">
         <a href="https://wa.me/?text=URL%20Encode%20and%20Decode%3A%20Percent-Encoding%20Explained%20Simply%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Furl-encode-decode-percent-encoding%2F" target="_blank" rel="noopener">WhatsApp</a>
@@ -165,7 +165,7 @@ const url = &#39;https://api.example.com/stores?city=&#39; + encodeURIComponent(
         <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Furl-encode-decode-percent-encoding%2F" target="_blank" rel="noopener">Facebook</a>
         <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Furl-encode-decode-percent-encoding%2F&amp;text=URL%20Encode%20and%20Decode%3A%20Percent-Encoding%20Explained%20Simply" target="_blank" rel="noopener">X</a>
       </div></div>
-    </aside>
+    </div>
   </div>
   <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
   <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
@@ -210,9 +210,9 @@ const url = &#39;https://api.example.com/stores?city=&#39; + encodeURIComponent(
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=955a1577b4" defer></script>
-<script src="../../assets/js/icons.js?v=955a1577b4" defer></script>
-<script src="../../assets/js/core.js?v=955a1577b4" defer></script>
+<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
 
 </body>
 </html>

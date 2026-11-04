@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="../../assets/css/site.css?v=955a1577b4">
+<link rel="stylesheet" href="../../assets/css/site.css?v=f60f19874b">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/#article","headline":"How to Decode a JWT Token (and Why Decoding Isn’t Verifying)","description":"Decode a JSON Web Token’s header and payload, read exp and iat dates in IST, spot alg none and expired tokens, and learn why signatures must be verified.","abstract":"To decode a JWT, split it at the two dots and Base64url-decode the first two parts: the header and the payload, both JSON. Decoding needs no key, which is why it never proves a token is genuine. BISCS India's JWT Decoder shows the claims, expiry in IST and algorithm, on your device without sending the token anywhere.","url":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/","mainEntityOfPage":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/","datePublished":"2026-11-02","dateModified":"2026-11-02","inLanguage":"en-IN","wordCount":973,"keywords":"jwt decoder, decode jwt token, jwt payload viewer, jwt expiry check, json web token explained","articleSection":"Developer Tools","image":"https://www.biscsindia.com/assets/img/og.png","author":{"@type":"Organization","@id":"https://www.biscsindia.com/#organization","name":"BISCS India","url":"https://www.biscsindia.com/about/"},"publisher":{"@id":"https://www.biscsindia.com/#organization"},"about":{"@type":"SoftwareApplication","name":"JWT Decoder","url":"https://www.biscsindia.com/tools/jwt-decoder/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Decode a JWT Token (and Why Decoding Isn’t Verifying)","item":"https://www.biscsindia.com/blog/decode-jwt-token-header-payload/"}]}</script>
@@ -62,7 +62,7 @@
   </header>
   <div class="article-layout">
     <div class="article-main">
-      <aside class="quick-answer" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>To decode a JWT, split it at the two dots and Base64url-decode the first two parts: the header and the payload, both JSON. Decoding needs no key, which is why it never proves a token is genuine. BISCS India&#39;s JWT Decoder shows the claims, expiry in IST and algorithm, on your device without sending the token anywhere.</p></aside>
+      <div class="quick-answer" role="note" aria-label="Quick answer"><strong><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg> Quick answer</strong><p>To decode a JWT, split it at the two dots and Base64url-decode the first two parts: the header and the payload, both JSON. Decoding needs no key, which is why it never proves a token is genuine. BISCS India&#39;s JWT Decoder shows the claims, expiry in IST and algorithm, on your device without sending the token anywhere.</p></div>
       <div class="tool-cta" style="--c:#0090ff">
         <span class="tool-icon"><svg class="icon " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /><circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></svg></span>
         <div><strong>JWT Decoder</strong><p>Decode a JSON Web Token’s header and payload.</p></div>
@@ -181,7 +181,7 @@
       </div>
       <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="../../contact/">Tell us</a>.</p>
     </div>
-    <aside class="article-side">
+    <div class="article-side">
       <nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#what-is-inside-a-jwt">What is inside a JWT?</a></li><li><a href="#decoding-is-not-verifying">Decoding is not verifying</a></li><li><a href="#how-to-decode-a-jwt-with-biscs-india">How to decode a JWT with BISCS India</a></li><li><a href="#the-standard-claims-explained">The standard claims, explained</a></li><li><a href="#warnings-the-decoder-shows">Warnings the decoder shows</a></li><li><a href="#common-mistakes-when-working-with-jwts">Common mistakes when working with JWTs</a></li><li><a href="#how-the-decoding-actually-works">How the decoding actually works</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#faq">FAQ</a></li></ol></nav>
       <div class="card"><h2>Share</h2><div class="share">
         <a href="https://wa.me/?text=How%20to%20Decode%20a%20JWT%20Token%20(and%20Why%20Decoding%20Isn%E2%80%99t%20Verifying)%20https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F" target="_blank" rel="noopener">WhatsApp</a>
@@ -189,7 +189,7 @@
         <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F" target="_blank" rel="noopener">Facebook</a>
         <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.biscsindia.com%2Fblog%2Fdecode-jwt-token-header-payload%2F&amp;text=How%20to%20Decode%20a%20JWT%20Token%20(and%20Why%20Decoding%20Isn%E2%80%99t%20Verifying)" target="_blank" rel="noopener">X</a>
       </div></div>
-    </aside>
+    </div>
   </div>
   <section class="section" style="padding-bottom:0"><h2>More Developer guides</h2><div class="post-grid" style="margin-top:12px"><a class="post-card" href="../../blog/base64-encode-decode-explained/" data-cat="dev" style="--c:#0090ff">
   <span class="post-cat"><span class="dot" style="background:#0090ff"></span>Developer</span>
@@ -234,9 +234,9 @@
     <div class="footer-bottom"><span>© 2026 BISCS India. All rights reserved.</span><span>Made in India 🇮🇳 · Files are processed locally in your browser</span></div>
   </div>
 </footer>
-<script src="../../assets/js/registry.js?v=955a1577b4" defer></script>
-<script src="../../assets/js/icons.js?v=955a1577b4" defer></script>
-<script src="../../assets/js/core.js?v=955a1577b4" defer></script>
+<script src="../../assets/js/registry.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/icons.js?v=f60f19874b" defer></script>
+<script src="../../assets/js/core.js?v=f60f19874b" defer></script>
 
 </body>
 </html>

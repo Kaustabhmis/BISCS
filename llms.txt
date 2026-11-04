@@ -128,8 +128,8 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice. Guide: https://www.biscsindia.com/blog/flip-a-coin-roll-dice-online/
 - [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams. Guide: https://www.biscsindia.com/blog/random-name-picker-team-generator/
 - [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode. Guide: https://www.biscsindia.com/blog/online-stopwatch-timer-pomodoro-guide/
-- [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF.
-- [Signature Maker](https://www.biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG.
+- [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF. Guide: https://www.biscsindia.com/blog/create-gst-invoice-online-free/
+- [Signature Maker](https://www.biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG. Guide: https://www.biscsindia.com/blog/create-transparent-signature-png-online/
 
 ## AI Photo Tools
 
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 147 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 149 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

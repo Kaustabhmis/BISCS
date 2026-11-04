@@ -625,6 +625,8 @@ function loadArticles() {
       return `<h${lvl} id="${id}">${inner}</h${lvl}>`;
     });
     // Tables scroll on small screens; external links open safely.
+    // Comparison tables often leave the top-left header empty; label it for screen readers.
+    html = html.replace(/<th(\s[^>]*)?>\s*<\/th>/g, '<th$1><span class="sr-only">Aspect</span></th>');
     html = html.replace(/<table>/g, '<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table class="table">').replace(/<\/table>/g, '</table></div>');
     html = html.replace(/<a href="(https?:\/\/[^"]+)"/g, '<a href="$1" target="_blank" rel="noopener"');
     out.push({ ...meta, file: f, toolObj: tool, cat: tool.cat, md, html, toc, words, mins: Math.max(1, Math.round(words / 220)),
@@ -717,7 +719,7 @@ function buildArticle(a) {
   </header>
   <div class="article-layout">
     <div class="article-main">
-      <aside class="quick-answer" aria-label="Quick answer"><strong>${icon('zap')} Quick answer</strong><p>${esc(a.summary)}</p></aside>
+      <div class="quick-answer" role="note" aria-label="Quick answer"><strong>${icon('zap')} Quick answer</strong><p>${esc(a.summary)}</p></div>
       <div class="tool-cta" style="--c:${c.color}">
         <span class="tool-icon">${icon(t.icon)}</span>
         <div><strong>${esc(t.name)}</strong><p>${esc(t.desc)}</p></div>
@@ -732,7 +734,7 @@ function buildArticle(a) {
       </div>
       <p class="muted small article-note">Written by the BISCS India team, Kolkata. We build and maintain the free tools on this site and update guides when tools or rules change. Spotted something out of date? <a href="${base}contact/">Tell us</a>.</p>
     </div>
-    <aside class="article-side">
+    <div class="article-side">
       ${a.toc.length > 2 ? `<nav class="card toc" aria-label="On this page"><h2>On this page</h2><ol>${a.toc.map((h) => `<li><a href="#${h.id}">${h.text}</a></li>`).join('')}${a.faq && a.faq.length ? '<li><a href="#faq">FAQ</a></li>' : ''}</ol></nav>` : ''}
       <div class="card"><h2>Share</h2><div class="share">
         <a href="https://wa.me/?text=${encodeURIComponent(a.title + ' ' + url)}" target="_blank" rel="noopener">WhatsApp</a>
@@ -740,7 +742,7 @@ function buildArticle(a) {
         <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" rel="noopener">Facebook</a>
         <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&amp;text=${encodeURIComponent(a.title)}" target="_blank" rel="noopener">X</a>
       </div></div>
-    </aside>
+    </div>
   </div>
   ${related.length ? `<section class="section" style="padding-bottom:0"><h2>More ${esc(c.short)} guides</h2><div class="post-grid" style="margin-top:12px">${related.map((r) => articleCard(r, base)).join('')}</div></section>` : ''}
 </article>`;
