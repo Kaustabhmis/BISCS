@@ -1102,7 +1102,7 @@
       var delay = val(root, 'rb-delay');
       if (delay) {
         if (!/^\d+(\.\d+)?$/.test(delay)) msgs.push(['error', 'Crawl-delay must be a number of seconds.']);
-        else { star.lines.push('Crawl-delay: ' + delay); msgs.push(['', 'Crawl-delay is ignored by Google; adjust Googlebot’s rate in Search Console only if it overloads your server.']); }
+        else { star.lines.push('Crawl-delay: ' + delay); msgs.push(['', 'Crawl-delay is ignored by Google (Bing and some other crawlers respect it). Googlebot slows down automatically if your server returns 500, 503 or 429 errors.']); }
       }
       // Merge non-* groups that have identical rules into one group with several User-agent lines.
       var merged = [];

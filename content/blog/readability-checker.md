@@ -66,6 +66,14 @@ Nothing you paste leaves your device.
 
 **Use structure.** Headings, short paragraphs and bullet lists do not change the formulas much, but they make text far easier to read.
 
+## A before-and-after example
+
+Here is a typical sentence from a service page: "Our organisation is committed to facilitating the timely completion of all statutory compliance requirements for our esteemed clients, thereby ensuring that penalties and interest are avoided." It is 28 words long, uses several four- and five-syllable words, and ends in passive voice.
+
+A clearer version: "We file your returns on time, so you avoid penalties and interest." That is 12 words, active, and says the same thing in plain English. Make a handful of edits like this across a page and the Flesch score typically rises noticeably, while the message becomes more convincing, not less.
+
+Paste both versions into the checker to see the difference in grade level and highlights for yourself.
+
 ## Common readability mistakes
 
 - **Chasing a perfect 100.** Text written only in three-word sentences sounds childish. Mix short and medium sentences for a natural rhythm.

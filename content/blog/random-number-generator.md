@@ -82,6 +82,15 @@ Fairness also means people can see it is fair:
 
 If your entries are names rather than numbers, the [Random Name Picker](/tools/random-picker/) draws winners directly from a list and can also form teams.
 
+## Random numbers in everyday Indian settings
+
+- **Housing society meetings** often need to allot parking slots or decide the order of complaints. Number the flats and draw.
+- **Teachers** can number students by roll number and generate one at a time for viva questions.
+- **Small shops** running a festive offer can number their bills and pick a few for a gift hamper.
+- **Sports clubs** can draw the order of matches in a knockout tournament.
+
+In each case, writing down the numbering before drawing is what makes the result easy to trust.
+
 ## Common mistakes
 
 - **Allowing repeats in a prize draw,** so one ticket wins twice.

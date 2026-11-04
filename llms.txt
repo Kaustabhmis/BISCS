@@ -127,7 +127,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats. Guide: https://www.biscsindia.com/blog/random-number-generator-fair-draws/
 - [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice. Guide: https://www.biscsindia.com/blog/flip-a-coin-roll-dice-online/
 - [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams. Guide: https://www.biscsindia.com/blog/random-name-picker-team-generator/
-- [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode.
+- [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode. Guide: https://www.biscsindia.com/blog/online-stopwatch-timer-pomodoro-guide/
 - [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF.
 - [Signature Maker](https://www.biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG.
 
@@ -162,7 +162,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://www.biscsindia.com/blog/find-questions-people-ask-content-ideas/
 - [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice. Guide: https://www.biscsindia.com/blog/readability-checker-flesch-score-guide/
 - [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs. Guide: https://www.biscsindia.com/blog/organization-author-schema-entity-seo/
-- [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages.
+- [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages. Guide: https://www.biscsindia.com/blog/hreflang-tags-multilingual-website-guide/
 
 ## Video & Audio
 
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 145 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 147 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

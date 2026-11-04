@@ -73,6 +73,12 @@ A strong setup looks like this:
 - Articles with a visible **byline** linking to that author page, and, for finance, health or legal topics, a "reviewed by" credit where appropriate.
 - Person markup on the author page that matches all of the above.
 
+## An example: a CA firm in Ahmedabad
+
+Imagine a chartered accountancy firm. Its Organization entry uses the type ProfessionalService, the registered firm name, the logo from its website, its Ahmedabad address with PIN code, a +91 phone number and links to its LinkedIn company page and YouTube channel of tax explainer videos. Under "known for", it lists GST compliance, income tax filing and company incorporation.
+
+The managing partner gets a Person entry with the job title "Managing Partner", a link to her author page on the firm's website, her LinkedIn profile, the institute she studied at and her areas of expertise. Every article she writes shows her byline, links to that page and, in its own Article markup, references her `@id` as the author and the firm's `@id` as publisher. The result is a small, consistent web of facts that search engines can connect with confidence.
+
 ## Common entity SEO mistakes
 
 - **Inconsistent names**: "Sharma & Sons", "Sharma and Sons Pvt Ltd" and "Sharma Sons Traders" across different platforms.
