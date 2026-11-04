@@ -10131,6 +10131,106 @@ A: Yes, for informal draws such as office events, classroom prizes or community 
 Q: Should I use this to create my ATM or UPI PIN?
 A: A random PIN is better than a birthday or 1234, but set and change PINs only inside your bank’s app or at the ATM, and never type your real PIN into any website. If you use the PIN preset for ideas, note that numbers below 1000 need leading zeros, so 42 becomes 0042.
 
+## Random Name Picker and Team Generator for Draws and Classes
+
+URL: https://www.biscsindia.com/blog/random-name-picker-team-generator/
+Tool: Random Name Picker (https://www.biscsindia.com/tools/random-picker/)
+
+Quick answer: To pick a random name, paste your list with one name per line and let the picker choose so every entry has an equal chance. BISCS India’s free Random Name Picker selects one or more winners, can remove them from the list for the next round, and can split everyone into random teams of a chosen number or size.
+
+A random name picker chooses one or more entries from a list so that **every name has an equal chance**. Paste the names, one per line, choose how many winners you need, and press the button. The same idea works for splitting a group into **random teams**.
+
+The free [Random Name Picker](https://www.biscsindia.com/tools/random-picker/) does both. It uses your browser's secure random generator, and your list stays on your device.
+
+## Where a random picker helps
+
+- **Lucky draws** at Diwali parties, office annual days, society events and school fairs.
+- **Classrooms,** to choose who answers next, who presents first, or who reads aloud.
+- **Team games,** from box cricket and football to quiz nights and hackathons.
+- **Work rotas,** such as who hosts the next stand-up or brings the snacks.
+- **Giveaways** for small businesses and social media pages.
+- **Secret Santa** style ordering, when you just need a random sequence.
+
+## How to pick a random winner
+
+1. Open the [Random Name Picker](https://www.biscsindia.com/tools/random-picker/).
+2. Paste or type your **entries**, one per line. A counter shows how many there are.
+3. Keep **Ignore duplicates** ticked to count each name once.
+4. Choose **Pick winners** mode and set the **number of winners**.
+5. Tick **Remove winners from the list** if you will run several rounds and nobody should win twice.
+6. Press **Pick winner**. The names spin briefly, then the winners appear in order.
+7. Use **Copy results** to paste the list into a chat or announcement.
+
+The **Shuffle list** button randomly reorders your entries, which is handy for deciding a speaking order. **Clear** empties the box.
+
+## How to make random teams
+
+1. Paste the names as above.
+2. Switch to **Make teams**.
+3. Choose to split by **Number of teams** or by **People per team**.
+4. Enter the number and press **Make teams**.
+5. Each team appears in its own coloured card. Copy the results to share them.
+
+The picker shuffles everyone first, then deals names into teams one at a time, like dealing cards. So team sizes never differ by more than one.
+
+### Examples
+
+- **12 students into 3 teams:** three teams of 4.
+- **14 players, 4 per team:** the tool makes 4 teams, with two teams of 4 and two teams of 3.
+- **22 people for two cricket sides:** two teams of 11.
+
+## How fairness works
+
+A fair picker needs two things.
+
+**A good random source.** The tool uses `crypto.getRandomValues`, the browser's cryptographically secure generator, rather than a simple formula that can show patterns.
+
+**An unbiased shuffle.** It uses the Fisher–Yates shuffle, which gives every possible ordering exactly the same chance. Winners are simply the first names in the shuffled list.
+
+The rolling animation is decoration. The result is fixed the moment you press the button, so nobody can time a tap to land on a favourite.
+
+## Running a lucky draw people trust
+
+Fairness is also about being seen to be fair:
+
+1. **Collect entries in writing** and share the final list before the draw.
+2. **Decide the rules in advance:** number of prizes, one prize per person or not, and what happens if a winner is absent.
+3. **Project the screen** so everyone watches the pick live.
+4. **Draw the smallest prize first** if you want to keep suspense for the main prize, using "Remove winners" between rounds.
+5. **Save the result** by copying it into the event group or taking a screenshot.
+
+If entries are tickets with numbers rather than names, the [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/) may be simpler: draw numbers in the ticket range without repeats.
+
+## Common mistakes
+
+- **Leaving duplicates in by accident,** which gives some people extra chances. Keep Ignore duplicates on unless entries are deliberate.
+- **Spelling a name two ways,** such as "Mohd. Arif" and "Mohammed Arif". Ignore duplicates only catches identical text, so tidy the list first.
+- **Forgetting to remove winners** between rounds when each person should win once.
+- **Changing the rules after the draw.** Agree them before you press the button.
+- **Making teams by headcount only** when skill levels vary widely. Random teams are fair in chance, not necessarily in strength; you can re-run or balance a few players by agreement.
+
+## Tips for teachers and organisers
+
+- Save a class list once; it stays in your browser for next time on the same device.
+- Use teams of 3 to 5 for group work, so everyone participates.
+- For timed activities after forming teams, run a countdown with the [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/).
+- For a quick two-way decision, such as which team bats first, use the [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/).
+- For prize promotions run by a business, check whether any contest or promotion rules apply in your state.
+
+Random choices avoid arguments and favouritism. Paste your list into the [Random Name Picker](https://www.biscsindia.com/tools/random-picker/) and let chance decide, fairly and in full view.
+
+Q: Is the random name picker fair?
+A: Yes. It shuffles your list using your browser’s cryptographically secure random generator with an unbiased shuffle, so every name has the same chance and every order is equally likely. The spinning animation is only for show; the winners are decided when you press the button.
+
+Q: What happens if a name is on the list twice?
+A: With Ignore duplicates ticked, repeated names count once, ignoring capital letters, so Priya and priya are treated as the same person. Untick it if a person genuinely has more than one entry, such as one per ticket bought, so each entry gets its own chance.
+
+Q: How are uneven teams handled?
+A: Names are shuffled and then dealt one by one into teams, like dealing cards. Team sizes therefore differ by at most one person. Fourteen people split into four teams gives two teams of four and two teams of three.
+
+Q: Is my list of names saved?
+A: The list is kept only in your own browser’s storage so it is still there when you come back on the same device. It is not uploaded to any server. Use the Clear button to remove it, or clear your browser data.
+
 ## RD Calculator: Recurring Deposit Maturity Value Explained
 
 URL: https://www.biscsindia.com/blog/rd-calculator-recurring-deposit-maturity/
@@ -10224,6 +10324,96 @@ A: Yes. RD interest is taxed at your income tax slab rate, and banks may deduct 
 
 Q: Is a recurring deposit better than a SIP?
 A: They serve different purposes. An RD gives a fixed, known return and suits short-term goals or money you cannot risk. A mutual fund SIP may grow more over long periods but its value can fall. Many people use an RD for goals a year or two away and SIPs for longer goals.
+
+## Readability Checker: Flesch Score, Grade Level and Fixes
+
+URL: https://www.biscsindia.com/blog/readability-checker-flesch-score-guide/
+Tool: Readability Checker (https://www.biscsindia.com/tools/readability-checker/)
+
+Quick answer: A readability checker measures how easy text is to read using formulas based on sentence length and word length, such as Flesch Reading Ease and Flesch-Kincaid grade level. BISCS India’s free Readability Checker shows six scores, highlights long sentences, possible passive voice and adverbs, and suggests fixes for your target audience, all in your browser.
+
+A readability checker estimates how easy a piece of writing is to read. It looks at things you can measure, mainly how long your sentences are and how long your words are, and turns them into scores such as Flesch Reading Ease or a school grade level.
+
+The [Readability Checker](https://www.biscsindia.com/tools/readability-checker/) from BISCS India gives you six standard scores at once, highlights the sentences and phrases that make text harder, and suggests specific fixes for the audience you choose. It runs in your browser, so drafts stay private.
+
+## Why readability matters online
+
+People skim on the web, often on a phone, between other tasks. Short sentences and familiar words are understood faster and abandoned less often. That is true for a product description, a government scheme explainer or an email to clients.
+
+Clear writing also helps machines. Search engines and AI assistants extract and summarise passages; a crisp 18-word sentence is far easier to quote correctly than a 50-word sentence with three clauses. Readability is not a direct Google ranking factor as far as Google has said, but it shapes how people and answer engines use your content.
+
+## What the scores mean
+
+| Score | What it measures | Good target for the web |
+|---|---|---|
+| Flesch Reading Ease | 0–100; higher is easier, from sentence and syllable length | 60+ for general readers |
+| Flesch-Kincaid grade | US school grade needed to follow the text | Around 7–9 |
+| Gunning Fog | Grade estimate weighted by complex words | Below 12 |
+| SMOG | Grade estimate from polysyllabic words (needs 3+ sentences) | Below 10–12 |
+| Coleman-Liau | Grade from letters per word and sentences | Around 8–10 |
+| ARI | Grade from characters per word and words per sentence | Around 8–10 |
+
+The Flesch result also gets a plain label, from "Very easy" through "Plain English" to "Very difficult", with a note on who can read it comfortably.
+
+All these formulas use English syllable and character counts, so treat them as guides rather than exact measurements, and use them for English text.
+
+## How to check readability step by step
+
+1. Open the [Readability Checker](https://www.biscsindia.com/tools/readability-checker/). A short sample is loaded so you can see how it works.
+2. Paste your article, product description or email into the box.
+3. Choose a **Target audience**: general public, students (school) or professionals. Each has its own target score and grade.
+4. Read the **Flesch Reading Ease** result, its label and whether it is on target, close or below.
+5. Review the stats: grade levels, reading time, words, sentences, paragraphs, words per sentence, long sentences and approximate passive voice count.
+6. Read the **Suggestions**. They tell you, for example, that your average sentence length is 26 words and should come down to 15–20.
+7. Scroll to **Highlighted text** to see long sentences (26–35 words), very long sentences (35+), possible passive voice and adverbs marked in colour.
+8. Edit your text and watch the scores update as you type.
+
+Nothing you paste leaves your device.
+
+## Practical ways to improve a score
+
+**Split long sentences.** Look for "and", "which", "because" and semicolons; they are natural breaking points. Two 15-word sentences beat one 30-word sentence.
+
+**Choose everyday words.** "Use" instead of "utilise", "help" instead of "facilitate", "about" instead of "approximately". In Indian business writing, phrases like "kindly do the needful" or "please revert back" can usually be replaced with a direct request.
+
+**Define jargon once.** "Input tax credit (ITC)" the first time, then ITC. Readers outside your field will thank you.
+
+**Prefer active voice.** "We will send your invoice today" is shorter and clearer than "Your invoice will be sent today".
+
+**Cut filler adverbs.** "Very", "really" and "actually" rarely add meaning. A stronger verb often does the job.
+
+**Use structure.** Headings, short paragraphs and bullet lists do not change the formulas much, but they make text far easier to read.
+
+## Common readability mistakes
+
+- **Chasing a perfect 100.** Text written only in three-word sentences sounds childish. Mix short and medium sentences for a natural rhythm.
+- **Ignoring the audience.** A tax guide for chartered accountants can be denser than one for first-time ITR filers. Pick the right audience setting.
+- **Trusting every highlight.** Passive voice and adverb detection are approximate; some flags will be fine as they are.
+- **Checking non-English text.** The scores are designed for English and will be misleading for other languages.
+- **Editing out precision.** Never remove necessary legal or technical terms just to raise a score; explain them instead.
+
+## When to use the checker
+
+Run it on landing pages, blog posts, help articles, product descriptions and important emails before sending. It is especially useful for content aimed at a broad Indian audience, where many readers use English as a second or third language and plain sentences make a real difference.
+
+For keyword balance in the same draft, use the [Keyword Density Checker](https://www.biscsindia.com/tools/keyword-density-checker/). To see whether the text is structured well for AI answers, try the [GEO Content Analyzer](https://www.biscsindia.com/tools/geo-content-analyzer/), and for a quick count of words and characters, the [Word Counter](https://www.biscsindia.com/tools/word-counter/).
+
+Good writing is rewriting. Paste your next draft into the [Readability Checker](https://www.biscsindia.com/tools/readability-checker/), fix the longest sentences first, and read it aloud once before you publish.
+
+Q: What is a good Flesch Reading Ease score?
+A: Higher scores mean easier text. A score of 60 or more is plain English that most adults read comfortably, and is a sensible target for websites. Scores of 70–80 suit blogs and help pages, while professional or technical content often lands between 45 and 60.
+
+Q: Is readability a Google ranking factor?
+A: Google has not said that it uses readability formulas for ranking. Clear writing still matters because people understand and stay with it, and well-structured, plain sentences are easier for search engines and AI assistants to summarise and quote accurately.
+
+Q: Does the readability checker work for Hindi or Bengali text?
+A: The formulas and syllable estimates are designed for English, so scores for Hindi, Bengali or other languages are not meaningful. The checker is best used for English and Indian English content. For other languages, focus on short sentences and simple words.
+
+Q: Why is my grade level so high?
+A: Grade formulas rise with long sentences and words of many syllables. Splitting sentences over 25 words, replacing jargon with everyday words and defining technical terms usually brings the grade down quickly without dumbing down the content.
+
+Q: Is passive voice always wrong?
+A: No. Passive voice is useful when the actor is unknown or unimportant, as in the form was submitted. Too much of it makes writing vague and wordy. The checker’s passive-voice detection is approximate, so review each highlight rather than changing every one.
 
 ## Regex Tester: Test JavaScript Regular Expressions Live
 

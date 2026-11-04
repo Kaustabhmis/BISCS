@@ -126,7 +126,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/): Generate Code 128, EAN-13, UPC and other barcodes. Guide: https://www.biscsindia.com/blog/how-to-make-barcode-ean-13-code-128/
 - [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats. Guide: https://www.biscsindia.com/blog/random-number-generator-fair-draws/
 - [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice. Guide: https://www.biscsindia.com/blog/flip-a-coin-roll-dice-online/
-- [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams.
+- [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams. Guide: https://www.biscsindia.com/blog/random-name-picker-team-generator/
 - [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode.
 - [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/): Create professional GST invoices and save them as PDF.
 - [Signature Maker](https://www.biscsindia.com/tools/signature-maker/): Draw or type a signature and download it as a transparent PNG.
@@ -160,7 +160,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes. Guide: https://www.biscsindia.com/blog/answer-engine-optimization-featured-snippets/
 - [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML. Guide: https://www.biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
 - [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://www.biscsindia.com/blog/find-questions-people-ask-content-ideas/
-- [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice.
+- [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice. Guide: https://www.biscsindia.com/blog/readability-checker-flesch-score-guide/
 - [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs.
 - [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages.
 
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 142 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 144 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)
