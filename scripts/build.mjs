@@ -65,6 +65,13 @@ const SITE = {
 }
 
 // ----------------------------------------------------------------- helpers
+/** Trim text to at most `max` characters at a word boundary (meta descriptions). */
+const clip = (str, max = 160) => {
+  const t = String(str).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max - 1);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:.\s]+$/, '') + '…';
+};
 /** An AdSense unit for a named placement, or an empty (hidden) slot. */
 function adSlot(name) {
   const { client, slots } = SITE.adsense;
@@ -325,7 +332,7 @@ ${ARTICLES.length ? `<section class="section" style="padding-top:0">
   write('index.html', layout({
     base, canonical: '/',
     title: `${SITE.name}: ${TOOLS.length} Free Online Tools (PDF, GST, EMI, Image & More)`,
-    description: `${TOOLS.length} free online tools: edit, merge and compress PDFs, GST, EMI and income tax calculators, and image, text and developer tools. Private: files never leave your device.`,
+    description: `${TOOLS.length} free online tools: PDF editor, GST and income tax calculators, AI background remover, video compressor, resume maker and SEO tools. No uploads, no sign-up.`,
     body, jsonld,
     scripts: `<script type="module" src="assets/js/hero3d.js?v=${SITE.version}"></script>`
   }));
@@ -361,7 +368,7 @@ function buildCategory(c) {
   write(`category/${c.id}/index.html`, layout({
     base, active: c.id, canonical: `/category/${c.id}/`,
     title: `Free ${c.name} Online: ${list.length} Tools | ${SITE.name}`,
-    description: `${c.desc} ${list.length} free tools including ${list.slice(0, 4).map((t) => t.name).join(', ')}.`,
+    description: clip(`${list.length} free ${c.name}: ${list.slice(0, 3).map((t) => t.name).join(', ')} and more. ${c.desc}`),
     body,
     jsonld: [{
       '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
@@ -485,7 +492,7 @@ function buildPage(slug, title, description, html, opts = {}) {
 
 function buildStaticPages() {
   const updated = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-  buildPage('about', 'About Us', `About ${SITE.name}: free, private online tools for everyday work.`, `
+  buildPage('about', 'About Us', `About ${SITE.name}, a Kolkata team building ${TOOLS.length} free, private browser-based tools and guides for PDFs, GST, images, video and SEO.`, `
 <p>${SITE.name} is a Kolkata-based team that builds simple, fast and private tools for everyday work. The site offers ${TOOLS.length} free tools covering PDFs, GST and income tax, images and AI photo editing, video, office documents, design, and SEO, GEO and AEO, made with Indian users in mind.</p>
 <h2>Why we built it</h2>
 <p>Most online tools ask you to upload your documents to someone else’s server. Our tools run entirely in your web browser, so your PDFs, photos and data stay on your device.</p>
@@ -553,7 +560,7 @@ function buildStaticPages() {
   </div>
 </div>`, { wide: true });
 
-  buildPage('contact/thanks', 'Message sent', `Thank you for contacting ${SITE.name}.`, `
+  buildPage('contact/thanks', 'Message sent', `Thank you for contacting ${SITE.name}. We have received your message and usually reply within two working days by email.`, `
 <div class="card contact-thanks">
   <span class="tool-icon" style="--c:#08786c">${icon('check')}</span>
   <div><h2 class="cf-title">Thank you, we’ve received your message.</h2>
@@ -561,7 +568,7 @@ function buildStaticPages() {
 </div>
 <p style="margin-top:20px"><a class="btn" href="../../">${icon('arrow-left')} Back to all tools</a></p>`, { noindex: true });
 
-  buildPage('sitemap', 'Sitemap', `All ${TOOLS.length} free tools and ${ARTICLES.length} guides on ${SITE.name}, by category.`, `
+  buildPage('sitemap', 'Sitemap', `Sitemap of ${SITE.name}: all ${TOOLS.length} free online tools and ${ARTICLES.length} how-to guides, organised by category, with links to every page.`, `
 <p>Every page on ${SITE.name}. Search engines can also use our <a href="../sitemap.xml">XML sitemap</a>.</p>
 <h2>Main pages</h2>
 <ul><li><a href="../">Home</a></li><li><a href="../blog/">Blog &amp; Guides</a></li><li><a href="../about/">About</a></li><li><a href="../contact/">Contact</a></li><li><a href="../privacy/">Privacy Policy</a></li><li><a href="../terms/">Terms of Use</a></li></ul>
@@ -588,7 +595,7 @@ ${CATEGORIES.map((c) => `<h2><a href="../category/${c.id}/">${esc(c.name)}</a></
 <h2>Contact</h2>
 <p>Questions about this policy? Email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>`);
 
-  buildPage('terms', 'Terms of Use', `${SITE.name} terms of use.`, `
+  buildPage('terms', 'Terms of Use', `Terms of use for ${SITE.name}'s free online tools and guides: acceptable use, no professional advice, no warranty and how we update these terms.`, `
 <p class="muted">Last updated: ${updated}</p>
 <p>By using ${SITE.name} you agree to these terms.</p>
 <h2>Use of the tools</h2>
@@ -603,7 +610,7 @@ ${CATEGORIES.map((c) => `<h2><a href="../category/${c.id}/">${esc(c.name)}</a></
 <p>Email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>`);
 
   write('404.html', layout({
-    base: '/', canonical: '/404.html', title: `Page not found | ${SITE.name}`, description: 'Page not found.',
+    base: '/', canonical: '/404.html', title: `Page not found | ${SITE.name}`, description: `This page doesn't exist. Search ${SITE.name}'s ${TOOLS.length} free online tools for PDFs, GST, images, video, office work and SEO.`,
     body: `<div class="container"><div class="prose" style="text-align:center;margin:0 auto"><h1>Page not found</h1><p>The page you’re looking for doesn’t exist. Try searching our ${TOOLS.length} free tools.</p><p><button class="btn btn-primary" data-search-open type="button">${icon('search')} Search tools</button> <a class="btn" href="/">Go home</a></p></div></div>`
   }));
 }
