@@ -70,7 +70,7 @@ The analysis runs in your browser, so drafts are never sent anywhere.
 
 Voice assistants typically read only the first sentence or two. That means the opening must be a complete, conversational answer of roughly 30 words or fewer. Numbers should be easy to say aloud, and the subject must be named, because listeners cannot glance back at a heading. The optimizer's voice panel shows exactly what would be spoken and estimates how long it takes.
 
-## What about FAQPage and HowTo markup?
+## Does question-and-answer markup still help?
 
 The optimizer can generate FAQPage or HowTo JSON-LD alongside the HTML. Be realistic about what this does today. Google restricted FAQ rich results to well-known government and health websites in 2023 and has retired HowTo rich results. The markup is still valid and helps machines understand the structure, but for most sites it will not create a visible enhancement in Google. If you want a full FAQ block, the [FAQ Schema Generator](/tools/faq-schema-generator/) builds the visible section and markup together.
 

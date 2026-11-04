@@ -59,15 +59,27 @@ The converter's **UTF-8 BOM (for Excel)** option is ticked by default for this r
 
 ## Detect numbers and dates: what it does
 
-When building an Excel file from a CSV, **Detect numbers & dates** turns text that looks like numbers or dates into real numeric and date cells, so you can sum columns and sort properly.
+When building an Excel file from a CSV, **Detect numbers & dates** turns text that looks like a plain number or an ISO date into real numeric and date cells, so you can sum columns, filter by date and sort properly.
 
-Be careful with values that look like numbers but are not:
+The detection is deliberately cautious, because spreadsheets are notorious for damaging Indian data:
 
-- **Mobile numbers and account numbers** can lose leading zeros or turn into scientific notation if treated as numbers.
-- **PIN codes, employee IDs and GSTINs** should stay as text.
-- **Ambiguous dates** like 03/04/2025 may be read differently from what you meant.
+- **Leading zeros are kept.** A value like "0712345" or a PIN-style code starting with zero stays as text, so it is not shortened.
+- **Long numbers stay as text.** Values of 16 digits or more, such as some bank account or card-style numbers, are not converted, which avoids Excel's scientific notation and lost digits.
+- **Only unambiguous dates are converted.** Dates written as YYYY-MM-DD, like 2025-04-01, become date cells. Formats such as 01/04/2025 stay as text, because they could mean 1 April or 4 January.
+- **The header row is never converted**, so a column called "2025" stays a label.
 
-If your data is full of IDs, untick the option so everything stays exactly as written.
+Even so, IDs such as mobile numbers, Aadhaar-style numbers and employee codes are safest kept as text. If your file is mostly identifiers, untick the option and every value stays exactly as written.
+
+## A worked example: a bank statement export
+
+Suppose your bank lets you download a statement as a pipe-separated text file, and your accountant wants an Excel file.
+
+1. Open the `.txt` file in the converter. The pipe delimiter is detected automatically.
+2. Check that the columns line up: date, narration, withdrawal, deposit, balance.
+3. Search for a party name, such as a supplier, to check a few entries quickly.
+4. Click **Download .xlsx**. Amounts become numbers you can total, and the header row stays bold and frozen.
+
+Going the other way, a payroll team can open a salary workbook, pick the sheet the portal needs, choose the delimiter the portal specifies, and download a CSV ready to upload.
 
 ## Common mistakes
 

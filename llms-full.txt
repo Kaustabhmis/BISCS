@@ -65,7 +65,7 @@ The analysis runs in your browser, so drafts are never sent anywhere.
 
 Voice assistants typically read only the first sentence or two. That means the opening must be a complete, conversational answer of roughly 30 words or fewer. Numbers should be easy to say aloud, and the subject must be named, because listeners cannot glance back at a heading. The optimizer's voice panel shows exactly what would be spoken and estimates how long it takes.
 
-## What about FAQPage and HowTo markup?
+## Does question-and-answer markup still help?
 
 The optimizer can generate FAQPage or HowTo JSON-LD alongside the HTML. Be realistic about what this does today. Google restricted FAQ rich results to well-known government and health websites in 2023 and has retired HowTo rich results. The markup is still valid and helps machines understand the structure, but for most sites it will not create a visible enhancement in Google. If you want a full FAQ block, the [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/) builds the visible section and markup together.
 
@@ -964,6 +964,109 @@ A: Quality matters far more than volume. Send personalised emails one at a time 
 
 Q: Where is my checklist progress saved?
 A: Ticked items are saved in your browser’s local storage on the device you are using. Nothing is sent to a server. You can also download the checklist as a text file to share with a colleague or keep as a record.
+
+## How to Make a Barcode: EAN-13, Code 128, UPC and More
+
+URL: https://www.biscsindia.com/blog/how-to-make-barcode-ean-13-code-128/
+Tool: Barcode Generator (https://www.biscsindia.com/tools/barcode-generator/)
+
+Quick answer: To make a barcode, choose a format that suits your use, such as Code 128 for internal labels or EAN-13 for retail products, enter the number or text, and download the image. BISCS India’s free Barcode Generator creates barcodes in your browser as PNG or SVG. For retail products, the number itself must be licensed from GS1.
+
+A barcode stores a number or short text as a pattern of bars that a scanner can read in a fraction of a second. To make one, choose the right **format** for your use, enter the data, and download the image. For internal labels, **Code 128** is usually the best choice. For products sold in retail stores, **EAN-13** is the standard in India and most of the world.
+
+The free [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/) creates all the common formats in your browser and downloads them as PNG or SVG, with no sign-up and no uploads.
+
+## Which barcode formats are supported?
+
+| Format | What it encodes | Typical use |
+|---|---|---|
+| Code 128 | Any letters, numbers and symbols | SKUs, shipping labels, asset tags, files |
+| EAN-13 | 13 digits | Retail products in India and worldwide |
+| EAN-8 | 8 digits | Very small retail packs |
+| UPC-A | 12 digits | Retail products mainly in the US and Canada |
+| Code 39 | Uppercase A–Z, digits, space and - . $ / + % | Older industrial and ID systems |
+| ITF-14 | 14 digits | Cartons and outer cases |
+| MSI Plessey | Digits | Shelf labels and warehouses |
+| Pharmacode | A number from 3 to 131070 | Pharmaceutical packaging control |
+| Codabar | Digits and a few symbols | Libraries, blood banks, older systems |
+
+If you are not sure, pick Code 128. It is compact, reads reliably and accepts almost anything you type.
+
+## How to create a barcode with the BISCS tool
+
+1. Open the [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/).
+2. Choose the **Type** of barcode. A sample value appears, with a hint describing what that format accepts.
+3. Type your own **content**, such as an SKU like `KUR-BLU-M-042` or a 12-digit EAN number.
+4. Adjust **bar width**, **height**, **font size** and **quiet zone** (the blank margin).
+5. Choose bar and background colours, tick **Show text below** for a human-readable number, or make the background transparent.
+6. Download as **PNG** (exported at double resolution) or **SVG** for sharp printing at any size.
+
+If the content is not valid for the chosen format, for example letters in an EAN-13 field, the tool explains what is wrong instead of producing a broken barcode. All drawing happens on your device.
+
+## EAN-13 and the check digit, explained
+
+An EAN-13 number has three parts: a **GS1 prefix** (890 for numbers issued through GS1 India), a **company and product number**, and a final **check digit**.
+
+The check digit lets a scanner catch misreads. To calculate it:
+
+1. Take the first 12 digits, for example `890123456789`.
+2. Starting from the rightmost digit, multiply digits alternately by 3 and 1.
+3. Add the results. Here the total is 130.
+4. The check digit is the amount needed to reach the next multiple of 10. 130 is already a multiple of 10, so the check digit is **0**.
+
+The full number is **8901234567890**. In the generator, you can type just the 12 digits and it adds the check digit for you. If you type all 13, it checks that the last digit is correct, which is a quick way to spot a typo on a product list.
+
+### Do you need GS1 registration?
+
+For goods sold through supermarkets, large retail chains or many online marketplaces, yes. The barcode image is easy to make, but the **number** must be unique worldwide. In India, GS1 India allots EAN numbers to registered companies for a fee. Making up an 890 number risks clashing with another company's product. Check the current registration process and fees on GS1 India's official website.
+
+For goods you sell only in your own shop, or for internal stock, you can use your own numbering with Code 128.
+
+## Practical uses for small businesses
+
+- **Kirana and retail stores:** label loose or self-packed items with your own codes for faster billing.
+- **Boutiques and clothing shops:** encode style, colour and size in an SKU like `KUR-BLU-M-042`.
+- **Warehouses:** use ITF-14 on cartons and Code 128 on bin locations.
+- **Offices and schools:** tag laptops, projectors and library books for audits.
+- **Events:** print barcodes on passes for quick check-in.
+
+## Printing tips for barcodes that scan first time
+
+- **Size matters.** Very small barcodes are hard to print sharply. Increase the bar width if your printer struggles.
+- **Keep the quiet zone.** Leave clear space on both sides; text or borders too close can stop a scan.
+- **Use high contrast.** Black bars on white is safest. Red bars are a common mistake, because many scanners use red light and cannot see them.
+- **Use SVG for label software** and design tools, so the bars stay crisp at any size.
+- **Test before a big print run,** with the actual scanner or app you will use.
+- **Choose matte labels** if glare from glossy stickers causes misreads.
+
+## Common barcode mistakes
+
+- Using EAN-13 for internal stock when Code 128 would be simpler.
+- Inventing retail numbers instead of getting them from GS1.
+- Duplicating the same code on two different products in your system.
+- Stretching a barcode image unevenly, which distorts the bar widths.
+- Printing on curved or textured surfaces without testing.
+- Forgetting the human-readable text, which staff need when a scan fails.
+
+## Barcode or QR code?
+
+Linear barcodes store a short number and suit billing systems and inventory scanners. QR codes store far more, such as a full website link, Wi-Fi details or a UPI payment address, and can be read by any phone camera. For marketing or payments, use the [QR Code Generator](https://www.biscsindia.com/tools/qr-code-generator/). For product labels on a billing counter, stick with a barcode.
+
+When you start selling, the [GST Invoice Generator](https://www.biscsindia.com/tools/invoice-generator/) creates proper tax invoices, and the [HSN Code Finder](https://www.biscsindia.com/tools/hsn-code-finder/) helps you find the right HSN code for each product.
+
+A clear, correctly formatted barcode saves time at every scan. Make yours with the [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/) and test it once before printing in bulk.
+
+Q: Can I sell products in shops with a barcode made here?
+A: The generator draws a correct barcode image for any number you enter, but retail barcodes also need a unique, registered number. In India, EAN-13 numbers starting with 890 are allotted by GS1 India to member companies. Large retailers and online marketplaces usually require GS1-registered numbers, so register first and then create the image.
+
+Q: Which barcode type should I use for my own stock?
+A: Code 128 is the most flexible choice for internal use. It accepts letters, numbers and symbols, is compact, and almost every scanner reads it. Use it for SKU labels, asset tags, files and library books. Choose EAN or UPC only when a product will be sold through retail systems that expect them.
+
+Q: What is the check digit in an EAN-13 barcode?
+A: It is the 13th digit, calculated from the first 12 so that scanners can detect misreads. If you type 12 digits, the generator adds it for you. If you type 13 digits, the last one must be correct or the tool shows an error, which catches typing mistakes.
+
+Q: Why will my barcode not scan after printing?
+A: The usual causes are printing too small, bars blurred by a low-quality printer, low contrast colours, or a quiet zone that is too narrow. Print at a larger bar width, use dark bars on a white background, keep empty space on both sides, and test with the scanner you will actually use.
 
 ## Base64 Encode and Decode Online: What It Is and When to Use It
 
@@ -2104,6 +2207,22 @@ Kavya starts with ₹1 lakh at 8%, compounded quarterly, and adds ₹2,000 at th
 
 Without the monthly top-ups, her ₹1 lakh would have grown to about ₹2.21 lakh. Regular additions more than double the final amount, and they earn compound interest too. For market-linked monthly investing, the [SIP Calculator](https://www.biscsindia.com/tools/sip-calculator/) uses a similar idea with start-of-month instalments.
 
+## Time matters more than frequency
+
+Compare the frequency table above with what happens when you simply leave the money longer. ₹1,00,000 at 8% compounded yearly grows to:
+
+| Years | Value | Growth multiple |
+|---|---|---|
+| 10 | ₹2,15,892 | 2.16× |
+| 20 | ₹4,66,096 | 4.66× |
+| 30 | ₹10,06,266 | 10.06× |
+
+Switching from yearly to daily compounding over 10 years added under ₹7,000. Staying invested for 30 years instead of 10 adds nearly ₹8 lakh. The last ten years alone add more than the first twenty combined, because each year's growth is calculated on a much bigger base. If you are deciding between chasing a slightly better compounding frequency and starting a year earlier, start earlier.
+
+## When compounding works against you
+
+The same maths applies to debt. As a purely hypothetical illustration, if an unpaid balance of ₹50,000 grew at 3% a month with nothing repaid, after 12 months it would be about ₹71,288, which is over 42% more in a single year. Real card and loan charges depend on your agreement, fees and repayments, but the lesson is clear: high-interest debt that compounds monthly should usually be cleared before you invest for modest returns.
+
 ## Where you meet compound interest in real life
 
 - **Fixed deposits:** banks commonly compound quarterly. The [FD Calculator](https://www.biscsindia.com/tools/fd-calculator/) adds tenure in years, months and days.
@@ -3039,15 +3158,27 @@ The converter's **UTF-8 BOM (for Excel)** option is ticked by default for this r
 
 ## Detect numbers and dates: what it does
 
-When building an Excel file from a CSV, **Detect numbers & dates** turns text that looks like numbers or dates into real numeric and date cells, so you can sum columns and sort properly.
+When building an Excel file from a CSV, **Detect numbers & dates** turns text that looks like a plain number or an ISO date into real numeric and date cells, so you can sum columns, filter by date and sort properly.
 
-Be careful with values that look like numbers but are not:
+The detection is deliberately cautious, because spreadsheets are notorious for damaging Indian data:
 
-- **Mobile numbers and account numbers** can lose leading zeros or turn into scientific notation if treated as numbers.
-- **PIN codes, employee IDs and GSTINs** should stay as text.
-- **Ambiguous dates** like 03/04/2025 may be read differently from what you meant.
+- **Leading zeros are kept.** A value like "0712345" or a PIN-style code starting with zero stays as text, so it is not shortened.
+- **Long numbers stay as text.** Values of 16 digits or more, such as some bank account or card-style numbers, are not converted, which avoids Excel's scientific notation and lost digits.
+- **Only unambiguous dates are converted.** Dates written as YYYY-MM-DD, like 2025-04-01, become date cells. Formats such as 01/04/2025 stay as text, because they could mean 1 April or 4 January.
+- **The header row is never converted**, so a column called "2025" stays a label.
 
-If your data is full of IDs, untick the option so everything stays exactly as written.
+Even so, IDs such as mobile numbers, Aadhaar-style numbers and employee codes are safest kept as text. If your file is mostly identifiers, untick the option and every value stays exactly as written.
+
+## A worked example: a bank statement export
+
+Suppose your bank lets you download a statement as a pipe-separated text file, and your accountant wants an Excel file.
+
+1. Open the `.txt` file in the converter. The pipe delimiter is detected automatically.
+2. Check that the columns line up: date, narration, withdrawal, deposit, balance.
+3. Search for a party name, such as a supplier, to check a few entries quickly.
+4. Click **Download .xlsx**. Amounts become numbers you can total, and the header row stays bold and frozen.
+
+Going the other way, a payroll team can open a salary workbook, pick the sheet the portal needs, choose the delimiter the portal specifies, and download a CSV ready to upload.
 
 ## Common mistakes
 
@@ -3285,6 +3416,107 @@ A: Generally no. Hashtags and usernames on most platforms accept only standard l
 
 Q: Does the generator support Hindi or other Indian scripts?
 A: The styled alphabets exist only for the English letters A to Z and digits 0 to 9, so Hindi, Bengali and other scripts pass through unchanged. Effects such as strikethrough, underline and spaced out add marks or spaces around any character, so those also work with Indian scripts.
+
+## FAQ Schema Generator: Build an FAQ Section With FAQPage JSON-LD
+
+URL: https://www.biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
+Tool: FAQ Schema Generator (https://www.biscsindia.com/tools/faq-schema-generator/)
+
+Quick answer: An FAQ schema generator turns your questions and answers into an HTML FAQ section plus matching FAQPage JSON-LD structured data. BISCS India’s free FAQ Schema Generator builds both from one list, so they always agree, previews the section, imports pasted Q&A text and runs in your browser. Google now shows FAQ rich results only for limited sites.
+
+An FAQ schema generator turns a list of questions and answers into two things: a visible FAQ section for your page, and FAQPage JSON-LD structured data that describes the same content to search engines. Getting both from one source matters, because the markup must match what visitors actually see.
+
+The [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/) from BISCS India does exactly that. You type or paste your questions and answers, and it produces accessible HTML, valid JSON-LD, or both combined, with a live preview and checks for common problems.
+
+## What FAQ rich results look like today
+
+It is important to start with expectations. In August 2023, Google limited FAQ rich results (the expandable questions under a search result) to well-known, authoritative government and health websites. For almost every business, blog or shop, valid FAQPage markup will no longer produce that visual enhancement in Google.
+
+So why bother? Because a good FAQ section is still valuable on its own:
+
+- It answers real customer questions, reducing calls and WhatsApp messages.
+- It gives search engines and AI answer tools clearly structured question-and-answer pairs to understand and quote.
+- It covers the long-tail questions people type or speak into search.
+- The markup remains valid schema.org that other search engines and AI systems can read.
+
+The honest view: add FAQ schema when you have a genuine FAQ section, not as a ranking trick.
+
+## How to build an FAQ section with schema
+
+1. Open the [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/). Press **Sample** to see a filled-in example.
+2. Set the **Section heading**, such as "Frequently asked questions" or "GST registration: your questions answered".
+3. Type each question and its answer. Use **Add question** for more, and the arrow buttons to reorder them.
+4. In answers, you can use simple formatting: bold, italics, links and bullet lists.
+5. Already have questions in a document? Open the import panel and paste **Q&A text**, either as "Q: … A: …" pairs or as question lines ending in "?" followed by the answer. Choose **Append** or **Replace all**.
+6. Read the messages: empty questions or answers, duplicates, questions without a question mark, and very long answers are flagged.
+7. Choose the output: **HTML**, **JSON-LD**, **Combined** or **Preview**. Tick **First answer open** if you want the first answer expanded by default.
+8. Press **Copy** or **Download** and paste the code into your page.
+
+The HTML uses native expandable `details` and `summary` elements, which work without JavaScript and are keyboard-accessible. Your draft is saved in your browser's local storage, and nothing is uploaded.
+
+## Writing questions people actually ask
+
+The best FAQ sections come from real conversations, not from guessing. Good sources include:
+
+- Questions customers ask on calls, at the counter or on WhatsApp.
+- Emails and support tickets.
+- The People Also Ask box in Google for your main topic.
+- Your sales team's most common objections.
+
+The [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/) can also suggest who, what, how, cost and comparison questions for a keyword, which you can then check against real demand.
+
+Write each question the way a customer would say it: "Do you deliver to Howrah?" rather than "Delivery coverage information".
+
+## Writing answers that stand alone
+
+Each answer may be read without the rest of the page, by a person skimming or by an AI tool quoting it. So:
+
+- **Answer in the first sentence.** "Yes, we deliver across Kolkata and Howrah within two working days."
+- **Name the subject**, rather than starting with "It" or "This".
+- **Be specific.** Prices with ₹ and the date they apply, timelines in days, clear conditions.
+- **Keep it short.** Around 40–80 words usually works. Link to a full guide for complex topics.
+- **Stay accurate.** For rules that change, such as tax rates or government fees, say "currently" and link to the official source.
+
+To polish individual answers for snippets and voice search, the [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/) checks length, structure and readability.
+
+## FAQ schema rules to follow
+
+| Do | Do not |
+|---|---|
+| Mark up questions and answers visible on the page | Put content in JSON-LD that is hidden or different |
+| Use FAQPage for questions answered by you, the site owner | Use FAQPage for forums or user-submitted Q&A (use QAPage) |
+| Keep one official answer per question | Add the same FAQ block to every page of the site |
+| Write genuine informational answers | Use questions purely as advertising |
+| Keep answers up to date | Leave old prices, dates or policies in place |
+
+## Common FAQ mistakes
+
+- **Duplicate FAQs across many pages.** A copy of the same ten questions on every service page adds little value. Tailor each page's FAQ to its topic.
+- **Answers that dodge the question.** "Contact us for details" is not an answer.
+- **Very long answers.** If an answer needs 400 words, it probably deserves its own article.
+- **Markup without the section.** Pasting JSON-LD into a page with no visible FAQ goes against Google's guidelines.
+- **Two FAQPage blocks on one page**, often from a plugin plus manual code. Check your final HTML with the [On-Page SEO Checker](https://www.biscsindia.com/tools/on-page-seo-checker/), which lists structured data types it finds.
+
+## Where to place your FAQ section
+
+Put it near the end of a service or product page, after the main content, or on a dedicated help page. Keep the heading clear, use your own brand voice, and link from answers to the pages that explain more.
+
+Then build or update it whenever customer questions change. The [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/) keeps your visible section and markup in step, so you only have to edit one list.
+
+Q: Does Google still show FAQ rich results?
+A: Since August 2023, Google shows FAQ rich results only for well-known, authoritative government and health websites. Most business sites will not get the expandable questions in search results, even with valid markup. The markup is still valid schema.org and can help other systems understand your content.
+
+Q: Is FAQ schema still worth adding?
+A: It is worth adding when the page genuinely has a visible FAQ section, because it costs little and describes the content precisely for search engines and AI tools. It is not worth adding to pages without real questions, and it should never be added just to chase a rich result.
+
+Q: Must the FAQ content be visible on the page?
+A: Yes. Google’s guidelines require the questions and answers in FAQPage markup to be visible to users on the same page. Hidden or different content in the JSON-LD is treated as misleading. Generating the HTML and markup from the same list avoids mismatches.
+
+Q: Can I use FAQPage schema for customer questions in a forum?
+A: No. FAQPage is for questions and answers written by the site owner, where each question has one official answer. Pages where users submit questions and several people answer, such as forums or product Q&A, should use QAPage markup instead.
+
+Q: How long should FAQ answers be?
+A: Short and complete is best. Most answers work well at 40–80 words, enough to answer properly on their own. The generator flags answers over about 150 words as long and over 300 as very long; link to a full guide when a topic needs more depth.
 
 ## Favicon Generator: Create favicon.ico and App Icons Free
 
@@ -3858,6 +4090,8 @@ The tool reminds you if your service is under five years, and runs entirely in y
 | Covered, ₹1,50,000, 25 years | 25 | 15 × 1,50,000 × 25 ÷ 26 | ₹21,63,462 |
 
 The first two rows show why timing matters. Leaving at 10 years 7 months instead of 10 years 5 months adds a full year, about ₹34,600 here. If you are close to a six-month mark, it may be worth knowing before you hand in your notice.
+
+For a feel of the scale, here is gratuity after exactly 20 years of service with a covered employer at different levels of basic plus DA: ₹30,000 gives about ₹3,46,154; ₹50,000 gives about ₹5,76,923; and ₹1,00,000 gives about ₹11,53,846. Gratuity rises in direct proportion to both salary and years, so a pay rise late in your career lifts the whole amount, because the last drawn salary is used for every year of service.
 
 ## Who is eligible for gratuity?
 
@@ -4454,6 +4688,19 @@ Divya works in Pune with basic plus DA of ₹40,000 a month, HRA of ₹20,000 an
 - 40% of basic (non-metro): ₹1,92,000
 
 Her exemption is ₹1,92,000 and ₹48,000 is taxable. Here the 40% city cap is the lowest figure, so higher rent would not increase her exemption.
+
+## What if you moved house or city during the year?
+
+The three limits are worked out for the period you actually paid rent, so a mid-year move means calculating each period separately and adding the results.
+
+Suppose Farhan's basic plus DA is ₹50,000 a month and his HRA is ₹20,000 a month all year. From April to September he rents in Pune for ₹15,000 a month; from October to March he rents in Mumbai for ₹22,000 a month.
+
+| Period (6 months) | Actual HRA | Rent − 10% of basic | City limit | Exempt |
+|---|---|---|---|---|
+| Apr–Sep, Pune (40%) | ₹1,20,000 | 90,000 − 30,000 = ₹60,000 | ₹1,20,000 | ₹60,000 |
+| Oct–Mar, Mumbai (50%) | ₹1,20,000 | 1,32,000 − 30,000 = ₹1,02,000 | ₹1,50,000 | ₹1,02,000 |
+
+His total exemption is ₹1,62,000 and the remaining ₹78,000 of HRA is taxable. To do this with the calculator, enter each period's monthly figures, choose the right city type, and take half of the annual result for each six-month block. A salary change mid-year is handled the same way.
 
 ## How to use the BISCS HRA Calculator
 
@@ -5651,6 +5898,13 @@ Your salary details are processed only in your browser.
 - Old regime: taxable ₹10,60,000, tax ₹1,30,500 + cess = **₹1,35,720**
 
 Here the old regime saves about ₹15,080. Drop the HRA, home loan and NPS, and the old regime tax rises to ₹2,96,400, so the new regime wins by a wide margin.
+
+**4. A retired person aged 65.** Suppose a pension of ₹9,00,000 plus FD interest of ₹1,50,000, with health insurance of ₹50,000 under 80D and ₹50,000 of interest deduction under 80TTB entered as "other deductions".
+
+- New regime: 10,50,000 − 75,000 = ₹9,75,000 taxable; slab tax ₹37,500 is fully covered by the 87A rebate, so **tax is nil**.
+- Old regime (60 to 79 band, ₹3 lakh nil slab): taxable ₹9,00,000, tax ₹90,000 + ₹3,600 cess = **₹93,600**.
+
+Even with the higher senior exemption, the new regime is far cheaper here, because the rebate covers taxable income up to ₹12 lakh.
 
 ## How do you decide between the regimes?
 
@@ -11296,6 +11550,16 @@ Some personal, consumer and vehicle loans are quoted at a "flat" rate. That mean
 
 A normal reducing-balance loan at 10% for 3 years has an EMI of about ₹3,227 and total interest of about ₹16,162. To match the flat loan's ₹3,611 instalment, a reducing-balance loan would need a rate of roughly 18%. You can test this yourself in the [EMI Calculator](https://www.biscsindia.com/tools/emi-calculator/).
 
+## Monthly rates in informal lending
+
+Private lenders, chit-related borrowing and loans between traders are often quoted "per month" rather than per year. Convert first: 1% a month is 12% a year, 2% a month is 24% a year, and 3% a month is 36% a year in simple-interest terms.
+
+**Example:** ₹1,00,000 borrowed at 2% a month for 6 months. Enter 24% a year and 6 months in the calculator: SI = 1,00,000 × 24 × 0.5 ÷ 100 = **₹12,000**. If the lender adds unpaid interest to the principal each month, the arrangement is no longer simple interest, and the cost will be higher; the [Compound Interest](https://www.biscsindia.com/tools/compound-interest-calculator/) calculator with monthly compounding gives a better estimate then.
+
+## Interest on delayed payments
+
+Businesses sometimes agree to charge interest when customers pay invoices late. Suppose an invoice of ₹2,40,000 is paid 73 days late and the agreed rate is 18% a year. Choose **Days** as the unit: SI = 2,40,000 × 18 × (73 ÷ 365) ÷ 100 = **₹8,640**. Make sure the rate and the method (simple, per year, from the due date) are written in the contract or on the invoice before you charge it, and keep a copy of the calculation with the debit note.
+
 ## Common mistakes
 
 1. **Forgetting to convert months or days into years.** T must be in years when R is a yearly rate.
@@ -13470,6 +13734,100 @@ A: The tool converts files already on your device; it does not download from web
 Q: What does Copy streams when possible do?
 A: If the video and audio inside your file already use codecs the new container supports, the converter copies them into the new wrapper without re-encoding. That is much faster and loses no quality. If the codecs are not compatible, it automatically re-encodes instead. This option is not available for WebM output or when changing resolution.
 
+## How to Convert a Video to GIF (Small Size, Good Quality)
+
+URL: https://www.biscsindia.com/blog/convert-video-to-gif-online/
+Tool: Video to GIF (https://www.biscsindia.com/tools/video-to-gif/)
+
+Quick answer: To convert a video to GIF, open it in a GIF maker, select a short clip of a few seconds, choose a width and frame rate, and export. BISCS India's Video to GIF builds an optimised colour palette for better quality, can also make a much smaller silent MP4 version, and runs fully in your browser.
+
+Converting a video to GIF turns a short moving clip into an animated image that plays automatically and loops, with no play button and no sound. GIFs remain popular for reactions, quick product demos, how-to snippets in documentation, and anywhere that video embeds are not allowed.
+
+The [Video to GIF](https://www.biscsindia.com/tools/video-to-gif/) tool on BISCS India lets you pick the exact part of a video, set the frame rate and width, and export a GIF with a colour palette built specifically for your clip. It can also create a far smaller MP4 version with one click. Everything happens in your browser.
+
+## Why GIFs need special care
+
+GIF is an old format. Each frame can use at most 256 colours, and its compression is primitive compared with modern video codecs such as H.264. That causes two familiar problems:
+
+- **Big files.** A five-second clip at full HD can run to tens of megabytes as a GIF.
+- **Banding and speckles.** Skies, skin tones and gradients have more than 256 shades, so they look stepped or grainy.
+
+Good GIF makers fight both. This tool uses a two-pass process: first it analyses your clip and builds the best 256-colour palette for it, then it renders every frame using that palette with your chosen dithering. That gives noticeably better colours than a generic palette.
+
+## How to make a GIF with BISCS India
+
+1. Open [Video to GIF](https://www.biscsindia.com/tools/video-to-gif/).
+2. Choose a video or drag it in. MP4, MOV, WebM, MKV and AVI files are supported.
+3. Drag the handles over the thumbnail strip to select the part you want. Keep it short: two to six seconds is ideal.
+4. In **GIF settings**, set **Frames per second** (5 to 25, default 12) and **Width** (240 to 800 px). The height follows automatically to keep the shape.
+5. Choose **Dithering**: **Smooth** for nicer gradients or **Compact** for smaller files.
+6. Leave **Loop forever** ticked for a classic GIF, or untick it to play once.
+7. Click **Make GIF**. The first time, a video engine of about 32 MB downloads once and is cached by your browser.
+8. Preview the result with its size, dimensions and length, then download it. If the GIF is large, click **Make MP4 instead (smaller)** for a lightweight silent video of the same clip.
+
+## Settings that control file size
+
+GIF size grows with every setting, roughly multiplying together:
+
+| Setting | Effect on size | Suggested value |
+| --- | --- | --- |
+| Length | Doubles when the clip doubles | 2–6 seconds |
+| Frames per second | More frames, more data | 10–15 fps |
+| Width | Height scales too, so pixels grow fast | 320–480 px for chat, up to 800 for docs |
+| Dithering | Compact is usually smaller | Smooth for photos, Compact for screen recordings |
+| Content | Busy, moving backgrounds compress poorly | Steady camera, simple backgrounds |
+
+If a GIF is over a size limit, cut the length first, then reduce the width, then the frame rate. The tool warns you when a GIF comes out larger than about 8 MB.
+
+## GIF or MP4? Choose by where it is going
+
+Many platforms that seem to show GIFs are actually playing short silent videos, because video is so much more efficient. The tool’s MP4 option makes the same clip at the same width and frame rate, usually five to ten times smaller than the GIF, and most chat apps such as WhatsApp and Telegram loop it like a GIF.
+
+Use a **GIF** when:
+
+- The destination accepts images but not video, such as many email newsletters, GitHub README files, wikis and older forums.
+- You want it to play everywhere automatically without any player controls.
+
+Use the **MP4** when:
+
+- You are posting to chat apps or social media that accept video.
+- File size matters, for example on a website where page speed counts.
+
+## Tips for better-looking GIFs
+
+- **Trim tightly.** The best GIFs show one action, starting and ending at natural moments. If the loop point jumps, try shifting the end slightly.
+- **Use a steady shot.** Camera shake changes every pixel on every frame, which bloats the file. Screen recordings and tripod shots make excellent GIFs.
+- **Go narrow for chat.** 320–480 px wide looks fine on a phone and keeps the file small.
+- **Choose Compact for screen recordings.** Interfaces have flat colours, so the ordered pattern is barely visible and saves space.
+- **Choose Smooth for real-world footage.** Faces, food and landscapes benefit from gentler dithering.
+- **Record specially for a GIF.** For a software demo, capture just the window you need with the [Screen Recorder](https://www.biscsindia.com/tools/screen-recorder/), then convert a few seconds of it.
+
+## Common mistakes
+
+- **Converting a whole video.** A one-minute GIF is almost always too large to be useful. Cut out the essential moment, or use the [Video Trimmer](https://www.biscsindia.com/tools/video-trimmer/) for a longer clip you share as video instead.
+- **Using maximum width and frame rate.** 800 px at 25 fps looks nice but produces huge files. Increase settings only if the default looks poor.
+- **Expecting sound.** GIFs are always silent.
+- **Uploading a giant GIF to a website.** Large GIFs slow pages down. Consider the MP4, or compress other heavy media with the [Video Compressor](https://www.biscsindia.com/tools/video-compressor/).
+
+## Privacy and performance
+
+The GIF is created on your device using a browser build of the FFmpeg engine; your video is not uploaded anywhere. Because your own processor does the work, a computer is faster than a phone, and very large source videos can fail on devices with little memory. Selecting a short clip keeps processing quick on any device.
+
+Q: Why are GIF files so large?
+A: GIF is a format from the late 1980s. It stores up to 256 colours per frame and uses compression that is far less efficient than modern video codecs. A few seconds of smooth motion can easily reach several megabytes. Keeping clips short, narrow and at 10 to 15 frames per second keeps sizes reasonable.
+
+Q: What is the best frame rate for a GIF?
+A: Around 10 to 15 frames per second suits most GIFs. It looks smooth enough for reactions, screen demos and product loops while keeping the file small. Use higher rates, up to 25, only for fast action that looks jerky otherwise, and accept that the file will grow noticeably.
+
+Q: Do GIFs have sound?
+A: No. The GIF format cannot contain audio, so any sound in your video is dropped. If you need sound, share the trimmed clip as an MP4 instead. The optional MP4 version this tool creates is also silent, because it is meant as a lightweight GIF replacement.
+
+Q: Should I use a GIF or a short MP4?
+A: A short silent MP4 is usually five to ten times smaller than the same GIF and looks better, and many chat apps and websites loop it just like a GIF. Use a GIF where video is not accepted, such as some email clients, documentation tools, forums and older platforms.
+
+Q: What does the Smooth or Compact dithering option change?
+A: Dithering mixes dots of the limited palette colours to imitate shades the GIF cannot store. Smooth uses error-diffusion dithering, which gives gentler gradients but slightly larger files. Compact uses a regular ordered pattern that compresses better, at the cost of a visible fine texture in gradients.
+
 ## How to Trim a Video Online: Cut Start, End or a Clip
 
 URL: https://www.biscsindia.com/blog/trim-cut-video-online-free/
@@ -13900,3 +14258,99 @@ A: No. The counting happens in JavaScript inside your browser tab. Your text is 
 
 Q: Why does my character count differ from what an app shows?
 A: Apps count differently. Some count emoji or accented letters as two characters, some ignore line breaks, and some shorten links. The BISCS counter counts visible characters including spaces and line breaks. For strict limits, leave a small margin and check the final post in the app itself.
+
+## Convert Word to PDF Free, Without Uploading Your Document
+
+URL: https://www.biscsindia.com/blog/convert-word-docx-to-pdf-free/
+Tool: Word to PDF (https://www.biscsindia.com/tools/word-to-pdf/)
+
+Quick answer: To convert Word to PDF, open the .docx file in a converter, check the preview, choose the paper size and margins, and save it as a PDF. BISCS India’s Word to PDF tool does this in your browser, so the document is never uploaded, and it handles text, headings, lists, tables, links and images.
+
+To convert a Word document to PDF, open the `.docx` file in a converter, check the preview, set the page size and margins, and save it as a PDF. With the BISCS India tool, all of this happens inside your browser: the file is read on your device and the PDF is created by your browser's own "Save as PDF" feature, so nothing is uploaded.
+
+PDF is the safest format for sharing a document that should look the same everywhere and not be edited casually, which is why job portals, government offices and clients so often ask for it.
+
+## Why convert Word documents to PDF?
+
+- **It looks the same on every device.** A Word file can shift when opened in a different version or a phone app. A PDF stays put.
+- **Portals often accept only PDF.** Many job applications, college admissions and government forms require PDF uploads.
+- **It is harder to edit by accident.** A quotation, offer letter or notice in PDF discourages casual changes.
+- **It opens anywhere.** Every phone and computer can read a PDF without Microsoft Office.
+
+## How to convert Word to PDF online
+
+1. Open [Word to PDF](https://www.biscsindia.com/tools/word-to-pdf/).
+2. Choose your `.docx` file or drag it onto the page.
+3. Check the preview. The panel shows the word count, headings, tables and images found, plus any conversion notes.
+4. Set up the page: **Paper** (A4 or Letter), **Margins** (Normal 2.54 cm, Moderate 1.9 cm or Narrow 1.27 cm), **Body font** and **Base font size** (10 to 12 pt).
+5. Click **Download PDF**. In the print dialog, choose **Save as PDF** as the destination.
+6. Under more settings, turn off **Headers and footers** for a clean page, then save.
+
+The tool also offers an **HTML** export if you want the document as a web page. Your page setup choices are remembered on your device for next time.
+
+## What converts well, and what gets simplified
+
+The converter focuses on the content and structure of your document rather than reproducing every Word layout feature.
+
+| Converts well | Simplified or not kept exactly |
+|---|---|
+| Paragraphs, headings, bold, italic, underline | Text boxes and shapes |
+| Bulleted and numbered lists | Multiple columns |
+| Tables | Page headers and footers |
+| Links | Footnote placement |
+| Images in the text | Exact page breaks and section layouts |
+| Basic document structure | Custom fonts and fine spacing |
+
+In practice, letters, resumes, reports, assignments, notices, policies and most business documents convert cleanly. Brochures, newsletters and forms with complex layouts are better exported from Word itself.
+
+## Choosing page size, margins and font
+
+**Paper size.** Use **A4** for anything submitted in India; it is the standard for offices, courts, universities and government. Choose **Letter** only for documents going to the US or Canada.
+
+**Margins.** **Normal** (2.54 cm, about one inch) suits most documents. **Moderate** fits more on each page, and **Narrow** is useful for tables and reference sheets, but can look cramped for letters.
+
+**Font.** The tool offers a Calibri-style sans-serif, a Cambria-style serif, Times New Roman and Arial. Formal letters and legal documents often use Times New Roman; modern reports read well in a sans-serif. The preview shows an estimated page count, so you can see the effect of each choice.
+
+## Common problems and fixes
+
+- **"Old .doc files are not supported."** Open the file in Word, LibreOffice or Google Docs and save it as `.docx`.
+- **"Could not convert this file."** Check that the file is a genuine `.docx` and not password protected.
+- **Date, time and web address printed on the page.** Turn off **Headers and footers** in the print dialog.
+- **Page breaks in odd places.** Exact Word page breaks are not preserved. Try a different margin or font size, and check the preview's page estimate.
+- **Missing header or footer text.** Headers and footers from Word are not carried over. If your letterhead lives in the header, add it to the body of the document before converting.
+- **The PDF is too large to upload.** Documents with big photos make large PDFs. Shrink the result with [Compress PDF](https://www.biscsindia.com/tools/compress-pdf/).
+
+## A practical example: an offer letter for a small business
+
+A small firm in Kolkata writes offer letters in Word but its HR person only has a laptop without Office.
+
+1. Open the `.docx` offer letter in the converter.
+2. Set A4, Normal margins and Times New Roman at 12 pt.
+3. Check that the salary table and signature block look right in the preview.
+4. Save as PDF with headers and footers turned off.
+5. Add the director's signature with [Sign PDF](https://www.biscsindia.com/tools/sign-pdf/) and email it to the candidate.
+
+## Related conversions
+
+Need the reverse? [PDF to Word](https://www.biscsindia.com/tools/pdf-to-word/) turns a PDF back into an editable document. To combine your converted PDF with certificates or annexures into one file, use [Merge PDF](https://www.biscsindia.com/tools/merge-pdf/).
+
+## Privacy: why converting in the browser matters
+
+Many online converters upload your file to a server, convert it there and send it back. That is a concern for offer letters, legal notices, medical reports and anything with personal details.
+
+[Word to PDF](https://www.biscsindia.com/tools/word-to-pdf/) avoids that. The document is read and laid out inside your browser, and the PDF is produced by your browser's print engine. The only download is the conversion library, fetched once the first time you use the tool. Your document itself never leaves your device.
+
+Q: Does the converter keep my exact Word layout?
+A: It keeps the content and the main structure: headings, paragraphs, bold and italic text, lists, tables, links and images. Complex layout features such as text boxes, multiple columns, headers and footers, footnote placement and exact page breaks are simplified, so always check the preview before saving the PDF.
+
+Q: Can I convert an old .doc file?
+A: No. Only the modern .docx format is supported. Open the .doc file in Microsoft Word, LibreOffice or Google Docs, save or download it as .docx, and then convert it here. Password-protected documents also need the password removed first.
+
+Q: Why does the PDF have a date and web address at the top?
+A: That is the browser’s own header and footer option in the print dialog. When you choose Save as PDF, look for a setting called Headers and footers under More settings and turn it off for a clean page. The tool reminds you of this next to the page setup options.
+
+Q: Is my document uploaded to a server?
+A: No. The converter reads the .docx file inside your browser and the PDF is produced by your browser’s print function. The document is not sent to BISCS India. The conversion library is downloaded once when you first use the tool, which needs an internet connection.
+
+Q: What is the best way to get a PDF that matches Word exactly?
+A: If you have Microsoft Word, use File, Save As and choose PDF, or Export, Create PDF. Word renders its own layout most faithfully. This tool is best when you do not have Word installed, are on a phone or shared computer, or do not want to upload a private document to a website.

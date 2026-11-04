@@ -46,6 +46,19 @@ Divya works in Pune with basic plus DA of ₹40,000 a month, HRA of ₹20,000 an
 
 Her exemption is ₹1,92,000 and ₹48,000 is taxable. Here the 40% city cap is the lowest figure, so higher rent would not increase her exemption.
 
+## What if you moved house or city during the year?
+
+The three limits are worked out for the period you actually paid rent, so a mid-year move means calculating each period separately and adding the results.
+
+Suppose Farhan's basic plus DA is ₹50,000 a month and his HRA is ₹20,000 a month all year. From April to September he rents in Pune for ₹15,000 a month; from October to March he rents in Mumbai for ₹22,000 a month.
+
+| Period (6 months) | Actual HRA | Rent − 10% of basic | City limit | Exempt |
+|---|---|---|---|---|
+| Apr–Sep, Pune (40%) | ₹1,20,000 | 90,000 − 30,000 = ₹60,000 | ₹1,20,000 | ₹60,000 |
+| Oct–Mar, Mumbai (50%) | ₹1,20,000 | 1,32,000 − 30,000 = ₹1,02,000 | ₹1,50,000 | ₹1,02,000 |
+
+His total exemption is ₹1,62,000 and the remaining ₹78,000 of HRA is taxable. To do this with the calculator, enter each period's monthly figures, choose the right city type, and take half of the annual result for each six-month block. A salary change mid-year is handled the same way.
+
 ## How to use the BISCS HRA Calculator
 
 1. Open the [HRA Exemption Calculator](/tools/hra-calculator/).

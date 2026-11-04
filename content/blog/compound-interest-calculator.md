@@ -59,6 +59,22 @@ Kavya starts with ₹1 lakh at 8%, compounded quarterly, and adds ₹2,000 at th
 
 Without the monthly top-ups, her ₹1 lakh would have grown to about ₹2.21 lakh. Regular additions more than double the final amount, and they earn compound interest too. For market-linked monthly investing, the [SIP Calculator](/tools/sip-calculator/) uses a similar idea with start-of-month instalments.
 
+## Time matters more than frequency
+
+Compare the frequency table above with what happens when you simply leave the money longer. ₹1,00,000 at 8% compounded yearly grows to:
+
+| Years | Value | Growth multiple |
+|---|---|---|
+| 10 | ₹2,15,892 | 2.16× |
+| 20 | ₹4,66,096 | 4.66× |
+| 30 | ₹10,06,266 | 10.06× |
+
+Switching from yearly to daily compounding over 10 years added under ₹7,000. Staying invested for 30 years instead of 10 adds nearly ₹8 lakh. The last ten years alone add more than the first twenty combined, because each year's growth is calculated on a much bigger base. If you are deciding between chasing a slightly better compounding frequency and starting a year earlier, start earlier.
+
+## When compounding works against you
+
+The same maths applies to debt. As a purely hypothetical illustration, if an unpaid balance of ₹50,000 grew at 3% a month with nothing repaid, after 12 months it would be about ₹71,288, which is over 42% more in a single year. Real card and loan charges depend on your agreement, fees and repayments, but the lesson is clear: high-interest debt that compounds monthly should usually be cleared before you invest for modest returns.
+
 ## Where you meet compound interest in real life
 
 - **Fixed deposits:** banks commonly compound quarterly. The [FD Calculator](/tools/fd-calculator/) adds tenure in years, months and days.

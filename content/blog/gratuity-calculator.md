@@ -47,6 +47,8 @@ The tool reminds you if your service is under five years, and runs entirely in y
 
 The first two rows show why timing matters. Leaving at 10 years 7 months instead of 10 years 5 months adds a full year, about ₹34,600 here. If you are close to a six-month mark, it may be worth knowing before you hand in your notice.
 
+For a feel of the scale, here is gratuity after exactly 20 years of service with a covered employer at different levels of basic plus DA: ₹30,000 gives about ₹3,46,154; ₹50,000 gives about ₹5,76,923; and ₹1,00,000 gives about ₹11,53,846. Gratuity rises in direct proportion to both salary and years, so a pay rise late in your career lifts the whole amount, because the last drawn salary is used for every year of service.
+
 ## Who is eligible for gratuity?
 
 - You must normally complete **five years of continuous service** with the same employer.

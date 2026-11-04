@@ -70,6 +70,16 @@ Some personal, consumer and vehicle loans are quoted at a "flat" rate. That mean
 
 A normal reducing-balance loan at 10% for 3 years has an EMI of about ₹3,227 and total interest of about ₹16,162. To match the flat loan's ₹3,611 instalment, a reducing-balance loan would need a rate of roughly 18%. You can test this yourself in the [EMI Calculator](/tools/emi-calculator/).
 
+## Monthly rates in informal lending
+
+Private lenders, chit-related borrowing and loans between traders are often quoted "per month" rather than per year. Convert first: 1% a month is 12% a year, 2% a month is 24% a year, and 3% a month is 36% a year in simple-interest terms.
+
+**Example:** ₹1,00,000 borrowed at 2% a month for 6 months. Enter 24% a year and 6 months in the calculator: SI = 1,00,000 × 24 × 0.5 ÷ 100 = **₹12,000**. If the lender adds unpaid interest to the principal each month, the arrangement is no longer simple interest, and the cost will be higher; the [Compound Interest](/tools/compound-interest-calculator/) calculator with monthly compounding gives a better estimate then.
+
+## Interest on delayed payments
+
+Businesses sometimes agree to charge interest when customers pay invoices late. Suppose an invoice of ₹2,40,000 is paid 73 days late and the agreed rate is 18% a year. Choose **Days** as the unit: SI = 2,40,000 × 18 × (73 ÷ 365) ÷ 100 = **₹8,640**. Make sure the rate and the method (simple, per year, from the due date) are written in the contract or on the invoice before you charge it, and keep a copy of the calculation with the debit note.
+
 ## Common mistakes
 
 1. **Forgetting to convert months or days into years.** T must be in years when R is a yearly rate.

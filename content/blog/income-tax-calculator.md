@@ -66,6 +66,13 @@ Your salary details are processed only in your browser.
 
 Here the old regime saves about ₹15,080. Drop the HRA, home loan and NPS, and the old regime tax rises to ₹2,96,400, so the new regime wins by a wide margin.
 
+**4. A retired person aged 65.** Suppose a pension of ₹9,00,000 plus FD interest of ₹1,50,000, with health insurance of ₹50,000 under 80D and ₹50,000 of interest deduction under 80TTB entered as "other deductions".
+
+- New regime: 10,50,000 − 75,000 = ₹9,75,000 taxable; slab tax ₹37,500 is fully covered by the 87A rebate, so **tax is nil**.
+- Old regime (60 to 79 band, ₹3 lakh nil slab): taxable ₹9,00,000, tax ₹90,000 + ₹3,600 cess = **₹93,600**.
+
+Even with the higher senior exemption, the new regime is far cheaper here, because the rebate covers taxable income up to ₹12 lakh.
+
 ## How do you decide between the regimes?
 
 - Add up deductions you will **actually** claim with proof, not ones you might make.
