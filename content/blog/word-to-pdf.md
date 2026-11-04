@@ -78,6 +78,17 @@ A small firm in Kolkata writes offer letters in Word but its HR person only has 
 4. Save as PDF with headers and footers turned off.
 5. Add the director's signature with [Sign PDF](/tools/sign-pdf/) and email it to the candidate.
 
+## Converting Word to PDF on a phone
+
+Plenty of people receive a Word file on WhatsApp or email and need a PDF quickly, with no laptop nearby. The steps are the same on a phone, with a couple of differences:
+
+1. Save the `.docx` attachment to your phone's files or downloads.
+2. Open the converter in Chrome, Safari or another browser and choose the file.
+3. Check the preview by scrolling; pinch to zoom if needed.
+4. Tap **Download PDF**. On Android, pick **Save as PDF** as the printer; on an iPhone, use the share option in the print screen to save the PDF to Files.
+
+Large documents with many images take a little longer to prepare on older phones, so give them a moment.
+
 ## Related conversions
 
 Need the reverse? [PDF to Word](/tools/pdf-to-word/) turns a PDF back into an editable document. To combine your converted PDF with certificates or annexures into one file, use [Merge PDF](/tools/merge-pdf/).

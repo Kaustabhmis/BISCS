@@ -44,6 +44,22 @@ One honest limit: the tenth character is a check letter, but the Income Tax Depa
 
 The checker recognises about 80 bank codes, including payment banks, small finance banks, major co-operative banks and older codes of banks that have merged, such as Vijaya Bank (now part of Bank of Baroda) or Syndicate Bank (now part of Canara Bank). You can browse and filter the full list on the tool page.
 
+Some of the most common bank codes you will see:
+
+| IFSC prefix | Bank | IFSC prefix | Bank |
+|---|---|---|---|
+| SBIN | State Bank of India | BARB | Bank of Baroda |
+| HDFC | HDFC Bank | CNRB | Canara Bank |
+| ICIC | ICICI Bank | UBIN | Union Bank of India |
+| UTIB | Axis Bank | KKBK | Kotak Mahindra Bank |
+| PUNB | Punjab National Bank | IOBA | Indian Overseas Bank |
+
+Notice that the prefix does not always match the bank's current name: Axis Bank uses UTIB, a legacy of its earlier name. That is one reason a lookup is more reliable than guessing from the letters.
+
+## How is a MICR code structured?
+
+A MICR code is nine digits, printed in magnetic ink along the bottom of a cheque. The first three digits are the city code and usually match the first three digits of the city's PIN code, such as 400 for Mumbai or 700 for Kolkata. The next three identify the bank and the last three the branch. The checker splits a MICR code into these three parts and names a handful of major cities, but it cannot identify the bank or branch behind the numeric codes.
+
 ## How to use the BISCS PAN & IFSC Checker
 
 1. Open the [PAN & IFSC Checker](/tools/pan-ifsc-validator/).

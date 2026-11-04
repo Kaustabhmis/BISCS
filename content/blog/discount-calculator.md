@@ -44,6 +44,20 @@ For two discounts a% and b%, the effective discount is:
 
 On a ₹4,000 item, "50% + extra 20% off" means paying ₹1,600, while a true 70% off would mean ₹1,200. Reading offers this way helps you compare deals across stores and apps.
 
+## How do you find the original price from a sale price?
+
+Sometimes you only see the sale price and the percentage. Divide the sale price by (1 − discount ÷ 100). A dress tagged ₹1,799 "after 40% off" should have an original price of 1,799 ÷ 0.60 = ₹2,998.33, so roughly ₹2,999. If the tag claims an MRP far above that, the advertised discount does not add up.
+
+## Are "buy one get one" offers really 50% off?
+
+Only if you wanted two of the item. Buy one get one free on two items priced the same is a 50% discount per item. "Buy 2 get 1 free" is one free item in three, or 33.33% off. "Buy 3 get 1 free" is 25% off. If you only needed one, a straight 20% discount may save you more money than a bigger-sounding multi-buy deal. To compare, work out the price per item you actually need and run the straight-discount option through the calculator.
+
+| Offer | Equivalent discount per item |
+|---|---|
+| Buy 1 get 1 free | 50% |
+| Buy 2 get 1 free | 33.33% |
+| Buy 3 get 1 free | 25% |
+
 ## How to use the BISCS Discount Calculator
 
 1. Open the [Discount Calculator](/tools/discount-calculator/).

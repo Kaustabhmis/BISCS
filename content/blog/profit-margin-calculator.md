@@ -60,6 +60,25 @@ But ₹210 profit on a ₹910 price is a margin of only about **23.08%**. To get
 
 The formula is **markup = margin ÷ (1 − margin)**, using decimals. For example, a 40% margin needs 0.40 ÷ 0.60 = 66.67% markup.
 
+## Example: the real margin on a marketplace sale
+
+Margins shrink quickly when you sell online. Here is a hypothetical product sold through a marketplace, with all figures excluding GST:
+
+| Item | Amount |
+|---|---|
+| Selling price | ₹1,000 |
+| Product cost | ₹600 |
+| Marketplace commission (15%) | ₹150 |
+| Shipping | ₹60 |
+| Payment collection fee (2%) | ₹20 |
+| **Profit** | **₹170** |
+
+Looking only at product cost, the margin seems to be 40%. Once commission, shipping and fees are added to the cost (₹830 in total), the margin is 17%. To get this in the calculator, enter ₹830 as the cost price and ₹1,000 as the selling price. Returns, packaging and advertising would reduce it further, so build them in when you set prices. Commission and fee rates differ by platform and category, so use the figures from your own seller agreement.
+
+## Margins for service businesses
+
+Freelancers and agencies can use the same idea with time as the cost. If a designer's monthly costs, including their own target salary, come to ₹90,000 and they bill about 120 hours, each hour costs ₹750. Pricing at ₹1,000 an hour gives a 25% margin. Choosing **Price from margin** with ₹750 as cost shows the hourly rate needed for any target margin.
+
 ## When to use margin and when to use markup
 
 - **Use markup** when you set prices from cost, for example a trader adding a fixed percentage to purchase price.

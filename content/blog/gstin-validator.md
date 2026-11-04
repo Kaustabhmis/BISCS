@@ -33,6 +33,21 @@ Take the sample number the tool loads, **27AAPFU0939F1ZV**:
 
 Because the PAN sits inside the GSTIN, you can see at a glance whether the number belongs to an individual (P), a company (C), a firm or LLP (F), a trust (T), an HUF (H) and so on.
 
+## Common GST state codes
+
+The first two digits tell you where the registration belongs. A few frequently seen codes:
+
+| Code | State/UT | Code | State/UT |
+|---|---|---|---|
+| 07 | Delhi | 27 | Maharashtra |
+| 09 | Uttar Pradesh | 29 | Karnataka |
+| 10 | Bihar | 32 | Kerala |
+| 19 | West Bengal | 33 | Tamil Nadu |
+| 21 | Odisha | 36 | Telangana |
+| 24 | Gujarat | 37 | Andhra Pradesh |
+
+A few codes have history behind them. Andhra Pradesh registrations now use 37, while 28 was its code before Telangana was formed. Code 26 covers the merged Union Territory of Dadra and Nagar Haveli and Daman and Diu, with 25 being the older Daman and Diu code. Ladakh uses 38, 97 is "Other Territory" and 99 is the Centre jurisdiction code. The validator names all of these, so if a supplier says they are in Gujarat but their GSTIN starts with 27, you will spot the mismatch straight away.
+
 ## How does the checksum catch typos?
 
 The 15th character is not random. It is calculated from the first 14 using a mod-36 method: each character is turned into a number from 0 to 35, alternate positions are weighted, the results are summed in a specific way, and the remainder decides the check character.

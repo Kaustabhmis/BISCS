@@ -124,7 +124,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Password Strength Checker](https://www.biscsindia.com/tools/password-strength-checker/): Check how strong a password is, without sending it anywhere. Guide: https://www.biscsindia.com/blog/check-password-strength-safely/
 - [QR Code Generator](https://www.biscsindia.com/tools/qr-code-generator/): QR codes for links, text, Wi-Fi, UPI payments and contacts. Guide: https://www.biscsindia.com/blog/create-qr-code-upi-wifi-link/
 - [Barcode Generator](https://www.biscsindia.com/tools/barcode-generator/): Generate Code 128, EAN-13, UPC and other barcodes. Guide: https://www.biscsindia.com/blog/how-to-make-barcode-ean-13-code-128/
-- [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats.
+- [Random Number Generator](https://www.biscsindia.com/tools/random-number-generator/): Random numbers in any range, with or without repeats. Guide: https://www.biscsindia.com/blog/random-number-generator-fair-draws/
 - [Coin Flip & Dice Roller](https://www.biscsindia.com/tools/coin-dice-roller/): Flip a coin or roll one or more dice.
 - [Random Name Picker](https://www.biscsindia.com/tools/random-picker/): Pick winners from a list or split people into random teams.
 - [Stopwatch & Timer](https://www.biscsindia.com/tools/stopwatch-timer/): Stopwatch with laps, countdown timer and Pomodoro mode.
@@ -159,7 +159,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [GEO Content Analyzer](https://www.biscsindia.com/tools/geo-content-analyzer/): Score your content for citation by ChatGPT, Gemini, Perplexity and Google AI Overviews. Guide: https://www.biscsindia.com/blog/generative-engine-optimization-content-checklist/
 - [AEO Answer Optimizer](https://www.biscsindia.com/tools/aeo-answer-optimizer/): Shape answers for featured snippets, voice search and AI answer boxes. Guide: https://www.biscsindia.com/blog/answer-engine-optimization-featured-snippets/
 - [FAQ Schema Generator](https://www.biscsindia.com/tools/faq-schema-generator/): Build FAQ sections with matching FAQPage JSON-LD and HTML. Guide: https://www.biscsindia.com/blog/faq-schema-generator-faqpage-json-ld/
-- [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning.
+- [Question & Topic Generator](https://www.biscsindia.com/tools/question-generator/): Turn a keyword into the questions people ask, for content and FAQ planning. Guide: https://www.biscsindia.com/blog/find-questions-people-ask-content-ideas/
 - [Readability Checker](https://www.biscsindia.com/tools/readability-checker/): Flesch reading ease, grade level, long sentences and passive voice.
 - [Entity & Author Schema Builder](https://www.biscsindia.com/tools/entity-schema-builder/): Organization, Person and author JSON-LD with sameAs links for knowledge graphs.
 - [Hreflang Tag Generator](https://www.biscsindia.com/tools/hreflang-generator/): Generate hreflang tags and sitemap entries for multilingual pages.
@@ -171,7 +171,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Video Trimmer](https://www.biscsindia.com/tools/video-trimmer/): Cut the start and end of a video, or extract a clip. Guide: https://www.biscsindia.com/blog/trim-cut-video-online-free/
 - [Video Converter & MP3](https://www.biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3. Guide: https://www.biscsindia.com/blog/convert-video-mp4-extract-mp3/
 - [Video to GIF](https://www.biscsindia.com/tools/video-to-gif/): Turn a video clip into an animated GIF. Guide: https://www.biscsindia.com/blog/convert-video-to-gif-online/
-- [Audio Recorder & Converter](https://www.biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A.
+- [Audio Recorder & Converter](https://www.biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A. Guide: https://www.biscsindia.com/blog/online-voice-recorder-mp3-converter/
 
 ## Office & Business
 
@@ -191,7 +191,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://www.biscsindia.com/blog/): 138 how-to articles
+- [All guides](https://www.biscsindia.com/blog/): 141 how-to articles
 - [About](https://www.biscsindia.com/about/)
 - [Privacy Policy](https://www.biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://www.biscsindia.com/llms-full.txt)

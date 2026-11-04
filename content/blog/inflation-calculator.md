@@ -48,6 +48,18 @@ The calculator runs entirely in your browser and needs no sign-up.
 
 The last row often surprises people. A couple in Bhubaneswar who live comfortably on ₹50,000 a month today may need over ₹2.1 lakh a month for the same lifestyle in 25 years, at 6% inflation. Retirement planning that ignores this can fall badly short.
 
+## How much is ₹1 lakh worth in future?
+
+This table shows what ₹1,00,000 received in the future would buy in today's prices, at three inflation rates:
+
+| Inflation rate | Worth today if received in 10 years | Worth today if received in 20 years |
+|---|---|---|
+| 4% | ₹67,556 | ₹45,639 |
+| 6% | ₹55,839 | ₹31,180 |
+| 8% | ₹46,319 | ₹21,455 |
+
+Two things stand out. First, the difference between 4% and 8% inflation is enormous over 20 years: the same rupee amount is worth more than twice as much in one case as in the other. Second, long-dated promises such as a fixed sum from an insurance policy maturing in 20 years are worth far less than the headline suggests. Before buying any product that pays a fixed amount decades away, divide that amount by the inflation factor here to see its real value.
+
 ## Why inflation matters for your money
 
 - **Savings in low-interest accounts** lose value in real terms if the interest is below inflation.

@@ -47,6 +47,18 @@ The flat example is a useful reality check. A ₹27 lakh gain feels large, but s
 
 Projecting forward works too: ₹1 lakh growing at a CAGR of 15% for 7 years reaches about ₹2,66,002.
 
+## Using CAGR to set business targets
+
+CAGR also works in reverse for planning. If a Surat textile trader wants to double annual sales in five years, the growth needed is 2^(1/5) − 1, about **14.87% a year**. Tripling sales over ten years needs about **11.61% a year**. These figures are often more useful than a vague "double the business" goal, because you can compare them with what the business has actually managed so far.
+
+To check a target in the calculator, choose **Future value**, enter this year's sales as the initial value, type the CAGR you think is realistic and set the years. The year-by-year table then gives a milestone for each year, which you can track against your actual sales. If last year's revenue growth was 8%, a 15% target is a big stretch, and the gap tells you how much needs to change.
+
+| Goal | Years | CAGR needed |
+|---|---|---|
+| Double | 5 | 14.87% |
+| Double | 10 | 7.18% |
+| Triple | 10 | 11.61% |
+
 ## CAGR vs average return: why it matters
 
 Imagine an investment of ₹1 lakh that gains 50% in year one (₹1.5 lakh) and loses 50% in year two (₹75,000). The simple average of +50% and −50% is 0%, which suggests you broke even. In fact you lost ₹25,000. The CAGR is about −13.4% a year, which matches your real experience.
