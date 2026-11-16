@@ -1926,6 +1926,96 @@ A: Scripts such as Devanagari, Bengali and Tamil do not have upper and lower cas
 Q: How do I undo a conversion?
 A: Click Undo above the text box. The tool remembers up to 50 previous versions of your text in the current session, so you can try several styles and step back through them. Clearing the page or closing the tab removes that history.
 
+## YouTube Banner Size 2560×1440 and Safe Area, Made Simple
+
+URL: https://biscsindia.com/blog/youtube-banner-size-safe-area-maker/
+Tool: Channel Banner & Cover Maker (https://biscsindia.com/tools/channel-banner-maker/)
+
+Quick answer: A YouTube channel banner should be 2560 × 1440 pixels and under 6 MB, with all text and logos inside the central 1546 × 423 safe area, because phones and computers show only a strip. BISCS India’s free Channel Banner & Cover Maker designs to these sizes with on-screen guides and device previews, and also makes Facebook, LinkedIn and X covers.
+
+Make your YouTube banner 2560 × 1440 pixels, keep it under 6 MB, and put every important word and logo inside the centre 1546 × 423 area. That safe area is the only part visible on every device; the rest acts as background that some screens show and others crop.
+
+Most banner frustration comes from ignoring that last point. The [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/) draws the safe area for you, previews the result on TV, desktop, tablet and mobile, and exports at the correct size.
+
+## Why a YouTube banner gets cropped
+
+A single banner image has to fit very different screens. YouTube handles this by showing different slices of the same picture:
+
+| Device | Visible area (approx.) | What it means for your design |
+|---|---|---|
+| TV | 2560 × 1440 (whole image) | The full picture, rarely seen by most viewers |
+| Desktop | 2560 × 423 | A wide strip across the vertical middle |
+| Tablet | 1855 × 423 | A shorter strip, sides trimmed |
+| Mobile | 1546 × 423 | Only the centre box, the safe area |
+
+So a 2560 × 1440 canvas is really a 1546 × 423 design with generous bleed. Treat the top and bottom thirds as decoration, never as space for text.
+
+## Designing a banner step by step
+
+1. Open the [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/). It starts on **YouTube channel banner** under **Banner type**, with **Show safe-area guides** ticked.
+2. Pick a starting point under **Templates**: Creator, Tech, Food & travel, Business, Hindi or Bengali. Each one places text and a sticker inside the safe area.
+3. In **Background**, choose **Colour**, **Gradient**, **Glow** or **Photo**. Gradients have two colour pickers, an angle slider and a row of preset combinations. For Photo, press **Choose photo**, then use **Blur** and **Darken** so text stays readable on top.
+4. Under **Layers**, add **Text**, a **Sticker** (searchable icons), a **Shape** or your **Logo**. Each layer appears in a list where you can move it down, duplicate it or delete it.
+5. Click a layer to edit it in **Selected layer**. Text layers have font, size, weight, alignment, text colour, and checkboxes for **Shadow**, **Label background** and **Italic**. **Centre in safe area** snaps any layer into the middle of the safe zone.
+6. Drag layers on the canvas to move them and drag a corner to resize. With the canvas focused, arrow keys nudge the selected layer and Delete removes it.
+7. Check **How it looks on each device** below the canvas.
+8. In **Export**, choose **JPG** or **PNG** and press **Download**.
+
+After download, a line under the button shows the file size and confirms whether it is within YouTube's 6 MB limit.
+
+## Staying under 6 MB
+
+For the YouTube preset, the export adjusts itself. It starts with high-quality JPG and, if the file would exceed 6 MB, steps the quality down until it fits. If you chose PNG and the result is too large, it switches to JPG and tells you. A heavily detailed, unblurred photo background is the usual reason for a large file; a little blur or a gradient fixes it.
+
+## Covers for Facebook, LinkedIn and X
+
+The same editor handles other platforms through the **Banner type** menu:
+
+- **Facebook cover (export 1640 × 624).** Facebook shows covers around 851 × 315 on computers and crops the sides on phones. The larger export stays sharp on high-resolution screens.
+- **LinkedIn personal banner 1584 × 396.** Your profile photo covers the lower-left corner, so the guide keeps text on the right two-thirds.
+- **LinkedIn company cover 1128 × 191.** The company logo overlaps the lower left.
+- **X / Twitter header 1500 × 500.** The profile photo overlaps the bottom left, and some screens trim the top and bottom.
+
+When you switch presets, your layers move proportionally into the new safe area, so one design can become a matching set. Platforms change layouts from time to time, so check the live page after uploading.
+
+## Design tips that work on small screens
+
+- **Two lines of text at most.** A channel name and a short promise, such as "New videos every Friday", is plenty.
+- **Big type.** On a phone, the safe area is shown only a few centimetres tall. Text that looks bold on a monitor can become tiny.
+- **Strong contrast.** White text on a mid-tone photo often disappears; use the Darken slider, a shadow or a label background.
+- **Leave space around the edges of the safe area.** Hugging the guide line risks clipping on unusual screen sizes.
+- **Match your thumbnails.** Reuse colours and fonts from your [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/) designs so the channel feels consistent.
+- **Mention your upload schedule only if you keep it.** An outdated promise looks worse than none.
+
+## Mistakes to avoid
+
+- **Putting the channel name at the top of the canvas.** On desktop and mobile it will be cut off completely.
+- **Using a low-resolution photo.** A small image stretched to 2560 pixels wide looks blurry on TVs and large monitors. Use one at least as wide as the banner.
+- **Copying images you do not have rights to.** Use your own photos or properly licensed ones.
+- **Relying on fine detail in the corners.** Most viewers never see them.
+- **Placing contact details as text in the image.** YouTube lets you add clickable links to your channel profile, whereas text inside an image cannot be clicked.
+
+## A note on logos and profile pictures
+
+Your profile picture is a separate upload on YouTube, shown as a circle, so it does not need to appear inside the banner. If you need a simple logo first, the [Logo Maker](https://biscsindia.com/tools/logo-maker/) can create one, which you can then add here with the **Logo** button.
+
+Everything, including your photos and logo, stays in your browser. Nothing is uploaded, and there is no account or watermark.
+
+Q: Why is my YouTube banner cut off on mobile?
+A: YouTube shows the full 2560 × 1440 image only on TVs. Desktop shows a wide strip across the middle, and tablets and phones show a narrower centre section. Anything outside the 1546 × 423 safe area may be hidden on some devices. Keep text, logos and faces inside the green guide.
+
+Q: What is the minimum size for a YouTube banner?
+A: YouTube asks for at least 2048 × 1152 pixels, with 2560 × 1440 recommended for sharp results on large screens. The BISCS maker always exports the YouTube preset at 2560 × 1440, so you do not need to worry about the minimum.
+
+Q: Should I save my banner as JPG or PNG?
+A: JPG keeps file sizes small, which matters for YouTube’s 6 MB limit, especially with photo backgrounds. PNG suits flat colours and sharp text but can be large. If a PNG export comes out over 6 MB, the tool switches to JPG automatically and shows the final size and quality.
+
+Q: Can I write my banner text in Hindi or Bengali?
+A: Yes. Text layers accept Hindi, Bengali and emoji, and the Font menu includes Hindi (Devanagari) and Bengali (Bangla) options. There are also ready Hindi and Bengali templates. How the letters look depends on the fonts installed on your device, so preview before downloading.
+
+Q: Will the guide lines appear in my downloaded banner?
+A: No. The coloured safe-area guides, the dimmed area outside the safe zone and the selection box are drawn only on screen. The exported image contains just your background and layers.
+
 ## How to Minify CSS, HTML and JSON Online (and What It Saves)
 
 URL: https://biscsindia.com/blog/minify-css-html-json-online/
@@ -5016,6 +5106,103 @@ A: Usually the inputs differ invisibly: a trailing newline, a space, Windows CRL
 
 Q: What is an HMAC and when do I need one?
 A: An HMAC is a hash combined with a secret key. Only someone who knows the key can produce the same value, so it proves a message was not tampered with and came from a key holder. Payment gateways and webhooks commonly sign requests with HMAC-SHA256, which you can test here.
+
+## Hashtag Generator for YouTube, Instagram and Facebook
+
+URL: https://biscsindia.com/blog/hashtag-generator-youtube-instagram-facebook-rules/
+Tool: Hashtag Generator (https://biscsindia.com/tools/hashtag-generator/)
+
+Quick answer: Use a few specific hashtags that describe the post: around 3 on YouTube, 3–5 on Instagram and 1–3 on Facebook, mixing niche and broad tags. BISCS India’s free Hashtag Generator suggests tags from your topic in five groups, pre-selects a sensible set for each platform, and warns you when you go past the limits.
+
+Choose a handful of hashtags that describe exactly what your post is about, and match the number to the platform: about 3 for YouTube, 3–5 for Instagram and 1–3 for Facebook. More is rarely better; relevant is.
+
+The [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/) on BISCS India builds that short list for you. It turns your topic into groups of specific, niche, broad and local hashtags, selects a starter set for the platform you choose, and lets you swap tags in and out with a tap.
+
+## Hashtag rules on each platform
+
+Every platform treats hashtags a little differently. The generator shows the relevant rule above your selection when you switch tabs.
+
+**YouTube.** Hashtags cannot contain spaces. If your title has none, YouTube can show the first three hashtags from the description above the title. If a video carries more than 60 hashtags, YouTube ignores all of them. Three to five good ones are plenty.
+
+**Instagram.** You can add up to 30 hashtags to a post, but Instagram's current advice leans towards a few highly relevant ones, around 3–5, rather than the full allowance.
+
+**Facebook.** Hashtags work, but posts with many of them tend to look spammy. One to three is typical.
+
+Across all three, a hashtag is a link to a feed of other posts using it. If it does not describe your content, a viewer who taps it has no reason to come back.
+
+## How to generate hashtags
+
+1. Open the [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/) and type a **Topic**, such as "Kolkata street food" or "budget phone review".
+2. Leave **Category** on "Auto-detect from topic", or pick one yourself, for example Food & recipes, Tech & gadgets, Education & exams or Festivals in India.
+3. Decide on the extras. **Add India tags** is ticked by default; **Add Kolkata / West Bengal tags** is off. **CamelCase** is on and writes tags like #StreetFood.
+4. Press **Generate hashtags**.
+5. Choose the platform tab: **YouTube**, **Instagram** or **Facebook**. The tool pre-selects 3, 5 or 3 tags respectively.
+6. Tap any hashtag chip to add it to or remove it from the **Selected** box. The counter shows how many you have and the total characters.
+7. Press **Copy selected** to copy your choice, separated by spaces. **Copy all** copies every suggestion, and **Clear selection** starts over.
+
+If auto-detect finds no matching category, you will see a message suggesting you pick one, which unlocks the niche and broad groups.
+
+## Understanding the five groups
+
+Suggestions are grouped so you can build a balanced mix:
+
+| Group | What it contains | Example for "Kolkata street food" |
+|---|---|---|
+| From your topic | Your own words combined, plus "tips" and "india" versions | #KolkataStreetFood, #StreetFood |
+| Niche | Specific tags for the detected category | #IndianStreetFood, #FoodVlog |
+| Broad | Large, very competitive tags | #Food, #Foodie |
+| Local | India and, if ticked, Kolkata / West Bengal tags | #India, #IncredibleIndia |
+| Platform | Platform-specific tags like #Shorts or #Reels | #YouTubeShorts |
+
+The automatic pick leans on the first two groups and adds at most one broad tag. That reflects a simple idea: a specific hashtag puts you among fewer, more relevant posts, while a giant tag like #Food is crowded within seconds. Platform tags such as #Shorts or #Reels are listed only so you can add them when they genuinely fit, for example on a vertical short video.
+
+## A practical mix for a YouTube Short
+
+Suppose you post a 40-second clip of making phuchka at a Kolkata stall, and you type "phuchka Kolkata street food" as the topic so the dish name appears in your own group. A balanced YouTube set could be `#KolkataStreetFood #Phuchka #Shorts`. The first describes the subject and place, the second is the dish itself, and the third tells viewers the format. Add those to the description, keep the title clean, and you are done.
+
+For the same clip on Instagram, you might use five: the two above, #IndianStreetFood, #KolkataFood and #Reels.
+
+## Building a reusable hashtag set
+
+If you post regularly on one theme, you will notice the same handful of tags working for most posts. It helps to keep a short personal bank:
+
+- **Two or three signature tags** that describe your channel or series, used consistently so viewers can find all related posts.
+- **A rotating set of topic tags** chosen fresh for each post from the generator's "From your topic" and "Niche" groups.
+- **One location tag** when place matters, such as a city for food, travel or local business posts.
+
+Generate once per post, copy the selection into a notes file alongside the caption, and over a few weeks you will see which combinations suit your audience. Your platform's own analytics, rather than any hashtag tool, are the place to judge what actually brought views.
+
+## Mistakes to avoid
+
+- **Using the maximum because you can.** Thirty loosely related tags dilute the message and look automated.
+- **Tagging trends that have nothing to do with the post.** Platforms treat misleading hashtags as spam, and viewers notice.
+- **Putting many hashtags in a YouTube title.** It crowds the most valuable text; the description is usually the better place.
+- **Forgetting spaces break hashtags.** "#street food" becomes #street. The generator joins words for you.
+- **Using banned or unrelated sensitive tags.** Some hashtags are restricted on certain platforms. If a tag returns few or no recent posts when you tap it, choose another.
+- **Copying the same block onto every post.** Repeating identical tags regardless of content tells viewers nothing.
+
+## Hashtags vs YouTube tags
+
+Hashtags are public, clickable and go in the title or description. YouTube tags sit in a separate field in Studio, are not normally shown to viewers, and have a 500-character budget. Different jobs, different tools: for the hidden tag field, use the [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/). If you are designing the image to go with an Instagram post, the [Instagram Grid & Story Maker](https://biscsindia.com/tools/social-post-maker/) has the right canvas sizes.
+
+## Privacy and data
+
+There is no sign-up, and your topic is processed in your own browser. The tool uses built-in word lists rather than platform data, so it never shows post counts or "reach" numbers it cannot back up. What it offers is a quick, sensible starting point that you refine with your own knowledge of your audience.
+
+Q: Where should I put hashtags on a YouTube video?
+A: In the description or the title. When the title has no hashtags, YouTube can show the first three from the description as links above the title. Each hashtag links to a page of other videos using it. Do not use more than 60 on a video, or YouTube ignores them all.
+
+Q: How many hashtags should I use on Instagram Reels?
+A: Instagram allows up to 30 per post, but its own recent guidance favours a small number of relevant hashtags, roughly 3–5. The generator selects five by default on the Instagram tab and labels anything above 10 as more than recommended, while still letting you choose.
+
+Q: Why are there no post counts or popularity scores?
+A: Because the tool does not read data from YouTube, Instagram or Facebook. Its suggestions come from built-in topic lists and your own words. Any site that shows post counts must be pulling platform data, and those numbers say little about whether a hashtag suits your post anyway.
+
+Q: Should I write hashtags in CamelCase?
+A: CamelCase, such as #StreetFood, is easier to read and helps screen readers pronounce each word correctly. It does not change which page the hashtag links to, as hashtags are not case-sensitive in search. The option is on by default and can be turned off for all-lowercase tags.
+
+Q: Can I make hashtags in Hindi or Bengali script?
+A: The generator keeps letters from any script, so a topic typed in Devanagari or Bengali produces hashtags in that script. Its built-in topic lists are in English, so auto-detected categories work best with English or Roman-script topic words.
 
 ## HRA Exemption Calculator: How Tax-Free HRA Is Worked Out
 
@@ -15666,3 +15853,686 @@ A: No. The converter reads the .docx file inside your browser and the PDF is pro
 
 Q: What is the best way to get a PDF that matches Word exactly?
 A: If you have Microsoft Word, use File, Save As and choose PDF, or Export, Create PDF. Word renders its own layout most faithfully. This tool is best when you do not have Word installed, are on a phone or shared computer, or do not want to upload a private document to a website.
+
+## YouTube Description Template: Chapters, Links and Hashtags
+
+URL: https://biscsindia.com/blog/youtube-description-template-chapters-links/
+Tool: YouTube Description Generator (https://biscsindia.com/tools/youtube-description-generator/)
+
+Quick answer: A useful YouTube description opens with one or two sentences that explain the video, then adds chapters, links, credits and a few hashtags, all within YouTube’s 5,000-character limit. BISCS India’s free YouTube Description Generator assembles these parts into a clean layout and checks your chapter timestamps against YouTube’s rules.
+
+Most viewers read only the first line or two of a YouTube description, so that opening must explain the video on its own. Everything below it, such as chapters, links, credits and hashtags, is reference material for the people who expand the box and for YouTube's understanding of the video.
+
+The free [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/) puts those pieces in a sensible order for you. You fill in what you have, leave the rest blank, and copy a finished description that fits within YouTube's 5,000-character limit.
+
+## The anatomy of a good description
+
+Think of a description in three layers.
+
+**The hook (first ~150 characters).** This shows before the "…more" link and often in search results. Say what the viewer will learn or see, using the words they would search for.
+
+**The body.** Key points, chapters with timestamps, and the links you mentioned in the video. This is where a viewer comes to find the product you reviewed or the template you promised.
+
+**The footer.** Subscribe link, social profiles, credits for music or footage, business contact details and a handful of hashtags.
+
+A description does not need to be long. A two-line summary with chapters and three links is better than 4,000 characters of repeated keywords.
+
+## Step-by-step: building a description
+
+1. Open the [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/) and choose a **Template style**: Tutorial, Product review, Vlog or Business. Each one uses slightly different headings, such as "In this video:" for tutorials or "Links mentioned:" for reviews.
+2. Write the **Video summary** in one or two sentences. A character counter sits beside the label.
+3. Add **Key points**, one per line. They appear as bullet points.
+4. Enter **Chapters / timestamps**, one per line in the form `0:00 Intro`. Press **Example** to see a sample set, or **Tidy** to clean up and sort what you pasted.
+5. In the **Links** card, add your Website, Subscribe / channel link, Instagram, Facebook, X (Twitter) and LinkedIn. Put product or resource links in **Other links**, one per line as `Label | URL`.
+6. If any links are affiliate links or the video is a paid promotion, tick the checkbox and review the **Disclosure text**.
+7. Under **Extras**, add **Hashtags**, edit the **Call to action**, paste any **Credits / music attribution**, and fill in a **Contact email** or **Business details** if you want enquiries.
+8. Watch the preview update on the right, then press **Copy description** or **Download .txt**.
+
+Empty fields are simply skipped, so a vlog with no links still produces a tidy result.
+
+## Getting chapters right the first time
+
+Chapters split the video timeline into labelled sections, which helps viewers jump to the part they need. YouTube only turns timestamps into chapters when they follow its rules, and the generator checks each one live:
+
+- The first timestamp is **0:00**.
+- There are **at least three** timestamps.
+- They are in **increasing order**.
+- Each chapter is **at least 10 seconds** long.
+
+A green tick appears next to each rule you meet and a cross next to any you miss, with the name of a chapter that is too short. If a line cannot be read, the tool tells you its line number. Formats like `1:30 Setup`, `Setup - 1:30` and pasted spreadsheet rows all work. Keep chapter titles short and descriptive, such as "Installing the app" rather than "Part 2".
+
+If you want to plan chapters separately, the [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/) is built just for that.
+
+## What the warnings mean
+
+Under the preview, the tool flags common problems before you paste:
+
+- **Over 5,000 characters**, with the number to remove.
+- **The characters < and >**, which YouTube does not accept in descriptions.
+- **More than 15 hashtags**, as a gentle nudge, and **more than 60**, because YouTube then ignores every hashtag on the video.
+- **Links without https://**, which may not become clickable.
+- **An invalid-looking contact email** or **affiliate links with no disclosure text**.
+
+The meter turns amber as you approach the limit and red when you pass it.
+
+## Habits that make descriptions more useful
+
+- Write the summary for a human first. If it reads naturally and includes the topic, it is doing its job.
+- Repeat the most important link near the top for tutorials that depend on a download or a form.
+- Use the same footer on every video so regular viewers know where to look.
+- Credit music and footage exactly as the licence asks. A CC BY track, for instance, usually needs the title, artist, licence and a link.
+- For business channels, the Business template puts contact details and highlights first, which suits service videos aimed at local customers.
+
+## Mistakes to avoid
+
+- **Starting with "Hi guys, welcome back".** It wastes the only lines most people see.
+- **Keyword stuffing.** Long lists of unrelated search terms can break YouTube's spam policies.
+- **Dead or untracked links.** Check each one before publishing; for campaign links, add UTM parameters with the [UTM Link Builder](https://biscsindia.com/tools/utm-builder/) so you can see what YouTube traffic does on your site.
+- **Forgetting the disclosure.** Affiliate and sponsored content should be clearly marked, both in the text and in YouTube Studio where it applies.
+- **Hashtags that do not match the video.** They confuse viewers and can count as misleading metadata.
+
+## Privacy and limits
+
+The generator runs entirely in your browser. Nothing you type, including email addresses and business details, is sent to a server, and there is no account to create. It does not publish to YouTube or read your channel; you copy the text and paste it into YouTube Studio yourself.
+
+When your description is ready, pair it with a title from the [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/), paste both into Studio, and check the chapters appear on the timeline once the video is processed.
+
+Q: What should go in the first two lines of a YouTube description?
+A: A plain summary of what the video covers, with your main keyword used naturally. Only around the first 150 characters appear before “…more” and in many search results, so links, greetings and hashtags should come later. The generator highlights this opening stretch in the preview so you can see exactly what shows.
+
+Q: Why are my YouTube chapters not showing?
+A: Usually one rule is broken: the first timestamp must be 0:00, there must be at least three timestamps in increasing order, and each chapter must last at least 10 seconds. The generator runs these four checks live. YouTube can also turn chapters off for some videos, and you can disable automatic chapters in Studio.
+
+Q: How do I disclose affiliate links in a description?
+A: Tick the affiliate box in the Links section and the generator adds a short disclosure line, which you can edit. If the video itself is sponsored, also tick the paid promotion option in YouTube Studio, because a description note alone does not replace YouTube’s own disclosure setting.
+
+Q: Can I paste chapters from Excel or Google Sheets?
+A: Yes. Copy two columns, time and title, and paste them into the Chapters / timestamps box. Press Tidy and the tool reformats each row as “0:00 Title”, sorts them by time, and flags any line it cannot read.
+
+Q: Do hashtags in the description matter?
+A: YouTube can show the first three hashtags from your description above the title, which gives viewers a quick way to find related videos. They are a small extra, not a ranking lever. Keep to a few relevant ones, because if a video has more than 60, YouTube ignores all of them.
+
+## YouTube Earnings in India: Estimate Income from Views and RPM
+
+URL: https://biscsindia.com/blog/youtube-earnings-calculator-india-rpm/
+Tool: YouTube Earnings Estimator (https://biscsindia.com/tools/youtube-earnings-calculator/)
+
+Quick answer: YouTube ad income is roughly views ÷ 1,000 × RPM, where RPM is what you earn per 1,000 views after YouTube’s share, and Indian RPMs are usually much lower than in the US. BISCS India’s free YouTube Earnings Estimator applies your own RPM range to your views, adds Shorts, memberships and sponsorships, and shows a monthly, daily and yearly estimate in rupees.
+
+Estimated ad income = monthly views ÷ 1,000 × your RPM. If a channel gets 1,00,000 long-form views a month at an RPM of ₹50, ad revenue would be about ₹5,000 for that month. The difficult part is not the maths but the RPM, which differs hugely between channels and is usually much lower in India than in the US.
+
+The [YouTube Earnings Estimator](https://biscsindia.com/tools/youtube-earnings-calculator/) is built around that honesty. It does not guess your RPM; you enter a low and high value, and it shows a range in rupees for each income source.
+
+## RPM, CPM and the revenue split
+
+Three terms cause most of the confusion around YouTube income:
+
+- **CPM (cost per mille)** is what an advertiser pays for 1,000 ad impressions. It is the advertiser's price, not your income.
+- **Revenue share** is the part of ad revenue that goes to the creator. For long-form videos in the YouTube Partner Programme, creators receive 55% of net ad revenue from ads shown on their videos. Shorts work differently: ad revenue goes into a pool that is shared out by views.
+- **RPM (revenue per mille)** is what you actually earn per 1,000 views, after YouTube's share, counted across all views, including those where no ad was shown.
+
+Because RPM already accounts for the split and for views without ads, it is the number to use for planning. You can see yours in YouTube Studio under Analytics, then the Revenue tab, once your channel is monetised.
+
+## What affects your RPM
+
+- **Niche.** Finance, technology and business topics often attract higher-paying advertisers than entertainment or general vlogs.
+- **Viewer location.** Advertisers in some countries pay much more per impression. A channel with a largely Indian audience usually has a lower RPM than one watched mostly in the US or UK, even with identical views.
+- **Video length.** Long videos can carry mid-roll ads, which can raise revenue per view.
+- **Season.** Ad rates often rise before major festivals and towards the year end, and can dip at the start of the year.
+- **Format.** Shorts RPM is typically far lower than long-form RPM.
+
+## Using the YouTube Earnings Estimator
+
+1. Open the [YouTube Earnings Estimator](https://biscsindia.com/tools/youtube-earnings-calculator/).
+2. Choose **I'll enter views** as **Per month** or **Per day**. Switching converts the numbers you have already typed so the real-world figures stay the same.
+3. Enter **Long-form video views**, meaning views on regular, non-Shorts videos that can show ads. Indian digit grouping such as 1,00,000 is fine.
+4. Enter **RPM — low** and **RPM — high** in rupees per 1,000 views. Use your Studio figure in both boxes for a single answer.
+5. Optionally open **Shorts, memberships and sponsorships**. Add **Shorts views** with a Shorts RPM range, **Channel members** with **Price per month** and **Your share (%)**, plus **Sponsorships per month** and **Other income per month** for things like Super Thanks or affiliate earnings.
+6. Read the result: **Estimated monthly earnings** as a range, with per-day, per-month and per-year figures beneath.
+7. Scroll to **Monthly breakdown** for bars and a table by source, and to **Views needed for a monthly target** to see how many views a goal would need at your RPM range.
+
+All figures update as you type. The membership share defaults to 70%, but the tool reminds you to check YouTube's current terms.
+
+## A worked example
+
+Suppose a Kolkata-based cooking channel gets 2,00,000 long-form views and 5,00,000 Shorts views in a month. From Studio, the creator sees a long-form RPM of around ₹40–₹60 and a Shorts RPM of around ₹3–₹5.
+
+| Source | Calculation | Monthly estimate |
+|---|---|---|
+| Long-form ads | 200 × ₹40 to 200 × ₹60 | ₹8,000 – ₹12,000 |
+| Shorts | 500 × ₹3 to 500 × ₹5 | ₹1,500 – ₹2,500 |
+| Total | | ₹9,500 – ₹14,500 |
+
+These numbers are illustrative only. Another channel with the same views could earn half or double, depending on the factors above. If the creator wants ₹25,000 a month from long-form ads alone, the target panel would show roughly 4,16,667 to 6,25,000 views a month at that RPM range.
+
+## When ad income starts
+
+Ad revenue requires the YouTube Partner Programme. The well-known threshold for ad revenue sharing is 1,000 subscribers plus either 4,000 valid public watch hours in the last 12 months or 10 million valid public Shorts views in the last 90 days. YouTube also offers a lower entry tier in many countries, including India, that unlocks fan-funding features such as channel memberships and Super Thanks before ad revenue. You also need to follow YouTube's monetisation policies and link an AdSense account. Requirements change, so check the Earn section in YouTube Studio for the current rules.
+
+## Mistakes to avoid
+
+- **Using a CPM figure from the internet as your RPM.** CPM is higher by design; using it will overstate your income.
+- **Assuming US earnings stories apply in India.** Viewer location changes RPM dramatically.
+- **Counting all views as monetised.** Views before you joined YPP, views on videos with limited ads and many Shorts views earn little or nothing.
+- **Planning a budget on the high end.** Use the low figure for anything you depend on.
+- **Ignoring tax.** YouTube income is generally taxable in India, and US withholding may apply to earnings from US viewers. A chartered accountant can advise on your case.
+
+## Keep it realistic
+
+No calculator can promise views or income, and this one does not try. It turns your own numbers into a clear range so you can plan sponsorship rates, decide whether a series is worth the effort, or set a realistic target. For the tax side, the [Income Tax Calculator](https://biscsindia.com/tools/income-tax-calculator/) helps you compare regimes once you know your annual income, and the [Percentage Calculator](https://biscsindia.com/tools/percentage-calculator/) is handy for working out revenue shares or growth month to month.
+
+The estimator runs entirely in your browser. It does not connect to YouTube, needs no login, and none of your figures are stored or uploaded.
+
+Q: How much does YouTube pay for 1,000 views in India?
+A: There is no fixed rate. What you earn per 1,000 views is your RPM, and it depends on your niche, where viewers live, video length, how many views show ads and the time of year. Many Indian channels see RPMs far below US levels. Your own figure is in YouTube Studio under Analytics, Revenue.
+
+Q: What is the difference between RPM and CPM?
+A: CPM is what advertisers pay per 1,000 ad impressions, before YouTube takes its share. RPM is what you receive per 1,000 views after YouTube’s share, and it counts every view, including those with no ads. RPM is therefore lower than CPM and is the right number for estimating income.
+
+Q: Why are the default RPM values only examples?
+A: The pre-filled ₹30–₹120 for long videos and ₹2–₹8 for Shorts are there to show how the maths works, not to suggest an average. Real figures vary too widely across channels for any honest default. Replace them with your Studio numbers, or the same value in both boxes for a single figure.
+
+Q: Do I have to pay tax on YouTube income in India?
+A: YouTube income is generally taxable in India, often as business or professional income, and GST may apply in some cases. Google may also withhold US tax on earnings from US viewers, which submitting your tax information in AdSense can reduce. Talk to a chartered accountant for advice on your situation.
+
+Q: Can the calculator tell me another channel’s earnings?
+A: No. It does not look up any channel or fetch data from YouTube. It only multiplies the numbers you type. Estimates of other channels’ income based on view counts are guesses, because RPM varies so much between channels.
+
+## Responsive YouTube Embed Code with Privacy-Enhanced Mode
+
+URL: https://biscsindia.com/blog/responsive-youtube-embed-code-nocookie/
+Tool: YouTube Embed Code Generator (https://biscsindia.com/tools/youtube-embed-code-generator/)
+
+Quick answer: To embed a YouTube video responsively, wrap the iframe in a box that keeps a 16:9 ratio, use the youtube-nocookie.com address for privacy, and add a descriptive title and lazy loading. BISCS India’s free YouTube Embed Code Generator writes this code for you, with options for start time, autoplay, loop, captions and Shorts.
+
+Copying YouTube's own "Embed" code gives you a fixed 560 × 315 box that can overflow on phones and loads tracking from youtube.com straight away. A better embed is responsive, uses privacy-enhanced mode, has an accessible title and lazy-loads.
+
+The [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/) produces that version from any YouTube link in a few clicks. You paste the link, tick the options you need, and copy clean HTML that works in WordPress, Blogger, Wix custom code blocks or a hand-written site.
+
+## Why the default embed is not enough
+
+The standard snippet from YouTube's Share menu works, but has a few weak points for modern sites:
+
+- **Fixed width and height.** On a narrow phone screen a 560-pixel player can break the layout or be squashed.
+- **No lazy loading.** The player starts loading even if the video sits far down the page.
+- **A generic title.** Screen-reader users hear "YouTube video player" for every video on the page.
+- **Standard domain.** It uses youtube.com rather than the privacy-enhanced youtube-nocookie.com.
+
+The generator fixes all four by default and adds options YouTube's own dialog does not expose, such as stop time and caption language.
+
+## Creating your embed code
+
+1. Open the [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/).
+2. Paste a **YouTube link or video ID**. Watch links, youtu.be short links, Shorts, live and embed URLs all work; a green note confirms the video ID (and playlist, if any).
+3. Choose a **Player size**: **Responsive 16:9**, **Responsive 9:16 (Shorts)** or **Fixed size**. Fixed size reveals **Width (px)** and **Height (px)** fields.
+4. Optionally set **Start at** and **Stop at** using formats like 1:30, 90 or 1m30s. If the link already contains a start time, it is used automatically.
+5. Type a **Title for screen readers** that describes the video, such as "How to make a pivot table".
+6. Pick your **Options** (explained below), plus a **Caption language** and **Player language** if you want them. Indian languages from Hindi and Bengali to Odia and Assamese are in the list.
+7. Press **Copy code** and paste it into your page's HTML.
+
+The code box updates live as you change settings. If something is off, such as a stop time before the start time or a missing title, a message appears beneath it.
+
+## What each option does
+
+| Option | Effect in the code |
+|---|---|
+| Privacy-enhanced mode (youtube-nocookie.com) | Loads the player from youtube-nocookie.com |
+| Lazy-load | Adds `loading="lazy"` so the player loads when scrolled near |
+| Autoplay (also mutes the video) | Adds `autoplay=1`, `mute=1` and `playsinline=1` |
+| Start muted | Adds `mute=1` without autoplay |
+| Loop the video | Adds `loop=1` and the required `playlist=` parameter |
+| Hide player controls | Adds `controls=0` |
+| Show captions by default | Adds `cc_load_policy=1` |
+| Related videos from the same channel only (rel=0) | Adds `rel=0` |
+
+Privacy-enhanced mode and lazy loading are ticked by default. Two details trip many people up. First, looping a single video only works when the `playlist` parameter repeats the same video ID, which the tool adds for you. Second, autoplay with sound is blocked by browsers, so ticking Autoplay also ticks Start muted.
+
+## Previewing safely
+
+The **Preview** panel stays empty until you press **Load preview**. Until then, nothing at all is requested from YouTube, which suits anyone checking settings on a work network or simply preferring not to load third-party scripts. Once loaded, YouTube's player runs in your browser under YouTube's own privacy policy, and the preview refreshes as you change options.
+
+## How the responsive version works
+
+For 16:9 videos, the tool wraps the iframe in a container whose top padding is 56.25% of its width. Because padding percentages are based on width, the box always keeps a 16:9 shape, and the iframe fills it absolutely. For Shorts, the padding is 177.78% (16 ÷ 9) inside an outer box limited to 360 pixels wide, so a vertical video does not stretch the full width of a desktop article. The code uses only inline styles, which means you do not need to touch your theme's CSS.
+
+## Practical tips
+
+- **Write a real title.** "Kolkata tram ride, Esplanade to Shyambazar" helps screen-reader users and is more meaningful than the default.
+- **Use start and stop times for tutorials.** Embedding just the 40 seconds that answer a reader's question is often more useful than the full video.
+- **Avoid autoplay on articles.** Readers who came to read can find it distracting. Keep it for landing pages where the video is the main content.
+- **Be careful with hidden controls.** Without controls, visitors can start a video by clicking, but pausing becomes awkward. The tool warns you about this.
+- **Check your consent setup.** If your site uses a cookie banner, privacy-enhanced mode reduces but does not remove the need to mention embedded YouTube players.
+
+## Mistakes to avoid
+
+- **Pasting a channel or search URL.** Only video and playlist links can be embedded; the tool says clearly when a link is neither.
+- **Embedding videos you are not allowed to show.** The owner can disable embedding, and the video's terms still apply on your site.
+- **Stacking many embeds on one page.** Even with lazy loading, ten players add weight. Link to the rest instead.
+- **Forgetting mobile.** Always look at the page on a phone after pasting, especially if you chose a fixed size.
+
+## Related tools
+
+If you only need a link that opens at a particular moment, rather than a player on your page, the [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/) is quicker. To pull clean video IDs from a long list of links before embedding them, use the [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/). Both, like this generator, run in your browser with no sign-up.
+
+Q: What is privacy-enhanced mode in YouTube embeds?
+A: It means the player loads from youtube-nocookie.com instead of youtube.com. YouTube says it does not store information about a visitor’s viewing on your page until they play the video. It is not a full privacy guarantee, so mention embedded YouTube content in your site’s privacy policy either way.
+
+Q: Why does my embedded YouTube video not autoplay?
+A: Chrome, Safari and Firefox block autoplay with sound, so an embedded video must start muted to autoplay. The generator adds mute=1 automatically when you tick Autoplay. Some phones may still refuse to autoplay, for example on data-saving settings, so never rely on it for essential content.
+
+Q: Can I stop rel=0 from showing other channels’ videos?
+A: Not entirely. Since 2018, rel=0 makes YouTube show related videos from the same channel as the embedded video rather than turning suggestions off. The generator labels the option honestly as “Related videos from the same channel only (rel=0)”.
+
+Q: How do I embed a YouTube Short on my website?
+A: Paste the Shorts link and choose “Responsive 9:16 (Shorts)” as the player size. The generator converts it to a normal embed address and wraps the player in a tall, centred box with a maximum width of 360 pixels, so it does not take over the whole page on desktop.
+
+Q: Does embedding a YouTube video slow down my page?
+A: The YouTube player loads a fair amount of script, which can affect page speed. Keeping the “Lazy-load” option ticked adds loading="lazy", so browsers delay loading the player until it is close to being scrolled into view.
+
+## YouTube Tags Generator: Stay Within the 500-Character Limit
+
+URL: https://biscsindia.com/blog/youtube-tags-generator-500-character-limit/
+Tool: YouTube Tag Generator (https://biscsindia.com/tools/youtube-tag-generator/)
+
+Quick answer: YouTube tags are optional keywords added in YouTube Studio, limited to about 500 characters in total, and YouTube says they play only a minimal role in discovery. BISCS India’s free YouTube Tag Generator builds relevant tags from your seed keywords, counts them against the limit and copies only what fits.
+
+YouTube tags are descriptive keywords you can add to a video in YouTube Studio, with roughly 500 characters available in total. They are worth filling in, but they are not a secret ranking switch: YouTube itself says tags play a minimal role, mainly helping when people misspell your topic.
+
+So the aim is a short, honest list that fits the limit, made quickly. The [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/) does exactly that from keywords you already know, without pretending to have search-volume data.
+
+## What tags do, and what they do not
+
+Here is a fair picture of tags today:
+
+- **They help with misspellings and alternate names.** A video about "Rabindra Sangeet" could include "rabindrasangeet" and "tagore songs".
+- **They clarify ambiguous topics.** "Python" could be a snake or a programming language; a tag like "python programming" removes doubt.
+- **They are mostly invisible to viewers.** Tags do not appear on the watch page in the way hashtags do.
+- **They do not replace a good title and description.** YouTube relies far more on those, on the thumbnail, and on what viewers actually watch.
+
+That is why the tool shows a clear note saying tags matter less than many creators think. Use them, but do not obsess over them.
+
+## Using the YouTube Tag Generator
+
+1. Open the [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/).
+2. In **Seed keywords**, type your main phrases separated by commas or new lines, most important first. For example: `excel pivot table, excel for beginners, data analysis`.
+3. Optionally add a **City / location** (useful for local businesses, food or travel videos) and your **Channel or brand name**.
+4. Under **Add variations**, choose the modifiers you want. Singular / plural, "how to …", "… for beginners", "… tutorial" and "… tips" are on by default; you can also tick "… explained", "… review", "… in hindi", "… in bengali" and "… india".
+5. Press **Generate tags**.
+6. Review the list. Remove a tag with its × button, add your own in **Add your own tag** (press Enter or **Add**), and reorder by dragging the grip handle.
+7. Press **Copy (comma-separated)** and paste into the Tags field in YouTube Studio. **TXT** downloads the list, and **Clear** empties it.
+
+On a keyboard you can focus any tag, move it with the arrow keys and remove it with Delete, which makes the tool usable without a mouse.
+
+## How the 500-character counter works
+
+YouTube's limit is not just the sum of the letters in your tags. The generator counts:
+
+- every character in each tag,
+- **2 extra characters** for any tag containing a space, because Studio wraps such tags in quotes,
+- **1 character** for each comma between tags.
+
+So `excel tips` costs 12, not 10. Each tag shows its own cost in small grey numbers, and the counter at the top reads something like "312 / 500 characters · 18 tags". Once the list goes past 500, the extra tags appear crossed out with a dashed border. **Copy** leaves those out automatically, and **Trim to 500** deletes them from the list.
+
+Because order decides what survives a trim, keep your most important tags at the top.
+
+## A sensible tag list in practice
+
+For a Bengali cooking channel's video on "fish curry", a practical set might be:
+
+- `fish curry`, `fish curries` (singular and plural)
+- `bengali fish curry`, `macher jhol` (the dish's own name)
+- `fish curry recipe`, `how to make fish curry`
+- `fish curry in bengali`, `fish curry kolkata`
+- the channel name
+
+That is around ten tags and well under the limit. Every one describes the video. You can see why the "in hindi", "in bengali" and city options exist: Indian viewers often add the language or place to their search.
+
+## Where to paste tags in YouTube Studio
+
+Tags are easy to miss because YouTube keeps them below the fold. On a computer, open YouTube Studio, go to **Content**, select the video and open its **Details** page. Scroll down and click **Show more**; the **Tags** box sits in that expanded section. Paste the comma-separated list there and YouTube splits it into separate tags. Studio shows its own character counter under the box, which is worth a glance before saving.
+
+During a fresh upload, the same box appears on the Details step, again under **Show more**. If you upload from a phone, tags may not be offered in the app, so adding them later from a computer is common.
+
+One more practical point: when you copy, the generator sends only the tags that fit within 500 characters. If you need to keep a longer master list for future videos, use **TXT** to download every tag, including those over the limit, and trim per video.
+
+## Mistakes to avoid
+
+- **Adding trending but unrelated terms.** Tagging a phone review with a cricketer's name is misleading metadata and can break YouTube's spam policies.
+- **Using a year in tags.** The generator deliberately avoids years so tags do not go stale on evergreen videos.
+- **Copying a competitor's entire tag list.** Their video is not yours; only reuse terms that truly describe your content.
+- **Putting hashtags in the tag field.** Hashtags belong in the title or description; the tool strips leading # symbols from tags for this reason.
+- **Spending more time on tags than on the thumbnail.** The effort-to-impact ratio is poor.
+
+## Tags, hashtags and keywords: quick comparison
+
+| | Where it goes | Visible to viewers | Limit |
+|---|---|---|---|
+| Tags | Tags field in YouTube Studio | Not usually | About 500 characters |
+| Hashtags | Title or description | Yes, clickable | First 3 shown above the title; all ignored if over 60 |
+| Keywords in title/description | The text itself | Yes | 100 / 5,000 characters |
+
+For clickable hashtags, use the [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/). For a quick look at which words dominate your description text, the [Keyword Density Checker](https://biscsindia.com/tools/keyword-density-checker/) can help you spot accidental repetition.
+
+## Privacy
+
+Your seed keywords never leave your device. The tags are built by simple rules in the browser, so there is no account, no upload and no usage limit. Generate, tidy and copy in under a minute, then move on to the parts of your upload that matter more.
+
+Q: Do YouTube tags help my video rank?
+A: Only a little. YouTube’s own help pages say tags play a minimal role in discovery and are most useful when your topic is commonly misspelled. Your title, thumbnail, description and how viewers respond to the video matter far more. Spend a minute on tags, not an hour.
+
+Q: Why does YouTube Studio show a different character count?
+A: Studio counts the quotation marks it adds around tags that contain a space, plus the commas between tags. The BISCS counter follows the same approach, adding 2 for each multi-word tag and 1 for each comma, but it is still an approximation. If the two differ, trust Studio’s counter.
+
+Q: How many tags should I use on a YouTube video?
+A: There is no ideal number. Five to fifteen focused tags covering the main topic, a few variations and any common misspellings are usually enough. Filling all 500 characters with loosely related phrases adds nothing and can look like misleading metadata.
+
+Q: Should I add my channel name as a tag?
+A: It can help a little when people search for your channel by name, especially if the name is unusual or often misspelled. Enter it in the “Channel or brand name” field and the generator adds it at the end of the list.
+
+Q: What happens to tags past the 500-character limit?
+A: The generator crosses them out and leaves them out when you press “Copy (comma-separated)”. You can drag the important ones higher, delete weak ones, or press “Trim to 500” to remove everything over the limit in one go.
+
+## How to Share a YouTube Link That Starts at a Specific Time
+
+URL: https://biscsindia.com/blog/youtube-link-with-timestamp-start-at-time/
+Tool: YouTube Timestamp Link Generator (https://biscsindia.com/tools/youtube-timestamp-link/)
+
+Quick answer: To share a YouTube video from a specific moment, add a time parameter to the link, such as ?t=90 on a youtu.be link or &t=90s on a watch link. BISCS India’s free YouTube Timestamp Link Generator builds these links from any video URL and a time like 1:30, and can create a whole list of timestamped links at once.
+
+Add a time to the end of the video address. For a short link it looks like `https://youtu.be/VIDEO_ID?t=90`, and for a full link `https://www.youtube.com/watch?v=VIDEO_ID&t=90s`; either one opens the video 1 minute 30 seconds in.
+
+Typing that by hand is fiddly, particularly on a phone and when the original link already has extra bits like `?si=` or a playlist. The [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/) does it reliably: paste the link, type the time, copy the result.
+
+## When a timestamped link helps
+
+- **Answering a question.** "The setting you need is at 4:12" works better as a link that opens at 4:12.
+- **Teaching.** Teachers and coaching institutes can send students straight to the worked example rather than the whole lecture.
+- **Work feedback.** Editors and clients can point to an exact cut or caption without writing long notes.
+- **Long streams and podcasts.** Sharing the one useful segment of a three-hour live stream respects the viewer's time.
+- **Your own notes.** A study sheet with a list of links to key moments is easy to revise from later.
+
+## Making a single timestamp link
+
+1. Open the [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/).
+2. Paste a **YouTube link or video ID** into the first box. The tool confirms the video ID in a green note, and tells you if the link already had a time in it.
+3. Type a **Start time**. Formats such as `1:30`, `90`, `1m30s` and `1:02:03` all work.
+4. Tick **Keep the playlist in the link (if any)** if you want the viewer to continue through a playlist.
+5. Copy one of the three results using its copy button: **Short** (youtu.be), **Watch** (time in seconds) or **Watch (h/m/s)** (time written like 1m30s).
+
+Above the links, a line confirms the start time both as a clock time and in seconds, for example "Starts at 1:30 (90 seconds)". If you leave the time empty and the original link had one, the tool keeps it.
+
+## Making many links at once
+
+The second card, **Many timestamps at once**, is the fast way to build a list for notes or a lesson plan.
+
+1. Keep your video link in the first box above.
+2. In the text area, type one line per moment: a time, then an optional label. For example `0:00 Intro`, `1:30 The main tip`, `4:05 Results`.
+3. A table appears with the time, label and short link for each line, each with its own copy button.
+4. Press **Copy all as text** to copy every line in the form "1:30 The main tip – link", or **CSV** to download a spreadsheet with time, seconds, label, short link and watch link.
+
+Lines the tool cannot read are listed by number with a reminder to start each line with a time.
+
+## Which format should you share?
+
+| Link type | Example | Best for |
+|---|---|---|
+| Short | youtu.be/ID?t=90 | Chats, SMS and social posts where length matters |
+| Watch | youtube.com/watch?v=ID&t=90s | Emails, documents and places that need the full address |
+| Watch (h/m/s) | youtube.com/watch?v=ID&t=1m30s | Notes where you want the time to be readable inside the link |
+
+They all open at the same moment in a browser. Pick whichever looks cleaner where you are pasting it.
+
+## Example: a revision sheet for a long lecture
+
+Imagine a two-hour accounts lecture on YouTube that your study group keeps returning to. Paste its link once at the top, then type into the multi-link box:
+
+- `0:00 Overview`
+- `12:40 Journal entries`
+- `38:15 Trial balance`
+- `1:05:30 Depreciation methods`
+- `1:42:10 Practice questions`
+
+The table immediately lists five links, each opening at its topic. **Copy all as text** gives you a neat block to paste into a WhatsApp group or a Google Doc, and the **CSV** file can sit next to your other revision material in a spreadsheet. Because the links come from the video ID, they keep working as long as the video stays public or unlisted.
+
+## Tips for reliable timestamps
+
+- **Start a second or two early.** Landing mid-word is jarring; a small lead-in gives context.
+- **Clean up tracking parameters.** Links copied from the app often include `si=` codes. The generator rebuilds the link from the video ID alone, so these are dropped.
+- **Test on a phone.** If most of your audience is on mobile, open the link once in the YouTube app to confirm it lands where you expect.
+- **Label your list.** In the multi-link card, a short label like "GST formula" makes a list of links far more useful a week later.
+
+## Mistakes to avoid
+
+- **Pasting a playlist link with no video.** A playlist URL has no single video to start in; open a video in the playlist and copy its link instead. The tool shows this exact message.
+- **Using a time longer than the video.** The link will usually just open at the start or the end.
+- **Writing 1:30 when you mean an hour and a half.** Two-part times are read as minutes and seconds, so use `1:30:00` or `5400` for 90 minutes. Values such as 1:75, where the seconds go past 59, are rejected so typing slips are caught.
+- **Expecting every app to respect the time.** Some in-app browsers and embedded players ignore it, so mention the time in your message too.
+
+## Timestamps for viewers vs chapters for creators
+
+A timestamp link is something anyone can make to share a moment. Chapters are something the video owner adds in the description so the whole timeline is labelled. If you are the creator and want proper chapters, use the [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/), which follows YouTube's rules of starting at 0:00 with at least three chapters of 10 seconds or more. If you want to place the video on your own website starting at a set point, the [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/) has start and stop options.
+
+Every link is built in your browser from the text you type. Nothing is sent to YouTube or to BISCS India, and no account is needed.
+
+Q: What is the difference between t=90 and t=1m30s?
+A: Both point to the same moment, 90 seconds into the video. The plain number is commonly used on youtu.be short links, while watch links also accept forms like t=90s or t=1m30s. The generator shows a short link, a watch link in seconds and a watch link in hours, minutes and seconds.
+
+Q: Why does my timestamp link start from the beginning?
+A: Some apps, in-app browsers and embedded players ignore the time parameter, and some messaging apps may alter links when generating previews. Try opening the link in a normal browser or the YouTube app. Also check that the time is shorter than the video itself.
+
+Q: Can I make a timestamp link from the YouTube mobile app?
+A: The Share option in the YouTube app usually gives a plain link without a time. Copy that link, paste it into the generator with the time you noted, and copy the finished link back into WhatsApp, email or wherever you are sharing it.
+
+Q: Do timestamp links work on Shorts?
+A: Shorts are brief and usually loop, so a start time is rarely useful. The generator accepts a Shorts link but builds standard short and watch links from its video ID; whether a given app honours the start time on a Short can vary.
+
+Q: Can I keep the playlist when sharing a timestamp?
+A: Yes. If your link contains a playlist, tick “Keep the playlist in the link (if any)”. The watch link then includes the list parameter, so the viewer stays in the playlist after the video ends.
+
+## YouTube Title Generator: Catchy Title Ideas That Fit Search
+
+URL: https://biscsindia.com/blog/youtube-title-generator-catchy-video-title-ideas/
+Tool: YouTube Title Generator (https://biscsindia.com/tools/youtube-title-generator/)
+
+Quick answer: A good YouTube title names the topic in the first few words, promises what the viewer will get, and stays around 60–70 characters so it is not cut off in search. BISCS India’s free YouTube Title Generator turns your topic into 30 or more title ideas from proven patterns and checks each one’s length.
+
+A strong YouTube title tells a viewer, in a glance, what the video is about and why it is worth their time. Put the main keyword near the start, keep the important part within about 60–70 characters, and make a promise the video actually keeps.
+
+That sounds simple until you are staring at an empty title box after a long edit. The [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/) gives you a page of ideas from your topic in a second, so you can pick, tweak and check one instead of starting from nothing.
+
+## What makes a YouTube title work
+
+Viewers decide whether to click in a fraction of a second, usually while also looking at the thumbnail. Titles that do well tend to share a few traits:
+
+- **The topic comes first.** "Excel Pivot Tables for Beginners" is clearer than "Here's Something Every Office Worker Should Learn About Excel Pivot Tables".
+- **There is a clear benefit or angle.** A how-to, a list of mistakes, an honest review or a comparison each sets an expectation.
+- **It matches the video.** If the title promises ten tips, deliver ten tips. Viewers who feel tricked leave early, and YouTube's policies discourage misleading metadata.
+- **It reads naturally.** Write for a person scrolling on a phone, not for a keyword list.
+
+The thumbnail and title work as a pair. Avoid repeating the exact thumbnail text in the title; use the title to add the detail the image cannot.
+
+## How to use the YouTube Title Generator
+
+1. Open the [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/) and type your **Topic or main keyword**, for example "budget smartphone" or "Kolkata street food". A short noun phrase works best.
+2. Choose a **Video type**: Tutorial / how-to, Product review, Vlog, List / tips, Comparison (A vs B), News / update or Shorts.
+3. Optionally pick an **Audience**, such as Beginners, Students, Viewers in India or Small businesses. This adds phrases like "for Beginners" or "in India" to suitable titles.
+4. Adjust the **Number (for list titles)** if your video has, say, 5 tips rather than 7. Add a **Year** only if the video is tied to one.
+5. Fill in **What will viewers achieve?** with a verb phrase such as "edit videos faster" to get "How to …" titles, and **Compare with** if you are making an A vs B video.
+6. Tick **Add Hinglish-friendly titles (Roman Hindi)** if your audience searches that way. Leave **Title Case my topic** on unless your topic needs special capitalisation.
+7. Press **Generate titles**. Use **Shuffle** to see the list in a different order.
+
+Each result shows its angle (How-to, List, Review, Curiosity and so on) and a length badge. Use the filter chips to see one angle at a time, star the ones you like, and then use **Copy starred**, **Copy all**, **TXT** or **CSV** to take them away. The **Sort** menu can show the shortest titles first or bring starred ones to the top.
+
+## Reading the length badges
+
+YouTube accepts titles of up to 100 characters, but far fewer are visible in most places. The generator labels each idea so you can see this at once:
+
+| Badge | Characters | What it means |
+|---|---|---|
+| fits in search | up to 60 | Likely to show in full almost everywhere |
+| near the search limit | 61–70 | Usually fine, but check the ending |
+| may be cut off in search | 71–100 | Keep key words at the front |
+| too long for YouTube | over 100 | YouTube will not accept it |
+
+Below the ideas, the **Check your own title** box counts characters as you type, shows a meter against the 100-character limit, and warns about lots of ALL-CAPS words, repeated "!!" or "??", and the characters < and >, which YouTube does not allow in titles.
+
+## Turning an idea into your final title
+
+The generated titles come from templates, so treat them as drafts. A good routine:
+
+- Star five or six that fit your video, then read them aloud. Drop any that sound like a sales pitch.
+- Replace generic words with specifics from your video: a model name, a price, a place, a result.
+- Check that the first four or five words still make sense on their own, since that is all some viewers will see.
+- Make sure the title and thumbnail together answer "what is this and why should I watch?"
+
+If you have two strong options, note both. You can change a title later in YouTube Studio, and some channels have access to YouTube's built-in title and thumbnail testing.
+
+## Mistakes to avoid
+
+- **Clickbait that the video does not support.** It may win a click but tends to lose the viewer quickly, which hurts more than it helps.
+- **Stuffing several keywords in a row.** "Excel Tutorial Excel Tips Excel for Beginners" reads like spam.
+- **Burying the topic after a long hook.** On narrow screens the hook is all anyone sees.
+- **Adding a year to evergreen content.** A 2024 label on a timeless tutorial makes it look stale in 2026.
+- **Copying a viral title word for word.** Borrow the structure, not the wording, and make it true to your own video.
+- **Ignoring Shorts conventions.** Shorts titles are often seen briefly while swiping, so short and direct usually works best there.
+
+## Tips for Indian creators
+
+Many Indian viewers search in English, Hindi or a mix, sometimes in the same session. If your video is in Hindi or Hinglish, try a Roman Hindi title alongside an English one and see which feels more natural for your audience. Adding "in India" makes sense when prices, rules or availability are India-specific, such as a phone launch or a tax change, but it adds little to a general cooking or fitness video.
+
+Regional creators can also use the audience and topic fields to mention a city or state, for example "Kolkata Street Food Tour" or "Darjeeling Weekend Trip on a Budget". Specific titles often face less competition than broad ones.
+
+## Finish the rest of your upload
+
+A title is only one part of the metadata. Once you have chosen it, build a clear description with chapters and links in the [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/), and design a matching image in the [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/). Then come back to the [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/) for your next video. Everything runs in your browser, there is nothing to sign up for, and your topics are never uploaded.
+
+Q: How long should a YouTube title be?
+A: YouTube allows up to 100 characters, but search results and suggested videos often show only around 60–70 characters, and phones may show fewer. Keep the main keyword and the promise inside that first stretch. Anything after it should be a bonus that still makes sense if it gets cut off.
+
+Q: Does the title generator use AI or YouTube search data?
+A: No. The BISCS tool fills your topic, audience, number and goal into a curated set of title templates on your own device. It does not call any AI service or YouTube API, so it cannot tell you search volume. Treat the results as starting points to edit, not as ranked data.
+
+Q: Should I put the year in my YouTube title?
+A: Only if the video is genuinely tied to that year, such as a budget update or a yearly buying guide. A year can make a title look current, but it also makes the video look outdated a few months later. The generator leaves the year out unless you fill in the optional Year field.
+
+Q: Can I write titles in Hinglish?
+A: Yes. Tick “Add Hinglish-friendly titles (Roman Hindi)” and the generator adds patterns such as “kaise sikhe” and “ki puri jankari”. Many Indian viewers search in Roman Hindi, so a mixed title can match how your audience actually types, provided the video itself is in Hindi or Hinglish.
+
+Q: Is it bad to use ALL CAPS in a YouTube title?
+A: One or two capitalised words for emphasis are fine. A title full of capitals tends to look like clickbait and is harder to read. The “Check your own title” box warns you when it finds several all-caps words, along with repeated punctuation like “!!”.
+
+## Find a YouTube Video ID and Thumbnail URL from Any Link
+
+URL: https://biscsindia.com/blog/youtube-video-id-extractor-thumbnail-url/
+Tool: YouTube URL & Video ID Extractor (https://biscsindia.com/tools/youtube-url-parser/)
+
+Quick answer: A YouTube video ID is the 11-character code, made of letters, numbers, hyphens and underscores, that identifies each video, such as the part after v= in a watch link. BISCS India’s free YouTube URL & Video ID Extractor pulls it from any link format, builds clean links and thumbnail URLs, and handles up to 2,000 links at a time.
+
+Every YouTube video has an ID of exactly 11 characters, such as `dQw4w9WgXcQ`, and every link format, whether watch, youtu.be, Shorts or embed, is built around it. Once you have the ID, you can make any other kind of link, an embed or a thumbnail address from it.
+
+Spotting the ID by eye is easy in a tidy link but harder in one full of `si=`, `pp=` or playlist parameters, and slow when you have a spreadsheet of hundreds. The [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/) parses them all in your browser and gives you the IDs, clean links and thumbnail URLs.
+
+## Link formats it understands
+
+The extractor recognises the formats you are likely to meet in the wild:
+
+| Link format | Example pattern | Where the ID sits |
+|---|---|---|
+| Watch page | youtube.com/watch?v=ID | After `v=` |
+| Short link | youtu.be/ID | Right after the domain |
+| Shorts | youtube.com/shorts/ID | After `/shorts/` |
+| Live | youtube.com/live/ID | After `/live/` |
+| Embed | youtube.com/embed/ID or youtube-nocookie.com/embed/ID | After `/embed/` |
+| Mobile and Music | m.youtube.com, music.youtube.com | As for watch links |
+| Playlist | youtube.com/playlist?list=… | No video; returns the playlist ID |
+
+It also reads start times from `t=`, `start=` and `time_continue=` parameters, keeps any playlist ID it finds, and accepts a bare 11-character ID on its own line.
+
+## How to extract video IDs
+
+1. Open the [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/).
+2. Paste your links into **YouTube links (one per line)**. You can paste one link or a whole column from a spreadsheet.
+3. Leave **Remove duplicate videos** ticked unless you need a row for every line.
+4. Press **Extract**. If you just want to see how it behaves, press **Try examples** to load a mixed sample, including a channel link and a line of plain text.
+5. Check the summary badges, which show how many lines are valid and how many are invalid.
+6. Use **Copy IDs** to copy every video ID on its own line, or **Export CSV** for a full spreadsheet.
+
+The results table lists each line's number, status, video ID, playlist, start time and link type. Invalid rows say why they failed, for example "Not a YouTube link" or "This YouTube link is not a video or playlist".
+
+## What you get for each video
+
+Below the table, each valid line gets a card with ready-to-copy links:
+
+- **Canonical**, the plain watch link with nothing extra.
+- **Short**, the youtu.be version.
+- **Embed** and **No-cookie**, for use inside an iframe.
+- **Shorts**, the vertical-player address.
+- **With start** and **In playlist**, when the original link had a time or a playlist.
+
+A collapsible **Thumbnail image URLs** section lists the five standard image addresses on `i.ytimg.com`:
+
+| Name | Size (px) |
+|---|---|
+| default | 120 × 90 |
+| mqdefault | 320 × 180 |
+| hqdefault | 480 × 360 |
+| sddefault | 640 × 480 |
+| maxresdefault | 1280 × 720 |
+
+These are just text addresses. Nothing is fetched from YouTube until you press **Show thumbnails** on a card, or **Show thumbnails (first 10)** in the toolbar. At that point the images load from YouTube's servers, and any size that does not exist for that video is marked "not available".
+
+The CSV export includes, for every line, the input, a valid flag, video ID, playlist ID, start in seconds, type or error, watch, short, embed and Shorts URLs, and the hq and maxres thumbnail addresses.
+
+## Example: tidying a messy link
+
+Say a colleague sends you `https://m.youtube.com/watch?v=aqz-KE-bpKQ&list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&index=2`. After pressing **Extract**, the table shows the video ID `aqz-KE-bpKQ`, the playlist ID and the type "Watch page · mobile site". The card then offers:
+
+- a canonical link, `https://www.youtube.com/watch?v=aqz-KE-bpKQ`, with the mobile prefix and index removed;
+- a short link, `https://youtu.be/aqz-KE-bpKQ`;
+- an "In playlist" link that keeps the list for anyone who wants to continue watching.
+
+Similarly, a youtu.be link carrying `?si=abc123&t=42` is reduced to its ID, with the 42-second start time listed separately so you decide whether to keep it. The tracking code is simply not carried over.
+
+## Who finds this useful
+
+- **Website owners** cleaning a list of video links before adding them to a page or database.
+- **Teachers and trainers** who collected links from many people in different formats.
+- **Marketers** auditing which videos are linked across campaigns, with duplicates removed.
+- **Developers** who need IDs for the YouTube Data API or for building embeds programmatically.
+- **Anyone tidying a link** copied from the app, where tracking codes like `si=` make it long and messy.
+
+## Tips and limits
+
+- Up to 2,000 lines are processed at once. Detailed cards are shown for the first 100, while the CSV includes everything.
+- An ID that is not exactly 11 characters of A–Z, a–z, 0–9, hyphen or underscore is flagged, which catches links broken by copy-paste.
+- Links without `https://`, such as `youtu.be/...`, are accepted and completed automatically.
+- Attribution links that wrap another YouTube address are unpacked to find the real video.
+- Untick **Remove duplicate videos** when you need the output to line up row for row with an existing spreadsheet; the CSV then keeps one row for every non-empty line you pasted.
+- Lines are read independently, so one broken link does not stop the rest of the list from being processed.
+- Parsing works offline once the page has loaded, which is handy on patchy connections.
+
+## Mistakes to avoid
+
+- **Assuming a thumbnail URL means a video still exists.** Deleted or private videos can still return a placeholder image; open the canonical link to confirm.
+- **Reusing other creators' thumbnails as your own.** Thumbnails are part of their work. Link or embed instead, or design your own in the [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/).
+- **Expecting channel IDs.** This tool is for videos and playlists, not channels or handles.
+- **Forgetting the start time.** If a link had `t=`, use the "With start" link rather than the canonical one when you want to keep it.
+
+## Next steps
+
+Once you have an ID, the [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/) turns it into responsive, privacy-friendly embed code. If your list is in Excel, the [Excel & CSV Converter](https://biscsindia.com/tools/excel-csv-converter/) can help you move the exported CSV back into a workbook. All of these run in your browser with no sign-up and no upload.
+
+Q: Where is the video ID in a YouTube link?
+A: It depends on the format. In a watch link it follows v=, in a youtu.be link it is the path right after the domain, and in Shorts, live and embed links it comes after /shorts/, /live/ or /embed/. It is always exactly 11 characters, which is how the tool checks it is valid.
+
+Q: Why is the maxresdefault thumbnail not available for some videos?
+A: The 1280 × 720 maxresdefault image, and sometimes the 640 × 480 sddefault one, exist only when the video was uploaded in a high enough resolution. For other videos YouTube returns a small grey placeholder, which the tool marks as “not available” when you press Show thumbnails. The hqdefault image is the most dependable.
+
+Q: Can I use another channel’s thumbnail on my website?
+A: A thumbnail is the creator’s work and is usually protected by copyright. Showing it as part of a proper YouTube embed or a link card is common, but reusing it in your own designs or videos needs the owner’s permission. When in doubt, link to the video instead.
+
+Q: What does the “Remove duplicate videos” option do?
+A: When it is ticked, a video that appears more than once in your list, even through different link formats such as a youtu.be link and a watch link, is kept only once. Untick it if you need one output row for every input line, for example to match a spreadsheet.
+
+Q: Can it extract IDs from channel or search links?
+A: No. Channel pages, handles like @name and search results do not contain a video or playlist ID, so the tool marks them as invalid with a clear reason. It handles video links of every common type, plus playlist links, for which it returns the playlist ID.

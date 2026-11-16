@@ -186,15 +186,15 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Video Merger](https://biscsindia.com/tools/video-merger/): Join several video clips into one, in the order you choose.
 - [Video Watermark](https://biscsindia.com/tools/video-watermark/): Add your logo or channel name to a video, in any corner.
 - [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/): Check a video against YouTube, Shorts, Facebook, Reels and WhatsApp requirements.
-- [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/): Catchy, clickable video title ideas from your topic, with a length check.
-- [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/): Well-structured video descriptions with chapters, links and hashtags.
-- [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/): Relevant tags from your keywords, kept within YouTube’s 500-character limit.
-- [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/): Hashtags for YouTube, Instagram and Facebook posts, following each platform’s rules.
-- [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/): Responsive, privacy-enhanced embed code with start time, autoplay and more.
-- [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/): Share a YouTube link that starts at an exact moment.
-- [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/): Get the video ID, clean links and thumbnail image URLs from any YouTube link.
-- [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/): YouTube banners and Facebook, LinkedIn and X cover images with safe-area guides.
-- [YouTube Earnings Estimator](https://biscsindia.com/tools/youtube-earnings-calculator/): Estimate YouTube ad earnings in ₹ from views and your RPM.
+- [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/): Catchy, clickable video title ideas from your topic, with a length check. Guide: https://biscsindia.com/blog/youtube-title-generator-catchy-video-title-ideas/
+- [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/): Well-structured video descriptions with chapters, links and hashtags. Guide: https://biscsindia.com/blog/youtube-description-template-chapters-links/
+- [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/): Relevant tags from your keywords, kept within YouTube’s 500-character limit. Guide: https://biscsindia.com/blog/youtube-tags-generator-500-character-limit/
+- [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/): Hashtags for YouTube, Instagram and Facebook posts, following each platform’s rules. Guide: https://biscsindia.com/blog/hashtag-generator-youtube-instagram-facebook-rules/
+- [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/): Responsive, privacy-enhanced embed code with start time, autoplay and more. Guide: https://biscsindia.com/blog/responsive-youtube-embed-code-nocookie/
+- [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/): Share a YouTube link that starts at an exact moment. Guide: https://biscsindia.com/blog/youtube-link-with-timestamp-start-at-time/
+- [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/): Get the video ID, clean links and thumbnail image URLs from any YouTube link. Guide: https://biscsindia.com/blog/youtube-video-id-extractor-thumbnail-url/
+- [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/): YouTube banners and Facebook, LinkedIn and X cover images with safe-area guides. Guide: https://biscsindia.com/blog/youtube-banner-size-safe-area-maker/
+- [YouTube Earnings Estimator](https://biscsindia.com/tools/youtube-earnings-calculator/): Estimate YouTube ad earnings in ₹ from views and your RPM. Guide: https://biscsindia.com/blog/youtube-earnings-calculator-india-rpm/
 
 ## Office & Business
 
@@ -214,7 +214,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://biscsindia.com/blog/): 149 how-to articles
+- [All guides](https://biscsindia.com/blog/): 158 how-to articles
 - [About](https://biscsindia.com/about/)
 - [Privacy Policy](https://biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://biscsindia.com/llms-full.txt)

@@ -521,7 +521,6 @@
           if (/\{Y\}/.test(s) && !ctx.Y) return;
           if (/\{G\}/.test(s) && !ctx.G) return;
           if (/\{B\}/.test(s) && !ctx.B) return;
-          if (p === 'comparison' && ctx.B && /Alternatives|Options Compared|Budget vs|Still the Best/.test(s) && out.length > 40) return;
           var title = fill(s, ctx).replace(/\s+/g, ' ').trim();
           var k = title.toLowerCase();
           if (seen[k]) return;
@@ -1159,5 +1158,1111 @@
     $('hg-topic', root).addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
   });
 
-  /*__END__*/
+  // ========================================================= 5. Embed code
+  var LANGS = [['', 'Default'], ['en', 'English'], ['hi', 'Hindi'], ['bn', 'Bengali'], ['ta', 'Tamil'], ['te', 'Telugu'], ['mr', 'Marathi'], ['gu', 'Gujarati'], ['kn', 'Kannada'], ['ml', 'Malayalam'], ['pa', 'Punjabi'], ['ur', 'Urdu'], ['or', 'Odia'], ['as', 'Assamese']];
+
+  /** Build the iframe src and HTML for the embed options (pure, for tests too). */
+  function embedBuild(o) {
+    var host = o.privacy ? 'https://www.youtube-nocookie.com' : 'https://www.youtube.com';
+    var p = [];
+    var src = host + '/embed/' + (o.id || 'videoseries');
+    if (o.list) p.push('list=' + o.list);
+    if (o.start > 0) p.push('start=' + o.start);
+    if (o.end > 0) p.push('end=' + o.end);
+    if (o.autoplay) p.push('autoplay=1');
+    if (o.autoplay || o.mute) p.push('mute=1');
+    if (o.autoplay) p.push('playsinline=1');
+    if (o.loop) { p.push('loop=1'); if (o.id && !o.list) p.push('playlist=' + o.id); }
+    if (o.nocontrols) p.push('controls=0');
+    if (o.cc) p.push('cc_load_policy=1');
+    if (o.cclang) p.push('cc_lang_pref=' + o.cclang);
+    if (o.hl) p.push('hl=' + o.hl);
+    if (o.rel) p.push('rel=0');
+    src += p.length ? '?' + p.join('&') : '';
+    var attrs = 'src="' + esc(src) + '" title="' + esc(o.title || 'YouTube video player') + '"' +
+      ' allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"' +
+      ' referrerpolicy="strict-origin-when-cross-origin" allowfullscreen' + (o.lazy ? ' loading="lazy"' : '');
+    var html;
+    if (o.size === 'fixed') {
+      html = '<iframe width="' + o.w + '" height="' + o.h + '" style="border:0;max-width:100%" ' + attrs + '></iframe>';
+    } else {
+      var tall = o.size === 'r916';
+      html = (tall ? '<div style="max-width:360px;margin:0 auto">\n' : '') +
+        '<div style="position:relative;width:100%;padding-top:' + (tall ? '177.78' : '56.25') + '%;overflow:hidden;border-radius:12px">\n' +
+        '  <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" ' + attrs + '></iframe>\n</div>' + (tall ? '\n</div>' : '');
+    }
+    return { src: src, html: html };
+  }
+
+  BT.impl('youtube-embed-code-generator', function (root) {
+    css();
+    var size = 'r169', loaded = false;
+    root.innerHTML =
+      hero('code-xml', 'Clean, responsive YouTube embed code', 'Nothing loads from YouTube until you press “Load preview”.') +
+      '<div class="split"><div><div class="card">' +
+        field('ec-url', 'YouTube link or video ID', inp('ec-url', 'text', 'https://www.youtube.com/watch?v=… or youtu.be/… or 11-character ID', '', ' autocomplete="off" spellcheck="false"')) +
+        '<div id="ec-parse" class="yt-msgs" style="margin:-4px 0 12px"></div>' +
+        '<div class="field"><span class="label">Player size</span>' + seg('ec-size', [['r169', 'Responsive 16:9'], ['r916', 'Responsive 9:16 (Shorts)'], ['fixed', 'Fixed size']], size, 'Player size') + '</div>' +
+        '<div class="row cols-2 hidden" id="ec-fixed">' + field('ec-w', 'Width (px)', inp('ec-w', 'number', '560', '560', ' min="200" max="3840"')) + field('ec-h', 'Height (px)', inp('ec-h', 'number', '315', '315', ' min="100" max="2160"')) + '</div>' +
+        '<div class="row cols-2">' + field('ec-start', 'Start at', inp('ec-start', 'text', 'e.g. 1:30 or 90', '', ' autocomplete="off"'), 'Leave empty to start at the beginning.') +
+          field('ec-end', 'Stop at (optional)', inp('ec-end', 'text', 'e.g. 3:45', '', ' autocomplete="off"')) + '</div>' +
+        field('ec-title', 'Title for screen readers', inp('ec-title', 'text', 'Describe the video, e.g. “How to make a pivot table”', '', ' maxlength="120"'), 'Every iframe needs a title so screen-reader users know what it is.') +
+        '<div class="field"><span class="label">Options</span><div class="yt-checks" style="flex-direction:column;gap:10px">' +
+          chk('ec-priv', 'Privacy-enhanced mode (youtube-nocookie.com)', true) +
+          chk('ec-lazy', 'Lazy-load (loading="lazy" — faster pages)', true) +
+          chk('ec-auto', 'Autoplay (also mutes the video)', false) +
+          chk('ec-mute', 'Start muted', false) +
+          chk('ec-loop', 'Loop the video', false) +
+          chk('ec-noc', 'Hide player controls', false) +
+          chk('ec-cc', 'Show captions by default', false) +
+          chk('ec-rel', 'Related videos from the same channel only (rel=0)', false) +
+        '</div></div>' +
+        '<div class="row cols-2">' + field('ec-cclang', 'Caption language', sel('ec-cclang', LANGS, '')) + field('ec-hl', 'Player language', sel('ec-hl', LANGS, '')) + '</div>' +
+      '</div></div>' +
+      '<div><div class="card"><div class="card-title"><h3 class="yt-h">Embed code</h3>' + btn('data-a="copy"', 'copy', 'Copy code', 'btn-primary') + '</div>' +
+        '<pre class="yt-code" id="ec-code" tabindex="0" aria-label="Embed code"></pre><div class="yt-msgs" id="ec-msg"></div></div>' +
+        '<div class="card"><div class="card-title"><h3 class="yt-h">Preview</h3>' + btn('data-a="load"', 'monitor-play', 'Load preview', '') + '</div>' +
+        '<div class="yt-frame" id="ec-frame" style="aspect-ratio:16/9"><div class="ph">' + BT.icon('tv-minimal-play') +
+          '<span>Press <strong>Load preview</strong> to load the player from YouTube.<br>Until then, nothing is requested from YouTube.</span></div></div>' +
+        '<p class="small muted" style="margin:8px 0 0">The preview loads YouTube’s player in your browser, so YouTube’s own privacy policy applies to it. Privacy-enhanced mode means YouTube doesn’t store viewing information until the visitor plays the video.</p></div>' +
+        '<div class="yt-msgs">' + notice('', '<strong>About autoplay:</strong> browsers (Chrome, Safari, Firefox) block autoplay with sound, so autoplaying videos must start muted — that’s why ticking Autoplay adds <code>mute=1</code>. Some phones may still not autoplay to save data. <strong>Loop</strong> needs the <code>playlist</code> parameter set to the same video ID, which we add for you.') + '</div>' +
+      '</div></div>';
+
+    var sizeEl = $('ec-size', root), last = null;
+    wireSeg(sizeEl, function (v) { size = v; $('ec-fixed', root).classList.toggle('hidden', v !== 'fixed'); update(); });
+    function opts() {
+      var p = parseYT(val(root, 'ec-url'));
+      var st = val(root, 'ec-start'), en = val(root, 'ec-end');
+      var s = st ? parseTime(st) : (p.start || 0), e = en ? parseTime(en) : 0;
+      return {
+        parsed: p, id: p.id, list: p.list, start: isFinite(s) ? s : 0, end: isFinite(e) ? e : 0, badStart: st && !isFinite(s), badEnd: en && !isFinite(e),
+        privacy: val(root, 'ec-priv'), lazy: val(root, 'ec-lazy'), autoplay: val(root, 'ec-auto'), mute: val(root, 'ec-mute'), loop: val(root, 'ec-loop'),
+        nocontrols: val(root, 'ec-noc'), cc: val(root, 'ec-cc'), cclang: val(root, 'ec-cclang'), hl: val(root, 'ec-hl'), rel: val(root, 'ec-rel'),
+        title: val(root, 'ec-title'), size: size,
+        w: clamp(Math.round(BT.num(val(root, 'ec-w'))) || 560, 200, 3840), h: clamp(Math.round(BT.num(val(root, 'ec-h'))) || 315, 100, 2160)
+      };
+    }
+    function update() {
+      var o = opts(), p = o.parsed, code = $('ec-code', root), msgs = [];
+      var raw = val(root, 'ec-url');
+      $('ec-parse', root).innerHTML = !raw ? '' : p.error ? notice('error', esc(p.error)) :
+        notice('ok', (p.id ? 'Video ID <code>' + esc(p.id) + '</code>' : '') + (p.list ? (p.id ? ' · ' : '') + 'Playlist <code>' + esc(p.list) + '</code>' : '') + (p.start ? ' · starts at ' + clock(p.start) : '') + ' · ' + esc(p.kind));
+      if (!raw || p.error) { code.textContent = 'Paste a YouTube link or video ID to get the embed code.'; last = null; $('ec-msg', root).innerHTML = ''; return; }
+      var b = embedBuild(o);
+      last = b;
+      code.textContent = b.html;
+      if (o.badStart) msgs.push(notice('error', 'Couldn’t read the start time. Use 1:30, 90 or 1m30s.'));
+      if (o.badEnd) msgs.push(notice('error', 'Couldn’t read the stop time. Use 3:45, 225 or 3m45s.'));
+      if (o.end && o.end <= o.start) msgs.push(notice('warn', 'The stop time must be after the start time.'));
+      if (!o.title) msgs.push(notice('warn', 'Add a descriptive title — it helps screen-reader users (we used “YouTube video player”).'));
+      if (o.nocontrols && !o.autoplay) msgs.push(notice('warn', 'With controls hidden, visitors can still start the video by clicking it, but can’t pause easily. Use with care.'));
+      $('ec-msg', root).innerHTML = msgs.join('');
+      if (loaded) loadPreview();
+    }
+    function loadPreview() {
+      if (!last) return BT.toast('Paste a valid YouTube link first', 'error');
+      var o = opts(), fr = $('ec-frame', root);
+      fr.style.aspectRatio = size === 'r916' ? '9/16' : size === 'fixed' ? o.w + '/' + o.h : '16/9';
+      fr.style.maxWidth = size === 'r916' ? '320px' : '';
+      fr.style.margin = size === 'r916' ? '0 auto' : '';
+      var cur = BT.$('iframe', fr);
+      if (cur && cur.getAttribute('src') === last.src) return;
+      fr.innerHTML = '';
+      var f = h('iframe', { title: o.title || 'YouTube video player', allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share', referrerpolicy: 'strict-origin-when-cross-origin', allowfullscreen: true });
+      // src only ever contains validated IDs and fixed parameter names
+      f.src = last.src;
+      fr.appendChild(f);
+      loaded = true;
+    }
+    var upd = BT.debounce(update, 150);
+    root.addEventListener('input', upd);
+    root.addEventListener('change', function (e) {
+      if (e.target.id === 'ec-auto' && e.target.checked) { $('ec-mute', root).checked = true; BT.toast('Autoplay needs the video to start muted'); }
+      if (e.target.tagName === 'SELECT' || e.target.type === 'checkbox') update();
+    });
+    onA(root, {
+      copy: function () { if (!last) return BT.toast('Paste a YouTube link first', 'error'); BT.copy($('ec-code', root).textContent, 'Embed code copied'); },
+      load: loadPreview
+    });
+    update();
+  });
+
+  // ===================================================== 6. Timestamp links
+  BT.impl('youtube-timestamp-link', function (root) {
+    css();
+    root.innerHTML =
+      hero('link', 'Links that start at the right moment', 'Works with any YouTube link — nothing is sent anywhere.') +
+      '<div class="card"><div class="row cols-2">' +
+        field('ts-url', 'YouTube link or video ID', inp('ts-url', 'text', 'https://youtu.be/… or https://www.youtube.com/watch?v=…', '', ' autocomplete="off" spellcheck="false"')) +
+        field('ts-time', 'Start time', inp('ts-time', 'text', 'e.g. 1:30, 90, 1m30s or 1:02:03', '', ' autocomplete="off"'), 'Hours, minutes and seconds all work.') +
+      '</div><div id="ts-parse" class="yt-msgs" style="margin:-4px 0 12px"></div>' +
+      '<div class="yt-checks">' + chk('ts-list', 'Keep the playlist in the link (if any)', false) + '</div>' +
+      '<div id="ts-out"></div></div>' +
+      '<div class="card"><h3 class="yt-h" style="margin-bottom:12px">Many timestamps at once</h3>' +
+        field('ts-multi', 'One per line: time, then an optional label', txa('ts-multi', '0:00 Intro\n1:30 The main tip\n4:05 Results', '', 5, ' class="mono"'), 'Uses the video link above.') +
+        '<div class="yt-toolbar">' + btn('data-a="copyall"', 'copy', 'Copy all as text', 'btn-primary') + btn('data-a="csv"', 'sheet', 'CSV') + '</div>' +
+        '<div id="ts-table"></div>' +
+      '</div>' +
+      '<div class="yt-msgs">' + notice('', 'YouTube accepts <code>t=90</code> on youtu.be links and <code>t=90s</code> (or <code>t=1m30s</code>) on watch links. Some apps and embedded players may ignore the start time.') + '</div>';
+    var rows = [];
+    function update() {
+      var p = parseYT(val(root, 'ts-url')), raw = val(root, 'ts-url'), keep = val(root, 'ts-list');
+      $('ts-parse', root).innerHTML = !raw ? '' : p.error ? notice('error', esc(p.error)) : !p.id ? notice('error', 'This is a playlist link without a video. Open a video in the playlist and copy its link.') :
+        notice('ok', 'Video ID <code>' + esc(p.id) + '</code>' + (p.start ? ' · link already had t=' + p.start : ''));
+      var out = $('ts-out', root), tRaw = val(root, 'ts-time'), t = tRaw ? parseTime(tRaw) : (p.start || 0);
+      if (!p.id) { out.innerHTML = ''; rows = []; $('ts-table', root).innerHTML = ''; return; }
+      if (tRaw && !isFinite(t)) out.innerHTML = notice('error', 'Couldn’t read that time. Try 1:30, 90 or 1m30s.');
+      else {
+        var list = keep ? p.list : '';
+        var u = ytUrls(p.id, t, list);
+        out.innerHTML = '<div class="yt-sec">Starts at ' + clock(t) + ' (' + t + ' seconds)</div>' + linkRow('Short', u.short) + linkRow('Watch', u.watch) +
+          linkRow('Watch (h/m/s)', 'https://www.youtube.com/watch?v=' + p.id + (list ? '&list=' + list : '') + (t ? '&t=' + hms(t) : ''));
+      }
+      // many
+      rows = [];
+      var bad = [];
+      val(root, 'ts-multi').split(/\r?\n/).forEach(function (l, i) {
+        l = l.trim();
+        if (!l) return;
+        var m = l.match(/^(\S+)\s*(?:[-–—|:]\s*)?(.*)$/), sec = m ? parseTime(m[1]) : NaN;
+        if (!isFinite(sec)) { bad.push(i + 1); return; }
+        var uu = ytUrls(p.id, sec, keep ? p.list : '');
+        rows.push({ t: sec, label: m[2] || '', short: uu.short, watch: uu.watch });
+      });
+      $('ts-table', root).innerHTML = (rows.length ? '<div class="table-wrap"><table class="table"><thead><tr><th>Time</th><th>Label</th><th>Link</th><th><span class="sr-only">Copy</span></th></tr></thead><tbody>' +
+        rows.map(function (r) {
+          return '<tr><td>' + clock(r.t) + '</td><td class="yt-tcell">' + esc(r.label) + '</td><td class="yt-tcell"><code>' + esc(r.short) + '</code></td><td>' + iconBtn('data-copy="' + esc(r.short) + '"', 'copy', 'Copy link at ' + clock(r.t)) + '</td></tr>';
+        }).join('') + '</tbody></table></div>' : '') +
+        (bad.length ? '<div class="yt-msgs">' + notice('warn', 'Couldn’t read line ' + bad.slice(0, 6).join(', ') + '. Start each line with a time like 1:30.') + '</div>' : '');
+    }
+    wireCopy(root);
+    root.addEventListener('input', BT.debounce(update, 120));
+    root.addEventListener('change', function (e) { if (e.target.type === 'checkbox') update(); });
+    onA(root, {
+      copyall: function () {
+        if (!rows.length) return BT.toast('Add a video link and some timestamps first', 'error');
+        BT.copy(rows.map(function (r) { return clock(r.t) + (r.label ? ' ' + r.label : '') + ' – ' + r.short; }).join('\n'), plural(rows.length, 'link') + ' copied');
+      },
+      csv: function () {
+        if (!rows.length) return BT.toast('Nothing to export yet', 'error');
+        BT.download(toCSV([['Time', 'Seconds', 'Label', 'Short link', 'Watch link']].concat(rows.map(function (r) { return [clock(r.t), r.t, r.label, r.short, r.watch]; }))), 'youtube-timestamp-links.csv', 'text/csv;charset=utf-8');
+      }
+    });
+    update();
+  });
+
+  // ========================================================== 7. URL parser
+  BT.impl('youtube-url-parser', function (root) {
+    css();
+    var results = [];
+    root.innerHTML =
+      hero('scan-line', 'Video IDs, clean links and thumbnail URLs', 'Paste one link or hundreds. Parsing happens on your device; thumbnails load only if you ask.') +
+      '<div class="card">' +
+        field('up-in', 'YouTube links (one per line)', txa('up-in', 'https://www.youtube.com/watch?v=…\nhttps://youtu.be/…\nhttps://www.youtube.com/shorts/…', '', 6, ' class="mono" spellcheck="false"'),
+          'Supports watch, youtu.be, Shorts, embed, live, mobile (m.), YouTube Music and playlist links, with any extra parameters.') +
+        '<div class="yt-checks">' + chk('up-dedupe', 'Remove duplicate videos', true) + '</div>' +
+        '<div class="btn-group">' + btn('data-a="parse"', 'scan-line', 'Extract', 'btn-primary') + btn('data-a="sample"', 'list', 'Try examples', 'btn-ghost') + '</div>' +
+      '</div>' +
+      '<div class="card hidden" id="up-out"><div class="card-title"><h3 class="yt-h">Results</h3><span id="up-sum"></span></div>' +
+        '<div class="yt-toolbar">' + btn('data-a="csv"', 'sheet', 'Export CSV', 'btn-primary') + btn('data-a="ids"', 'copy', 'Copy IDs') + btn('data-a="thumbsall"', 'image', 'Show thumbnails (first 10)') + '</div>' +
+        '<div id="up-table"></div>' +
+        '<div id="up-cards" class="yt-gap"></div>' +
+        '<div class="yt-msgs">' + notice('', 'Thumbnail URLs follow YouTube’s standard pattern at <code>i.ytimg.com</code>. <strong>maxresdefault</strong> (1280 × 720) and sometimes <strong>sddefault</strong> exist only for videos uploaded in high resolution. Pressing “Show thumbnails” loads the images from YouTube’s servers.') + '</div>' +
+      '</div>';
+    function parseAll() {
+      var lines = val(root, 'up-in').split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+      if (!lines.length) { BT.toast('Paste at least one link', 'error'); return; }
+      if (lines.length > 2000) { BT.toast('Only the first 2,000 lines are processed'); lines = lines.slice(0, 2000); }
+      var seen = {}, dd = val(root, 'up-dedupe');
+      results = lines.map(function (l, i) {
+        var r = parseYT(l);
+        r.n = i + 1;
+        var k = r.id || r.list;
+        if (!r.error && dd && k) { if (seen[k]) r.dup = true; seen[k] = 1; }
+        return r;
+      }).filter(function (r) { return !r.dup; });
+      render();
+      $('up-out', root).classList.remove('hidden');
+    }
+    function render() {
+      var ok = results.filter(function (r) { return !r.error; }).length, bad = results.length - ok;
+      $('up-sum', root).innerHTML = '<span class="badge ok">' + ok + ' valid</span> ' + (bad ? '<span class="badge danger">' + bad + ' invalid</span>' : '');
+      $('up-table', root).innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>Status</th><th>Video ID</th><th>Playlist</th><th class="num">Start</th><th>Type</th></tr></thead><tbody>' +
+        results.map(function (r) {
+          return '<tr><td>' + r.n + '</td><td>' + (r.error ? '<span class="badge danger">Invalid</span>' : '<span class="badge ok">OK</span>') + '</td>' +
+            '<td><code data-id>' + esc(r.id || '—') + '</code></td><td class="yt-tcell"><code>' + esc(r.list || '—') + '</code></td>' +
+            '<td class="num">' + (r.start != null ? r.start + ' s' : '—') + '</td><td class="yt-tcell">' + esc(r.error || r.kind) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+      var shown = results.slice(0, 100);
+      $('up-cards', root).innerHTML = shown.map(function (r, i) {
+        if (r.error) return '<div class="yt-res bad"><div class="hd"><strong>Line ' + r.n + '</strong><span class="badge danger">Invalid</span></div><div class="in">' + esc(r.input.slice(0, 300)) + '</div><div class="small">' + esc(r.error) + '</div></div>';
+        var body = '';
+        if (r.id) {
+          var u = ytUrls(r.id, 0, '');
+          body += linkRow('Canonical', 'https://www.youtube.com/watch?v=' + r.id) + linkRow('Short', u.short) + linkRow('Embed', u.embed) + linkRow('No-cookie', u.nocookie) + linkRow('Shorts', u.shorts);
+          if (r.start) body += linkRow('With start', ytUrls(r.id, r.start, '').short);
+          if (r.list) body += linkRow('In playlist', 'https://www.youtube.com/watch?v=' + r.id + '&list=' + r.list);
+          body += '<details><summary class="small" style="cursor:pointer;font-weight:600;margin:4px 0 8px">Thumbnail image URLs</summary>' + THUMBS.map(function (t) { return linkRow(t[0], thumbUrl(r.id, t[0])); }).join('') + '</details>' +
+            '<div class="btn-group">' + btn('data-a="thumbs" data-i="' + i + '"', 'image', 'Show thumbnails') + '</div><div class="yt-thumbs" id="up-th-' + i + '"></div>';
+        } else if (r.list) {
+          body += linkRow('Playlist', 'https://www.youtube.com/playlist?list=' + r.list) + linkRow('Embed', 'https://www.youtube-nocookie.com/embed/videoseries?list=' + r.list);
+        }
+        return '<div class="yt-res good"><div class="hd"><strong>Line ' + r.n + (r.id ? ' · <code>' + esc(r.id) + '</code>' : '') + '</strong><span class="badge">' + esc(r.kind) + '</span></div><div class="in">' + esc(r.input.slice(0, 300)) + '</div>' + body + '</div>';
+      }).join('') + (results.length > 100 ? '<p class="muted small">Showing details for the first 100 lines. The CSV includes all of them.</p>' : '');
+    }
+    function showThumbs(i) {
+      var r = results[i], box = $('up-th-' + i, root);
+      if (!r || !r.id || !box || box.children.length) return;
+      box.innerHTML = THUMBS.map(function (t) {
+        return '<figure><img alt="' + esc(t[0]) + ' thumbnail of ' + esc(r.id) + '" loading="lazy" decoding="async" data-n="' + t[0] + '"><figcaption><b>' + t[0] + '</b><span>' + t[1] + '</span></figcaption></figure>';
+      }).join('');
+      BT.$$('img', box).forEach(function (img) {
+        img.onload = function () {
+          // YouTube serves a 120 × 90 grey placeholder when a size doesn't exist
+          if (img.naturalWidth <= 120 && img.getAttribute('data-n') !== 'default') { img.parentNode.classList.add('na'); img.nextElementSibling.lastElementChild.textContent = 'not available'; }
+        };
+        img.onerror = function () { img.parentNode.classList.add('na'); img.nextElementSibling.lastElementChild.textContent = 'not available'; };
+        img.src = thumbUrl(r.id, img.getAttribute('data-n'));
+      });
+    }
+    wireCopy(root);
+    onA(root, {
+      parse: parseAll,
+      sample: function () {
+        $('up-in', root).value = [
+          'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=1m30s',
+          'https://youtu.be/dQw4w9WgXcQ?si=abc123&t=42',
+          'https://www.youtube.com/shorts/aqz-KE-bpKQ',
+          'https://m.youtube.com/watch?v=aqz-KE-bpKQ&list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&index=2',
+          'https://www.youtube.com/embed/jNQXAC9IVRw?start=10',
+          'https://music.youtube.com/watch?v=jNQXAC9IVRw',
+          'https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI',
+          'https://www.youtube.com/@SomeChannel',
+          'not a link'
+        ].join('\n');
+        parseAll();
+      },
+      thumbs: function (b) { showThumbs(+b.getAttribute('data-i')); },
+      thumbsall: function () { var n = 0; results.slice(0, 100).forEach(function (r, i) { if (r.id && n < 10) { showThumbs(i); n++; } }); if (!n) BT.toast('No videos to show', 'error'); },
+      ids: function () { var ids = results.filter(function (r) { return r.id; }).map(function (r) { return r.id; }); if (!ids.length) return BT.toast('No video IDs found', 'error'); BT.copy(ids.join('\n'), plural(ids.length, 'ID') + ' copied'); },
+      csv: function () {
+        var rows = [['Line', 'Input', 'Valid', 'Video ID', 'Playlist ID', 'Start (s)', 'Type / error', 'Watch URL', 'Short URL', 'Embed URL', 'Shorts URL', 'Thumbnail (hq)', 'Thumbnail (maxres)']];
+        results.forEach(function (r) {
+          var u = r.id ? ytUrls(r.id, 0, '') : {};
+          rows.push([r.n, r.input, r.error ? 'no' : 'yes', r.id, r.list, r.start == null ? '' : r.start, r.error || r.kind,
+            r.id ? 'https://www.youtube.com/watch?v=' + r.id : '', u.short || '', u.embed || '', u.shorts || '',
+            r.id ? thumbUrl(r.id, 'hqdefault') : '', r.id ? thumbUrl(r.id, 'maxresdefault') : '']);
+        });
+        BT.download(toCSV(rows), 'youtube-links.csv', 'text/csv;charset=utf-8');
+      }
+    });
+  });
+
+  // ======================================================= 8. Banner maker
+  function mkCanvas(w, hh) { var c = doc.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(hh)); return c; }
+  var BFONTS = [
+    ['sans', 'Sans (Inter)', "Inter, 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Nirmala UI', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"],
+    ['serif', 'Serif', "Georgia, 'Noto Serif', 'Noto Serif Devanagari', 'Noto Serif Bengali', 'Nirmala UI', 'Times New Roman', serif"],
+    ['impact', 'Impact (bold condensed)', "Impact, Haettenschweiler, 'Arial Narrow Bold', 'Nirmala UI', sans-serif"],
+    ['rounded', 'Rounded', "ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Nirmala UI', system-ui, sans-serif"],
+    ['mono', 'Typewriter', "'Courier New', Courier, ui-monospace, monospace"],
+    ['hindi', 'Hindi (Devanagari)', "'Noto Sans Devanagari', 'Nirmala UI', Mangal, 'Kohinoor Devanagari', 'Devanagari Sangam MN', sans-serif"],
+    ['bengali', 'Bengali (Bangla)', "'Noto Sans Bengali', 'Nirmala UI', Vrinda, 'Shonar Bangla', 'Bangla Sangam MN', 'Kohinoor Bangla', sans-serif"]
+  ];
+  function bfont(L) {
+    var f = BFONTS.filter(function (x) { return x[0] === L.font; })[0] || BFONTS[0];
+    return (L.italic ? 'italic ' : '') + (L.weight || 700) + ' ' + Math.max(1, L.size) + 'px ' + f[2];
+  }
+  // Presets. safe = where text/logos are always visible; guides drawn on screen only.
+  var BPRESETS = [
+    { id: 'yt', name: 'YouTube channel banner', w: 2560, h: 1440, max: 6 * 1024 * 1024, fmt: 'image/jpeg',
+      safe: { x: 507, y: 508.5, w: 1546, h: 423 },
+      guides: [
+        { l: 'TV (full image) 2560 × 1440', x: 0, y: 0, w: 2560, h: 1440, c: '#60a5fa' },
+        { l: 'Desktop 2560 × 423', x: 0, y: 508.5, w: 2560, h: 423, c: '#a78bfa' },
+        { l: 'Tablet 1855 × 423', x: 352.5, y: 508.5, w: 1855, h: 423, c: '#f59e0b' },
+        { l: 'Safe area for text & logos (all devices) 1546 × 423', x: 507, y: 508.5, w: 1546, h: 423, c: '#22c55e', bold: true }
+      ],
+      devices: [['TV', 0, 0, 2560, 1440], ['Desktop', 0, 508.5, 2560, 423], ['Tablet', 352.5, 508.5, 1855, 423], ['Mobile', 507, 508.5, 1546, 423]],
+      note: 'YouTube shows the full 2560 × 1440 image only on TVs. Desktop, tablet and phone show a centred strip, so keep text and logos inside the green safe area. Upload limit: 6 MB.' },
+    { id: 'fb', name: 'Facebook cover (export 1640 × 624)', w: 1640, h: 624, fmt: 'image/jpeg',
+      safe: { x: 265.3, y: 8.5, w: 1109.4, h: 607 },
+      guides: [
+        { l: 'Desktop view (~851 × 315 shape)', x: 0, y: 8.5, w: 1640, h: 607, c: '#a78bfa' },
+        { l: 'Mobile view (~640 × 360 shape)', x: 265.3, y: 0, w: 1109.4, h: 624, c: '#f59e0b' },
+        { l: 'Safe on both', x: 265.3, y: 8.5, w: 1109.4, h: 607, c: '#22c55e', bold: true }
+      ],
+      devices: [['Desktop', 0, 8.5, 1640, 607], ['Mobile', 265.3, 0, 1109.4, 624]],
+      note: 'Facebook displays covers at about 851 × 315 on computers and crops the sides on phones. We export at 1640 × 624 so it stays sharp on high-resolution screens. Facebook changes its layout from time to time — check after uploading.' },
+    { id: 'lip', name: 'LinkedIn personal banner 1584 × 396', w: 1584, h: 396, fmt: 'image/jpeg',
+      safe: { x: 420, y: 30, w: 1124, h: 336 },
+      circle: { l: 'Profile photo (approx.)', cx: 200, cy: 380, r: 175 },
+      guides: [{ l: 'Keep text clear of the photo area', x: 420, y: 30, w: 1124, h: 336, c: '#22c55e', bold: true }],
+      devices: [['Desktop', 0, 0, 1584, 396], ['Mobile (approx.)', 100, 0, 1384, 396]],
+      note: 'Your profile photo covers the lower-left corner, and phones may crop the edges slightly. Keep important content on the right two-thirds.' },
+    { id: 'lic', name: 'LinkedIn company cover 1128 × 191', w: 1128, h: 191, fmt: 'image/jpeg',
+      safe: { x: 230, y: 16, w: 870, h: 159 },
+      circle: { l: 'Logo (approx.)', cx: 110, cy: 185, r: 85, sq: true },
+      guides: [{ l: 'Clear of the logo', x: 230, y: 16, w: 870, h: 159, c: '#22c55e', bold: true }],
+      devices: [['Desktop', 0, 0, 1128, 191]],
+      note: 'The company logo overlaps the lower-left corner. LinkedIn may crop slightly on phones.' },
+    { id: 'x', name: 'X / Twitter header 1500 × 500', w: 1500, h: 500, fmt: 'image/jpeg',
+      safe: { x: 420, y: 60, w: 1020, h: 380 },
+      circle: { l: 'Profile photo (approx.)', cx: 207, cy: 500, r: 168 },
+      guides: [{ l: 'Safe area (approx.)', x: 420, y: 60, w: 1020, h: 380, c: '#22c55e', bold: true }],
+      devices: [['Desktop', 0, 0, 1500, 500], ['Mobile (approx.)', 0, 40, 1500, 420]],
+      note: 'The profile photo overlaps the bottom-left, and some screens crop the top and bottom a little.' }
+  ];
+  function bpreset(id) { return BPRESETS.filter(function (p) { return p.id === id; })[0] || BPRESETS[0]; }
+  var BGRADS = [['#4f46e5', '#db2777'], ['#0f172a', '#1e3a8a'], ['#f97316', '#dc2626'], ['#065f46', '#0e7490'], ['#7c2d12', '#b91c1c'], ['#111827', '#374151'], ['#fde68a', '#f472b6'], ['#0ea5e9', '#22c55e']];
+  // Templates: positions relative to the preset's safe area (rx/ry 0..1), sizes relative to its height.
+  var BTPL = [
+    { id: 'creator', name: 'Creator', bg: { type: 'linear', c1: '#4f46e5', c2: '#db2777', angle: 120 }, layers: [
+      { type: 'icon', name: 'tv-minimal-play', rx: 0.1, ry: 0.5, s: 0.42, color: '#ffffff', bg: 'circle', bgColor: 'rgba(255,255,255,0.18)' },
+      { type: 'text', text: 'Your Channel Name', rx: 0.58, ry: 0.4, s: 0.24, rw: 0.78, weight: 800, color: '#ffffff', shadow: true },
+      { type: 'text', text: 'New videos every Friday', rx: 0.58, ry: 0.72, s: 0.1, rw: 0.78, weight: 600, color: '#fde68a' }] },
+    { id: 'tech', name: 'Tech', bg: { type: 'linear', c1: '#0b1020', c2: '#1e3a8a', angle: 160 }, layers: [
+      { type: 'shape', shape: 'rect', rx: 0.5, ry: 0.86, rw: 0.18, rh: 0.03, fill: '#38bdf8', radius: 6 },
+      { type: 'text', text: 'TECH WITH YOU', rx: 0.5, ry: 0.36, s: 0.26, rw: 0.95, weight: 800, color: '#ffffff', font: 'impact' },
+      { type: 'text', text: 'Reviews · Tutorials · Honest tips', rx: 0.5, ry: 0.66, s: 0.1, rw: 0.95, weight: 500, color: '#bae6fd' }] },
+    { id: 'food', name: 'Food & travel', bg: { type: 'linear', c1: '#f97316', c2: '#dc2626', angle: 135 }, layers: [
+      { type: 'icon', name: 'flame', rx: 0.12, ry: 0.5, s: 0.4, color: '#ffffff', bg: 'none' },
+      { type: 'text', text: 'Kolkata Food Diaries', rx: 0.58, ry: 0.4, s: 0.22, rw: 0.78, weight: 800, color: '#ffffff', font: 'serif', shadow: true },
+      { type: 'text', text: 'STREET FOOD · RECIPES · TRAVEL', rx: 0.58, ry: 0.72, s: 0.085, rw: 0.78, weight: 700, color: '#ffffff', pill: true, pillColor: 'rgba(0,0,0,0.28)' }] },
+    { id: 'biz', name: 'Business', bg: { type: 'solid', c1: '#f8fafc', c2: '#e2e8f0', angle: 90 }, layers: [
+      { type: 'shape', shape: 'rect', rx: 0.02, ry: 0.5, rw: 0.012, rh: 0.7, fill: '#4f46e5', radius: 4 },
+      { type: 'icon', name: 'briefcase-business', rx: 0.11, ry: 0.5, s: 0.34, color: '#ffffff', bg: 'rounded', bgColor: '#4f46e5' },
+      { type: 'text', text: 'Your Business Name', rx: 0.57, ry: 0.38, s: 0.2, rw: 0.76, weight: 800, color: '#0f172a', align: 'left' },
+      { type: 'text', text: 'Trusted service in Kolkata since 2010', rx: 0.57, ry: 0.66, s: 0.09, rw: 0.76, weight: 500, color: '#475569', align: 'left' }] },
+    { id: 'hindi', name: 'Hindi', bg: { type: 'linear', c1: '#065f46', c2: '#0e7490', angle: 135 }, layers: [
+      { type: 'icon', name: 'book-open-text', rx: 0.1, ry: 0.5, s: 0.36, color: '#ffffff', bg: 'circle', bgColor: 'rgba(255,255,255,0.16)' },
+      { type: 'text', text: 'आसान पढ़ाई', rx: 0.58, ry: 0.4, s: 0.25, rw: 0.78, weight: 800, color: '#ffffff', font: 'hindi', shadow: true },
+      { type: 'text', text: 'हर हफ़्ते नई वीडियो', rx: 0.58, ry: 0.73, s: 0.11, rw: 0.78, weight: 600, color: '#a7f3d0', font: 'hindi' }] },
+    { id: 'bengali', name: 'Bengali', bg: { type: 'linear', c1: '#7c2d12', c2: '#be123c', angle: 120 }, layers: [
+      { type: 'icon', name: 'sparkles', rx: 0.1, ry: 0.5, s: 0.36, color: '#fde68a', bg: 'none' },
+      { type: 'text', text: 'আমার চ্যানেল', rx: 0.58, ry: 0.4, s: 0.25, rw: 0.78, weight: 800, color: '#ffffff', font: 'bengali', shadow: true },
+      { type: 'text', text: 'প্রতি সপ্তাহে নতুন ভিডিও', rx: 0.58, ry: 0.73, s: 0.11, rw: 0.78, weight: 600, color: '#fde68a', font: 'bengali' }] }
+  ];
+  var BICONS = ['tv-minimal-play', 'clapperboard', 'camera', 'mic', 'music', 'gamepad', 'heart', 'star', 'sparkles', 'flame', 'zap', 'globe', 'map-pin', 'book-open-text', 'briefcase-business', 'palette', 'brush', 'code', 'smartphone', 'monitor-play', 'film', 'image', 'gift', 'cake', 'laugh', 'trending-up', 'chart-line', 'indian-rupee', 'shield-check', 'badge-check', 'users', 'messages-square', 'megaphone', 'house', 'landmark', 'calendar-days', 'clock', 'scissors', 'pen-tool', 'wand-sparkles', 'instagram', 'facebook', 'linkedin', 'rss', 'mail', 'link', 'qr-code', 'sun', 'moon', 'activity'];
+
+  BT.impl('channel-banner-maker', function (root, ctx) {
+    css();
+    var ICONS = window.BT_ICONS || {};
+    var D = { preset: 'yt', bg: { type: 'linear', c1: '#4f46e5', c2: '#db2777', angle: 120, img: null, blur: 0, dim: 25 }, layers: [], guides: true, fmt: 'image/jpeg', tpl: 'creator' };
+    var sel = -1, view = null, drag = null, P = {};
+    function PR() { return bpreset(D.preset); }
+    function W() { return PR().w; }
+    function H() { return PR().h; }
+
+    // ---------------------------------------------------------- icons
+    var iconCache = {};
+    function iconImg(name, color) {
+      var key = name + '|' + color;
+      if (iconCache[key]) return iconCache[key].img;
+      var img = new Image(), rec = { img: null };
+      iconCache[key] = rec;
+      img.onload = function () { rec.img = img; render(); };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 24 24" fill="none" stroke="' +
+        String(color).replace(/[^#a-zA-Z0-9(),.\s]/g, '') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || ICONS.sparkles || '') + '</svg>');
+      return null;
+    }
+
+    // ---------------------------------------------------------- layers
+    var mctx = mkCanvas(4, 4).getContext('2d');
+    function wrap(L) {
+      mctx.font = bfont(L);
+      var maxW = Math.max(L.size, L.w), out = [];
+      String(L.text || '').split('\n').forEach(function (para) {
+        var words = para.split(/\s+/), line = '';
+        words.forEach(function (w) {
+          var t = line ? line + ' ' + w : w;
+          if (line && mctx.measureText(t).width > maxW) { out.push(line); line = w; } else line = t;
+        });
+        out.push(line);
+      });
+      return out;
+    }
+    function box(L) {
+      if (L.type === 'text') {
+        var lines = wrap(L), mw = 0;
+        lines.forEach(function (l) { mw = Math.max(mw, mctx.measureText(l).width); });
+        var padX = L.pill ? L.size * 0.6 : 0, padY = L.pill ? L.size * 0.35 : 0;
+        var bw = Math.max(mw, 10) + padX * 2, bh = lines.length * L.size * 1.18 + padY * 2;
+        var x = L.align === 'left' && !L.pill ? L.x - L.w / 2 : L.align === 'right' && !L.pill ? L.x + L.w / 2 - bw : L.x - bw / 2;
+        return { x: x, y: L.y - bh / 2, w: bw, h: bh, lines: lines };
+      }
+      if (L.type === 'icon') { var s = L.size * (L.bg !== 'none' ? 1.7 : 1); return { x: L.x - s / 2, y: L.y - s / 2, w: s, h: s }; }
+      return { x: L.x - L.w / 2, y: L.y - L.h / 2, w: L.w, h: L.h };
+    }
+    function rr(c, x, y, w, hh, r) {
+      r = Math.max(0, Math.min(r || 0, w / 2, hh / 2));
+      c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + hh, r); c.arcTo(x + w, y + hh, x, y + hh, r);
+      c.arcTo(x, y + hh, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+    }
+    function cover(c, img, x, y, w, hh) {
+      var iw = img.width, ih = img.height, s = Math.max(w / iw, hh / ih), dw = iw * s, dh = ih * s;
+      c.drawImage(img, x + (w - dw) / 2, y + (hh - dh) / 2, dw, dh);
+    }
+    var blurCache = { key: '', canvas: null };
+    function bgImage() {
+      var b = D.bg, img = b.img;
+      if (!b.blur) return img;
+      var key = b.blur + '|' + img.width;
+      if (blurCache.key === key) return blurCache.canvas;
+      // cheap, consistent blur: downscale twice then let drawImage upscale smoothly
+      var f = 1 / (1 + b.blur / 4), t = mkCanvas(img.width * f, img.height * f), tt = mkCanvas(Math.max(8, t.width * f), Math.max(8, t.height * f));
+      var x = t.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, t.width, t.height);
+      tt.getContext('2d').drawImage(t, 0, 0, tt.width, tt.height);
+      blurCache = { key: key, canvas: tt };
+      return tt;
+    }
+    function paintBg(c) {
+      var b = D.bg, w = W(), hh = H();
+      if (b.type === 'image' && b.img) {
+        c.fillStyle = '#000'; c.fillRect(0, 0, w, hh);
+        c.imageSmoothingQuality = 'high';
+        cover(c, bgImage(), 0, 0, w, hh);
+        if (b.dim > 0) { c.fillStyle = 'rgba(0,0,0,' + b.dim / 100 + ')'; c.fillRect(0, 0, w, hh); }
+        return;
+      }
+      if (b.type === 'linear' || b.type === 'radial') {
+        var g;
+        if (b.type === 'radial') g = c.createRadialGradient(w / 2, hh / 2, 0, w / 2, hh / 2, Math.hypot(w, hh) / 2);
+        else {
+          var a = (b.angle || 0) * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a), len = Math.abs(w * dx) + Math.abs(hh * dy);
+          g = c.createLinearGradient(w / 2 - dx * len / 2, hh / 2 - dy * len / 2, w / 2 + dx * len / 2, hh / 2 + dy * len / 2);
+        }
+        g.addColorStop(0, b.c1); g.addColorStop(1, b.c2);
+        c.fillStyle = g;
+      } else c.fillStyle = b.c1;
+      c.fillRect(0, 0, w, hh);
+    }
+    function drawLayer(c, L) {
+      c.save();
+      if (L.type === 'text') {
+        var b = box(L);
+        c.font = bfont(L);
+        if (L.pill) { c.fillStyle = L.pillColor || 'rgba(0,0,0,.3)'; rr(c, b.x, b.y, b.w, b.h, b.h / 2); c.fill(); }
+        if (L.shadow) { c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = L.size * 0.18; c.shadowOffsetY = L.size * 0.06; }
+        c.fillStyle = L.color; c.textBaseline = 'middle';
+        var x;
+        if (L.pill || !L.align || L.align === 'center') { c.textAlign = 'center'; x = L.x; }
+        else if (L.align === 'left') { c.textAlign = 'left'; x = L.x - L.w / 2; }
+        else { c.textAlign = 'right'; x = L.x + L.w / 2; }
+        var lh = L.size * 1.18, y0 = L.y - (b.lines.length - 1) * lh / 2;
+        b.lines.forEach(function (l, i) { c.fillText(l, x, y0 + i * lh + L.size * 0.04); });
+      } else if (L.type === 'icon') {
+        if (L.bg !== 'none') {
+          var bs = L.size * 1.7;
+          c.fillStyle = L.bgColor;
+          if (L.bg === 'circle') { c.beginPath(); c.arc(L.x, L.y, bs / 2, 0, Math.PI * 2); c.fill(); }
+          else { rr(c, L.x - bs / 2, L.y - bs / 2, bs, bs, bs * 0.24); c.fill(); }
+        }
+        var img = iconImg(L.name, L.color);
+        if (img) c.drawImage(img, L.x - L.size / 2, L.y - L.size / 2, L.size, L.size);
+      } else if (L.type === 'shape') {
+        c.globalAlpha = L.opacity == null ? 1 : L.opacity;
+        c.fillStyle = L.fill;
+        if (L.shape === 'circle') { c.beginPath(); c.ellipse(L.x, L.y, L.w / 2, L.h / 2, 0, 0, Math.PI * 2); c.fill(); }
+        else { rr(c, L.x - L.w / 2, L.y - L.h / 2, L.w, L.h, L.radius || 0); c.fill(); }
+      } else if (L.type === 'image' && L.img) {
+        c.globalAlpha = L.opacity == null ? 1 : L.opacity;
+        if (L.radius) { rr(c, L.x - L.w / 2, L.y - L.h / 2, L.w, L.h, L.radius); c.clip(); }
+        c.drawImage(L.img, L.x - L.w / 2, L.y - L.h / 2, L.w, L.h);
+      }
+      c.restore();
+    }
+    /** Paint the design. ui=true adds guides and selection (screen only, never exported). */
+    function paint(c, k, ui) {
+      c.save();
+      c.scale(k, k);
+      paintBg(c);
+      D.layers.forEach(function (L) { drawLayer(c, L); });
+      if (ui && D.guides) drawGuides(c, k);
+      if (ui && sel >= 0 && D.layers[sel]) {
+        var b = box(D.layers[sel]);
+        c.strokeStyle = '#6366f1'; c.lineWidth = 2 / k; c.setLineDash([8 / k, 5 / k]);
+        c.strokeRect(b.x, b.y, b.w, b.h); c.setLineDash([]);
+        corners(b).forEach(function (p) {
+          c.fillStyle = '#fff'; c.strokeStyle = '#6366f1'; c.lineWidth = 2.5 / k;
+          c.fillRect(p.x - 7 / k, p.y - 7 / k, 14 / k, 14 / k); c.strokeRect(p.x - 7 / k, p.y - 7 / k, 14 / k, 14 / k);
+        });
+      }
+      c.restore();
+    }
+    function drawGuides(c, k) {
+      var p = PR(), w = p.w, hh = p.h, s = p.safe;
+      // dim everything outside the safe area
+      c.save();
+      c.fillStyle = 'rgba(0,0,0,.28)';
+      c.beginPath(); c.rect(0, 0, w, hh); c.rect(s.x, s.y, s.w, s.h); c.fill('evenodd');
+      c.restore();
+      c.font = '600 ' + Math.round(13 / k) + 'px system-ui, sans-serif';
+      c.textBaseline = 'top';
+      p.guides.forEach(function (g, i) {
+        c.strokeStyle = g.c; c.lineWidth = (g.bold ? 3 : 2) / k;
+        c.setLineDash(g.bold ? [] : [10 / k, 7 / k]);
+        c.strokeRect(g.x + 1 / k, g.y + 1 / k, g.w - 2 / k, g.h - 2 / k);
+        c.setLineDash([]);
+        // label placement: safe area top-left, others top-right; YouTube's
+        // desktop/tablet strips share a top edge, so stagger those labels
+        var tw = c.measureText(g.l).width + 10 / k, ly = g.y + 4 / k;
+        var lx = g.bold ? g.x + 4 / k : g.x + g.w - tw - 4 / k;
+        if (p.id === 'yt' && i === 1) lx = g.x + 4 / k;
+        if (p.id === 'yt' && i === 2) { lx = g.x + 4 / k; ly = g.y + g.h - 24 / k; }
+        c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(lx, ly, tw, 20 / k);
+        c.fillStyle = '#fff'; c.fillText(g.l, lx + 5 / k, ly + 3 / k);
+      });
+      if (p.circle) {
+        var ci = p.circle;
+        c.fillStyle = 'rgba(239,68,68,.22)'; c.strokeStyle = '#ef4444'; c.lineWidth = 2 / k; c.setLineDash([8 / k, 6 / k]);
+        c.beginPath();
+        if (ci.sq) rr(c, ci.cx - ci.r, ci.cy - ci.r, ci.r * 2, ci.r * 2, ci.r * 0.12); else c.arc(ci.cx, ci.cy, ci.r, 0, Math.PI * 2);
+        c.fill(); c.stroke(); c.setLineDash([]);
+        var tw2 = c.measureText(ci.l).width + 10 / k;
+        c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(ci.cx - tw2 / 2, ci.cy - ci.r * 0.55, tw2, 20 / k);
+        c.fillStyle = '#fff'; c.fillText(ci.l, ci.cx - tw2 / 2 + 5 / k, ci.cy - ci.r * 0.55 + 3 / k);
+      }
+    }
+    function corners(b) { return [{ x: b.x, y: b.y, ax: b.x + b.w, ay: b.y + b.h }, { x: b.x + b.w, y: b.y, ax: b.x, ay: b.y + b.h }, { x: b.x, y: b.y + b.h, ax: b.x + b.w, ay: b.y }, { x: b.x + b.w, y: b.y + b.h, ax: b.x, ay: b.y }]; }
+
+    // ---------------------------------------------------------- templates
+    function applyTemplate(id) {
+      var t = BTPL.filter(function (x) { return x.id === id; })[0] || BTPL[0], s = PR().safe;
+      Object.assign(D.bg, { blur: 0, dim: 25 }, t.bg);
+      if (D.bg.type !== 'image') D.bg.img = D.bg.img || null;
+      D.layers = t.layers.map(function (l) {
+        var L = Object.assign({}, l);
+        L.x = s.x + l.rx * s.w; L.y = s.y + l.ry * s.h;
+        if (l.type === 'text') { L.size = l.s * s.h; L.w = l.rw * s.w; L.font = l.font || 'sans'; L.align = l.align || 'center'; if (L.align === 'left') L.x = s.x + (l.rx - l.rw / 2) * s.w + L.w / 2; }
+        else if (l.type === 'icon') L.size = l.s * s.h;
+        else if (l.type === 'shape') { L.w = Math.max(4, l.rw * s.w); L.h = Math.max(4, l.rh * s.h); L.radius = (l.radius || 0) * s.h / 200; }
+        ['rx', 'ry', 's', 'rw', 'rh'].forEach(function (k) { delete L[k]; });
+        return L;
+      });
+      D.tpl = id; sel = -1;
+    }
+    function tplThumb(t) {
+      var c = mkCanvas(220, 124), x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 220, 124);
+      g.addColorStop(0, t.bg.c1); g.addColorStop(1, t.bg.type === 'solid' ? t.bg.c1 : t.bg.c2);
+      x.fillStyle = g; x.fillRect(0, 0, 220, 124);
+      var txt = t.layers.filter(function (l) { return l.type === 'text'; });
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      txt.forEach(function (l, i) {
+        x.fillStyle = l.color; x.font = (i ? '600 11px ' : '800 17px ') + (BFONTS.filter(function (f) { return f[0] === (l.font || 'sans'); })[0] || BFONTS[0])[2];
+        x.fillText(l.text, 110, 54 + i * 24, 200);
+      });
+      return c;
+    }
+
+    // ---------------------------------------------------------- view
+    function fit() {
+      var cv = view.cv, st = view.stage, cs = getComputedStyle(st);
+      var aw = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (aw <= 0) aw = 320;
+      var ah = Math.min(window.innerHeight * 0.6, 640), s = Math.min(aw / W(), ah / H());
+      var cw = Math.max(40, Math.floor(W() * s)), ch = Math.max(30, Math.floor(H() * s)), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+      var pw = Math.round(cw * dpr), ph = Math.round(ch * dpr);
+      if (cv.width !== pw) cv.width = pw;
+      if (cv.height !== ph) cv.height = ph;
+      view.k = pw / W(); view.cssK = cw / W();
+    }
+    var raf = 0;
+    function render() {
+      if (!view || raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = 0;
+        fit();
+        var c = view.cv.getContext('2d');
+        c.setTransform(1, 0, 0, 1, 0, 0);
+        c.clearRect(0, 0, view.cv.width, view.cv.height);
+        paint(c, view.k, true);
+        devicesSoon();
+      });
+    }
+    function pt(e) { var r = view.cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W(), y: (e.clientY - r.top) / r.height * H() }; }
+    function hit(p) {
+      for (var i = D.layers.length - 1; i >= 0; i--) { var b = box(D.layers[i]); if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) return i; }
+      return -1;
+    }
+    function down(e) {
+      if (e.button > 0) return;
+      view.cv.setPointerCapture(e.pointerId);
+      var p = pt(e), tol = 16 / view.cssK;
+      if (sel >= 0 && D.layers[sel]) {
+        var b = box(D.layers[sel]), cs = corners(b);
+        for (var i = 0; i < 4; i++) if (Math.abs(p.x - cs[i].x) <= tol && Math.abs(p.y - cs[i].y) <= tol) {
+          var L = D.layers[sel];
+          drag = { type: 'resize', L: L, ax: cs[i].ax, ay: cs[i].ay, dx: cs[i].x > cs[i].ax ? 1 : -1, dy: cs[i].y > cs[i].ay ? 1 : -1, b0: b, s0: { size: L.size, w: L.w, h: L.h } };
+          return;
+        }
+      }
+      var hi = hit(p);
+      if (hi !== sel) { sel = hi; refreshLayers(); }
+      if (hi >= 0) drag = { type: 'move', L: D.layers[hi], sx: p.x, sy: p.y, x0: D.layers[hi].x, y0: D.layers[hi].y };
+      render();
+    }
+    function move(e) {
+      if (!drag) return;
+      var p = pt(e), L = drag.L;
+      if (drag.type === 'move') {
+        L.x = drag.x0 + p.x - drag.sx; L.y = drag.y0 + p.y - drag.sy;
+        var snap = 8 / view.cssK;
+        if (Math.abs(L.x - W() / 2) < snap) L.x = W() / 2;
+        if (Math.abs(L.y - H() / 2) < snap) L.y = H() / 2;
+      } else {
+        var nw = Math.max(20, Math.abs(p.x - drag.ax)), nh = Math.max(20, Math.abs(p.y - drag.ay)), s0 = drag.s0;
+        var f = Math.max(nw / drag.b0.w, nh / drag.b0.h);
+        if (L.type === 'text') { L.size = clamp(s0.size * f, 8, 900); L.w = s0.w * f; }
+        else if (L.type === 'icon') L.size = clamp(s0.size * f, 10, 2000);
+        else if (L.type === 'image') { L.w = s0.w * f; L.h = s0.h * f; }
+        else { L.w = nw; L.h = nh; }
+        var nb = box(L);
+        L.x += (drag.dx > 0 ? drag.ax : drag.ax - nb.w) - nb.x;
+        L.y += (drag.dy > 0 ? drag.ay : drag.ay - nb.h) - nb.y;
+        syncProps();
+      }
+      render();
+    }
+    function up() { drag = null; }
+    function key(e) {
+      if (sel < 0 || !D.layers[sel]) return;
+      var L = D.layers[sel], st = e.shiftKey ? 40 : 8;
+      var m = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (m) { L.x += m[0] * st; L.y += m[1] * st; }
+      else if (e.key === 'Delete' || e.key === 'Backspace') { D.layers.splice(sel, 1); sel = -1; refreshLayers(); }
+      else if (e.key === 'Escape') { sel = -1; refreshLayers(); }
+      else return;
+      e.preventDefault();
+      render();
+    }
+
+    // ---------------------------------------------------------- devices strip
+    var devTimer = 0;
+    function devicesSoon() { clearTimeout(devTimer); devTimer = setTimeout(drawDevices, 180); }
+    function drawDevices() {
+      if (!P.devs) return;
+      var p = PR(), k = Math.min(1, 640 / p.w), full = mkCanvas(p.w * k, p.h * k);
+      paint(full.getContext('2d'), k, false);
+      P.devs.innerHTML = '';
+      p.devices.forEach(function (d) {
+        var maxW = 240, sc = Math.min(maxW / d[3], 140 / d[4]), c = mkCanvas(d[3] * sc, d[4] * sc);
+        c.getContext('2d').drawImage(full, d[1] * k, d[2] * k, d[3] * k, d[4] * k, 0, 0, c.width, c.height);
+        c.setAttribute('role', 'img'); c.setAttribute('aria-label', d[0] + ' preview');
+        P.devs.appendChild(h('figure.yt-dev', null, [h('div.sc', null, [c]), h('figcaption', { text: d[0] + ' · ' + Math.round(d[3]) + ' × ' + Math.round(d[4]) })]));
+      });
+    }
+
+    // ---------------------------------------------------------- UI helpers
+    function fld(label, control, hint) {
+      var id = control.id || (control.id = nid('b'));
+      return h('div.field', null, [h('label', { 'for': id, text: label }), control, hint ? h('span.hint', { text: hint }) : null]);
+    }
+    function rng(label, min, max, step, value, fmt, onInput) {
+      var id = nid('r'), el = h('input', { type: 'range', min: min, max: max, step: step, id: id });
+      el.value = value;
+      var out = h('output', { 'for': id });
+      function upd() { var t = fmt ? fmt(+el.value) : el.value; out.textContent = t; el.setAttribute('aria-valuetext', t); }
+      el.addEventListener('input', function () { upd(); onInput(+el.value); });
+      upd();
+      var w = h('div.field', null, [h('label', { 'for': id, text: label }), h('div.yt-range', null, [el, out])]);
+      w.set = function (v) { el.value = v; upd(); };
+      return w;
+    }
+    function colr(label, value, onInput) {
+      var el = h('input', { type: 'color', id: nid('c'), 'aria-label': label });
+      el.value = /^#[0-9a-f]{6}$/i.test(value) ? value : '#ffffff';
+      el.addEventListener('input', function () { onInput(el.value); });
+      return h('div.field', null, [h('label', { 'for': el.id, text: label }), el]);
+    }
+    function sg(label, items, value, onChange) {
+      var id = nid('s'), el = h('div.seg', { role: 'group', 'aria-label': label, id: id, html: items.map(function (it) {
+        return '<button type="button" data-v="' + esc(it[0]) + '" class="' + (it[0] === value ? 'active' : '') + '" aria-pressed="' + (it[0] === value) + '">' + esc(it[1]) + '</button>';
+      }).join('') });
+      wireSeg(el, onChange);
+      var w = h('div.field', null, [h('span.label', { text: label }), el]);
+      w.set = function (v) { setSeg(el, v); };
+      return w;
+    }
+    function bt(cls, icon, text, onClick) {
+      var b = h('button.btn' + (cls ? '.' + cls.split(' ').join('.') : ''), { type: 'button', html: (icon ? BT.icon(icon) : '') + '<span>' + esc(text) + '</span>' });
+      b.addEventListener('click', onClick);
+      return b;
+    }
+    function filePick(label, onFile) {
+      var fi = h('input', { type: 'file', accept: 'image/*', 'aria-label': label });
+      fi.addEventListener('change', function () { var f = fi.files[0]; fi.value = ''; if (f) onFile(f); });
+      return h('label.btn.btn-sm.yt-file', { html: BT.icon('image-plus') + '<span>' + esc(label) + '</span>' }, [fi]);
+    }
+    function decode(file, max) {
+      if (!/^image\//.test(file.type)) return Promise.reject(new Error('Please choose an image file'));
+      return BT.loadImage(file).then(function (img) {
+        var s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight)), c = mkCanvas(img.naturalWidth * s, img.naturalHeight * s);
+        var x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, c.width, c.height);
+        try { URL.revokeObjectURL(img.src); } catch (e) { /* ignore */ }
+        return c;
+      });
+    }
+    function sec(title, kids) { return h('div.yt-bsec', null, [h('h4', { text: title })].concat(kids)); }
+
+    // ---------------------------------------------------------- panel
+    function build() {
+      root.innerHTML = hero('panels-top-left', 'Banners and covers with safe-area guides', 'Designed and exported in your browser. Guides are only shown on screen — they are never part of the download.');
+      var stage = h('div.yt-stage');
+      var under = h('div.yt-under');
+      P.devs = h('div.yt-devs', { 'aria-label': 'Device previews' });
+      var left = h('div', null, [stage, under, h('div.yt-sec.yt-gap', { text: 'How it looks on each device' }), P.devs]);
+      var panel = h('div.card.yt-bpanel');
+      root.appendChild(h('div.split.wide-left', null, [h('div.yt-sticky', null, [left]), h('div', null, [panel])]));
+      var cv = h('canvas', { tabindex: '0', role: 'img', 'aria-label': 'Banner canvas. Click a layer to select it, drag to move, drag a corner to resize. Arrow keys move the selected layer, Delete removes it.' });
+      stage.appendChild(cv);
+      view = { cv: cv, stage: stage, k: 1, cssK: 1 };
+      cv.addEventListener('pointerdown', down);
+      cv.addEventListener('pointermove', move);
+      cv.addEventListener('pointerup', up);
+      cv.addEventListener('pointercancel', up);
+      cv.addEventListener('keydown', key);
+      if (window.ResizeObserver) new ResizeObserver(function () { render(); }).observe(stage);
+      else window.addEventListener('resize', render);
+      P.under = under;
+
+      // size
+      P.preset = h('select', { id: nid('p'), html: BPRESETS.map(function (p) { return '<option value="' + p.id + '">' + esc(p.name) + '</option>'; }).join('') });
+      P.preset.value = D.preset;
+      P.preset.addEventListener('change', function () { setPreset(P.preset.value); });
+      panel.appendChild(h('h3', { text: 'Size' }));
+      panel.appendChild(fld('Banner type', P.preset));
+      var g = h('label.check', null, [h('input', { type: 'checkbox', checked: D.guides, onchange: function (e) { D.guides = e.target.checked; render(); } }), ' Show safe-area guides']);
+      panel.appendChild(g);
+      P.note = h('p.small.muted', { style: { margin: '8px 0 0' } });
+      panel.appendChild(P.note);
+
+      // templates
+      var tg = h('div.yt-tpls', { role: 'group', 'aria-label': 'Templates' });
+      BTPL.forEach(function (t) {
+        var b = h('button', { type: 'button', 'aria-pressed': String(t.id === D.tpl), 'aria-label': 'Template: ' + t.name }, [tplThumb(t), h('span', { text: t.name })]);
+        b.addEventListener('click', function () {
+          applyTemplate(t.id);
+          BT.$$('button', tg).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+          syncBg(); refreshLayers(); render();
+        });
+        tg.appendChild(b);
+      });
+      panel.appendChild(sec('Templates', [tg]));
+
+      // background
+      P.bgType = sg('Background', [['solid', 'Colour'], ['linear', 'Gradient'], ['radial', 'Glow'], ['image', 'Photo']], D.bg.type, function (v) { D.bg.type = v; syncBg(); render(); if (v === 'image' && !D.bg.img) BT.toast('Choose a background photo'); });
+      P.c1 = colr('Colour 1', D.bg.c1, function (v) { D.bg.c1 = v; render(); });
+      P.c2 = colr('Colour 2', D.bg.c2, function (v) { D.bg.c2 = v; render(); });
+      P.ang = rng('Gradient angle', 0, 360, 5, D.bg.angle, function (v) { return v + '°'; }, function (v) { D.bg.angle = v; render(); });
+      var grads = h('div.yt-grads', { role: 'group', 'aria-label': 'Gradient presets' });
+      BGRADS.forEach(function (gc) {
+        var b = h('button', { type: 'button', 'aria-label': 'Gradient ' + gc[0] + ' to ' + gc[1], style: { background: 'linear-gradient(135deg,' + gc[0] + ',' + gc[1] + ')' } });
+        b.addEventListener('click', function () { D.bg.c1 = gc[0]; D.bg.c2 = gc[1]; if (D.bg.type === 'solid' || D.bg.type === 'image') D.bg.type = 'linear'; syncBg(); render(); });
+        grads.appendChild(b);
+      });
+      P.colors = h('div', null, [h('div.yt-colors', null, [P.c1, P.c2]), P.ang, grads]);
+      P.imgBox = h('div', null, [
+        filePick('Choose photo', function (f) { decode(f, 3200).then(function (c) { D.bg.img = c; blurCache.key = ''; D.bg.type = 'image'; syncBg(); render(); }).catch(function (e) { BT.toast(e.message, 'error'); }); }),
+        h('p.small.muted', { text: 'Fills the whole banner (cover). Use a photo at least as wide as the banner.', style: { margin: '8px 0 12px' } }),
+        P.blur = rng('Blur', 0, 40, 1, D.bg.blur, null, function (v) { D.bg.blur = v; render(); }),
+        P.dim = rng('Darken', 0, 85, 1, D.bg.dim, function (v) { return v + '%'; }, function (v) { D.bg.dim = v; render(); })
+      ]);
+      panel.appendChild(sec('Background', [P.bgType, P.colors, P.imgBox]));
+
+      // layers
+      var addBar = h('div.btn-group', null, [
+        bt('btn-sm', 'type', 'Text', function () { var s = PR().safe; addLayer({ type: 'text', text: 'Your text', x: s.x + s.w / 2, y: s.y + s.h / 2, w: s.w * 0.8, size: s.h * 0.18, weight: 800, color: '#ffffff', font: 'sans', align: 'center', shadow: true }); }),
+        bt('btn-sm', 'star', 'Sticker', function () { var s = PR().safe; addLayer({ type: 'icon', name: 'star', x: s.x + s.w / 2, y: s.y + s.h / 2, size: s.h * 0.3, color: '#ffffff', bg: 'none', bgColor: '#000000' }); }),
+        bt('btn-sm', 'square', 'Shape', function () { var s = PR().safe; addLayer({ type: 'shape', shape: 'rect', x: s.x + s.w / 2, y: s.y + s.h / 2, w: s.w * 0.4, h: s.h * 0.3, fill: '#ffffff', opacity: 0.85, radius: s.h * 0.05 }); }),
+        filePick('Logo', function (f) {
+          decode(f, 1600).then(function (c) {
+            var s = PR().safe, hh = s.h * 0.6, w = hh * c.width / c.height;
+            if (w > s.w * 0.5) { w = s.w * 0.5; hh = w * c.height / c.width; }
+            addLayer({ type: 'image', img: c, x: s.x + w / 2 + s.w * 0.04, y: s.y + s.h / 2, w: w, h: hh, radius: 0, opacity: 1 });
+          }).catch(function (e) { BT.toast(e.message, 'error'); });
+        })
+      ]);
+      P.layers = h('div.yt-layers');
+      panel.appendChild(sec('Layers', [addBar, P.layers]));
+      P.props = h('div');
+      panel.appendChild(P.propSec = sec('Selected layer', [P.props]));
+
+      // export
+      P.fmt = sg('Format', [['image/jpeg', 'JPG'], ['image/png', 'PNG']], D.fmt, function (v) { D.fmt = v; });
+      var dl = bt('btn-primary', 'download', 'Download', function () { BT.busy(dl, exportImage, 'Rendering…'); });
+      dl.setAttribute('data-download', '');
+      P.size = h('div.yt-size', { 'aria-live': 'polite' });
+      panel.appendChild(sec('Export', [P.fmt, h('div.btn-group', null, [dl]), P.size]));
+
+      syncBg(); refreshLayers(); render();
+      if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(render);
+    }
+    function syncBg() {
+      P.bgType.set(D.bg.type);
+      P.colors.classList.toggle('hidden', D.bg.type === 'image');
+      P.c2.classList.toggle('hidden', D.bg.type === 'solid');
+      P.ang.classList.toggle('hidden', D.bg.type !== 'linear');
+      BT.$('input', P.c1).value = /^#[0-9a-f]{6}$/i.test(D.bg.c1) ? D.bg.c1 : '#000000';
+      BT.$('input', P.c2).value = /^#[0-9a-f]{6}$/i.test(D.bg.c2) ? D.bg.c2 : '#000000';
+      P.ang.set(D.bg.angle || 0);
+      P.imgBox.classList.toggle('hidden', D.bg.type !== 'image');
+      P.blur.set(D.bg.blur); P.dim.set(D.bg.dim);
+    }
+    function setPreset(id) {
+      var o = PR(), n = bpreset(id), so = o.safe, sn = n.safe, f = Math.min(sn.w / so.w, sn.h / so.h);
+      D.layers.forEach(function (L) {
+        L.x = sn.x + (L.x - so.x) / so.w * sn.w; L.y = sn.y + (L.y - so.y) / so.h * sn.h;
+        if (L.type === 'text') { L.size *= f; L.w = Math.min(L.w * sn.w / so.w, n.w * 0.95); }
+        else if (L.type === 'icon') L.size *= f;
+        else { L.w *= f; L.h *= f; if (L.radius) L.radius *= f; }
+      });
+      D.preset = id;
+      D.fmt = n.fmt; P.fmt.set(n.fmt);
+      P.size.textContent = '';
+      refreshLayers(); render();
+    }
+    function refreshUnder() {
+      var p = PR();
+      P.under.innerHTML = BT.icon('move') + '<span>' + esc(p.name.replace(/ \(.*\)$/, '')) + ' · exports at ' + p.w + ' × ' + p.h + ' px</span>' +
+        (D.guides ? '<span><span style="color:#22c55e">■</span> safe area</span>' : '');
+      P.note.textContent = p.note;
+    }
+    function addLayer(L) { D.layers.push(L); sel = D.layers.length - 1; refreshLayers(); render(); }
+    function layerName(L) {
+      if (L.type === 'text') return '“' + String(L.text).replace(/\n/g, ' ').slice(0, 26) + '”';
+      if (L.type === 'icon') return 'Sticker: ' + L.name.replace(/-/g, ' ');
+      if (L.type === 'image') return 'Logo / image';
+      return 'Shape: ' + L.shape;
+    }
+    function smallBtn(icon, label, fn) {
+      var b = h('button.btn.btn-sm.btn-ghost.yt-icon-btn', { type: 'button', 'aria-label': label, title: label, html: BT.icon(icon) });
+      b.addEventListener('click', fn);
+      return b;
+    }
+    function refreshLayers() {
+      refreshUnder();
+      P.layers.innerHTML = '';
+      if (!D.layers.length) P.layers.appendChild(h('p.small.muted', { text: 'No layers yet — add text, a sticker or your logo.' }));
+      for (var i = D.layers.length - 1; i >= 0; i--) (function (i) {
+        var L = D.layers[i];
+        var t = h('button.t', { type: 'button', text: layerName(L), 'aria-pressed': String(i === sel) });
+        t.addEventListener('click', function () { sel = i; refreshLayers(); render(); });
+        P.layers.appendChild(h('div.yt-li' + (i === sel ? '.on' : ''), null, [
+          h('span.icon-sm', { html: BT.icon(L.type === 'text' ? 'type' : L.type === 'icon' ? 'star' : L.type === 'image' ? 'image' : 'square') }), t,
+          smallBtn('chevron-down', 'Move down', function () { if (i > 0) { var x = D.layers.splice(i, 1)[0]; D.layers.splice(i - 1, 0, x); if (sel === i) sel = i - 1; refreshLayers(); render(); } }),
+          smallBtn('copy', 'Duplicate', function () { var c = Object.assign({}, L); c.x += 30; c.y += 30; D.layers.splice(i + 1, 0, c); sel = i + 1; refreshLayers(); render(); }),
+          smallBtn('trash-2', 'Delete', function () { D.layers.splice(i, 1); if (sel === i) sel = -1; else if (sel > i) sel--; refreshLayers(); render(); })
+        ]));
+      })(i);
+      buildProps();
+    }
+    function syncProps() { if (P.sync) P.sync(); }
+    function buildProps() {
+      P.props.innerHTML = ''; P.sync = null;
+      var L = D.layers[sel];
+      P.propSec.classList.toggle('hidden', !L);
+      if (!L) return;
+      var kids = [];
+      if (L.type === 'text') {
+        var ta = h('textarea', { rows: 2, style: { minHeight: '0' } });
+        ta.value = L.text;
+        ta.addEventListener('input', function () { L.text = ta.value; render(); var b = BT.$('.yt-li.on .t', P.layers); if (b) b.textContent = layerName(L); });
+        kids.push(fld('Text (Hindi, Bengali and emoji work)', ta));
+        var fs = h('select', { html: BFONTS.map(function (f) { return '<option value="' + f[0] + '">' + esc(f[1]) + '</option>'; }).join('') });
+        fs.value = L.font || 'sans';
+        fs.addEventListener('change', function () { L.font = fs.value; render(); });
+        kids.push(fld('Font', fs));
+        var sz = rng('Size', 10, Math.round(H() * 0.5), 1, Math.round(L.size), function (v) { return v + ' px'; }, function (v) { L.size = v; render(); });
+        kids.push(sz);
+        kids.push(sg('Weight', [['400', 'Regular'], ['600', 'Semibold'], ['800', 'Bold']], String(L.weight >= 700 ? 800 : L.weight >= 500 ? 600 : 400), function (v) { L.weight = +v; render(); }));
+        kids.push(sg('Align', [['left', 'Left'], ['center', 'Centre'], ['right', 'Right']], L.align || 'center', function (v) { L.align = v; render(); }));
+        kids.push(h('div.yt-colors', null, [colr('Text colour', L.color, function (v) { L.color = v; render(); }), colr('Label colour', /^#/.test(L.pillColor || '') ? L.pillColor : '#000000', function (v) { L.pillColor = v; render(); })]));
+        kids.push(h('div.yt-checks', { style: { marginTop: '12px' } }, [
+          h('label.check', null, [h('input', { type: 'checkbox', checked: !!L.shadow, onchange: function (e) { L.shadow = e.target.checked; render(); } }), ' Shadow']),
+          h('label.check', null, [h('input', { type: 'checkbox', checked: !!L.pill, onchange: function (e) { L.pill = e.target.checked; if (!L.pillColor) L.pillColor = '#000000'; render(); } }), ' Label background']),
+          h('label.check', null, [h('input', { type: 'checkbox', checked: !!L.italic, onchange: function (e) { L.italic = e.target.checked; render(); } }), ' Italic'])
+        ]));
+        P.sync = function () { sz.set(Math.round(L.size)); };
+      } else if (L.type === 'icon') {
+        var search = h('input', { type: 'search', placeholder: 'Search stickers…', 'aria-label': 'Search stickers' });
+        var grid = h('div.yt-icons', { role: 'group', 'aria-label': 'Stickers' });
+        var all = BICONS.filter(function (n) { return ICONS[n]; }).concat(Object.keys(ICONS).filter(function (n) { return BICONS.indexOf(n) < 0; }));
+        var fill = function () {
+          var q = search.value.toLowerCase().trim();
+          grid.innerHTML = all.filter(function (n) { return !q || n.indexOf(q) >= 0; }).slice(0, 120).map(function (n) {
+            return '<button type="button" data-n="' + esc(n) + '" aria-label="' + esc(n.replace(/-/g, ' ')) + '" aria-pressed="' + (n === L.name) + '">' + BT.icon(n) + '</button>';
+          }).join('');
+        };
+        grid.addEventListener('click', function (e) { var b = e.target.closest('button[data-n]'); if (!b) return; L.name = b.getAttribute('data-n'); fill(); render(); refreshLayersSoft(); });
+        search.addEventListener('input', fill);
+        fill();
+        kids.push(search, grid);
+        var isz = rng('Size', 20, Math.round(H() * 0.6), 1, Math.round(L.size), function (v) { return v + ' px'; }, function (v) { L.size = v; render(); });
+        kids.push(isz);
+        kids.push(h('div.yt-colors', { style: { marginTop: '4px' } }, [colr('Colour', L.color, function (v) { L.color = v; render(); }), colr('Badge colour', /^#/.test(L.bgColor) ? L.bgColor : '#000000', function (v) { L.bgColor = v; render(); })]));
+        kids.push(sg('Badge', [['none', 'None'], ['circle', 'Circle'], ['rounded', 'Rounded']], L.bg, function (v) { L.bg = v; render(); }));
+        P.sync = function () { isz.set(Math.round(L.size)); };
+      } else if (L.type === 'shape') {
+        kids.push(sg('Shape', [['rect', 'Rectangle'], ['circle', 'Ellipse']], L.shape, function (v) { L.shape = v; render(); }));
+        kids.push(colr('Fill', L.fill, function (v) { L.fill = v; render(); }));
+        kids.push(rng('Opacity', 0.05, 1, 0.05, L.opacity == null ? 1 : L.opacity, function (v) { return Math.round(v * 100) + '%'; }, function (v) { L.opacity = v; render(); }));
+        kids.push(rng('Corner radius', 0, Math.round(H() * 0.2), 1, L.radius || 0, null, function (v) { L.radius = v; render(); }));
+      } else if (L.type === 'image') {
+        var isz2 = rng('Width', 20, W(), 1, Math.round(L.w), function (v) { return v + ' px'; }, function (v) { var r = L.h / L.w; L.w = v; L.h = v * r; render(); });
+        kids.push(isz2);
+        kids.push(rng('Opacity', 0.05, 1, 0.05, L.opacity == null ? 1 : L.opacity, function (v) { return Math.round(v * 100) + '%'; }, function (v) { L.opacity = v; render(); }));
+        kids.push(rng('Corner radius', 0, Math.round(Math.min(L.w, L.h) / 2), 1, L.radius || 0, null, function (v) { L.radius = v; render(); }));
+        P.sync = function () { isz2.set(Math.round(L.w)); };
+      }
+      var cen = bt('btn-sm btn-ghost', 'move', 'Centre in safe area', function () { var s = PR().safe; L.x = s.x + s.w / 2; L.y = s.y + s.h / 2; render(); });
+      kids.push(h('div.btn-group', { style: { marginTop: '6px' } }, [cen]));
+      kids.forEach(function (k) { P.props.appendChild(k); });
+    }
+    function refreshLayersSoft() { var b = BT.$('.yt-li.on .t', P.layers); if (b && D.layers[sel]) b.textContent = layerName(D.layers[sel]); }
+
+    // ---------------------------------------------------------- export
+    function exportImage() {
+      var p = PR();
+      var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
+      // make sure sticker images are decoded before the final render
+      var icons = D.layers.filter(function (L) { return L.type === 'icon'; }).map(function (L) {
+        return new Promise(function (res) {
+          if (iconImg(L.name, L.color)) return res();
+          var tries = 0, t = setInterval(function () { if (iconImg(L.name, L.color) || ++tries > 40) { clearInterval(t); res(); } }, 50);
+        });
+      });
+      return Promise.all([ready].concat(icons)).then(function () {
+        var out = mkCanvas(p.w, p.h);
+        paint(out.getContext('2d'), 1, false);
+        var mime = D.fmt;
+        var limit = p.max || 0;
+        var tryQ = function (m, q) {
+          return BT.canvasToBlob(out, m, m === 'image/png' ? undefined : q).then(function (blob) {
+            if (!blob) throw new Error('Your browser could not create the image');
+            if (limit && blob.size > limit) {
+              if (m === 'image/png') { BT.toast('PNG is over 6 MB — switching to JPG'); return tryQ('image/jpeg', 0.92); }
+              if (q > 0.55) return tryQ(m, Math.round((q - 0.08) * 100) / 100);
+            }
+            return { blob: blob, mime: m, q: q };
+          });
+        };
+        return tryQ(mime, 0.92).then(function (r) {
+          var ext = r.mime === 'image/png' ? 'png' : 'jpg';
+          var name = slug(p.name.replace(/\(.*\)/, '')) + '-' + p.w + 'x' + p.h + '.' + ext;
+          BT.download(r.blob, name, r.mime);
+          var over = limit && r.blob.size > limit;
+          P.size.innerHTML = (over ? '<span class="badge danger">' : '<span class="badge ok">') + esc(BT.fmtBytes(r.blob.size)) + '</span> ' +
+            esc(p.w + ' × ' + p.h + ' ' + ext.toUpperCase() + (r.mime === 'image/jpeg' ? ' · quality ' + Math.round(r.q * 100) + '%' : '')) +
+            (limit ? (over ? ' — still over YouTube’s 6 MB limit; try a simpler background.' : ' — within YouTube’s 6 MB limit') : '');
+          BT.toast('Saved ' + name);
+        });
+      });
+    }
+
+    applyTemplate('creator');
+    build();
+    void ctx;
+  });
+
+  // =================================================== 9. Earnings estimator
+  /** Pure estimate (monthly figures). Exposed on the element for tests via data attributes only. */
+  function earnCalc(o) {
+    var lo = Math.min(o.rpmLo, o.rpmHi), hi = Math.max(o.rpmLo, o.rpmHi);
+    var slo = Math.min(o.sRpmLo, o.sRpmHi), shi = Math.max(o.sRpmLo, o.sRpmHi);
+    var mem = o.members * o.memPrice * o.memShare / 100;
+    var r = {
+      long: [o.views / 1000 * lo, o.views / 1000 * hi],
+      shorts: [o.sViews / 1000 * slo, o.sViews / 1000 * shi],
+      mem: [mem, mem], spon: [o.spon, o.spon], other: [o.other, o.other]
+    };
+    r.total = [0, 1].map(function (i) { return r.long[i] + r.shorts[i] + r.mem[i] + r.spon[i] + r.other[i]; });
+    return r;
+  }
+
+  BT.impl('youtube-earnings-calculator', function (root) {
+    css();
+    var period = 'month';
+    root.innerHTML =
+      hero('indian-rupee', 'Estimate YouTube income in rupees', 'Based on the views and RPM you enter. It is an estimate only — real earnings vary a lot.') +
+      '<div class="split"><div><div class="card">' +
+        '<div class="field"><span class="label">I’ll enter views</span>' + seg('ye-per', [['month', 'Per month'], ['day', 'Per day']], period, 'Views period') + '</div>' +
+        field('ye-views', 'Long-form video views', inp('ye-views', 'text', 'e.g. 1,00,000', '100000', ' inputmode="decimal" autocomplete="off"'), 'Views on regular (non-Shorts) videos that can show ads.') +
+        '<div class="row cols-2">' + field('ye-lo', 'RPM — low (₹ per 1,000 views)', inp('ye-lo', 'text', '₹', '30', ' inputmode="decimal"')) +
+          field('ye-hi', 'RPM — high (₹ per 1,000 views)', inp('ye-hi', 'text', '₹', '120', ' inputmode="decimal"')) + '</div>' +
+        '<p class="small muted" style="margin:-6px 0 14px">The ₹30–₹120 pre-filled here is <strong>only an example to show how the maths works</strong> — not an average. Find your real RPM in YouTube Studio → Analytics → Revenue, and enter the same value in both boxes for a single figure.</p>' +
+        '<details class="yt-faq" id="ye-more"><summary>Shorts, memberships and sponsorships (optional)</summary><div style="margin-top:12px">' +
+          field('ye-sv', 'Shorts views', inp('ye-sv', 'text', '0', '', ' inputmode="decimal"')) +
+          '<div class="row cols-2">' + field('ye-slo', 'Shorts RPM — low (₹)', inp('ye-slo', 'text', '₹', '2', ' inputmode="decimal"')) + field('ye-shi', 'Shorts RPM — high (₹)', inp('ye-shi', 'text', '₹', '8', ' inputmode="decimal"')) + '</div>' +
+          '<p class="small muted" style="margin:-6px 0 14px">Shorts are paid from a shared revenue pool, so their RPM is usually much lower than long videos. Again, these numbers are only an example.</p>' +
+          '<div class="row cols-3">' + field('ye-mem', 'Channel members', inp('ye-mem', 'text', '0', '', ' inputmode="decimal"')) +
+            field('ye-mp', 'Price per month (₹)', inp('ye-mp', 'text', '₹', '59', ' inputmode="decimal"')) +
+            field('ye-ms', 'Your share (%)', inp('ye-ms', 'text', '%', '70', ' inputmode="decimal"'), 'Check YouTube’s current terms.') + '</div>' +
+          '<div class="row cols-2">' + field('ye-sp', 'Sponsorships per month (₹)', inp('ye-sp', 'text', '₹', '', ' inputmode="decimal"')) +
+            field('ye-ot', 'Other income per month (₹)', inp('ye-ot', 'text', 'Super Thanks, affiliates…', '', ' inputmode="decimal"')) + '</div>' +
+        '</div></details>' +
+        '<p class="small muted" style="margin:10px 0 0">Shorts views, members and sponsorships use the same period you chose above.</p>' +
+      '</div></div>' +
+      '<div><div class="result" id="ye-res" aria-live="polite"></div>' +
+        '<div class="stats yt-gap" id="ye-stats"></div>' +
+        '<div class="card yt-gap"><h3 class="yt-h" style="margin-bottom:10px">Monthly breakdown</h3><div class="yt-bars" id="ye-bars"></div>' +
+          '<div class="table-wrap yt-gap"><table class="table"><thead><tr><th>Source</th><th class="num">Low</th><th class="num">High</th></tr></thead><tbody id="ye-table"></tbody></table></div></div>' +
+        '<div class="card"><h3 class="yt-h" style="margin-bottom:10px">Views needed for a monthly target</h3>' +
+          field('ye-goal', 'Target ad income per month (₹)', inp('ye-goal', 'text', 'e.g. 25,000', '25000', ' inputmode="decimal"')) + '<div id="ye-need" class="small"></div></div>' +
+      '</div></div>' +
+      '<div class="yt-faq yt-gap">' +
+        '<details open><summary>RPM vs CPM — what’s the difference?</summary><p><strong>CPM</strong> is what advertisers pay per 1,000 ad impressions, before YouTube’s share. <strong>RPM</strong> (revenue per mille) is what <em>you</em> actually earn per 1,000 views after YouTube’s share, counting all views — including ones with no ads. That’s why this calculator uses RPM. RPM varies widely by niche (finance and tech often differ greatly from entertainment), by where your viewers live, by video length and by season (ad rates often rise before festivals and year-end and dip in January).</p></details>' +
+        '<details><summary>When can a channel start earning?</summary><p>Ad income needs the YouTube Partner Programme (YPP). Eligibility depends on things like subscriber count, watch hours or Shorts views, following YouTube’s policies and having an AdSense account — and the thresholds change from time to time. Please <strong>check YouTube’s current requirements</strong> in YouTube Studio → Earn before planning around them.</p></details>' +
+        '<details><summary>Tax on YouTube income in India (general information)</summary><ul>' +
+          '<li>Income from YouTube is generally taxable in India and is often treated as business or professional income. GST may also apply in some cases.</li>' +
+          '<li>Google may withhold US tax on the part of your earnings that comes from viewers in the United States. If you haven’t submitted your tax information in AdSense, a higher withholding rate may apply; submitting it and claiming tax-treaty benefits, where eligible, can reduce it.</li>' +
+          '<li>Rules change and depend on your situation, so please talk to a chartered accountant or tax professional. This is general information, not tax advice.</li></ul></details>' +
+      '</div>' +
+      '<div class="yt-msgs">' + notice('warn', '<strong>Estimates only.</strong> Results depend entirely on the views and RPM you enter. Actual earnings depend on ads shown, viewer location, niche, season, eligibility and YouTube’s terms, and can be much higher or lower. BISCS is not affiliated with YouTube or Google.') + '</div>';
+
+    var perEl = $('ye-per', root);
+    wireSeg(perEl, function (v) {
+      var old = period; period = v;
+      // keep the same real-world numbers when switching
+      var f = old === 'month' && v === 'day' ? 12 / 365 : old === 'day' && v === 'month' ? 365 / 12 : 1;
+      ['ye-views', 'ye-sv', 'ye-sp', 'ye-ot'].forEach(function (id) {
+        var el = $(id, root), n = BT.num(el.value);
+        if (isFinite(n) && n) el.value = Math.round(n * f);
+      });
+      update();
+    });
+    function num(id, def) { var n = BT.num(val(root, id)); return isFinite(n) && n >= 0 ? n : (def || 0); }
+    function range(a, b) { return Math.round(a) === Math.round(b) ? BT.fmtINR(a) : BT.fmtINR(a) + ' – ' + BT.fmtINR(b); }
+    function update() {
+      var toM = period === 'day' ? 365 / 12 : 1;
+      var o = {
+        views: num('ye-views') * toM, rpmLo: num('ye-lo'), rpmHi: num('ye-hi', num('ye-lo')),
+        sViews: num('ye-sv') * toM, sRpmLo: num('ye-slo'), sRpmHi: num('ye-shi', num('ye-slo')),
+        members: num('ye-mem'), memPrice: num('ye-mp'), memShare: Math.min(100, num('ye-ms')),
+        spon: num('ye-sp') * toM, other: num('ye-ot') * toM
+      };
+      var r = earnCalc(o), t = r.total;
+      $('ye-res', root).innerHTML = '<div class="label">Estimated monthly earnings</div><div class="value" data-monthly-low="' + Math.round(t[0]) + '" data-monthly-high="' + Math.round(t[1]) + '">' + range(t[0], t[1]) + '</div>' +
+        '<div class="small" style="opacity:.85;margin-top:6px">From ' + BT.fmtNum(Math.round(o.views), 0) + ' long-form views a month' + (o.sViews ? ' + ' + BT.fmtNum(Math.round(o.sViews), 0) + ' Shorts views' : '') + '</div>';
+      $('ye-stats', root).innerHTML = [['Per day', 12 / 365], ['Per month', 1], ['Per year', 12]].map(function (p) {
+        return '<div class="stat"><div class="label">' + p[0] + '</div><div class="value">' + range(t[0] * p[1], t[1] * p[1]) + '</div></div>';
+      }).join('');
+      var rows = [['Long-form ads', r.long, '#ef4444'], ['Shorts', r.shorts, '#f59e0b'], ['Memberships', r.mem, '#8b5cf6'], ['Sponsorships', r.spon, '#10b981'], ['Other', r.other, '#0ea5e9']];
+      var max = Math.max.apply(null, rows.map(function (x) { return x[1][1]; }).concat([1]));
+      $('ye-bars', root).innerHTML = rows.filter(function (x) { return x[1][1] > 0; }).map(function (x) {
+        return '<div class="yt-bar"><span>' + x[0] + '</span><span class="tr"><span style="width:' + (x[1][1] / max * 100).toFixed(1) + '%;background:' + x[2] + '"></span></span><b>' + range(x[1][0], x[1][1]) + '</b></div>';
+      }).join('') || '<p class="muted small">Enter your views and RPM to see the breakdown.</p>';
+      $('ye-table', root).innerHTML = rows.map(function (x) {
+        return '<tr><td>' + x[0] + '</td><td class="num">' + BT.fmtINR(x[1][0]) + '</td><td class="num">' + BT.fmtINR(x[1][1]) + '</td></tr>';
+      }).join('') + '<tr><td><strong>Total</strong></td><td class="num"><strong>' + BT.fmtINR(t[0]) + '</strong></td><td class="num"><strong>' + BT.fmtINR(t[1]) + '</strong></td></tr>';
+      var goal = num('ye-goal'), lo = Math.min(o.rpmLo, o.rpmHi), hi = Math.max(o.rpmLo, o.rpmHi);
+      $('ye-need', root).innerHTML = goal && hi > 0 ? 'About <strong>' + BT.fmtNum(Math.ceil(goal / hi * 1000), 0) + '</strong>' + (lo > 0 && lo !== hi ? ' to <strong>' + BT.fmtNum(Math.ceil(goal / lo * 1000), 0) + '</strong>' : '') +
+        ' long-form views a month (≈ ' + BT.fmtNum(Math.ceil(goal / hi * 1000 * 12 / 365), 0) + (lo > 0 && lo !== hi ? '–' + BT.fmtNum(Math.ceil(goal / lo * 1000 * 12 / 365), 0) : '') + ' a day) at your RPM range.'
+        : '<span class="muted">Enter a target and an RPM above.</span>';
+    }
+    root.addEventListener('input', BT.debounce(update, 80));
+    update();
+  });
+
 })();
