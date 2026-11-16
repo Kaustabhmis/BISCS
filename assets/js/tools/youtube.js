@@ -804,5 +804,360 @@
     update();
   });
 
+  // ========================================================= 3. Tag builder
+  function pluralWord(w) {
+    if (/[^aeiou]y$/i.test(w)) return w.slice(0, -1) + 'ies';
+    if (/(s|x|z|ch|sh)$/i.test(w)) return w + 'es';
+    return w + 's';
+  }
+  function singularWord(w) {
+    if (/[^aeiou]ies$/i.test(w)) return w.slice(0, -3) + 'y';
+    if (/(ses|xes|zes|ches|shes)$/i.test(w)) return w.slice(0, -2);
+    if (/[^su]s$/i.test(w) && w.length > 3) return w.slice(0, -1);
+    return w;
+  }
+  /** Swap the number of the last (English) word: "phone case" -> "phone cases". */
+  function numberVariant(phrase) {
+    var m = phrase.match(/^(.*?)([A-Za-z]+)$/);
+    if (!m || m[2].length < 3) return '';
+    var w = m[2], s = singularWord(w);
+    var alt = s !== w ? s : pluralWord(w);
+    return alt === w ? '' : m[1] + alt;
+  }
+  /**
+   * Characters YouTube counts towards its 500-character tag limit (our model):
+   * each tag's length, +2 for the quotes added around tags containing a space,
+   * plus one comma between tags.
+   */
+  function tagCost(t) { return chars(t) + (/\s/.test(t) ? 2 : 0); }
+  function tagTotal(tags) {
+    return tags.reduce(function (a, t) { return a + tagCost(t); }, 0) + Math.max(0, tags.length - 1);
+  }
+  function cleanTag(t) { return String(t || '').replace(/[<>,"]/g, ' ').replace(/^#+/, '').replace(/\s+/g, ' ').trim(); }
+
+  BT.impl('youtube-tag-generator', function (root) {
+    css();
+    var tags = [];
+    var MODS = [
+      ['tm-plural', 'Singular / plural', true], ['tm-howto', '“how to …”', true], ['tm-beg', '“… for beginners”', true],
+      ['tm-tut', '“… tutorial”', true], ['tm-tips', '“… tips”', true], ['tm-exp', '“… explained”', false],
+      ['tm-rev', '“… review”', false], ['tm-hindi', '“… in hindi”', false], ['tm-bengali', '“… in bengali”', false], ['tm-india', '“… india”', false]
+    ];
+    root.innerHTML =
+      hero('tags', 'Tags from your own keywords', 'Built from your seed keywords with common modifiers — no search data is used. Year-free, so they don’t go stale.') +
+      '<div class="card">' +
+        field('tt-seed', 'Seed keywords', txa('tt-seed', 'excel pivot table, excel for beginners, data analysis', '', 3), 'Separate with commas or new lines. Most important first.') +
+        '<div class="row cols-2">' + field('tt-city', 'City / location (optional)', inp('tt-city', 'text', 'e.g. Kolkata', '', ' maxlength="40"')) +
+        field('tt-brand', 'Channel or brand name (optional)', inp('tt-brand', 'text', 'e.g. BISCS India', '', ' maxlength="60"')) + '</div>' +
+        '<div class="field"><span class="label">Add variations</span><div class="yt-checks">' + MODS.map(function (m) { return chk(m[0], m[1], m[2]); }).join('') + '</div></div>' +
+        '<div class="btn-group">' + btn('data-a="gen"', 'sparkles', 'Generate tags', 'btn-primary') + '</div>' +
+      '</div>' +
+      '<div class="card"><div class="card-title"><h3 class="yt-h">Your tags</h3><span class="yt-count" id="tt-n" aria-live="polite"></span></div>' +
+        '<div class="yt-meter" id="tt-m" style="margin-bottom:12px"><span></span></div>' +
+        '<div class="yt-tags" id="tt-list" role="list" aria-label="Tags (drag or use arrow keys to reorder, Delete to remove)" data-empty="Generate tags or add your own below."></div>' +
+        '<p class="small muted" style="margin:8px 0 12px">Drag the ' + BT.icon('grip-vertical') + ' handle to reorder. On a keyboard: focus a tag, use the arrow keys to move it and Delete to remove it. Tags past the limit are crossed out.</p>' +
+        '<div class="field"><label for="tt-add">Add your own tag</label><div class="input-group">' + inp('tt-add', 'text', 'Type a tag and press Enter', '', ' maxlength="100"') +
+          '<button type="button" class="btn" data-a="add">' + BT.icon('plus') + '<span>Add</span></button></div></div>' +
+        '<div class="yt-toolbar">' + btn('data-a="copy"', 'copy', 'Copy (comma-separated)', 'btn-primary') + btn('data-a="trim"', 'scissors', 'Trim to 500') +
+          btn('data-a="dl"', 'download', 'TXT') + btn('data-a="clear"', 'trash-2', 'Clear', 'btn-ghost') + '</div>' +
+        '<div class="yt-msgs">' + notice('', '<strong>How the counter works:</strong> YouTube allows about 500 characters of tags in total. We count every character, one comma between tags, and 2 extra for the quotes YouTube adds around tags that contain a space (e.g. <code>"excel tips"</code> = 12). This is an approximation of how YouTube Studio counts — Studio’s own counter is the final word.') +
+          notice('warn', '<strong>Tags matter less than you might think.</strong> YouTube says tags play a minimal role in discovery and are mainly useful for commonly misspelled words. Your title, thumbnail and description matter far more. Don’t add tags that aren’t about your video — misleading metadata is against YouTube’s policies.') + '</div>' +
+        '<div aria-live="polite" class="sr-only" id="tt-live"></div>' +
+      '</div>';
+
+    var listEl = $('tt-list', root);
+    function within() {
+      var used = 0, n = 0;
+      for (var i = 0; i < tags.length; i++) {
+        var add = tagCost(tags[i]) + (i ? 1 : 0);
+        if (used + add > 500) break;
+        used += add; n++;
+      }
+      return n;
+    }
+    function addTags(arr) {
+      var seen = {};
+      tags.forEach(function (t) { seen[t.toLowerCase()] = 1; });
+      var added = 0;
+      arr.forEach(function (t) {
+        t = cleanTag(t);
+        if (!t || chars(t) > 100 || seen[t.toLowerCase()]) return;
+        seen[t.toLowerCase()] = 1; tags.push(t); added++;
+      });
+      return added;
+    }
+    function generate() {
+      var seeds = val(root, 'tt-seed').split(/[,\n]+/).map(function (s) { return cleanTag(s).toLowerCase(); }).filter(Boolean);
+      if (!seeds.length) { BT.toast('Type at least one keyword', 'error'); $('tt-seed', root).focus(); return; }
+      var on = function (id) { return val(root, id); };
+      var city = cleanTag(val(root, 'tt-city')).toLowerCase(), brand = cleanTag(val(root, 'tt-brand'));
+      var out = [];
+      seeds.forEach(function (s) { out.push(s); });
+      if (on('tm-plural')) seeds.forEach(function (s) { var v = numberVariant(s); if (v) out.push(v); });
+      seeds.forEach(function (s, i) {
+        var base = s.replace(/^how to\s+/, '');
+        var strip = !/(tutorial|tips|review|explained|guide)$/.test(base);
+        if (on('tm-howto') && !/^how to /.test(s)) out.push('how to ' + (/^(use|make|learn|start|do|get|build|create|fix|choose|cook|edit|play)\b/.test(base) ? base : 'use ' + base));
+        if (on('tm-beg') && !/beginners?$/.test(base)) out.push(base + ' for beginners');
+        if (on('tm-tut') && strip) out.push(base + ' tutorial');
+        if (on('tm-tips') && strip) out.push(base + ' tips');
+        if (on('tm-exp') && strip) out.push(base + ' explained');
+        if (on('tm-rev') && strip) out.push(base + ' review');
+        if (on('tm-hindi')) out.push(base + ' in hindi');
+        if (on('tm-bengali')) out.push(base + ' in bengali');
+        if (on('tm-india') && !/india/.test(base)) out.push(base + ' india');
+        if (city && i < 3) out.push(base + ' ' + city);
+      });
+      if (seeds.length > 1 && on('tm-beg')) out.push(seeds[0] + ' guide');
+      if (on('tm-hindi') && on('tm-tut')) out.push(seeds[0] + ' tutorial in hindi');
+      if (city) out.push(city);
+      if (brand) out.push(brand);
+      tags = [];
+      addTags(out);
+      render();
+      announce(plural(tags.length, 'tag') + ' generated');
+    }
+    function announce(m) { $('tt-live', root).textContent = m; }
+    function render(focusIdx) {
+      var n = within(), total = tagTotal(tags);
+      $('tt-n', root).textContent = BT.fmtNum(total, 0) + ' / 500 characters · ' + plural(tags.length, 'tag');
+      meter($('tt-m', root), total, 500, 450);
+      listEl.innerHTML = tags.map(function (t, i) {
+        return '<span class="yt-tag' + (i >= n ? ' over' : '') + '" role="listitem" tabindex="0" data-i="' + i + '" aria-label="' + esc(t) + ', tag ' + (i + 1) + ' of ' + tags.length + (i >= n ? ', over the limit' : '') + '">' +
+          '<span class="gr" data-grip aria-hidden="true">' + BT.icon('grip-vertical') + '</span><span class="tx">' + esc(t) + '</span><span class="n" aria-hidden="true">' + tagCost(t) + '</span>' +
+          '<button type="button" data-a="del" data-i="' + i + '" aria-label="Remove ' + esc(t) + '">' + BT.icon('x') + '</button></span>';
+      }).join('');
+      if (focusIdx != null && listEl.children[focusIdx]) listEl.children[focusIdx].focus();
+    }
+    function move(from, to) {
+      if (to < 0 || to >= tags.length || from === to) return;
+      var t = tags.splice(from, 1)[0];
+      tags.splice(to, 0, t);
+    }
+    // Pointer drag (mouse + touch) on the grip handle.
+    var drag = null;
+    listEl.addEventListener('pointerdown', function (e) {
+      var g = e.target.closest('[data-grip]');
+      if (!g) return;
+      var chip = g.closest('.yt-tag');
+      e.preventDefault();
+      drag = { from: +chip.getAttribute('data-i'), chip: chip, id: e.pointerId };
+      chip.classList.add('drag');
+      try { g.setPointerCapture(e.pointerId); } catch (er) { /* ignore */ }
+    });
+    listEl.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var el = doc.elementFromPoint(e.clientX, e.clientY), over = el && el.closest && el.closest('.yt-tag');
+      BT.$$('.yt-tag.ph', listEl).forEach(function (x) { x.classList.remove('ph'); });
+      if (over && over !== drag.chip) { over.classList.add('ph'); drag.to = +over.getAttribute('data-i'); }
+      else drag.to = null;
+    });
+    function endDrag() {
+      if (!drag) return;
+      var d = drag; drag = null;
+      if (d.to != null) { move(d.from, d.to); announce('Moved to position ' + (d.to + 1)); render(); }
+      else { d.chip.classList.remove('drag'); BT.$$('.yt-tag.ph', listEl).forEach(function (x) { x.classList.remove('ph'); }); }
+    }
+    listEl.addEventListener('pointerup', endDrag);
+    listEl.addEventListener('pointercancel', endDrag);
+    listEl.addEventListener('keydown', function (e) {
+      var chip = e.target.closest('.yt-tag');
+      if (!chip || e.target !== chip) return;
+      var i = +chip.getAttribute('data-i');
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); if (i > 0) { move(i, i - 1); render(i - 1); announce('Moved to position ' + i); } }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); if (i < tags.length - 1) { move(i, i + 1); render(i + 1); announce('Moved to position ' + (i + 2)); } }
+      else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); var t = tags.splice(i, 1)[0]; render(Math.min(i, tags.length - 1)); announce('Removed ' + t); }
+    });
+    function addOwn() {
+      var el = $('tt-add', root), v = el.value;
+      if (!v.trim()) return;
+      var n = addTags(v.split(','));
+      if (!n) BT.toast('That tag is already in the list', 'error');
+      el.value = '';
+      render();
+    }
+    $('tt-add', root).addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addOwn(); } });
+    onA(root, {
+      gen: generate,
+      add: addOwn,
+      del: function (b) { var i = +b.getAttribute('data-i'); var t = tags.splice(i, 1)[0]; render(); announce('Removed ' + t); },
+      copy: function () {
+        if (!tags.length) return BT.toast('No tags yet', 'error');
+        var n = within();
+        BT.copy(tags.slice(0, n).join(','), plural(n, 'tag') + ' copied' + (n < tags.length ? ' (tags over the limit left out)' : ''));
+      },
+      trim: function () { var n = within(); if (n < tags.length) { tags = tags.slice(0, n); render(); BT.toast('Trimmed to ' + plural(n, 'tag')); } else BT.toast('Already within 500 characters'); },
+      dl: function () { if (tags.length) BT.download(tags.join(', '), 'youtube-tags.txt', 'text/plain;charset=utf-8'); },
+      clear: function () { tags = []; render(); }
+    });
+    render();
+    // expose for tests / power users: count rule
+    root.setAttribute('data-rule', 'chars + 2 per spaced tag + commas');
+  });
+
+  // ===================================================== 4. Hashtag builder
+  // Built-in topic dictionaries (no popularity data). m: words that detect the topic.
+  var HT = {
+    tech: { n: 'Tech & gadgets', m: 'tech technology phone smartphone mobile laptop gadget android iphone ai software coding programming computer app pc camera headphone earbuds smartwatch excel', broad: ['Tech', 'Technology', 'Gadgets', 'TechNews', 'Smartphone', 'Innovation'], niche: ['TechReview', 'TechTips', 'Unboxing', 'AndroidTips', 'iPhoneTips', 'LaptopReview', 'GadgetReview', 'TechExplained', 'AITools', 'Coding', 'Programming', 'TechIndia'] },
+    food: { n: 'Food & recipes', m: 'food recipe cooking cook kitchen biryani dish snack street sweet mishti restaurant cafe baking cake veg chicken fish thali dessert', broad: ['Food', 'Foodie', 'FoodLover', 'Recipe', 'Cooking', 'Homemade'], niche: ['IndianFood', 'StreetFood', 'HomeCooking', 'EasyRecipes', 'DesiFood', 'FoodBlogger', 'FoodPhotography', 'VegRecipes', 'Baking', 'QuickRecipes', 'IndianStreetFood', 'FoodVlog'] },
+    travel: { n: 'Travel', m: 'travel trip tour vlog journey hill beach mountain trek darjeeling goa himalaya road hotel holiday vacation explore', broad: ['Travel', 'TravelGram', 'Wanderlust', 'TravelVlog', 'Explore', 'Adventure'], niche: ['IncredibleIndia', 'TravelIndia', 'BudgetTravel', 'RoadTrip', 'Backpacking', 'HillStation', 'WeekendGetaway', 'SoloTravel', 'TravelTips', 'IndiaTravel', 'TravelDiaries', 'Trekking'] },
+    fitness: { n: 'Fitness', m: 'fitness gym workout exercise yoga weight loss fat muscle diet running cardio abs', broad: ['Fitness', 'Workout', 'Gym', 'Health', 'FitnessMotivation', 'HealthyLifestyle'], niche: ['HomeWorkout', 'Yoga', 'WeightLoss', 'FitIndia', 'Running', 'StrengthTraining', 'FitnessTips', 'GymLife', 'YogaPractice', 'FatLoss', 'NoEquipmentWorkout', 'DesiFitness'] },
+    education: { n: 'Education & exams', m: 'study exam student education learn learning class course school college upsc neet jee board teacher tuition english maths science', broad: ['Education', 'Learning', 'Students', 'Study', 'Knowledge', 'OnlineLearning'], niche: ['StudyTips', 'ExamPreparation', 'StudyMotivation', 'UPSC', 'NEET', 'JEE', 'BoardExams', 'LearnEnglish', 'StudyWithMe', 'CompetitiveExams', 'EdTech', 'TeachersOfIndia'] },
+    business: { n: 'Business & startups (India)', m: 'business startup entrepreneur company brand marketing sales shop msme small gst founder freelance agency ecommerce', broad: ['Business', 'Entrepreneur', 'Startup', 'Marketing', 'SmallBusiness', 'Success'], niche: ['StartupIndia', 'MSME', 'DigitalMarketing', 'Branding', 'BusinessTips', 'Entrepreneurship', 'MakeInIndia', 'VocalForLocal', 'SideHustle', 'SmallBusinessIndia', 'IndianStartups', 'GrowYourBusiness'] },
+    finance: { n: 'Money & investing', m: 'money finance invest investing stock share market mutual fund sip tax saving loan budget crypto trading insurance', broad: ['PersonalFinance', 'Investing', 'Money', 'Finance', 'StockMarket', 'FinancialFreedom'], niche: ['MutualFunds', 'SIP', 'MoneyTips', 'Nifty', 'Sensex', 'TaxSaving', 'FinancialLiteracy', 'Budgeting', 'StockMarketIndia', 'IncomeTax', 'WealthCreation', 'PersonalFinanceIndia'] },
+    festivals: { n: 'Festivals in India', m: 'festival diwali holi puja durga navratri eid christmas ganesh rakhi raksha pongal onam dussehra bihu chhath kali saraswati poila boishakh celebration', broad: ['Festival', 'IndianFestivals', 'Celebration', 'FestiveSeason', 'India', 'Tradition'], niche: ['Diwali', 'Holi', 'DurgaPuja', 'Navratri', 'Eid', 'Christmas', 'GaneshChaturthi', 'RakshaBandhan', 'Pongal', 'Onam', 'Dussehra', 'KaliPuja'] },
+    kolkata: { n: 'Kolkata & West Bengal', m: 'kolkata calcutta bengal bengali bangla howrah salt lake durga puja park street sealdah siliguri durgapur', broad: ['Kolkata', 'WestBengal', 'Bengal', 'CityOfJoy', 'Bengali', 'Calcutta'], niche: ['KolkataDiaries', 'KolkataFood', 'KolkataStreetFood', 'KolkataVlog', 'Howrah', 'DurgaPujaKolkata', 'KolkataBlogger', 'BengaliFood', 'Bangla', 'KolkataCity', 'KolkataEvents', 'BengalTourism'] },
+    fashion: { n: 'Fashion', m: 'fashion style outfit saree kurti dress clothes wear ethnic shopping lehenga jewellery', broad: ['Fashion', 'Style', 'OOTD', 'FashionBlogger', 'Outfit', 'Shopping'], niche: ['IndianWear', 'Saree', 'EthnicWear', 'StreetStyle', 'FashionInspo', 'Kurti', 'SareeLove', 'IndianFashion', 'StyleTips', 'Lehenga', 'HandloomSaree', 'BudgetFashion'] },
+    beauty: { n: 'Beauty & skincare', m: 'beauty makeup skincare skin hair glow cosmetic lipstick serum facial', broad: ['Beauty', 'Makeup', 'Skincare', 'SelfCare', 'Glow', 'BeautyTips'], niche: ['MakeupTutorial', 'SkincareRoutine', 'GlowingSkin', 'NaturalBeauty', 'HairCare', 'IndianSkincare', 'MakeupLook', 'SkincareTips', 'HomeRemedies', 'BeautyBlogger', 'Haircut', 'MakeupForBeginners'] },
+    gaming: { n: 'Gaming', m: 'game gaming gamer play bgmi freefire minecraft gta valorant pubg esports stream console playstation xbox', broad: ['Gaming', 'Gamer', 'Games', 'GamingCommunity', 'LiveStream', 'Esports'], niche: ['MobileGaming', 'PCGaming', 'BGMI', 'Minecraft', 'GamingClips', 'IndianGamer', 'GameplayVideo', 'GamingSetup', 'Streamer', 'GamingIndia', 'Valorant', 'ConsoleGaming'] },
+    music: { n: 'Music', m: 'music song singing singer cover guitar piano band lyrics rabindra sangeet bollywood rap beat dance', broad: ['Music', 'Song', 'Singer', 'Musician', 'LiveMusic', 'NewMusic'], niche: ['CoverSong', 'IndianMusic', 'Bollywood', 'BollywoodSongs', 'Rabindrasangeet', 'Guitar', 'Singing', 'IndieMusic', 'Unplugged', 'BengaliSong', 'ClassicalMusic', 'OriginalSong'] },
+    photo: { n: 'Photography & video', m: 'photography photo photographer camera video editing videography lightroom reel cinematic shot portrait', broad: ['Photography', 'Photographer', 'PhotoOfTheDay', 'Photo', 'Camera', 'Creative'], niche: ['MobilePhotography', 'StreetPhotography', 'NaturePhotography', 'PortraitPhotography', 'PhotographyTips', 'VideoEditing', 'Videography', 'CinematicVideo', 'PhotoEditing', 'IndianPhotography', 'ShotOnPhone', 'GoldenHour'] },
+    motivation: { n: 'Motivation & self-growth', m: 'motivation inspiration success mindset habit productivity life lesson goal discipline self improvement', broad: ['Motivation', 'Inspiration', 'Success', 'Mindset', 'Life', 'Goals'], niche: ['SelfImprovement', 'Productivity', 'PersonalGrowth', 'DailyMotivation', 'MotivationalVideo', 'GrowthMindset', 'Discipline', 'MorningRoutine', 'LifeLessons', 'SuccessMindset', 'HabitBuilding', 'PositiveVibes'] },
+    health: { n: 'Health & wellness', m: 'health wellness doctor medical mental ayurveda nutrition diabetes sleep diet care home remedy', broad: ['Health', 'Wellness', 'HealthyLiving', 'SelfCare', 'Nutrition', 'HealthTips'], niche: ['MentalHealth', 'Ayurveda', 'HealthyEating', 'HealthAwareness', 'HomeRemedies', 'WellnessJourney', 'HealthyHabits', 'Mindfulness', 'GutHealth', 'DiabetesCare', 'SleepBetter', 'IndianDiet'] },
+    property: { n: 'Home & real estate', m: 'home house flat apartment property real estate interior decor room design renovation rent', broad: ['RealEstate', 'Home', 'HomeDecor', 'InteriorDesign', 'Property', 'HomeTour'], niche: ['RealEstateIndia', 'InteriorDesignIdeas', 'HomeRenovation', 'SmallSpaces', 'DreamHome', 'ApartmentTour', 'HomeMakeover', 'KolkataRealEstate', 'Vastu', 'DIYHomeDecor', 'ModularKitchen', 'BudgetDecor'] }
+  };
+  var HT_INDIA = ['India', 'IncredibleIndia', 'Indian', 'Desi', 'Bharat', 'MadeInIndia'];
+  var HT_PLAT = {
+    youtube: { n: 'YouTube', def: 3, hard: 60, extra: ['YouTube', 'YouTuber', 'Shorts', 'YouTubeShorts', 'ContentCreator'] },
+    instagram: { n: 'Instagram', def: 5, hard: 30, extra: ['Reels', 'InstagramReels', 'Instagram', 'ContentCreator', 'ReelItFeelIt'] },
+    facebook: { n: 'Facebook', def: 3, hard: null, extra: ['FacebookReels', 'Facebook', 'ContentCreator'] }
+  };
+  function camel(words) { return words.map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(''); }
+  function detectCats(topic) {
+    var words = String(topic).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    var score = [];
+    Object.keys(HT).forEach(function (k) {
+      var dict = ' ' + HT[k].m + ' ', s = 0;
+      words.forEach(function (w) { if (w.length > 1 && dict.indexOf(' ' + w + ' ') >= 0) s++; });
+      if (s) score.push([k, s]);
+    });
+    return score.sort(function (a, b) { return b[1] - a[1]; }).map(function (x) { return x[0]; });
+  }
+
+  BT.impl('hashtag-generator', function (root) {
+    css();
+    var plat = 'youtube', groups = [], picked = {};
+    var CATS = [['auto', 'Auto-detect from topic']].concat(Object.keys(HT).map(function (k) { return [k, HT[k].n]; }));
+    root.innerHTML =
+      hero('hash', 'Relevant hashtags for each platform', 'From built-in topic lists — no popularity numbers, because we don’t use any platform data.') +
+      '<div class="card"><div class="row cols-2">' +
+        field('hg-topic', 'Topic', inp('hg-topic', 'text', 'e.g. Kolkata street food, budget phone review', '', ' maxlength="80" autocomplete="off"')) +
+        field('hg-cat', 'Category', sel('hg-cat', CATS, 'auto')) +
+      '</div><div class="yt-checks">' + chk('hg-in', 'Add India tags', true) + chk('hg-kol', 'Add Kolkata / West Bengal tags', false) +
+        chk('hg-camel', 'CamelCase (#StreetFood — easier to read and screen-reader friendly)', true) + '</div>' +
+        '<div class="btn-group">' + btn('data-a="gen"', 'sparkles', 'Generate hashtags', 'btn-primary') + '</div>' +
+      '</div>' +
+      '<div class="card hidden" id="hg-out">' +
+        '<div class="yt-tabs">' + seg('hg-plat', [['youtube', 'YouTube'], ['instagram', 'Instagram'], ['facebook', 'Facebook']], 'youtube', 'Platform') + '</div>' +
+        '<div id="hg-rules"></div>' +
+        '<div class="card-title yt-gap"><h3 class="yt-h">Selected</h3><span class="yt-count" id="hg-n" aria-live="polite"></span></div>' +
+        '<div class="yt-hout" id="hg-sel" aria-live="polite"></div>' +
+        '<div class="yt-toolbar yt-gap">' + btn('data-a="copy"', 'copy', 'Copy selected', 'btn-primary') + btn('data-a="copyall"', 'copy', 'Copy all') +
+          btn('data-a="none"', 'x', 'Clear selection', 'btn-ghost') + '</div>' +
+        '<p class="small muted">Tap a hashtag to add or remove it.</p>' +
+        '<div id="hg-groups"></div>' +
+      '</div>';
+
+    var platEl = $('hg-plat', root);
+    wireSeg(platEl, function (v) { plat = v; autoPick(); render(); });
+    function fmt(words) {
+      var camelOn = val(root, 'hg-camel');
+      return camelOn ? camel(words) : words.join('').toLowerCase();
+    }
+    function tagOf(raw) {
+      var c = cleanHashtag(val(root, 'hg-camel') ? raw : String(raw).toLowerCase());
+      return c;
+    }
+    function generate() {
+      var topic = val(root, 'hg-topic');
+      if (!topic) { BT.toast('Type a topic first', 'error'); $('hg-topic', root).focus(); return; }
+      var words = topic.split(/[^\p{L}\p{N}\p{M}]+/u).filter(Boolean);
+      var stop = /^(a|an|and|the|of|for|in|on|to|with|my|your|how|what|why|vs|is|are|best|top)$/i;
+      var key = words.filter(function (w) { return !stop.test(w); });
+      var own = [];
+      if (key.length) own.push(fmt(key));
+      if (key.length > 1) {
+        for (var i = 0; i < key.length - 1; i++) own.push(fmt([key[i], key[i + 1]]));
+        key.forEach(function (w) { if (w.length > 3) own.push(fmt([w])); });
+      }
+      if (key.length) { own.push(fmt(key.concat(['tips']))); own.push(fmt(key.concat(['india']))); }
+      var cat = val(root, 'hg-cat'), cats = cat === 'auto' ? detectCats(topic).slice(0, 2) : [cat];
+      var niche = [], broad = [];
+      cats.forEach(function (k) {
+        var d = HT[k];
+        // dictionary entries that literally match the topic go first
+        var lower = topic.toLowerCase().replace(/\s+/g, '');
+        d.niche.forEach(function (t) { (lower.indexOf(t.toLowerCase()) >= 0 ? niche.unshift(t) : niche.push(t)); });
+        broad = broad.concat(d.broad);
+      });
+      var local = [];
+      if (val(root, 'hg-kol') && cats.indexOf('kolkata') < 0) local = local.concat(HT.kolkata.broad.slice(0, 4), HT.kolkata.niche.slice(0, 4));
+      if (val(root, 'hg-in')) local = local.concat(HT_INDIA);
+      groups = [
+        { id: 'own', n: 'From your topic', d: 'most specific', tags: own },
+        { id: 'niche', n: 'Niche', d: cats.length ? cats.map(function (k) { return HT[k].n; }).join(' + ') : 'choose a category for more', tags: niche },
+        { id: 'broad', n: 'Broad', d: 'large, very competitive', tags: broad },
+        { id: 'local', n: 'Local', d: 'India / Kolkata', tags: local },
+        { id: 'plat', n: 'Platform', d: 'only if they fit your post', tags: [] }
+      ];
+      var seen = {};
+      groups.forEach(function (g) {
+        g.tags = g.tags.map(tagOf).filter(function (t) { if (!t || seen[t.toLowerCase()]) return false; seen[t.toLowerCase()] = 1; return true; });
+      });
+      if (!cats.length) BT.toast('No matching category found — pick one for more ideas');
+      picked = {};
+      autoPick();
+      render();
+      $('hg-out', root).classList.remove('hidden');
+    }
+    function platTags() {
+      var seen = {};
+      groups.forEach(function (g) { if (g.id !== 'plat') g.tags.forEach(function (t) { seen[t.toLowerCase()] = 1; }); });
+      return HT_PLAT[plat].extra.map(tagOf).filter(function (t) { return t && !seen[t.toLowerCase()]; });
+    }
+    function autoPick() {
+      if (!groups.length) return;
+      groups[4].tags = platTags();
+      var want = HT_PLAT[plat].def, order = [];
+      // mix: specific first, then niche, then one broad
+      var g = groups;
+      [g[0].tags[0], g[1].tags[0], g[0].tags[1], g[1].tags[1], g[2].tags[0], g[1].tags[2], g[3].tags[0], g[0].tags[2]].forEach(function (t) { if (t && order.indexOf(t) < 0) order.push(t); });
+      picked = {};
+      order.slice(0, want).forEach(function (t) { picked[t] = 1; });
+    }
+    function selected() {
+      var out = [];
+      groups.forEach(function (g) { g.tags.forEach(function (t) { if (picked[t] && out.indexOf(t) < 0) out.push(t); }); });
+      return out;
+    }
+    function render() {
+      var P = HT_PLAT[plat], s = selected(), str = s.join(' ');
+      var rules = {
+        youtube: 'Hashtags can’t contain spaces. YouTube can show the <strong>first 3 hashtags</strong> from your description above your title (when the title itself has none). If a video has <strong>more than 60 hashtags</strong>, YouTube ignores all of them — 3 to 5 relevant ones are plenty.',
+        instagram: 'Instagram allows <strong>up to 30 hashtags</strong> per post, but its current guidance is to use <strong>a few (around 3–5) relevant hashtags</strong> rather than the maximum. Mix specific and broad tags that truly describe the post.',
+        facebook: 'On Facebook, use <strong>just a few relevant hashtags</strong> (1–3 is typical). Too many can make a post look like spam.'
+      };
+      $('hg-rules', root).innerHTML = notice('', rules[plat]) + '<div class="yt-msgs">' + notice('warn', 'No popularity or reach numbers are shown because we don’t have that data — anyone showing “post counts” is reading platform data we don’t use. Avoid hashtags that don’t match your content.') + '</div>';
+      var n = s.length, warn = '';
+      if (P.hard && n > P.hard) warn = ' · over ' + P.n + '’s limit of ' + P.hard;
+      else if (n > (plat === 'instagram' ? 10 : 5)) warn = ' · more than recommended';
+      $('hg-n', root).innerHTML = '<span class="badge ' + (P.hard && n > P.hard ? 'danger' : warn ? 'warn' : 'ok') + '">' + n + (P.hard ? ' / ' + P.hard : '') + ' hashtags' + esc(warn) + '</span> <span>' + BT.fmtNum(chars(str), 0) + ' characters</span>';
+      $('hg-sel', root).textContent = str || 'Nothing selected yet.';
+      $('hg-groups', root).innerHTML = groups.filter(function (g) { return g.tags.length; }).map(function (g) {
+        return '<div class="yt-hgroup"><h4>' + esc(g.n) + ' <span class="badge">' + esc(g.d) + '</span></h4><div class="yt-hchips">' + g.tags.map(function (t) {
+          return '<button type="button" class="yt-hchip" data-a="tog" data-t="' + esc(t) + '" aria-pressed="' + !!picked[t] + '">' + esc(t) + '</button>';
+        }).join('') + '</div></div>';
+      }).join('');
+    }
+    onA(root, {
+      gen: generate,
+      tog: function (b) { var t = b.getAttribute('data-t'); picked[t] = !picked[t]; render(); var nb = BT.$('[data-t="' + window.CSS.escape(t) + '"]', root); if (nb) nb.focus(); },
+      copy: function () { var s = selected(); if (!s.length) return BT.toast('Select some hashtags first', 'error'); BT.copy(s.join(' '), plural(s.length, 'hashtag') + ' copied'); },
+      copyall: function () { var all = []; groups.forEach(function (g) { all = all.concat(g.tags); }); BT.copy(all.join(' '), plural(all.length, 'hashtag') + ' copied'); },
+      none: function () { picked = {}; render(); }
+    });
+    $('hg-topic', root).addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
+  });
+
   /*__END__*/
 })();
