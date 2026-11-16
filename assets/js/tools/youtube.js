@@ -855,7 +855,7 @@
         '<div class="yt-meter" id="tt-m" style="margin-bottom:12px"><span></span></div>' +
         '<div class="yt-tags" id="tt-list" role="list" aria-label="Tags (drag or use arrow keys to reorder, Delete to remove)" data-empty="Generate tags or add your own below."></div>' +
         '<p class="small muted" style="margin:8px 0 12px">Drag the ' + BT.icon('grip-vertical') + ' handle to reorder. On a keyboard: focus a tag, use the arrow keys to move it and Delete to remove it. Tags past the limit are crossed out.</p>' +
-        '<div class="field"><label for="tt-add">Add your own tag</label><div class="input-group">' + inp('tt-add', 'text', 'Type a tag and press Enter', '', ' maxlength="100"') +
+        '<div class="field"><label for="tt-add">Add your own tag</label><div class="input-group">' + inp('tt-add', 'text', 'Type a tag (or several, comma-separated) and press Enter', '', ' autocomplete="off"') +
           '<button type="button" class="btn" data-a="add">' + BT.icon('plus') + '<span>Add</span></button></div></div>' +
         '<div class="yt-toolbar">' + btn('data-a="copy"', 'copy', 'Copy (comma-separated)', 'btn-primary') + btn('data-a="trim"', 'scissors', 'Trim to 500') +
           btn('data-a="dl"', 'download', 'TXT') + btn('data-a="clear"', 'trash-2', 'Clear', 'btn-ghost') + '</div>' +
@@ -1475,7 +1475,7 @@
   }
   // Presets. safe = where text/logos are always visible; guides drawn on screen only.
   var BPRESETS = [
-    { id: 'yt', name: 'YouTube channel banner', w: 2560, h: 1440, max: 6 * 1024 * 1024, fmt: 'image/jpeg',
+    { id: 'yt', file: 'youtube-channel-banner', name: 'YouTube channel banner', w: 2560, h: 1440, max: 6 * 1024 * 1024, fmt: 'image/jpeg',
       safe: { x: 507, y: 508.5, w: 1546, h: 423 },
       guides: [
         { l: 'TV (full image) 2560 × 1440', x: 0, y: 0, w: 2560, h: 1440, c: '#60a5fa' },
@@ -1485,7 +1485,7 @@
       ],
       devices: [['TV', 0, 0, 2560, 1440], ['Desktop', 0, 508.5, 2560, 423], ['Tablet', 352.5, 508.5, 1855, 423], ['Mobile', 507, 508.5, 1546, 423]],
       note: 'YouTube shows the full 2560 × 1440 image only on TVs. Desktop, tablet and phone show a centred strip, so keep text and logos inside the green safe area. Upload limit: 6 MB.' },
-    { id: 'fb', name: 'Facebook cover (export 1640 × 624)', w: 1640, h: 624, fmt: 'image/jpeg',
+    { id: 'fb', file: 'facebook-cover', name: 'Facebook cover (export 1640 × 624)', w: 1640, h: 624, fmt: 'image/jpeg',
       safe: { x: 265.3, y: 8.5, w: 1109.4, h: 607 },
       guides: [
         { l: 'Desktop view (~851 × 315 shape)', x: 0, y: 8.5, w: 1640, h: 607, c: '#a78bfa' },
@@ -1494,19 +1494,19 @@
       ],
       devices: [['Desktop', 0, 8.5, 1640, 607], ['Mobile', 265.3, 0, 1109.4, 624]],
       note: 'Facebook displays covers at about 851 × 315 on computers and crops the sides on phones. We export at 1640 × 624 so it stays sharp on high-resolution screens. Facebook changes its layout from time to time — check after uploading.' },
-    { id: 'lip', name: 'LinkedIn personal banner 1584 × 396', w: 1584, h: 396, fmt: 'image/jpeg',
+    { id: 'lip', file: 'linkedin-banner', name: 'LinkedIn personal banner 1584 × 396', w: 1584, h: 396, fmt: 'image/jpeg',
       safe: { x: 420, y: 30, w: 1124, h: 336 },
       circle: { l: 'Profile photo (approx.)', cx: 200, cy: 380, r: 175 },
       guides: [{ l: 'Keep text clear of the photo area', x: 420, y: 30, w: 1124, h: 336, c: '#22c55e', bold: true }],
       devices: [['Desktop', 0, 0, 1584, 396], ['Mobile (approx.)', 100, 0, 1384, 396]],
       note: 'Your profile photo covers the lower-left corner, and phones may crop the edges slightly. Keep important content on the right two-thirds.' },
-    { id: 'lic', name: 'LinkedIn company cover 1128 × 191', w: 1128, h: 191, fmt: 'image/jpeg',
+    { id: 'lic', file: 'linkedin-company-cover', name: 'LinkedIn company cover 1128 × 191', w: 1128, h: 191, fmt: 'image/jpeg',
       safe: { x: 230, y: 16, w: 870, h: 159 },
       circle: { l: 'Logo (approx.)', cx: 110, cy: 185, r: 85, sq: true },
       guides: [{ l: 'Clear of the logo', x: 230, y: 16, w: 870, h: 159, c: '#22c55e', bold: true }],
       devices: [['Desktop', 0, 0, 1128, 191]],
       note: 'The company logo overlaps the lower-left corner. LinkedIn may crop slightly on phones.' },
-    { id: 'x', name: 'X / Twitter header 1500 × 500', w: 1500, h: 500, fmt: 'image/jpeg',
+    { id: 'x', file: 'x-header', name: 'X / Twitter header 1500 × 500', w: 1500, h: 500, fmt: 'image/jpeg',
       safe: { x: 420, y: 60, w: 1020, h: 380 },
       circle: { l: 'Profile photo (approx.)', cx: 207, cy: 500, r: 168 },
       guides: [{ l: 'Safe area (approx.)', x: 420, y: 60, w: 1020, h: 380, c: '#22c55e', bold: true }],
@@ -1697,7 +1697,10 @@
       c.fillStyle = 'rgba(0,0,0,.28)';
       c.beginPath(); c.rect(0, 0, w, hh); c.rect(s.x, s.y, s.w, s.h); c.fill('evenodd');
       c.restore();
-      c.font = '600 ' + Math.round(13 / k) + 'px system-ui, sans-serif';
+      // labels are sized in CSS pixels and only drawn when the canvas is big
+      // enough to keep them apart; the legend under the canvas always names them
+      var u = 1 / (view && view.cssK ? view.cssK : k), labels = w / u >= 760;
+      c.font = '600 ' + 13 * u + 'px system-ui, sans-serif';
       c.textBaseline = 'top';
       p.guides.forEach(function (g, i) {
         c.strokeStyle = g.c; c.lineWidth = (g.bold ? 3 : 2) / k;
@@ -1706,12 +1709,13 @@
         c.setLineDash([]);
         // label placement: safe area top-left, others top-right; YouTube's
         // desktop/tablet strips share a top edge, so stagger those labels
-        var tw = c.measureText(g.l).width + 10 / k, ly = g.y + 4 / k;
-        var lx = g.bold ? g.x + 4 / k : g.x + g.w - tw - 4 / k;
-        if (p.id === 'yt' && i === 1) lx = g.x + 4 / k;
-        if (p.id === 'yt' && i === 2) { lx = g.x + 4 / k; ly = g.y + g.h - 24 / k; }
-        c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(lx, ly, tw, 20 / k);
-        c.fillStyle = '#fff'; c.fillText(g.l, lx + 5 / k, ly + 3 / k);
+        if (!labels) return;
+        var tw = c.measureText(g.l).width + 10 * u, ly = g.y + 4 * u;
+        var lx = g.bold ? g.x + 4 * u : g.x + g.w - tw - 4 * u;
+        if (p.id === 'yt' && i === 1) lx = g.x + 4 * u;
+        if (p.id === 'yt' && i === 2) { lx = g.x + 4 * u; ly = g.y + g.h - 24 * u; }
+        c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(lx, ly, tw, 20 * u);
+        c.fillStyle = '#fff'; c.fillText(g.l, lx + 5 * u, ly + 3 * u);
       });
       if (p.circle) {
         var ci = p.circle;
@@ -1719,9 +1723,11 @@
         c.beginPath();
         if (ci.sq) rr(c, ci.cx - ci.r, ci.cy - ci.r, ci.r * 2, ci.r * 2, ci.r * 0.12); else c.arc(ci.cx, ci.cy, ci.r, 0, Math.PI * 2);
         c.fill(); c.stroke(); c.setLineDash([]);
-        var tw2 = c.measureText(ci.l).width + 10 / k;
-        c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(ci.cx - tw2 / 2, ci.cy - ci.r * 0.55, tw2, 20 / k);
-        c.fillStyle = '#fff'; c.fillText(ci.l, ci.cx - tw2 / 2 + 5 / k, ci.cy - ci.r * 0.55 + 3 / k);
+        if (labels) {
+          var tw2 = c.measureText(ci.l).width + 10 * u;
+          c.fillStyle = 'rgba(0,0,0,.65)'; c.fillRect(ci.cx - tw2 / 2, ci.cy - ci.r * 0.55, tw2, 20 * u);
+          c.fillStyle = '#fff'; c.fillText(ci.l, ci.cx - tw2 / 2 + 5 * u, ci.cy - ci.r * 0.55 + 3 * u);
+        }
       }
     }
     function corners(b) { return [{ x: b.x, y: b.y, ax: b.x + b.w, ay: b.y + b.h }, { x: b.x + b.w, y: b.y, ax: b.x, ay: b.y + b.h }, { x: b.x, y: b.y + b.h, ax: b.x + b.w, ay: b.y }, { x: b.x + b.w, y: b.y + b.h, ax: b.x, ay: b.y }]; }
@@ -1933,7 +1939,7 @@
       P.preset.addEventListener('change', function () { setPreset(P.preset.value); });
       panel.appendChild(h('h3', { text: 'Size' }));
       panel.appendChild(fld('Banner type', P.preset));
-      var g = h('label.check', null, [h('input', { type: 'checkbox', checked: D.guides, onchange: function (e) { D.guides = e.target.checked; render(); } }), ' Show safe-area guides']);
+      var g = h('label.check', null, [h('input', { type: 'checkbox', checked: D.guides, onchange: function (e) { D.guides = e.target.checked; refreshUnder(); render(); } }), ' Show safe-area guides']);
       panel.appendChild(g);
       P.note = h('p.small.muted', { style: { margin: '8px 0 0' } });
       panel.appendChild(P.note);
@@ -2025,8 +2031,9 @@
     }
     function refreshUnder() {
       var p = PR();
-      P.under.innerHTML = BT.icon('move') + '<span>' + esc(p.name.replace(/ \(.*\)$/, '')) + ' · exports at ' + p.w + ' × ' + p.h + ' px</span>' +
-        (D.guides ? '<span><span style="color:#22c55e">■</span> safe area</span>' : '');
+      P.under.innerHTML = BT.icon('move') + '<span>Drag to move · corners resize · exports at ' + p.w + ' × ' + p.h + ' px</span>' +
+        (D.guides ? p.guides.map(function (g) { return '<span><span style="color:' + g.c + '" aria-hidden="true">■</span> ' + esc(g.l) + '</span>'; }).join('') +
+          (p.circle ? '<span><span style="color:#ef4444" aria-hidden="true">●</span> ' + esc(p.circle.l) + '</span>' : '') : '');
       P.note.textContent = p.note;
     }
     function addLayer(L) { D.layers.push(L); sel = D.layers.length - 1; refreshLayers(); render(); }
@@ -2150,7 +2157,7 @@
         };
         return tryQ(mime, 0.92).then(function (r) {
           var ext = r.mime === 'image/png' ? 'png' : 'jpg';
-          var name = slug(p.name.replace(/\(.*\)/, '')) + '-' + p.w + 'x' + p.h + '.' + ext;
+          var name = p.file + '-' + p.w + 'x' + p.h + '.' + ext;
           BT.download(r.blob, name, r.mime);
           var over = limit && r.blob.size > limit;
           P.size.innerHTML = (over ? '<span class="badge danger">' : '<span class="badge ok">') + esc(BT.fmtBytes(r.blob.size)) + '</span> ' +
