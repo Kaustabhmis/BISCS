@@ -31,14 +31,15 @@
     '.sv-stage{position:relative;background:#05060a;border-radius:var(--radius-sm);overflow:hidden;display:grid;place-items:center;min-height:180px}',
     '.sv-stage>video,.sv-stage>img,.sv-stage>canvas{display:block;max-width:100%;max-height:min(60vh,520px);width:auto;height:auto}',
     '.sv-nopreview{color:#c9cede;padding:24px;text-align:center;font-size:.9rem;max-width:420px}',
-    '.sv-frame{position:relative;margin:0 auto;max-width:100%;width:calc(min(60vh,520px) * var(--ar,1.7778));aspect-ratio:var(--ar,1.7778)}',
+    '.sv-frame{position:relative;margin:0 auto;width:100%;max-width:calc(min(60vh,520px) * var(--ar,1.7778));aspect-ratio:var(--ar,1.7778)}',
     '.sv-frame>video,.sv-frame>canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}',
-    '.sv-crop{position:absolute;top:0;height:100%;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(5,6,10,.55);border-radius:4px;cursor:grab;touch-action:none;z-index:2}',
+    '.sv-crop{position:absolute;top:0;height:100%;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(5,6,10,.55);border-radius:4px;pointer-events:none;z-index:2}',
+    '.sv-grab{position:absolute;left:0;right:0;top:0;bottom:56px;pointer-events:auto;cursor:grab;touch-action:none}',
     '.sv-crop:focus-visible{outline:3px solid #facc15;outline-offset:1px}',
-    '.sv-crop.sv-dragging{cursor:grabbing}',
-    '.sv-crop.sv-static{cursor:default;pointer-events:none}',
+    '.sv-crop.sv-dragging .sv-grab{cursor:grabbing}',
+    '.sv-crop.sv-static .sv-grab{display:none}',
     '.sv-crop::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border:2px solid rgba(255,255,255,.8);border-radius:50%}',
-    '.sv-crop.sv-v{left:0;width:100%!important;cursor:ns-resize}',
+    '.sv-crop.sv-v{left:0;width:100%!important}.sv-crop.sv-v .sv-grab{cursor:ns-resize}',
     '.sv-capprev{position:absolute;left:5%;right:5%;bottom:8%;text-align:center;pointer-events:none;z-index:3}',
     '.sv-capprev span{display:inline;background:rgba(0,0,0,.6);color:#fff;font-weight:700;padding:2px 8px;border-radius:6px;font-size:clamp(.8rem,2.4vw,1.2rem);line-height:1.6;box-decoration-break:clone;-webkit-box-decoration-break:clone;white-space:pre-wrap}',
     '.sv-panel h3{font-size:1rem;margin:0 0 12px}',
@@ -120,7 +121,7 @@
     '.sv-sub.sv-cur{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}',
     '.sv-sub .sv-no{font:700 .85rem var(--mono);color:var(--text-3);padding-top:8px;text-align:center}',
     '.sv-sub .sv-tm{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}',
-    '.sv-sub .sv-tm input{width:112px;flex:0 1 112px;min-width:0;padding:6px 8px;font:500 .85rem var(--mono)}',
+    '.sv-sub .sv-tm input{width:136px;flex:0 1 136px;min-width:0;padding:6px 8px;font:500 .82rem var(--mono)}',
     '.sv-sub textarea{width:100%;min-height:44px;resize:vertical}',
     '.sv-sub .sv-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}',
     '.sv-sub .sv-err{color:var(--danger);font-size:.8rem;margin-top:4px}',
@@ -139,6 +140,7 @@
     '.sv-pass{color:var(--ok);font-weight:700;white-space:nowrap}.sv-warn{color:var(--warn);font-weight:700;white-space:nowrap}.sv-info{color:var(--text-3);font-weight:700;white-space:nowrap}',
     '.sv-ctable td{white-space:normal;vertical-align:top}',
     '.sv-ctable td:first-child{white-space:nowrap}',
+    '.sv-ctable td:last-child{min-width:240px}',
     '.sv-plat{margin-top:18px}.sv-plat h4{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:1rem}',
     // thumbnails & frames
     '.sv-canvaswrap{position:relative;background:repeating-conic-gradient(var(--surface-2) 0% 25%, var(--surface) 0% 50%) 50% / 20px 20px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}',
@@ -648,7 +650,7 @@
 
   function errorBox(host, e) {
     if (isCancel(e)) { BT.toast('Cancelled'); return; }
-    console.error(e);
+    console.warn(e);
     var n = notice('error', esc(e && e.message ? e.message : String(e)));
     n.setAttribute('role', 'alert');
     host.appendChild(n);
@@ -1145,40 +1147,32 @@
     p.forEach(function (x) { sec = sec * 60 + parseFloat(x); });
     return sec;
   }
-  /** Parse SRT or WebVTT text into [{start, end, text}] (robust to BOM, CRLF, missing numbers, cue settings). */
+  /** Parse SRT or WebVTT text into [{start, end, text}] (robust to BOM, CRLF, missing numbers, cue ids and settings). */
   function parseSubs(txt) {
     txt = String(txt || '').replace(/^﻿/, '').replace(/\r\n?/g, '\n');
-    var lines = txt.split('\n'), out = [], cur = null;
-    function flush() {
-      if (cur) {
-        var t = cur.text.join('\n').replace(/\n+$/, '');
-        if (cur.end > cur.start) out.push({ start: cur.start, end: cur.end, text: cleanCue(t) });
+    var out = [], last = null;
+    txt.split(/\n[ \t]*\n/).forEach(function (block) {
+      var lines = block.split('\n'), cur = null, seen = false;
+      function push() {
+        if (!cur) return;
+        while (cur.text.length && /^\s*\d+\s*$/.test(cur.text[cur.text.length - 1])) cur.text.pop();
+        out.push(cur); last = cur;
       }
-      cur = null;
-    }
-    for (var i = 0; i < lines.length; i++) {
-      var l = lines[i];
-      var m = l.match(TS_RE);
-      if (m) {
-        // A line with a bare number just before the timing line is the cue index; drop it.
-        if (cur && cur.text.length && /^\s*\d+\s*$/.test(cur.text[cur.text.length - 1])) cur.text.pop();
-        flush();
-        cur = { start: parseTs(m[1]), end: parseTs(m[2]), text: [] };
-        continue;
-      }
-      if (!cur) continue;
-      if (/^\s*$/.test(l)) {
-        // Blank line ends the cue, unless the next non-blank line is plain text without a timing (lenient).
-        if (cur.text.length) { cur.text.push(''); }
-        continue;
-      }
-      if (/^(NOTE|STYLE|REGION)(\s|$)/.test(l) && cur.text.length && cur.text[cur.text.length - 1] === '') { flush(); continue; }
-      cur.text.push(l);
-    }
-    if (cur && cur.text.length && /^\s*\d+\s*$/.test(cur.text[cur.text.length - 1])) cur.text.pop();
-    flush();
-    out.forEach(function (c) { c.text = c.text.replace(/\n{2,}/g, '\n').replace(/\n\s*\d+\s*$/, '').trim(); });
-    out = out.filter(function (c) { return c.text.length; });
+      lines.forEach(function (l) {
+        var m = l.match(TS_RE);
+        if (m) {
+          // A cue without a blank line before the next one: drop the next cue's index line.
+          push();
+          seen = true;
+          cur = { start: parseTs(m[1]), end: parseTs(m[2]), text: [] };
+        } else if (cur) cur.text.push(l);
+      });
+      if (cur) { push(); return; }
+      // A block without a timing line: header/comment, or (leniently) a blank line inside the previous cue.
+      if (!seen && last && !/^\s*(WEBVTT|NOTE|STYLE|REGION|\d+\s*$)/.test(block) && block.trim()) last.text.push(block.trim());
+    });
+    out = out.map(function (c) { return { start: c.start, end: c.end, text: cleanCue(c.text.join('\n')).replace(/\n{2,}/g, '\n') }; })
+      .filter(function (c) { return c.end > c.start && c.text.length; });
     out.sort(function (a, b) { return a.start - b.start; });
     return out;
   }
@@ -1316,7 +1310,7 @@
           if (!list) return;
           var y = o.capAnchor === 'top' ? Math.round(H * 0.06) : o.capAnchor === 'middle' ? Math.round((H - bh) / 2) : Math.round(H * (o.capBottom || 0.92) - bh);
           args.push('-f', 'concat', '-safe', '0', '-i', list);
-          chain.push('[' + cur + '][' + n + ':v]overlay=0:' + Math.max(0, y) + ':format=auto[v' + n + ']');
+          chain.push('[' + cur + '][' + n + ':v]overlay=0:' + Math.max(0, y) + ':format=auto:shortest=1[v' + n + ']');
           cur = 'v' + n; n++;
         });
       });
@@ -1582,6 +1576,8 @@
   /** Crop-box overlay on a framed preview: draggable (manual) or static. */
   function cropBox(frame, iw, ih, onMove) {
     var box = h('div.sv-crop', { tabindex: '0', role: 'slider', 'aria-label': 'Crop position', 'aria-valuemin': '0', 'aria-valuemax': '100' });
+    var grab = h('div.sv-grab', { 'aria-hidden': 'true', title: 'Drag to move the crop' });
+    box.appendChild(grab);
     frame.appendChild(box);
     var st = { pos: 0.5, W: 9, H: 16, draggable: true, visible: true };
     function geom() { return cropGeom(iw, ih, st.W, st.H); }
@@ -1607,14 +1603,15 @@
       box.setAttribute('aria-valuetext', Math.round(st.pos * 100) + '%');
     }
     var drag = null;
-    box.addEventListener('pointerdown', function (e) {
+    grab.addEventListener('pointerdown', function (e) {
       if (!st.draggable) return;
       e.preventDefault();
-      box.setPointerCapture(e.pointerId);
+      grab.setPointerCapture(e.pointerId);
+      box.focus({ preventScroll: true });
       drag = { x: e.clientX, y: e.clientY, pos: st.pos };
       box.classList.add('sv-dragging');
     });
-    box.addEventListener('pointermove', function (e) {
+    grab.addEventListener('pointermove', function (e) {
       if (!drag) return;
       var g = geom(), r = frame.getBoundingClientRect();
       var free = g.horiz ? r.width * (1 - g.cw / iw) : r.height * (1 - g.ch / ih);
@@ -1625,8 +1622,8 @@
       onMove(st.pos);
     });
     function end() { drag = null; box.classList.remove('sv-dragging'); }
-    box.addEventListener('pointerup', end);
-    box.addEventListener('pointercancel', end);
+    grab.addEventListener('pointerup', end);
+    grab.addEventListener('pointercancel', end);
     box.addEventListener('keydown', function (e) {
       if (!st.draggable) return;
       var d = { ArrowLeft: -0.03, ArrowUp: -0.03, ArrowRight: 0.03, ArrowDown: 0.03, Home: -1, End: 1 }[e.key];
@@ -2630,7 +2627,7 @@
     return [
       { name: 'Bold left', bg: { dim: 0.15, grad: 'left' }, layers: [
         { type: 'text', text: 'BIG TITLE\nHERE', x: 380, y: 300, size: 120, font: 'impact', color: '#facc15', stroke: '#000000', strokeW: 10, shadow: true, align: 'left', maxW: 680, box: false, boxColor: '#000000' },
-        { type: 'text', text: 'Short subtitle', x: 300, y: 560, size: 56, font: 'sans', color: '#ffffff', stroke: '#000000', strokeW: 6, shadow: true, align: 'left', maxW: 640, box: false, boxColor: '#000000' }] },
+        { type: 'text', text: 'Short subtitle', x: 370, y: 560, size: 56, font: 'sans', color: '#ffffff', stroke: '#000000', strokeW: 6, shadow: true, align: 'left', maxW: 640, box: false, boxColor: '#000000' }] },
       { name: 'Centre box', bg: { dim: 0.25, grad: 'none' }, layers: [
         { type: 'text', text: 'YOUR HEADLINE', x: 640, y: 360, size: 110, font: 'impact', color: '#ffffff', stroke: '#000000', strokeW: 0, shadow: false, align: 'center', maxW: 1100, box: true, boxColor: '#dc2626' }] },
       { name: 'Bottom bar', bg: { dim: 0, grad: 'bottom' }, layers: [
@@ -3487,7 +3484,7 @@
                 if (!list) throw new Error('No captions fall inside the video’s length.');
                 var y = bs.anchor === 'top' ? Math.round(H * 0.05) : bs.anchor === 'middle' ? Math.round((H - bh) / 2) : Math.round(H * 0.95 - bh);
                 var o = J.out('mp4');
-                var args = ['-i', inp, '-f', 'concat', '-safe', '0', '-i', list, '-filter_complex', '[0:v][1:v]overlay=0:' + Math.max(0, y) + ':format=auto,format=yuv420p[v]', '-map', '[v]', '-map', '0:a:0?'];
+                var args = ['-i', inp, '-f', 'concat', '-safe', '0', '-i', list, '-filter_complex', '[0:v][1:v]overlay=0:' + Math.max(0, y) + ':format=auto:shortest=1,format=yuv420p[v]', '-map', '[v]', '-map', '0:a:0?', '-t', dur.toFixed(3)];
                 args = args.concat(h264Args('veryfast'), /^(aac|mp3)$/.test(pm.acodec) ? ['-c:a', 'copy'] : AAC, FASTSTART, [o]);
                 return J.run(args, { dur: dur, label: 'Burning in captions…', sub: 'Keep this tab open.' }).then(function () { return J.read(o); });
               });
