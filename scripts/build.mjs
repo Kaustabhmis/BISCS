@@ -312,7 +312,7 @@ function buildHome() {
 
 ${ARTICLES.length ? `<section class="section" style="padding-top:0">
   <div class="container">
-    <div class="section-head reveal"><div><h2>Latest guides</h2><p>Step-by-step help for getting the most out of every tool.</p></div><a class="btn btn-sm" href="blog/">All ${ARTICLES.length} guides ${icon('arrow-right')}</a></div>
+    <div class="section-head reveal"><div><h2>Latest guides</h2><p>Step-by-step help for getting the most out of every tool.</p></div><a class="btn btn-sm" href="blog/">All 100+ guides ${icon('arrow-right')}</a></div>
     <div class="post-grid reveal">${ARTICLES.slice(0, 6).map((a) => articleCard(a, base)).join('')}</div>
   </div>
 </section>` : ''}
@@ -604,7 +604,7 @@ function buildStaticPages() {
 </div>
 <p style="margin-top:20px"><a class="btn" href="../../">${icon('arrow-left')} Back to all tools</a></p>`, { noindex: true });
 
-  buildPage('sitemap', 'Sitemap', `Sitemap of ${SITE.name}: all ${SITE.toolsLabel} free online tools and ${ARTICLES.length} how-to guides, organised by category, with links to every page.`, `
+  buildPage('sitemap', 'Sitemap', `Sitemap of ${SITE.name}: all ${SITE.toolsLabel} free online tools and 100+ how-to guides, organised by category, with links to every page.`, `
 <p>Every page on ${SITE.name}. Search engines can also use our <a href="../sitemap.xml">XML sitemap</a>.</p>
 <h2>Main pages</h2>
 <ul><li><a href="../">Home</a></li><li><a href="../blog/">Blog &amp; Guides</a></li><li><a href="../about/">About</a></li><li><a href="../contact/">Contact</a></li><li><a href="../privacy/">Privacy Policy</a></li><li><a href="../terms/">Terms of Use</a></li></ul>
@@ -759,7 +759,7 @@ function buildBlogIndex() {
     <nav class="crumbs" aria-label="Breadcrumb"><a href="${base}">Home</a>${icon('chevron-right')}<span>Blog</span></nav>
     <div class="tool-title" style="--c:#334155">
       <span class="tool-icon">${icon('newspaper')}</span>
-      <div><h1>Guides &amp; Tutorials</h1><p>${ARTICLES.length} practical guides on PDFs, GST and money, images, AI photo editing, video, office work, design and SEO.</p></div>
+      <div><h1>Guides &amp; Tutorials</h1><p>100+ practical guides on PDFs, GST and money, images, AI photo editing, video, office work, design and SEO.</p></div>
     </div>
   </div>
 </section>
