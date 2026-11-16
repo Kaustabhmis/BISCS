@@ -5,16 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unix Timestamp to Date Converter: Seconds, Milliseconds, IST | BISCS India</title>
 <meta name="description" content="Convert Unix epoch timestamps to readable dates in IST or UTC and back. Learn seconds vs milliseconds, why IST is UTC+05:30 and how to avoid off-by-5:30 bugs.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://biscsindia.com/blog/unix-timestamp-to-date-ist/">
+<link rel="alternate" hreflang="en-IN" href="https://biscsindia.com/blog/unix-timestamp-to-date-ist/">
+<link rel="alternate" hreflang="x-default" href="https://biscsindia.com/blog/unix-timestamp-to-date-ist/">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="BISCS India">
 <meta property="og:title" content="Unix Timestamp to Date Converter: Seconds, Milliseconds, IST | BISCS India">
 <meta property="og:description" content="Convert Unix epoch timestamps to readable dates in IST or UTC and back. Learn seconds vs milliseconds, why IST is UTC+05:30 and how to avoid off-by-5:30 bugs.">
 <meta property="og:url" content="https://biscsindia.com/blog/unix-timestamp-to-date-ist/">
 <meta property="og:image" content="https://biscsindia.com/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BISCS India: 100+ free online tools">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unix Timestamp to Date Converter: Seconds, Milliseconds, IST | BISCS India">
+<meta name="twitter:description" content="Convert Unix epoch timestamps to readable dates in IST or UTC and back. Learn seconds vs milliseconds, why IST is UTC+05:30 and how to avoid off-by-5:30 bugs.">
+<meta name="twitter:image" content="https://biscsindia.com/assets/img/og.png">
 <meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="application-name" content="BISCS India">
+<meta name="apple-mobile-web-app-title" content="BISCS Tools">
 <link rel="manifest" href="../../site.webmanifest">
 <meta name="google-adsense-account" content="ca-pub-9359278521160680">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9359278521160680" crossorigin="anonymous"></script>
@@ -29,6 +44,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"Unix Timestamp to Date Converter: Seconds, Milliseconds, IST","item":"https://biscsindia.com/blog/unix-timestamp-to-date-ist/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://biscsindia.com/","logo":{"@type":"ImageObject","url":"https://biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I tell if a timestamp is in seconds or milliseconds?","acceptedAnswer":{"@type":"Answer","text":"Count the digits. Current timestamps in seconds have 10 digits, for example 1767225600. In milliseconds they have 13 digits, like 1767225600000. Microseconds have 16 and nanoseconds 19. The converter’s Auto-detect option uses the digit count, and you can override it if your data is unusual."}},{"@type":"Question","name":"Is a Unix timestamp in UTC or local time?","acceptedAnswer":{"@type":"Answer","text":"A Unix timestamp has no time zone. It is a single count of seconds since the epoch, and the same moment has the same timestamp everywhere in the world. Time zones only matter when you display it as a calendar date, which is where IST, UTC or your local zone comes in."}},{"@type":"Question","name":"What is IST in terms of UTC?","acceptedAnswer":{"@type":"Answer","text":"Indian Standard Time is UTC plus 5 hours 30 minutes, written UTC+05:30. India does not observe daylight saving time, so the offset is the same all year. Midnight UTC is 5:30 am IST, and midnight IST is 6:30 pm UTC on the previous day."}},{"@type":"Question","name":"What is the Year 2038 problem?","acceptedAnswer":{"@type":"Answer","text":"Systems that store Unix time as a signed 32-bit integer can only count up to 19 January 2038 at 03:14:07 UTC. After that the value overflows. Modern operating systems, databases and languages mostly use 64-bit time, but old embedded devices and legacy code may still be affected."}},{"@type":"Question","name":"Why is my converted date 5 hours 30 minutes off?","acceptedAnswer":{"@type":"Answer","text":"Somewhere a time was treated as UTC when it was really IST, or the other way round. Common causes are saving a local IST time without zone information and later reading it as UTC, or a server set to UTC formatting dates for Indian users. Store timestamps or UTC, and convert only for display."}}]}</script>
+<meta name="keywords" content="unix timestamp converter, epoch to date, timestamp to ist, convert epoch time, milliseconds to date">
 <meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
 </head>
 <body>

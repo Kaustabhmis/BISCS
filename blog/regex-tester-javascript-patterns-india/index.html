@@ -5,16 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Regex Tester: Test JavaScript Regular Expressions Live | BISCS India</title>
 <meta name="description" content="Test regular expressions with live highlighting, capture groups and replace preview. Includes patterns for Indian mobile numbers, PAN, GSTIN and PIN codes.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://biscsindia.com/blog/regex-tester-javascript-patterns-india/">
+<link rel="alternate" hreflang="en-IN" href="https://biscsindia.com/blog/regex-tester-javascript-patterns-india/">
+<link rel="alternate" hreflang="x-default" href="https://biscsindia.com/blog/regex-tester-javascript-patterns-india/">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="BISCS India">
 <meta property="og:title" content="Regex Tester: Test JavaScript Regular Expressions Live | BISCS India">
 <meta property="og:description" content="Test regular expressions with live highlighting, capture groups and replace preview. Includes patterns for Indian mobile numbers, PAN, GSTIN and PIN codes.">
 <meta property="og:url" content="https://biscsindia.com/blog/regex-tester-javascript-patterns-india/">
 <meta property="og:image" content="https://biscsindia.com/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BISCS India: 100+ free online tools">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Regex Tester: Test JavaScript Regular Expressions Live | BISCS India">
+<meta name="twitter:description" content="Test regular expressions with live highlighting, capture groups and replace preview. Includes patterns for Indian mobile numbers, PAN, GSTIN and PIN codes.">
+<meta name="twitter:image" content="https://biscsindia.com/assets/img/og.png">
 <meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="application-name" content="BISCS India">
+<meta name="apple-mobile-web-app-title" content="BISCS Tools">
 <link rel="manifest" href="../../site.webmanifest">
 <meta name="google-adsense-account" content="ca-pub-9359278521160680">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9359278521160680" crossorigin="anonymous"></script>
@@ -29,6 +44,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"Regex Tester: Test JavaScript Regular Expressions Live","item":"https://biscsindia.com/blog/regex-tester-javascript-patterns-india/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://biscsindia.com/","logo":{"@type":"ImageObject","url":"https://biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which regex flavour does this tester use?","acceptedAnswer":{"@type":"Answer","text":"It uses your browser’s JavaScript (ECMAScript) regex engine, the same one used by Node.js and front-end code. Most syntax is shared with Python, Java and PCRE, but there are differences, for example in lookbehind support in older engines, possessive quantifiers and some flags. Test in your target language before relying on edge cases."}},{"@type":"Question","name":"Why does my regex match only the first occurrence?","acceptedAnswer":{"@type":"Answer","text":"Without the g (global) flag, JavaScript stops after the first match. Tick global to find every match. Note that with g, methods like test and exec remember their position through lastIndex, which can cause surprising results when you reuse the same regex object in code."}},{"@type":"Question","name":"Is there a regex that fully validates an email address?","acceptedAnswer":{"@type":"Answer","text":"Not a practical one. The official email address rules are very permissive, so any short regex will either reject some valid addresses or accept some invalid ones. Use a simple pattern to catch obvious typos, then confirm the address by sending a verification email."}},{"@type":"Question","name":"Can a regex verify that a PAN or GSTIN is genuine?","acceptedAnswer":{"@type":"Answer","text":"No. A regex checks only the format, such as five letters, four digits and a letter for PAN. It cannot tell whether the number was actually issued. GSTINs also include a check digit that a regex cannot calculate. Use a proper validator and, for compliance, the official government portal."}},{"@type":"Question","name":"What does catastrophic backtracking mean?","acceptedAnswer":{"@type":"Answer","text":"Some patterns with nested repetition, such as (a+)+ followed by something that fails, make the engine try an enormous number of combinations, so it freezes on certain inputs. This can be exploited to slow down servers. Avoid nested quantifiers on overlapping patterns and test with long non-matching strings."}}]}</script>
+<meta name="keywords" content="regex tester, regular expression tester online, javascript regex test, regex for indian mobile number, pan card regex">
 <meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
 </head>
 <body>

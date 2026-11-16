@@ -5,16 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How to Minify CSS, HTML and JSON Online (and What It Saves) | BISCS India</title>
 <meta name="description" content="Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://biscsindia.com/blog/minify-css-html-json-online/">
+<link rel="alternate" hreflang="en-IN" href="https://biscsindia.com/blog/minify-css-html-json-online/">
+<link rel="alternate" hreflang="x-default" href="https://biscsindia.com/blog/minify-css-html-json-online/">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="BISCS India">
 <meta property="og:title" content="How to Minify CSS, HTML and JSON Online (and What It Saves) | BISCS India">
 <meta property="og:description" content="Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.">
 <meta property="og:url" content="https://biscsindia.com/blog/minify-css-html-json-online/">
 <meta property="og:image" content="https://biscsindia.com/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BISCS India: 100+ free online tools">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Minify CSS, HTML and JSON Online (and What It Saves) | BISCS India">
+<meta name="twitter:description" content="Minify CSS, HTML and JSON to shrink file size: what minification removes, how it differs from gzip, what to keep, and how to check the bytes you saved.">
+<meta name="twitter:image" content="https://biscsindia.com/assets/img/og.png">
 <meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="application-name" content="BISCS India">
+<meta name="apple-mobile-web-app-title" content="BISCS Tools">
 <link rel="manifest" href="../../site.webmanifest">
 <meta name="google-adsense-account" content="ca-pub-9359278521160680">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9359278521160680" crossorigin="anonymous"></script>
@@ -29,6 +44,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"How to Minify CSS, HTML and JSON Online (and What It Saves)","item":"https://biscsindia.com/blog/minify-css-html-json-online/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://biscsindia.com/","logo":{"@type":"ImageObject","url":"https://biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does minifying CSS or HTML change how the page looks?","acceptedAnswer":{"@type":"Answer","text":"It should not. Minification only removes characters that have no effect on rendering, such as indentation, comments and redundant semicolons. Whitespace that matters, for example inside pre and textarea elements, is preserved. Always test the minified page once, because unusual markup or CSS hacks can occasionally behave differently."}},{"@type":"Question","name":"Is minification still worth it if my server uses gzip or Brotli?","acceptedAnswer":{"@type":"Answer","text":"Usually yes, but the gain is smaller. Compression already shrinks repeated whitespace very efficiently, so a file that is 30% smaller after minifying might be only a few percent smaller after compression. Minifying also removes comments, which can contain internal notes you would rather not publish."}},{"@type":"Question","name":"Can I minify JavaScript with this tool?","acceptedAnswer":{"@type":"Answer","text":"No. This tool handles CSS, HTML and JSON. Safely minifying JavaScript requires understanding variable scope and syntax in depth, which is the job of dedicated tools such as Terser or esbuild, usually run as part of a build process. Inline script blocks inside HTML are left unchanged."}},{"@type":"Question","name":"Can I un-minify code later?","acceptedAnswer":{"@type":"Answer","text":"You can re-format minified code so it is readable again, but comments and original formatting that were removed are gone for good. Always keep your original, readable source files and treat the minified version as a build output, never as the file you edit."}},{"@type":"Question","name":"What does Keep /*! licence */ comments mean?","acceptedAnswer":{"@type":"Answer","text":"By convention, a comment whose opening marker is followed by an exclamation mark holds a licence or copyright notice that should survive minification. Many open-source licences require that notice to stay with the code. With the option ticked, the minifier removes ordinary comments but keeps these special ones."}}]}</script>
+<meta name="keywords" content="css minifier, minify html online, json minify, compress css code, html minifier">
 <meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
 </head>
 <body>

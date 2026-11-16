@@ -126,7 +126,7 @@ function miniLink(t, base) {
 }
 
 // ------------------------------------------------------------------ layout
-function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '', ogType = 'website' }) {
+function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '', ogType = 'website', noindex = false, keywords = '' }) {
   const nav = [
     ['pdf', 'PDF Tools'], ['finance', 'Finance'],
     ['ai', 'AI Photo'], ['social-video', 'YouTube'], ['video', 'Video'], ['office', 'Office'], ['seo', 'SEO']
@@ -149,16 +149,31 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+<meta name="robots" content="${noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}">
 <link rel="canonical" href="${SITE.url}${canonical}">
+<link rel="alternate" hreflang="en-IN" href="${SITE.url}${canonical}">
+<link rel="alternate" hreflang="x-default" href="${SITE.url}${canonical}">
 <meta property="og:type" content="${ogType}">
+<meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="${esc(SITE.name)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${SITE.url}${canonical}">
 <meta property="og:image" content="${SITE.url}/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SITE.name)}: ${SITE.toolsLabel} free online tools">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${SITE.url}/assets/img/og.png">
 <meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="${base}favicon.ico" sizes="48x48">
 <link rel="icon" href="${base}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${base}favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="${base}apple-touch-icon.png">
+<meta name="application-name" content="${esc(SITE.name)}">
+<meta name="apple-mobile-web-app-title" content="BISCS Tools">
 <link rel="manifest" href="${base}site.webmanifest">${SITE.adsense.client ? `
 <meta name="google-adsense-account" content="${SITE.adsense.client}">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsense.client}" crossorigin="anonymous"></script>` : ''}
@@ -170,7 +185,7 @@ function layout({ base, title, description, canonical, body, scripts = '', activ
 <link rel="stylesheet" href="${base}assets/css/site.css?v=${SITE.version}">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('bt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c')}</script>`).join('\n')}
-${extraHead}
+${keywords ? `<meta name="keywords" content="${esc(keywords)}">\n` : ''}${extraHead}
 </head>
 <body>
 <a class="sr-only" href="#main">Skip to content</a>
@@ -328,10 +343,11 @@ ${ARTICLES.length ? `<section class="section" style="padding-top:0">
 </section>`;
 
   const jsonld = [{
-    '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url + '/',
+    '@context': 'https://schema.org', '@type': 'WebSite', '@id': SITE.url + '/#website', name: SITE.name, url: SITE.url + '/', inLanguage: 'en-IN', publisher: { '@id': ORG_ID },
     potentialAction: { '@type': 'SearchAction', target: SITE.url + '/?q={search_term_string}', 'query-input': 'required name=search_term_string' }
   }, ORG];
   write('index.html', layout({
+    keywords: 'free online tools, free pdf editor, gst calculator, background remover, youtube shorts maker, image compressor, seo tools, free tools india',
     base, canonical: '/',
     title: `${SITE.name}: ${SITE.toolsLabel} Free Online Tools (PDF, GST, EMI, Image & More)`,
     description: `${SITE.toolsLabel} free online tools: PDF editor, GST and income tax calculators, AI background remover, video compressor, resume maker and SEO tools. No uploads, no sign-up.`,
@@ -372,7 +388,16 @@ function buildCategory(c) {
     title: `Free ${c.name} Online: ${list.length} Tools | ${SITE.name}`,
     description: clip(`${list.length} free ${c.name}: ${list.slice(0, 3).map((t) => t.name).join(', ')} and more. ${c.desc}`),
     body,
+    keywords: [`free ${c.name.toLowerCase()}`, `${c.short.toLowerCase()} tools online`, ...list.slice(0, 5).map((t) => t.name.toLowerCase())].join(', '),
     jsonld: [{
+      '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': `${SITE.url}/category/${c.id}/#page`,
+      name: `Free ${c.name}`, description: c.desc, url: `${SITE.url}/category/${c.id}/`, inLanguage: 'en-IN',
+      isPartOf: { '@id': SITE.url + '/#website' }, publisher: { '@id': ORG_ID },
+      mainEntity: {
+        '@type': 'ItemList', numberOfItems: list.length,
+        itemListElement: list.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: `${SITE.url}/tools/${t.id}/` }))
+      }
+    }, {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
         { '@type': 'ListItem', position: 2, name: c.name, item: `${SITE.url}/category/${c.id}/` }
@@ -405,7 +430,9 @@ function buildTool(t) {
   const others = ['pdf-editor', 'merge-pdf', 'gst-calculator', 'image-compressor', 'word-counter', 'qr-code-generator']
     .filter((id) => id !== t.id && !related.find((r) => r.id === id)).slice(0, 4).map((id) => TOOLS.find((x) => x.id === id));
   const steps = t.how ? t.how.map(esc) : (HOWTO[t.cat] || HOWTO.default)(t);
-  const faqs = FAQ(t, c);
+  const guide = articleFor(t.id);
+  const answer = guide ? guide.summary : t.desc;
+  const faqs = [[`What does ${t.name} do?`, answer], ...FAQ(t, c)];
   const wide = t.cat === 'pdf' || t.id === 'invoice-generator';
 
   const body = `
@@ -436,7 +463,8 @@ function buildTool(t) {
 </div>
 <section class="howto">
   <div class="container">
-    ${(() => { const g = articleFor(t.id); return g ? `<a class="guide-link" href="${base}blog/${g.slug}/">${icon('book-open-text')}<span>Read the complete guide: ${esc(g.title)}</span>${icon('arrow-right')}</a>` : ''; })()}
+    <div class="quick-answer" role="note" aria-label="Quick answer"><strong>${icon('zap')} Quick answer</strong><p>${esc(answer)}</p></div>
+    ${(() => { const g = guide; return g ? `<a class="guide-link" href="${base}blog/${g.slug}/">${icon('book-open-text')}<span>Read the complete guide: ${esc(g.title)}</span>${icon('arrow-right')}</a>` : ''; })()}
     <div class="split">
       <div>
         <h2>How to use ${esc(t.name)}</h2>
@@ -452,11 +480,17 @@ function buildTool(t) {
   </div>
 </section>`;
 
+  const kws = [t.name.toLowerCase(), `free ${t.name.toLowerCase()} online`, `${t.name.toLowerCase()} no sign up`, ...((guide && guide.keywords) || []).slice(0, 4), c.name.toLowerCase()]
+    .filter((v, i, a) => a.indexOf(v) === i).join(', ');
   const jsonld = [
     {
       '@context': 'https://schema.org', '@type': 'WebApplication', name: t.name, description: t.desc,
       url: `${SITE.url}/tools/${t.id}/`, applicationCategory: c.id === 'dev' ? 'DeveloperApplication' : c.id === 'finance' ? 'FinanceApplication' : 'UtilitiesApplication',
-      operatingSystem: 'Any', browserRequirements: 'Requires JavaScript',
+      '@id': `${SITE.url}/tools/${t.id}/#app`, abstract: answer,
+      operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', inLanguage: 'en-IN',
+      isAccessibleForFree: true, publisher: { '@id': ORG_ID }, provider: { '@id': ORG_ID },
+      keywords: kws, image: `${SITE.url}/assets/img/og.png`,
+      ...(guide ? { subjectOf: { '@type': 'BlogPosting', headline: guide.title, url: `${SITE.url}/blog/${guide.slug}/` } } : {}),
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }
     },
     {
@@ -476,7 +510,7 @@ function buildTool(t) {
     base, active: c.id, canonical: `/tools/${t.id}/`,
     title: `${t.name}: Free Online ${c.short === 'PDF' ? 'PDF Tool' : 'Tool'} | ${SITE.name}`,
     description: `${t.desc} Free, fast and private: works in your browser with no uploads or sign-up.`,
-    body, jsonld,
+    body, jsonld, keywords: kws,
     scripts: `<script src="${base}assets/js/tools/${fileFor(t)}.js?v=${SITE.version}" defer></script>`
   }));
 }
@@ -486,7 +520,7 @@ function buildPage(slug, title, description, html, opts = {}) {
   const base = '../'.repeat(slug.split('/').length);
   write(`${slug}/index.html`, layout({
     base, canonical: `/${slug}/`, title: `${title} | ${SITE.name}`, description,
-    extraHead: opts.noindex ? '<meta name="robots" content="noindex">' : '',
+    noindex: !!opts.noindex,
     jsonld: opts.jsonld || [],
     body: `<div class="container"><article class="prose${opts.wide ? ' wide' : ''}"><nav class="crumbs"><a href="${base}">Home</a>${icon('chevron-right')}<span>${esc(title)}</span></nav><h1>${esc(title)}</h1>${html}</article></div>`
   }));
@@ -612,7 +646,7 @@ ${CATEGORIES.map((c) => `<h2><a href="../category/${c.id}/">${esc(c.name)}</a></
 <p>Email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>`);
 
   write('404.html', layout({
-    base: '/', canonical: '/404.html', title: `Page not found | ${SITE.name}`, description: `This page doesn't exist. Search ${SITE.name}'s ${SITE.toolsLabel} free online tools for PDFs, GST, images, video, office work and SEO.`,
+    base: '/', canonical: '/404.html', noindex: true, title: `Page not found | ${SITE.name}`, description: `This page doesn't exist. Search ${SITE.name}'s ${SITE.toolsLabel} free online tools for PDFs, GST, images, video, office work and SEO.`,
     body: `<div class="container"><div class="prose" style="text-align:center;margin:0 auto"><h1>Page not found</h1><p>The page you’re looking for doesn’t exist. Try searching our ${SITE.toolsLabel} free tools.</p><p><button class="btn btn-primary" data-search-open type="button">${icon('search')} Search tools</button> <a class="btn" href="/">Go home</a></p></div></div>`
   }));
 }
@@ -834,6 +868,7 @@ function buildArticle(a) {
     mainEntity: a.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
   });
   write(`blog/${a.slug}/index.html`, layout({
+    keywords: (a.keywords || []).join(', '),
     base, active: 'blog', canonical: `/blog/${a.slug}/`, ogType: 'article',
     title: a.title.length <= 60 ? `${a.title} | ${SITE.name}` : a.title,
     description: a.description, body, jsonld,

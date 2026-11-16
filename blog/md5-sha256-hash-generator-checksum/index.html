@@ -5,16 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MD5 and SHA-256 Hash Generator: Verify Files and Text | BISCS India</title>
 <meta name="description" content="Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
+<link rel="alternate" hreflang="en-IN" href="https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
+<link rel="alternate" hreflang="x-default" href="https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="BISCS India">
 <meta property="og:title" content="MD5 and SHA-256 Hash Generator: Verify Files and Text | BISCS India">
 <meta property="og:description" content="Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.">
 <meta property="og:url" content="https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/">
 <meta property="og:image" content="https://biscsindia.com/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BISCS India: 100+ free online tools">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MD5 and SHA-256 Hash Generator: Verify Files and Text | BISCS India">
+<meta name="twitter:description" content="Generate MD5, SHA-1, SHA-256 and SHA-512 hashes of text or files, verify download checksums and HMACs, and learn why MD5 is not safe for passwords.">
+<meta name="twitter:image" content="https://biscsindia.com/assets/img/og.png">
 <meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="application-name" content="BISCS India">
+<meta name="apple-mobile-web-app-title" content="BISCS Tools">
 <link rel="manifest" href="../../site.webmanifest">
 <meta name="google-adsense-account" content="ca-pub-9359278521160680">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9359278521160680" crossorigin="anonymous"></script>
@@ -29,6 +44,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://biscsindia.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://biscsindia.com/blog/"},{"@type":"ListItem","position":3,"name":"MD5 and SHA-256 Hash Generator: Verify Files and Text","item":"https://biscsindia.com/blog/md5-sha256-hash-generator-checksum/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://biscsindia.com/#organization","name":"BISCS India","alternateName":["BISCS","biscsindia.com"],"url":"https://biscsindia.com/","logo":{"@type":"ImageObject","url":"https://biscsindia.com/assets/img/icon-512.png","width":512,"height":512},"email":"info@biscsindia.com","description":"BISCS India builds free, private, browser-based tools for PDFs, finance and GST, images, AI photo editing, video, office work, design and SEO, made in Kolkata.","address":{"@type":"PostalAddress","addressLocality":"Kolkata","addressRegion":"West Bengal","postalCode":"700026","addressCountry":"IN"},"areaServed":"IN","knowsAbout":["PDF editing","GST","Income tax calculation","Image editing","Search engine optimisation","Generative engine optimisation","Office productivity"],"sameAs":["https://www.linkedin.com/in/biscs-india-7a0ab03a6","https://www.facebook.com/share/1PyhN1vLey/","https://www.instagram.com/biscsindia/"],"contactPoint":{"@type":"ContactPoint","email":"info@biscsindia.com","contactType":"customer support","areaServed":"IN","availableLanguage":["English","Hindi","Bengali"]}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can a hash be reversed to get the original text?","acceptedAnswer":{"@type":"Answer","text":"No. Cryptographic hash functions are one-way by design. However, short or common inputs such as simple passwords can be found by looking them up in huge precomputed tables or by guessing quickly, especially with fast hashes like MD5 and SHA-1. That is why fast hashes must never be used to store passwords."}},{"@type":"Question","name":"Is MD5 still safe to use?","acceptedAnswer":{"@type":"Answer","text":"MD5 is broken for security purposes: researchers can deliberately create two different files with the same MD5 hash. It is still acceptable for spotting accidental corruption, such as checking a file copied correctly. For anything security-related, including verifying software downloads from untrusted mirrors, use SHA-256 or stronger."}},{"@type":"Question","name":"How should passwords be stored if not with SHA-256?","acceptedAnswer":{"@type":"Answer","text":"Use a slow, salted password hashing algorithm designed for the job, such as Argon2id, bcrypt or scrypt. These are intentionally expensive to compute, which makes large-scale guessing impractical. A plain SHA-256 of a password, even with a salt, can be tested billions of times per second on modern hardware."}},{"@type":"Question","name":"Why do I get a different hash for the same text in another tool?","acceptedAnswer":{"@type":"Answer","text":"Usually the inputs differ invisibly: a trailing newline, a space, Windows CRLF line endings instead of LF, or a different character encoding. This tool hashes the exact UTF-8 bytes of what is in the box. Also check whether the other tool shows uppercase hex, which is the same value written differently."}},{"@type":"Question","name":"What is an HMAC and when do I need one?","acceptedAnswer":{"@type":"Answer","text":"An HMAC is a hash combined with a secret key. Only someone who knows the key can produce the same value, so it proves a message was not tampered with and came from a key holder. Payment gateways and webhooks commonly sign requests with HMAC-SHA256, which you can test here."}}]}</script>
+<meta name="keywords" content="sha256 hash generator, md5 hash online, file checksum, verify sha256 checksum, hmac generator">
 <meta property="article:published_time" content="2026-11-02"><meta property="article:modified_time" content="2026-11-02"><meta property="article:section" content="Developer Tools">
 </head>
 <body>
