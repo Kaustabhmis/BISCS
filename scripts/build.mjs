@@ -127,7 +127,7 @@ function miniLink(t, base) {
 function layout({ base, title, description, canonical, body, scripts = '', active = '', jsonld = [], extraHead = '', ogType = 'website' }) {
   const nav = [
     ['pdf', 'PDF Tools'], ['finance', 'Finance'],
-    ['ai', 'AI Photo'], ['video', 'Video'], ['office', 'Office'], ['design', 'Design'], ['seo', 'SEO']
+    ['ai', 'AI Photo'], ['social-video', 'YouTube'], ['video', 'Video'], ['office', 'Office'], ['seo', 'SEO']
   ];
   const navLinks = nav.map(([id, label]) =>
     `<a href="${base}category/${id}/"${active === id ? ' aria-current="page"' : ''}>${label}</a>`).join('') +

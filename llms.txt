@@ -1,6 +1,6 @@
 # BISCS India
 
-> BISCS India (biscsindia.com) offers 149 free online tools that run entirely in the web browser, so files are never uploaded. Tools cover PDF editing and conversion, GST and income tax calculators for India, image and AI photo editing, video and audio, office documents, design, and SEO/GEO/AEO. Made by BISCS India, Kolkata, West Bengal.
+> BISCS India (biscsindia.com) offers 169 free online tools that run entirely in the web browser, so files are never uploaded. Tools cover PDF editing and conversion, GST and income tax calculators for India, image and AI photo editing, video and audio, office documents, design, and SEO/GEO/AEO. Made by BISCS India, Kolkata, West Bengal.
 
 Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each tool works and when to use it. Social: https://www.linkedin.com/in/biscs-india-7a0ab03a6, https://www.facebook.com/share/1PyhN1vLey/, https://www.instagram.com/biscsindia/.
 
@@ -172,6 +172,29 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Video Converter & MP3](https://biscsindia.com/tools/video-converter/): Convert between MP4, WebM and MOV, or extract the audio as MP3. Guide: https://biscsindia.com/blog/convert-video-mp4-extract-mp3/
 - [Video to GIF](https://biscsindia.com/tools/video-to-gif/): Turn a video clip into an animated GIF. Guide: https://biscsindia.com/blog/convert-video-to-gif-online/
 - [Audio Recorder & Converter](https://biscsindia.com/tools/audio-recorder/): Record your voice, trim it, and convert audio to MP3, WAV or M4A. Guide: https://biscsindia.com/blog/online-voice-recorder-mp3-converter/
+
+## YouTube & Social Media
+
+- [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/): Turn a long video into vertical 9:16 clips for YouTube Shorts, Instagram Reels and Facebook Reels.
+- [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/): Resize video to 9:16, 1:1, 4:5 or 16:9 with crop, fit or blurred background.
+- [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/): Design 1280×720 thumbnails from a video frame or photo, with bold text and stickers.
+- [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/): Capture full-quality still images from any moment of a video.
+- [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/): Write or import subtitles, time them to your video, export SRT/VTT or burn them in.
+- [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/): Create and check YouTube chapter timestamps for your video description.
+- [Video Speed Changer](https://biscsindia.com/tools/video-speed-changer/): Speed up or slow down a video from 0.25× to 4×, keeping audio pitch natural.
+- [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/): Add a background track, mix it with the original sound or replace the audio.
+- [Video Merger](https://biscsindia.com/tools/video-merger/): Join several video clips into one, in the order you choose.
+- [Video Watermark](https://biscsindia.com/tools/video-watermark/): Add your logo or channel name to a video, in any corner.
+- [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/): Check a video against YouTube, Shorts, Facebook, Reels and WhatsApp requirements.
+- [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/): Catchy, clickable video title ideas from your topic, with a length check.
+- [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/): Well-structured video descriptions with chapters, links and hashtags.
+- [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/): Relevant tags from your keywords, kept within YouTube’s 500-character limit.
+- [Hashtag Generator](https://biscsindia.com/tools/hashtag-generator/): Hashtags for YouTube, Instagram and Facebook posts, following each platform’s rules.
+- [YouTube Embed Code Generator](https://biscsindia.com/tools/youtube-embed-code-generator/): Responsive, privacy-enhanced embed code with start time, autoplay and more.
+- [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/): Share a YouTube link that starts at an exact moment.
+- [YouTube URL & Video ID Extractor](https://biscsindia.com/tools/youtube-url-parser/): Get the video ID, clean links and thumbnail image URLs from any YouTube link.
+- [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/): YouTube banners and Facebook, LinkedIn and X cover images with safe-area guides.
+- [YouTube Earnings Estimator](https://biscsindia.com/tools/youtube-earnings-calculator/): Estimate YouTube ad earnings in ₹ from views and your RPM.
 
 ## Office & Business
 
