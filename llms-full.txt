@@ -3120,6 +3120,111 @@ A: Yes, as long as the value is wrapped in double quotes in the CSV, which is th
 Q: What if some rows have fewer columns than the header?
 A: The missing cells are filled with empty strings, or null if you tick Empty cells as null. The status line warns you how many rows were short, which often signals an unquoted comma or a broken line in the source file.
 
+## CTC to In-Hand Salary: Monthly Take-Home for FY 2025-26
+
+URL: https://biscsindia.com/blog/ctc-to-in-hand-salary-calculator-fy-2025-26/
+Tool: CTC to In-Hand Salary Calculator (https://biscsindia.com/tools/ctc-to-inhand-calculator/)
+
+Quick answer: Your in-hand salary is your CTC minus employer PF, gratuity, any variable bonus, your own PF, professional tax and income tax, divided over 12 months. BISCS India’s free CTC to In-Hand Salary Calculator does this for FY 2025-26, so a ₹12 lakh CTC with 50% basic works out to about ₹85,395 a month.
+
+To find your in-hand salary, start from your annual CTC, remove the parts you never receive as monthly pay (employer PF, gratuity and any variable bonus), then subtract your own PF, professional tax and income tax. Divide what is left by 12.
+
+For FY 2025-26, a ₹12,00,000 CTC with basic at 50% gives a gross salary of ₹10,99,140, no income tax under the new regime and a monthly in-hand salary of about ₹85,395. A ₹20,00,000 CTC on the same structure pays ₹1,57,435 in tax and takes home about ₹1,29,339 a month. The free [CTC to In-Hand Salary Calculator](https://biscsindia.com/tools/ctc-to-inhand-calculator/) works this out for your own offer.
+
+## What is CTC, and what is not part of take-home?
+
+CTC (cost to company) is everything your employer spends on you in a year. Some of it reaches your bank account every month and some of it does not:
+
+- **Employer PF:** usually 12% of basic, deposited in your provident fund account.
+- **Gratuity:** about 4.81% of basic, set aside and paid only when you leave after the qualifying service.
+- **Variable pay or bonus:** paid once or twice a year, often linked to performance, so it is not in the monthly salary.
+
+What remains after employer PF and gratuity is your **gross salary**. From this, three main deductions come out:
+
+- **Employee PF:** another 12% of basic, or a smaller amount if PF is capped.
+- **Professional tax:** a state levy, often ₹200 a month, with a maximum of ₹2,500 a year.
+- **Income tax (TDS):** worked out on the year’s taxable salary and spread across your payslips.
+
+## FY 2025-26 tax rules the calculator uses
+
+The tool uses the same rules as the BISCS [Income Tax Calculator](https://biscsindia.com/tools/income-tax-calculator/). Under the new regime, which is the default, the slabs are:
+
+| Taxable income | Rate |
+|---|---|
+| Up to ₹4,00,000 | Nil |
+| ₹4,00,001 to ₹8,00,000 | 5% |
+| ₹8,00,001 to ₹12,00,000 | 10% |
+| ₹12,00,001 to ₹16,00,000 | 15% |
+| ₹16,00,001 to ₹20,00,000 | 20% |
+| ₹20,00,001 to ₹24,00,000 | 25% |
+| Above ₹24,00,000 | 30% |
+
+Salaried employees get a standard deduction of ₹75,000 in the new regime and ₹50,000 in the old one. The section 87A rebate makes tax nil when new regime taxable income is ₹12 lakh or less, and 4% health and education cess is added to the final tax. The calculator works out both regimes and uses whichever is lower.
+
+## How to use the CTC to In-Hand Salary Calculator
+
+1. Open the [CTC to In-Hand Salary Calculator](https://biscsindia.com/tools/ctc-to-inhand-calculator/).
+2. Set your **Annual CTC** from the offer letter.
+3. Set **Basic salary (% of CTC)**. Many companies use 40–50%; your offer letter or salary annexure will show the exact figure.
+4. If part of the CTC is performance pay, enter it in **Variable pay / bonus included in CTC (per year)**.
+5. Under **Provident fund (PF)**, choose **12% of basic**, **Capped at ₹1,800/month** or **No PF**.
+6. Adjust **Professional tax (per year)** for your state and add any **Other deductions (per month)** such as insurance or a meal card.
+7. Under **Gratuity**, choose **Included in CTC** or **Not in CTC** as your offer states.
+8. If you plan to use the old regime, fill in the optional boxes for **HRA exemption (per year)**, **Other 80C (beyond your PF)**, **Section 80D (health insurance)** and **Home loan interest**.
+9. Read the **Monthly in-hand salary**, the yearly take-home, the regime used and the **Salary breakdown** table.
+
+## Worked example: ₹12 lakh and ₹20 lakh CTC
+
+Both cases use 50% basic, full PF at 12% of basic, gratuity in CTC, ₹2,400 professional tax and no bonus.
+
+| Item | ₹12 lakh CTC | ₹20 lakh CTC |
+|---|---|---|
+| Basic salary | ₹6,00,000 | ₹10,00,000 |
+| Employer PF + gratuity | ₹1,00,860 | ₹1,68,100 |
+| Gross salary | ₹10,99,140 | ₹18,31,900 |
+| Employee PF | ₹72,000 | ₹1,20,000 |
+| Income tax (new regime) | ₹0 | ₹1,57,435 |
+| Monthly in-hand | ₹85,395 | ₹1,29,339 |
+
+At ₹12 lakh CTC, taxable income after the standard deduction is about ₹10.24 lakh, so the rebate wipes out the tax. At ₹20 lakh, taxable income is about ₹17.57 lakh, so the top part of it is taxed in the 20% slab. Notice that a CTC rise of ₹8 lakh adds about ₹44,000 to monthly pay, because PF and tax both grow with salary.
+
+If the ₹12 lakh employee’s company caps PF at ₹1,800 a month, in-hand pay rises to about ₹93,795. The ₹8,400 a month difference is money that would otherwise have gone into the PF account.
+
+## Tips for reading an offer letter
+
+- **Separate fixed and variable pay.** Ask what portion of the CTC is guaranteed. Only the fixed part reaches you every month.
+- **Check the basic percentage.** A higher basic means more PF and gratuity, which lowers monthly pay but builds savings.
+- **Ask about the PF rule.** Some employers calculate PF on the full basic; others cap it at the statutory wage ceiling of ₹15,000 a month.
+- **Look for one-time items.** Joining bonuses, relocation and stock grants are sometimes shown inside CTC but are not regular salary.
+- **Work out HRA if you rent.** In the old regime, the [HRA Calculator](https://biscsindia.com/tools/hra-calculator/) shows how much of your house rent allowance is exempt, which you can then enter here.
+
+## Common mistakes when estimating take-home pay
+
+1. **Dividing CTC by 12.** This ignores PF, gratuity, bonus and tax, and can overstate monthly pay by about ₹14,600 on a ₹12 lakh package.
+2. **Treating the bonus as monthly income.** Variable pay depends on performance and arrives later; budget on fixed pay alone.
+3. **Assuming the old regime is better.** Without large deductions such as HRA or home loan interest, the new regime is usually cheaper at most salary levels.
+4. **Forgetting the bonus month.** The tool spreads tax evenly across 12 months, but employers often deduct extra TDS in the month a bonus is paid.
+5. **Ignoring state differences.** Professional tax varies, and a few states do not charge it.
+
+## Limits of the estimate
+
+The calculator assumes a salaried employee below 60 with no other income, and it does not model employer NPS contributions, ESI, leave encashment or a mid-year joining date. Payslips vary with each company’s salary structure, so treat the result as an estimate and confirm the details with HR. For major tax decisions, a chartered accountant can review your full situation.
+
+Q: Why is my in-hand salary so much lower than my CTC?
+A: CTC is the total cost to the company, not your pay. It includes employer PF and gratuity, which go to your retirement savings, and often a variable bonus paid once a year. Your own PF, professional tax and income tax are then deducted from each salary. Together these can take 15–30% off the CTC figure.
+
+Q: Is there any income tax on a ₹12 lakh CTC under the new regime?
+A: Usually not. With 50% basic, a ₹12 lakh CTC gives a gross salary of about ₹10.99 lakh. After the ₹75,000 standard deduction, taxable income is about ₹10.24 lakh, which is below ₹12 lakh, so the section 87A rebate brings the tax to nil in the new regime.
+
+Q: Does capping PF at ₹1,800 a month increase take-home pay?
+A: Yes, if your employer allows it. PF is then worked out on a basic of ₹15,000 a month instead of your full basic. On a ₹12 lakh CTC with 50% basic, the calculator shows monthly in-hand rising from ₹85,395 to ₹93,795, though your retirement savings grow more slowly.
+
+Q: How much professional tax should I enter?
+A: It depends on your state. Many states that levy it charge up to ₹2,500 a year, and the calculator uses ₹2,400 as a starting value. Some states and union territories have no professional tax at all, in which case enter 0. Your payslip shows the exact monthly amount deducted.
+
+Q: Why does my first payslip not match the calculator?
+A: Companies structure pay differently. Meal cards, insurance premiums, NPS, HRA rules, joining-month proration and how TDS is spread across the year all change the monthly figure. Employers also collect your investment declarations, which affect old regime TDS. Use the tool as an estimate and compare it with your offer letter breakdown.
+
 ## How to Add or Subtract Days From a Date (With Business Days)
 
 URL: https://biscsindia.com/blog/add-days-to-date-calculator-guide/
@@ -7554,6 +7659,105 @@ A: llms-full.txt is a companion file that contains the full text of your key pag
 
 Q: Where do I upload the llms.txt file?
 A: Upload it to the root of your website so it opens at https://yourdomain.com/llms.txt, served as plain text. If you also create llms-full.txt, place it alongside at the root. On most hosts you can upload it like any other file.
+
+## Loan Prepayment Calculator: Reduce Tenure or Reduce EMI?
+
+URL: https://biscsindia.com/blog/home-loan-prepayment-reduce-tenure-or-emi/
+Tool: Loan Prepayment Calculator (https://biscsindia.com/tools/loan-prepayment-calculator/)
+
+Quick answer: Prepaying a loan cuts interest because the extra money reduces the principal on which every later month’s interest is charged. BISCS India’s free Loan Prepayment Calculator compares your loan with and without one-time, monthly or yearly prepayments and shows the interest saved under both the reduce-tenure and reduce-EMI options.
+
+A loan prepayment saves you interest because it lowers the principal immediately, and every future month’s interest is worked out on that smaller balance. If you keep the EMI the same and let the loan end sooner, the saving is usually much larger than if you keep the tenure and lower the EMI.
+
+For example, on a ₹30 lakh home loan at 8.5% for 20 years, the EMI is ₹26,035 and the total interest over the full term is ₹32,48,327. A single prepayment of ₹2,00,000 in month 12 saves ₹6,87,516 of interest if you choose to reduce the tenure, and the loan closes 2 years 10 months early. The free [Loan Prepayment Calculator](https://biscsindia.com/tools/loan-prepayment-calculator/) shows these figures side by side so you can test your own plan.
+
+## How does prepaying a loan reduce interest?
+
+Most Indian home, car and personal loans are reducing-balance loans. Each month the lender charges interest on what you still owe, and the rest of your EMI goes towards principal. In the early years the balance is high, so a large share of each EMI is interest.
+
+When you prepay, the extra amount goes straight to principal. The interest charged next month is lower, so more of the same EMI clears principal, which lowers the following month’s interest further. This chain effect is why a modest lump sum can remove several years of payments.
+
+After a prepayment, lenders typically give you two choices:
+
+- **Reduce tenure (keep EMI):** you pay the same instalment and the loan ends earlier.
+- **Reduce EMI (keep tenure):** the lender recalculates a smaller instalment over the remaining months.
+
+## How to use the BISCS Loan Prepayment Calculator
+
+1. Open the [Loan Prepayment Calculator](https://biscsindia.com/tools/loan-prepayment-calculator/).
+2. Under **Your loan**, set the **Loan amount**, **Interest rate (p.a.)** and **Original tenure** in years.
+3. In **EMIs already paid**, enter how many instalments you have completed. Leave it at 0 for a new loan.
+4. Under **Your prepayment**, fill in any combination of **One-time prepayment** with **Paid in month no.**, **Extra every month** and **Extra every year** (for example, part of an annual bonus).
+5. Choose **After prepaying, reduce my**: **Tenure (keep EMI)** or **EMI (keep tenure)**.
+6. If your loan carries a fee, enter it in **Prepayment charge (optional)** as a percentage of the amount prepaid.
+7. Read the headline **Interest saved**, the new tenure or new EMI, and the comparison table. Open **Show year-by-year table** under the balance chart to see the outstanding amount each year with and without prepaying.
+
+The month number for a one-time payment is counted from the start of the loan, not from today. If you have paid 36 EMIs and plan to prepay next month, enter 37.
+
+## Worked example: ₹30 lakh home loan at 8.5%
+
+Using the calculator’s default loan of ₹30 lakh for 20 years at 8.5%, here is what different prepayment plans do. All figures come from the tool.
+
+| Plan | Interest saved | Effect on loan |
+|---|---|---|
+| ₹2,00,000 once in month 12, reduce tenure | ₹6,87,516 | Ends 2 yrs 10 mo early (17 yrs 2 mo) |
+| ₹2,00,000 once in month 12, reduce EMI | ₹2,03,763 | EMI falls from ₹26,035 to ₹24,264 |
+| ₹2,00,000 once in month 120, reduce tenure | ₹2,40,758 | Ends 1 yr 4 mo early |
+| ₹5,000 extra every month, reduce tenure | ₹11,73,056 | Loan lasts 13 yrs 8 mo |
+| ₹1,00,000 extra every year, reduce tenure | ₹14,84,494 | Loan lasts 11 yrs 9 mo |
+
+Three lessons stand out. First, the same ₹2 lakh saves more than three times as much when you shorten the tenure rather than the EMI. Second, timing matters: that ₹2 lakh is worth roughly ₹6.9 lakh in year one but only about ₹2.4 lakh in year ten. Third, small regular prepayments add up; ₹5,000 a month cuts more than six years off the loan.
+
+The **Return on each ₹1 prepaid** figure is a handy way to compare plans. A higher number means each rupee you put in is clearing more future interest.
+
+## Reduce tenure or reduce EMI: which should you pick?
+
+Pick **reduce tenure** if your current EMI is comfortable and your goal is to become debt-free and pay the least interest. This is the option most people should consider first.
+
+Pick **reduce EMI** if your monthly budget is tight, your income is uncertain, or you want more room for other goals such as a child’s education. A lower EMI also leaves a bigger cushion if a floating rate rises later.
+
+A middle path is to reduce the EMI now and then voluntarily pay a little extra each month. You keep flexibility while still saving a fair amount of interest.
+
+## Prepayment charges and RBI rules
+
+RBI does not allow banks and other regulated lenders to charge foreclosure or part-prepayment penalties on floating-rate term loans given to individual borrowers for purposes other than business. Most home loans in India today are floating-rate, so this covers a large number of borrowers.
+
+Fixed-rate loans, some car and personal loans, and loans taken for business can still carry a charge, often a percentage of the amount prepaid. Check the prepayment clause in your sanction letter or loan agreement. If you enter a charge, the calculator shows **Prepayment charges** and **Net saving**, and warns you if the fee is larger than the interest saved.
+
+## Tips before you prepay
+
+- **Keep an emergency fund.** Money paid into a loan is hard to get back quickly. Hold several months of expenses aside before prepaying.
+- **Prepay early in the loan.** The first five to seven years are when each rupee saves the most interest.
+- **Use bonuses and increments.** An **Extra every year** amount timed with your annual bonus is easy to sustain.
+- **Tell the lender what you want.** Confirm in writing whether the prepayment should reduce tenure or EMI, and check the revised schedule.
+- **Clear costlier loans first.** If you also have a personal loan or credit card balance, the higher-rate debt usually deserves the money before a home loan.
+
+## Mistakes to avoid
+
+1. **Ignoring the tax angle.** Interest on a self-occupied home loan may be deductible under section 24(b), but this is mainly relevant if you file under the old tax regime. Prepaying reduces that interest, so the real saving can be a little smaller for some borrowers. Compare both regimes in the [Income Tax Calculator](https://biscsindia.com/tools/income-tax-calculator/) and speak to a tax professional for your situation.
+2. **Assuming the rate never changes.** The calculator assumes a fixed rate. On a floating loan, rerun it after each rate reset using your current balance.
+3. **Entering the wrong month.** The one-time payment month counts from the loan start date, so add your EMIs already paid.
+4. **Draining all savings.** A prepayment that leaves you borrowing on a credit card later costs more than it saves.
+5. **Forgetting the original EMI.** To see your base instalment and amortisation before planning a prepayment, start with the [EMI Calculator](https://biscsindia.com/tools/emi-calculator/).
+
+## What the calculator assumes
+
+The tool works on a monthly reducing balance, applies each prepayment right after that month’s EMI, and keeps the interest rate fixed. Lenders may use slightly different rounding, day counts or processing dates, so your bank’s revised schedule can differ by a small amount. Treat the results as a planning estimate, not financial advice, and confirm the final numbers with your lender.
+
+Q: Is it better to reduce the tenure or the EMI after a prepayment?
+A: Reducing the tenure almost always saves more interest, because you keep paying the same EMI and the loan simply finishes sooner. On a ₹30 lakh, 8.5%, 20-year loan, a ₹2 lakh prepayment in month 12 saves about ₹6.88 lakh this way, against about ₹2.04 lakh if you lower the EMI instead.
+
+Q: Can my bank charge a fee if I prepay my home loan?
+A: For floating-rate term loans taken by individuals for purposes other than business, RBI rules do not allow lenders to levy foreclosure or part-prepayment charges. Fixed-rate loans and some business loans can carry a fee. Read the prepayment clause in your loan agreement or ask the lender before you pay.
+
+Q: Why does an early prepayment save more than a later one?
+A: Interest is charged on the outstanding balance, which is largest in the first few years. Money you prepay early stops attracting interest for all the remaining months. In the calculator, ₹2 lakh paid in month 12 of a 20-year loan saves about ₹6.88 lakh, while the same amount in month 120 saves about ₹2.41 lakh.
+
+Q: Should I prepay my home loan or invest the money instead?
+A: Compare the loan rate with the after-tax return you can reasonably expect, and remember that prepaying gives a guaranteed saving while investments carry risk. Keep an emergency fund first. If you claim home loan interest as a tax deduction, the effective loan rate may be lower, so a tax professional can help you weigh it.
+
+Q: What does the EMIs already paid field do?
+A: It tells the calculator how far into the loan you are. Prepayments are only applied after that many instalments, so you can model a loan you took a few years ago. Enter the original loan amount, rate and tenure, then the number of EMIs you have paid so far.
 
 ## How to Make a Simple Logo Free and Download SVG or PNG
 
@@ -14942,6 +15146,105 @@ A: Systems that store Unix time as a signed 32-bit integer can only count up to 
 
 Q: Why is my converted date 5 hours 30 minutes off?
 A: Somewhere a time was treated as UTC when it was really IST, or the other way round. Common causes are saving a local IST time without zone information and later reading it as UTC, or a server set to UTC formatting dates for Indian users. Store timestamps or UTC, and convert only for display.
+
+## Typing Speed Test: Check Your WPM and Accuracy Online
+
+URL: https://biscsindia.com/blog/typing-speed-test-wpm-accuracy-practice/
+Tool: Typing Speed Test (https://biscsindia.com/tools/typing-speed-test/)
+
+Quick answer: A typing speed test measures how many words per minute you type correctly, counting five characters as one word, along with your accuracy. BISCS India’s free Typing Speed Test offers 1, 2 and 5 minute tests on original passages, with live WPM and accuracy, and keeps your best score only in your browser.
+
+A typing speed test tells you how fast you type in words per minute (WPM) and how accurately. By the common convention, every five characters you type, including spaces, count as one word. Net WPM counts only correct characters, so mistakes pull your score down.
+
+Many people who type every day score somewhere around 30 to 50 WPM, though it varies a lot. The free [Typing Speed Test](https://biscsindia.com/tools/typing-speed-test/) on BISCS India gives you a 1, 2 or 5 minute test, shows your WPM and accuracy live as you type, and tells you which level your result falls in.
+
+## How WPM and accuracy are calculated
+
+The test reports three main numbers at the end:
+
+- **Net WPM:** correct characters ÷ 5 ÷ minutes taken. This is the large figure shown in the result and in the live **WPM** box.
+- **Gross WPM:** all characters typed ÷ 5 ÷ minutes, whether right or wrong.
+- **Accuracy:** the share of keystrokes that were correct when you pressed them.
+
+Accuracy here is strict. Every key you press is counted at the moment you press it, so a wrong letter you later fix with backspace still counts as an error. This is closer to how real work feels, because each correction costs you time.
+
+The result also lists how many correct and wrong characters remain in your final text, and the time taken. It then places you in one of five levels:
+
+| Net WPM | Level |
+|---|---|
+| Below 25 | Beginner |
+| 25 to 39 | Average |
+| 40 to 59 | Good |
+| 60 to 79 | Excellent |
+| 80 and above | Outstanding |
+
+## How to use the BISCS Typing Speed Test
+
+1. Open the [Typing Speed Test](https://biscsindia.com/tools/typing-speed-test/).
+2. Choose the test length: **1 min**, **2 min** or **5 min**.
+3. Read the passage in the text panel. Press **New text** if you want a different one; there are 10 original passages written for the site.
+4. Click in the box that says "Start typing here. The timer starts with your first key." and begin typing. The clock does not run until you press the first key.
+5. Watch the **Time left**, **WPM** and **Accuracy** boxes update. Correct letters turn green, wrong ones are highlighted in red, and a cursor shows your position.
+6. When time runs out, read your net WPM, accuracy, gross WPM and level.
+7. Press **Restart** to try the same passage again, or **New text** for a fresh one. Your top score appears in the **Best** box.
+
+Pasting is turned off during the test, so the score always reflects what you typed. Pressing Enter is treated as a space. Your best score is saved only in this browser’s local storage, and nothing you type is sent anywhere.
+
+## Worked example: reading your result
+
+Say you take the 1 minute test and type 250 characters, of which 230 match the passage. You pressed 260 keys in total because you deleted and retyped a few letters, and 13 of those key presses were wrong.
+
+- Gross WPM = 250 ÷ 5 ÷ 1 = **50**
+- Net WPM = 230 ÷ 5 ÷ 1 = **46**
+- Accuracy = (260 − 13) ÷ 260 ≈ **95%**
+
+At 46 net WPM you fall in the Good band. The gap between gross and net speed (four words here) is the real cost of your errors. If you keep the same pace on a 5 minute test, you would type about 1,150 correct characters, roughly two average paragraphs.
+
+## Typing tests for jobs and exams
+
+Many data entry roles, office assistant posts and some government recruitment exams include a typing or skill test. Data entry employers often check both speed and accuracy, and some measure key depressions per hour rather than WPM.
+
+Government exams vary widely. For example, some SSC exams such as CHSL and CGL commonly include a typing or data entry skill test for certain posts, with separate requirements for English and Hindi. The required speed, duration, how errors are penalised and whether the test is only qualifying all depend on the exam, the post and the year’s notification. Do not rely on numbers quoted in coaching videos or forums; read the latest official notification and practise to the standard it states.
+
+Treat the BISCS test as practice. Exam software may use a different passage length, error rule or formula, so your score there can differ from what you see here.
+
+## Tips to improve your typing speed
+
+- **Learn the home row.** Rest your fingers on A S D F and J K L ; and return to them after each key.
+- **Stop looking down.** Touch typing feels slower for the first week or two but raises your ceiling a lot.
+- **Accuracy first.** Aim for 95% or higher before chasing speed; an accurate typist improves faster.
+- **Practise little and often.** Fifteen minutes a day beats an hour once a week.
+- **Use longer tests.** Once 1 minute feels easy, move to 2 and 5 minutes to build stamina.
+- **Track progress, not single scores.** Your speed will vary from day to day; look at your average over a week.
+
+To see how much you type in a real document, paste your finished text into the [Word Counter](https://biscsindia.com/tools/word-counter/) and compare its length with the time you spent.
+
+## Mistakes to avoid
+
+1. **Rushing and correcting constantly.** Every backspace costs accuracy and time. A steady rhythm is faster than bursts.
+2. **Practising only one passage.** Repeating the same text lets you memorise it, which inflates your score. Use **New text** regularly.
+3. **Poor posture.** Sit upright, keep wrists level and the screen at eye height to avoid strain during long tests.
+4. **Ignoring punctuation and capitals.** The passages include commas, full stops and capital letters, and so does real work.
+5. **Comparing with a different tool’s score.** WPM formulas, error rules and passage difficulty differ, so compare your results on the same test over time.
+
+## Limits of the test
+
+The test is in English only and reads whatever your device’s keyboard sends, so it assumes you are using a normal English layout. It works on phones, but a physical keyboard gives a far more realistic result, especially for exam practice. Your best score lives in the browser, so it will reset if you clear site data or switch to another device.
+
+Q: What is the difference between net WPM and gross WPM?
+A: Gross WPM counts every character you typed, right or wrong, divided by five and by the minutes taken. Net WPM counts only the characters that match the passage. If you type 250 characters in a minute and 230 are correct, gross WPM is 50 and net WPM is 46. Net WPM is the fairer measure of usable speed.
+
+Q: Why is my accuracy lower than I expected after fixing my mistakes?
+A: The test counts every keystroke as it happens. A wrong letter is recorded as an error even if you press backspace and correct it straight away. This mirrors real work, where each correction costs time. To raise accuracy, slow down slightly and aim to hit the right key the first time.
+
+Q: What typing speed do I need for a government exam skill test?
+A: It depends on the exam, the post and the language. Some SSC posts, for example, commonly ask for a typing skill test at a set speed in English or Hindi, measured in their own way. The rules can change between notifications, so always read the latest official notice for the exact speed, duration and method.
+
+Q: Is a 1 minute test enough to know my real speed?
+A: It gives a quick snapshot, but short tests can flatter you because you stay fresh for the whole minute. A 5 minute test shows whether you can hold your speed and accuracy as you tire, which is closer to what data entry work and most skill tests demand. Try all three lengths.
+
+Q: Can I take the typing test in Hindi?
+A: Not at the moment. The passages in this test are in English only. If you are preparing for a Hindi typing test, you will need a tool that supports the specific keyboard layout your exam uses, such as Remington Gail or Inscript, and you should practise with that layout.
 
 ## Unit Converter Guide: Feet to cm, kg to lb, Acres to Sq Ft
 
