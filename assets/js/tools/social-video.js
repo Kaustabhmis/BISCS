@@ -1349,20 +1349,6 @@
     return faceTaskP;
   }
 
-  /** Largest face (biased to stay near the previous one) → horizontal centre 0..1, or null. */
-  function pickFace(dets, W, prev) {
-    var best = null, bestScore = -1;
-    dets.forEach(function (d) {
-      var b = d.boundingBox;
-      if (!b) return;
-      var cx = (b.originX + b.width / 2) / W;
-      var area = b.width * b.height;
-      var sc = area * (prev == null ? 1 : 1 / (1 + Math.abs(cx - prev) * 4));
-      if (sc > bestScore) { bestScore = sc; best = cx; }
-    });
-    return best;
-  }
-
   /** Smooth a face-centre series (nulls = no face) into a gentle camera path [{t, c}]. */
   function smoothPath(times, cs, frac) {
     var n = cs.length, found = cs.filter(function (c) { return c != null; }).length;
@@ -1404,39 +1390,82 @@
     return keep;
   }
 
+  /** Detect faces on the whole frame and on overlapping square tiles (finds smaller faces). Returns centres 0..1 with sizes. */
+  function detectAll(task, c, tile, SW, SH) {
+    var found = [];
+    function run(src, ox, oy, sc) {
+      var r = null;
+      try { r = task.detect(src); } catch (e) { r = null; }
+      ((r && r.detections) || []).forEach(function (d) {
+        var b = d.boundingBox;
+        if (!b) return;
+        var sco = d.categories && d.categories[0] ? d.categories[0].score : 0.5;
+        found.push({ cx: (ox + (b.originX + b.width / 2) * sc) / SW, cy: (oy + (b.originY + b.height / 2) * sc) / SH, size: b.width * b.height * sc * sc, score: sco });
+      });
+    }
+    run(c, 0, 0, 1);
+    var side = Math.min(SW, SH), long = Math.max(SW, SH);
+    if (long / side > 1.2) {
+      var n = Math.ceil(long / side * 1.5), tctx = tile.getContext('2d');
+      tile.width = side; tile.height = side;
+      for (var k = 0; k < n; k++) {
+        var off = Math.round((long - side) * k / (n - 1));
+        var ox = SW > SH ? off : 0, oy = SW > SH ? 0 : off;
+        tctx.drawImage(c, ox, oy, side, side, 0, 0, side, side);
+        run(tile, ox, oy, 1);
+      }
+    }
+    // Merge duplicates found by the full frame and by overlapping tiles.
+    var keep = [];
+    found.sort(function (a, b) { return b.score - a.score; }).forEach(function (f) {
+      var dup = keep.some(function (q) { return Math.abs(q.cx - f.cx) < 0.06 && Math.abs(q.cy - f.cy) < 0.1; });
+      if (!dup && f.score >= 0.55) keep.push(f);
+    });
+    return keep;
+  }
+
+  /** Main face → horizontal centre 0..1 (largest, biased to stay near the previous one), or null. */
+  function pickFace(faces, prev) {
+    var best = null, bestScore = -1;
+    faces.forEach(function (f) {
+      var sc = f.size * (prev == null ? 1 : 1 / (1 + Math.abs(f.cx - prev) * 4));
+      if (sc > bestScore) { bestScore = sc; best = f.cx; }
+    });
+    return best;
+  }
+
   /** Sample frames of [s, s+len] with ffmpeg and find the face path. Resolves {path, ratio} (path null = no faces). */
   function trackFaces(J, inp, pm, s, len, from, to) {
-    var fps = len > 120 ? 1 : 2;
-    var SW = 320, SH = even(320 * pm.height / pm.width);
-    if (SH > 320) { SH = 320; SW = even(320 * pm.width / pm.height); }
+    var fps = len > 150 ? 0.5 : len > 60 ? 1 : 2;
+    var SW = 480, SH = even(480 * pm.height / pm.width);
+    if (SH > 480) { SH = 480; SW = even(480 * pm.width / pm.height); }
     var raw = J.out('raw');
     var args = [];
     if (s > 0) args.push('-ss', s.toFixed(3));
-    args.push('-i', inp, '-t', len.toFixed(3), '-an', '-vf', 'fps=' + fps + ',scale=' + SW + ':' + SH + ',format=rgba', '-f', 'rawvideo', raw);
-    var mid = from + (to - from) * 0.5;
+    args.push('-i', inp, '-t', len.toFixed(3), '-an', '-sn', '-vf', 'fps=' + fps + ',scale=' + SW + ':' + SH + ',format=rgba', '-f', 'rawvideo', raw);
+    var mid = from + (to - from) * 0.4;
     return J.run(args, { dur: len, label: 'Finding faces…', sub: 'Sampling frames for face tracking.', from: from, to: mid }).then(function () {
       return J.read(raw);
     }).then(function (data) {
       J.del(raw);
-      J.stage('Finding faces…', 'Loading the face detector (about 10 MB, one time).', mid);
+      J.stage('Finding faces…', 'Running the face detector on your device (about 10 MB, downloaded once).', mid);
       return getFaceTask().then(function (task) {
         var fsz = SW * SH * 4, nf = Math.floor(data.length / fsz), times = [], cs = [], prev = null;
-        var c = mkCanvas(SW, SH), ctx = c.getContext('2d');
+        var c = mkCanvas(SW, SH), ctx = c.getContext('2d'), tile = mkCanvas(2, 2);
         var i = 0;
         function step() {
           J.guard();
-          var end = Math.min(nf, i + 6);
+          var end = Math.min(nf, i + 4);
           for (; i < end; i++) {
             ctx.putImageData(new ImageData(new Uint8ClampedArray(data.buffer, data.byteOffset + i * fsz, fsz), SW, SH), 0, 0);
-            var r = null;
-            try { r = task.detect(c); } catch (e) { r = null; }
-            var cx = pickFace((r && r.detections) || [], SW, prev);
+            var cx = pickFace(detectAll(task, c, tile, SW, SH), prev);
             if (cx != null) prev = cx;
             times.push(i / fps);
             cs.push(cx);
           }
           J.set(mid + (to - mid) * (nf ? i / nf : 1));
           if (i < nf) return new Promise(function (res) { setTimeout(res, 0); }).then(step);
+          data = null;
           var g = cropGeom(pm.width, pm.height, 9, 16);
           var found = cs.filter(function (x) { return x != null; }).length;
           return { path: smoothPath(times, cs, g.cw / pm.width), ratio: nf ? found / nf : 0 };
@@ -3526,16 +3555,16 @@
     injectCSS();
     var S = newScope();
     var rows = [{ time: '0:00', title: 'Intro' }, { time: '', title: '' }, { time: '', title: '' }];
-    var dur = 0, vid = null;
+    var dur = 0, vid = null, touched = false;
     var L = editorLayout(root, 'Your chapters');
     var vidHost = h('div');
     L.left.appendChild(vidHost);
     var rowsEl = h('div.sv-list', { 'aria-label': 'Chapters' });
     var durIn = input('text', '', { inputmode: 'decimal', placeholder: 'e.g. 12:34', autocomplete: 'off', class: 'sv-tin' });
-    durIn.addEventListener('change', function () { var t = parseTime(durIn.value); dur = isFinite(t) ? t : 0; if (!isFinite(t) && durIn.value.trim()) BT.toast('Use a time like 12:34', 'error'); validate(); });
+    durIn.addEventListener('change', function () { touched = true; var t = parseTime(durIn.value); dur = isFinite(t) ? t : 0; if (!isFinite(t) && durIn.value.trim()) BT.toast('Use a time like 12:34', 'error'); validate(); });
     var paste = h('textarea', { id: nid(), rows: '5', placeholder: '0:00 Intro\n1:15 Setting up\n4:30 Results' });
     L.left.appendChild(h('div.card', null, [
-      h('div.card-title', null, [h('h3', { text: 'Chapters' }), btn('btn-sm', 'plus', 'Add chapter', function () { rows.push({ time: vid ? fmtChap(vid.currentTime, vid.currentTime >= 3600) : '', title: '' }); renderRows(true); })]),
+      h('div.card-title', null, [h('h3', { text: 'Chapters' }), btn('btn-sm', 'plus', 'Add chapter', function () { rows.push({ time: vid ? fmtChap(vid.currentTime, vid.currentTime >= 3600) : '', title: '' }); touched = true; renderRows(true); })]),
       rowsEl,
       h('div', { style: { marginTop: '14px', maxWidth: '220px' } }, [field('Video length (optional)', durIn, 'Lets the tool check the last chapter.')])
     ]));
@@ -3545,7 +3574,7 @@
       btn('btn-sm', 'list', 'Use these lines', function () {
         var p = parseChapters(paste.value);
         if (!p.length) { BT.toast('No timestamps found — use lines like “1:23 Title”', 'error'); return; }
-        rows = p; renderRows(); BT.toast(p.length + ' chapters loaded');
+        rows = p; touched = true; renderRows(); BT.toast(p.length + ' chapters loaded');
       })
     ]));
     // optional video
@@ -3575,11 +3604,11 @@
       rows.forEach(function (r, i) {
         var tIn = input('text', r.time, { 'aria-label': 'Chapter ' + (i + 1) + ' time', placeholder: '0:00', autocomplete: 'off', spellcheck: 'false', class: 'sv-tin' });
         var nIn = input('text', r.title, { 'aria-label': 'Chapter ' + (i + 1) + ' title', placeholder: 'Chapter title', maxlength: '100', autocomplete: 'off' });
-        tIn.addEventListener('input', function () { r.time = tIn.value.trim(); validate(); });
-        nIn.addEventListener('input', function () { r.title = nIn.value; validate(); });
+        tIn.addEventListener('input', function () { r.time = tIn.value.trim(); touched = true; validate(); });
+        nIn.addEventListener('input', function () { r.title = nIn.value; touched = true; validate(); });
         var btns = h('div.sv-btns', { style: { display: 'flex', gap: '6px' } }, [
-          vid ? iconBtn('clock', 'Set chapter ' + (i + 1) + ' to the current video time', function () { r.time = fmtChap(vid.currentTime, dur >= 3600); tIn.value = r.time; validate(); }) : null,
-          iconBtn('trash-2', 'Delete chapter ' + (i + 1), function () { rows.splice(i, 1); renderRows(); })
+          vid ? iconBtn('clock', 'Set chapter ' + (i + 1) + ' to the current video time', function () { r.time = fmtChap(vid.currentTime, dur >= 3600); tIn.value = r.time; touched = true; validate(); }) : null,
+          iconBtn('trash-2', 'Delete chapter ' + (i + 1), function () { rows.splice(i, 1); touched = true; renderRows(); })
         ]);
         rowsEl.appendChild(h('div.sv-chap', { 'data-row': i }, [tIn, nIn, btns]));
       });
@@ -3591,7 +3620,9 @@
       BT.$$('.sv-chap', rowsEl).forEach(function (el) { el.classList.remove('sv-bad'); });
       r.errors.forEach(function (e) { var el = BT.$('.sv-chap[data-row="' + e.row + '"]', rowsEl); if (el) el.classList.add('sv-bad'); });
       errEl.innerHTML = '';
-      if (r.errors.length) {
+      if (r.errors.length && !touched) {
+        errEl.appendChild(h('div.notice', { html: BT.icon('info') + '<span>Add at least 3 chapters with their start times. Problems are listed here as you type.</span>' }));
+      } else if (r.errors.length) {
         errEl.appendChild(h('div.notice.error', { html: BT.icon('info') + '<span><strong>Not valid for YouTube yet</strong><ul class="sv-errs">' + r.errors.map(function (e) { return '<li>' + esc(e.msg) + '</li>'; }).join('') + '</ul></span>' }));
       } else {
         errEl.appendChild(h('div.notice.ok', { html: BT.icon('check') + '<span><strong>Looks good — ' + r.count + ' chapters.</strong>' + (r.warnings.length ? ' ' + esc(r.warnings.map(function (w) { return w.msg; }).join(' ')) : '') + '</span>' }));
