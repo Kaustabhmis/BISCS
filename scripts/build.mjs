@@ -414,6 +414,9 @@ const HOWTO = {
   design: (t) => [`Add your photos or start from a template in ${esc(t.name)}.`, `Customise layout, colours, text and effects with the live preview.`, `Download a high-resolution PNG or JPG. Nothing is uploaded.`],
   office: (t) => [`Fill in your details or open your file in ${esc(t.name)}.`, `Check the live preview as you type. Your draft is saved in your browser.`, `Download or print it as a PDF. Your data never leaves your device.`],
   ai: (t) => [`Choose a photo (JPG, PNG or WebP), drop it in, or paste it with Ctrl+V.`, `The first time, the AI model downloads to your browser (one time only). ${esc(t.name)} then runs on your own device.`, `Fine-tune the result with the controls, compare before and after, and download it. Your photo is never uploaded.`],
+  'social-video': (t) => (t.file === 'youtube'
+    ? [`Open ${esc(t.name)} and enter your topic, links or details.`, `Adjust the options and check the live preview, counters and warnings.`, `Copy or download the result and paste it into YouTube Studio or your post.`]
+    : [`Choose your video in ${esc(t.name)}. It opens on your own device and is never uploaded.`, `The first time, the video engine downloads to your browser (one time only). Set your options and check the preview.`, `Press the main button, wait for the progress bar, then download your new file.`]),
   seo: (t) => [`Enter your page details or paste your content into ${esc(t.name)}.`, `Check the live preview, warnings and suggestions as you type.`, `Copy or download the result and add it to your website.`],
   default: (t) => [`Enter your values or paste your text into ${esc(t.name)}.`, `Results update instantly as you type.`, `Copy or download the result with one click.`]
 };
