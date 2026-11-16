@@ -66,7 +66,7 @@ If file size matters more than shape, for example to fit a WhatsApp or email lim
 
 - **Shoot with the final shape in mind.** If you know a clip will become vertical, keep the subject near the centre while recording.
 - **Check text near the edges.** Captions or lower-thirds burned into the original can be cut off by Crop. Switch to Blur fill if they matter.
-- **Trim first.** Resizing a ten-minute file to use thirty seconds wastes time. Cut the part you need with the [Video Trimmer](/tools/video-trimmer/), then resize the short clip.
+- **Trim first.** Resizing a ten-minute file to use thirty seconds wastes time. Cut the part you need with the Video Trimmer, then resize the short clip.
 - **Do not upscale small videos.** Turning a 480p clip into 1080p adds pixels but no detail. Choose a resolution close to the original.
 - **Preview on a phone.** A 4:5 post can look fine on a monitor but crowded on a small screen.
 

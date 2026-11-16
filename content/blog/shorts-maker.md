@@ -84,4 +84,4 @@ Clips export as H.264 video with AAC audio, the format YouTube, Instagram and Fa
 - **Reposting clips you do not own.** Platforms can remove reposted content and issue copyright strikes. Work only with your own footage or material you have rights to.
 - **Expecting a guaranteed audience.** Vertical clips can help new people find a channel, but views depend on the content and the platform, not the tool.
 
-Not sure whether a finished clip meets each platform's requirements? Run it through the [Video Specs Checker](/tools/social-video-checker/) before posting. If you only need to change the shape of a whole video, without cutting clips, the [Video Resizer for Social Media](/tools/video-aspect-converter/) is simpler.
+Not sure whether a finished clip meets each platform's requirements? Run it through the Video Specs Checker before posting. If you only need to change the shape of a whole video, without cutting clips, the [Video Resizer for Social Media](/tools/video-aspect-converter/) is simpler.

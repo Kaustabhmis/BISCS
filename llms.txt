@@ -175,17 +175,17 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## YouTube & Social Media
 
-- [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/): Turn a long video into vertical 9:16 clips for YouTube Shorts, Instagram Reels and Facebook Reels.
-- [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/): Resize video to 9:16, 1:1, 4:5 or 16:9 with crop, fit or blurred background.
-- [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/): Design 1280×720 thumbnails from a video frame or photo, with bold text and stickers.
-- [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/): Capture full-quality still images from any moment of a video.
-- [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/): Write or import subtitles, time them to your video, export SRT/VTT or burn them in.
-- [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/): Create and check YouTube chapter timestamps for your video description.
-- [Video Speed Changer](https://biscsindia.com/tools/video-speed-changer/): Speed up or slow down a video from 0.25× to 4×, keeping audio pitch natural.
-- [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/): Add a background track, mix it with the original sound or replace the audio.
-- [Video Merger](https://biscsindia.com/tools/video-merger/): Join several video clips into one, in the order you choose.
-- [Video Watermark](https://biscsindia.com/tools/video-watermark/): Add your logo or channel name to a video, in any corner.
-- [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/): Check a video against YouTube, Shorts, Facebook, Reels and WhatsApp requirements.
+- [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/): Turn a long video into vertical 9:16 clips for YouTube Shorts, Instagram Reels and Facebook Reels. Guide: https://biscsindia.com/blog/turn-long-video-into-youtube-shorts-reels/
+- [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/): Resize video to 9:16, 1:1, 4:5 or 16:9 with crop, fit or blurred background. Guide: https://biscsindia.com/blog/resize-video-9-16-1-1-4-5-instagram-youtube/
+- [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/): Design 1280×720 thumbnails from a video frame or photo, with bold text and stickers. Guide: https://biscsindia.com/blog/youtube-thumbnail-maker-1280x720-under-2mb/
+- [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/): Capture full-quality still images from any moment of a video. Guide: https://biscsindia.com/blog/extract-still-frame-from-video-full-quality/
+- [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/): Write or import subtitles, time them to your video, export SRT/VTT or burn them in. Guide: https://biscsindia.com/blog/make-srt-subtitles-burn-captions-into-video/
+- [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/): Create and check YouTube chapter timestamps for your video description. Guide: https://biscsindia.com/blog/youtube-chapters-timestamps-rules-generator/
+- [Video Speed Changer](https://biscsindia.com/tools/video-speed-changer/): Speed up or slow down a video from 0.25× to 4×, keeping audio pitch natural. Guide: https://biscsindia.com/blog/speed-up-slow-down-video-online/
+- [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/): Add a background track, mix it with the original sound or replace the audio. Guide: https://biscsindia.com/blog/add-background-music-to-video-mix-replace-audio/
+- [Video Merger](https://biscsindia.com/tools/video-merger/): Join several video clips into one, in the order you choose. Guide: https://biscsindia.com/blog/merge-video-clips-into-one-online/
+- [Video Watermark](https://biscsindia.com/tools/video-watermark/): Add your logo or channel name to a video, in any corner. Guide: https://biscsindia.com/blog/add-logo-watermark-to-video-online/
+- [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/): Check a video against YouTube, Shorts, Facebook, Reels and WhatsApp requirements. Guide: https://biscsindia.com/blog/check-video-requirements-youtube-reels-whatsapp/
 - [YouTube Title Generator](https://biscsindia.com/tools/youtube-title-generator/): Catchy, clickable video title ideas from your topic, with a length check. Guide: https://biscsindia.com/blog/youtube-title-generator-catchy-video-title-ideas/
 - [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/): Well-structured video descriptions with chapters, links and hashtags. Guide: https://biscsindia.com/blog/youtube-description-template-chapters-links/
 - [YouTube Tag Generator](https://biscsindia.com/tools/youtube-tag-generator/): Relevant tags from your keywords, kept within YouTube’s 500-character limit. Guide: https://biscsindia.com/blog/youtube-tags-generator-500-character-limit/
@@ -214,7 +214,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 ## Optional
 
-- [All guides](https://biscsindia.com/blog/): 158 how-to articles
+- [All guides](https://biscsindia.com/blog/): 169 how-to articles
 - [About](https://biscsindia.com/about/)
 - [Privacy Policy](https://biscsindia.com/privacy/)
 - [Full guide text for AI assistants](https://biscsindia.com/llms-full.txt)

@@ -512,7 +512,7 @@ function buildTool(t) {
   write(`tools/${t.id}/index.html`, layout({
     base, active: c.id, canonical: `/tools/${t.id}/`,
     title: `${t.name}: Free Online ${c.short === 'PDF' ? 'PDF Tool' : 'Tool'} | ${SITE.name}`,
-    description: `${t.desc} Free, fast and private: works in your browser with no uploads or sign-up.`,
+    description: (t.desc.length > 95 ? `${t.desc} Free and private, with no uploads.` : `${t.desc} Free, fast and private: works in your browser with no uploads or sign-up.`),
     body, jsonld, keywords: kws,
     scripts: `<script src="${base}assets/js/tools/${fileFor(t)}.js?v=${SITE.version}" defer></script>`
   }));

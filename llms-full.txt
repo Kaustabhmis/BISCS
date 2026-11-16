@@ -2,6 +2,98 @@
 
 > Plain-text version of every guide on https://biscsindia.com, for AI assistants. Each tool runs in the browser; files are not uploaded.
 
+## Add Background Music to a Video: Mix or Replace Audio
+
+URL: https://biscsindia.com/blog/add-background-music-to-video-mix-replace-audio/
+Tool: Add Music to Video (https://biscsindia.com/tools/add-music-to-video/)
+
+Quick answer: To add background music, pick a track you have the rights to, set it lower than the original voice, add short fades at each end, and save a new MP4. BISCS India’s free Add Music to Video tool can mix music with the existing sound or replace it, loop a short track, and usually copies the picture without re-encoding.
+
+Adding music to a video comes down to three decisions: which track, how loud, and whether the original sound stays. Get the volume balance right and the music lifts the video; get it wrong and it drowns the person speaking.
+
+The [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/) tool handles the mixing in your browser. You choose a music file, decide whether to keep the original audio, set both volumes and fades, and download a new MP4.
+
+## First, the copyright question
+
+This matters more than any setting. Platforms scan uploaded videos for copyrighted music. If they find a match, the outcome depends on the rights holder: the video may be muted, blocked in some countries, have its earnings sent to the rights holder, or attract a copyright claim. Repeated problems can lead to strikes.
+
+Safer sources of music:
+
+- **YouTube Audio Library**, found in YouTube Studio, with free tracks and sound effects. Check each track's licence, as some require you to credit the artist in the description.
+- **Music you created**, or recorded with friends who agree to its use.
+- **Licensed stock music** that you paid for or obtained under a clear licence.
+- **Instagram's and Facebook's in-app music**, added inside those apps, where the platform has arranged licensing for use there.
+
+Hit songs from films or albums are almost always protected, even if you only use a few seconds. "No copyright intended" notes do not change that.
+
+## How to add music to a video
+
+1. Open [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/) and choose your video (MP4, MOV, WebM or MKV).
+2. Press **Choose music file** and pick a track. MP3, M4A, WAV, AAC and OGG are accepted. A small player lets you listen to it.
+3. Under **Audio**, choose **Mix with original** to keep the existing sound, or **Replace original** to use the music alone.
+4. With Mix selected, set **Original sound volume** (100% by default). Then set **Music volume** (60% by default). Both sliders go up to 200%.
+5. Set **Fade in (s)** and **Fade out (s)**. The defaults are 1 and 2 seconds.
+6. If the best part of the song starts later, use **Skip start of music (s)**. To bring the music in after an introduction, set **Music starts at (s)**.
+7. If the track is shorter than the video, decide whether to tick **Loop music to the end of the video**.
+8. Read the note under the settings, which explains whether music will repeat or be cut, and press **Add music**.
+9. Preview the result and download the MP4.
+
+The audio is encoded as AAC, which every major platform plays. The video engine that does the mixing downloads once (about 32 MB) and is cached by your browser; your files stay on your device throughout.
+
+## Mix or replace?
+
+| Situation | Choose | Typical settings |
+|---|---|---|
+| Vlog, tutorial or interview | Mix with original | Original 100%, music 15–30% |
+| Travel montage with wind noise | Replace original | Music 80–100% |
+| Product shots with no speech | Replace original | Music 70–100% |
+| Event video with crowd sounds | Mix with original | Original 60–80%, music 40–60% |
+| Old recording with a hum | Replace original | Music to taste |
+
+These are starting points. Every track and recording is different, so listen and adjust.
+
+## Getting the balance right
+
+Speech sits in roughly the same frequency range as many instruments, so music competes with voices more than you might expect. A few practical habits:
+
+- **Pick calm tracks for talking videos.** Instrumental music without vocals is far easier to talk over.
+- **Check on a phone speaker.** Most short videos are watched on phones, where bass vanishes and mid-range music seems louder.
+- **Use a gentle fade-in.** One or two seconds feels natural; zero can sound like a mistake.
+- **End with the video, not the song.** A two- or three-second fade-out avoids an abrupt cut on the last frame.
+- **Do not push past 100% unless needed.** Boosting quiet audio can cause distortion if the original was already loud.
+
+## Timing the music to your video
+
+Two settings help the music fit the story rather than simply running underneath it. **Skip start of music (s)** jumps past a slow introduction in the track, so a lively section begins with your first shot. **Music starts at (s)** delays the music, leaving the opening seconds with the original sound only, which suits a greeting or a title card before the montage begins. Combine both with fades and the music sounds as if it was edited by hand.
+
+## Quality and speed
+
+If your video is H.264 or HEVC, which covers most phone and camera recordings, the picture is copied straight across and only the sound is rebuilt. The result card then says the picture was copied without quality loss, and the whole job is quick even on a phone. Other formats are converted to H.264 MP4, which takes longer.
+
+The video always keeps its original length. To make a clip shorter before adding music, use the [Video Trimmer](https://biscsindia.com/tools/video-trimmer/) first.
+
+## Mistakes to avoid
+
+- **Using a song just because it is trending.** Popularity does not make it free to use.
+- **Burying the voice.** If viewers have to strain to hear, they leave.
+- **Forgetting to mute the original when it is noisy.** Traffic and wind under music sounds messy; choose Replace instead.
+- **Leaving the credit out.** If your Audio Library track requires attribution, paste it into the description.
+- **Expecting music to rescue a weak video.** It sets a mood, but the content still has to hold attention.
+
+Making a slideshow from several clips? Join them first with the [Video Merger](https://biscsindia.com/tools/video-merger/), then add one music track across the whole thing for a smoother feel.
+
+Q: Where can I find music that is safe to use on YouTube?
+A: YouTube's own Audio Library in YouTube Studio offers free tracks and sound effects you can use in your videos, some needing an attribution line. Other options include music you composed, tracks you licensed from a stock music site, or recordings where you have written permission. Popular film songs are almost always copyrighted.
+
+Q: What volume should background music be under speech?
+A: Low enough that every word is clear. A common starting point is the original sound at 100% and music between 15% and 30%. The tool starts music at 60%, which suits videos without talking. Listen on phone speakers as well as headphones, since small speakers make music seem louder.
+
+Q: Why was my video processed so quickly?
+A: If your video already uses H.264 or HEVC, the most common formats from phones and cameras, the picture is copied as it is and only the audio is rebuilt. That avoids slow re-encoding and means there is no loss in picture quality. Other formats are converted to H.264, which takes longer.
+
+Q: What happens if the song is shorter or longer than my video?
+A: The video always keeps its own length. A longer song is cut off at the end, with your fade-out applied. A shorter song repeats from the start if Loop music to the end of the video is ticked; if not, the rest plays with only the original sound, or silence when replacing audio.
+
 ## Answer Engine Optimisation: Win Snippets and Voice Answers
 
 URL: https://biscsindia.com/blog/answer-engine-optimization-featured-snippets/
@@ -12660,6 +12752,100 @@ A: Google often bolds words in the snippet that match or closely relate to what 
 Q: Should I add a date to my meta description?
 A: No, you do not type it into the description. Google may show a date before the snippet for articles, taking it from your page or structured data. The optional date field in the preview simply shows how much space that date would use.
 
+## Turn a Long Video into YouTube Shorts and Reels (9:16)
+
+URL: https://biscsindia.com/blog/turn-long-video-into-youtube-shorts-reels/
+Tool: Shorts & Reels Maker (https://biscsindia.com/tools/shorts-maker/)
+
+Quick answer: To turn a long video into Shorts or Reels, choose short moments, reframe each one to vertical 9:16 at 1080×1920, and export separate MP4 clips. BISCS India’s free Shorts & Reels Maker does this in your browser, with optional highlight suggestions, face-following crops, titles and imported captions.
+
+A long video becomes a Short or Reel in three moves: pick a moment of 15 to 60 seconds, reframe the wide picture into a tall 9:16 frame, and export it as an MP4 at 1080×1920. Do that a few times and one podcast, lecture or vlog gives you a week of vertical clips.
+
+The [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/) handles all three steps on one screen. You can choose clips by hand or ask it to suggest lively moments, and it exports every clip in one go. Use your own recordings or footage you have permission to reuse.
+
+## What the tool can and cannot do
+
+Before you start, here is an honest picture.
+
+- **It reframes, trims and labels.** Each clip gets its own start, end, crop position and optional title.
+- **Highlight suggestions are based on sound and scene changes.** The tool listens for loud, energetic stretches and can also look for big visual changes. It does not understand speech or meaning, so it cannot tell a punchline from a cough.
+- **Face tracking runs on your device.** A small MediaPipe face model (about 10 MB, downloaded once) finds faces and pans the crop to follow them.
+- **Processing happens in your browser.** The video engine, roughly 32 MB, downloads once from this site and is then cached. No file is sent anywhere, there is no sign-up and no BISCS watermark appears on your clips.
+
+## How to use the Shorts & Reels Maker
+
+1. Open the [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/) and click **Choose a long video**, or drag in an MP4, MOV, WebM or MKV file.
+2. Under **Platform and length**, pick a card: **YouTube Shorts** (60 s, the safest length), **Shorts up to 3 min**, **Reels** (90 s) or **Any length**. This caps how long each clip can be.
+3. Choose a mode under **Reframe to 9:16**: **Center crop**, **Choose position**, **Follow faces** or **Fit + blur**.
+4. Set the first clip on the timeline labelled **Selected clip**. Drag the handles, type the **Start** and **End** times, or play the video and press **Set start at playhead** and **Set end at playhead**. **Play clip** previews just that range.
+5. To make more clips, press **Add clip** in the **Clips to export** list. Each row has **Edit**, a preview button and a remove button.
+6. Or let the tool propose clips: in **Suggest highlights**, set **How many** and **Length each**, optionally tick **Also look for visual changes (slower)**, and press **Suggest highlights**. The suggestions replace your current list.
+7. Optionally type a **Title for the selected clip**, choose its size (S, M, L) and colour, or press **Use this title for all clips**.
+8. Optionally import an SRT or VTT under **Captions (optional)** and choose a caption size.
+9. Pick an **Output size**: **1080×1920 HD** or **720×1280 · faster**.
+10. Press **Create short** (or **Create 3 shorts**, and so on). Download each MP4, or use **Download all (ZIP)** when there are several.
+
+## Choosing the right reframe mode
+
+A landscape 16:9 frame is almost three times wider than a 9:16 slice of it, so most of the picture has to go. The four modes decide which part survives.
+
+| Mode | What you get | Works best for |
+|---|---|---|
+| Center crop | The middle strip of the frame | Talking-head videos where you sit in the centre |
+| Choose position | A crop you drag left or right, saved per clip | A speaker standing off to one side |
+| Follow faces | A crop that pans smoothly to the main face | Walk-and-talk vlogs, one presenter who moves |
+| Fit + blur | The whole frame, with a blurred copy above and below | Slides, screen recordings, group shots, sport |
+
+With **Choose position**, drag the bright box on the preview, use the **Crop position (selected clip)** slider, or nudge with the arrow keys. Each clip remembers its own position, which helps when the speaker moves between segments.
+
+## Getting better highlight suggestions
+
+The highlight finder works by measuring how loud the audio is over time. Peaks in speech, applause, laughter or a music drop score highest. If you tick visual changes, it also samples frames and rewards cuts and big movements. That makes it good at finding the energetic parts of a cricket match or a stage show, and less reliable for a calm lecture where the best line is spoken softly.
+
+A few ways to get more useful results:
+
+- **Match length to content.** Thirty-second suggestions suit most talk content; 15 seconds is better for reaction moments.
+- **Ask for a few more than you need.** Request five, keep the best three.
+- **Always play each suggestion.** Tighten the start so the clip opens on a strong sentence, not halfway through a word.
+- **For silent videos, tick visual changes.** Without audio, scene changes are the only signal available.
+
+## Titles and captions that read well on a phone
+
+Most people watch Shorts and Reels with the sound low or off, so text on screen carries a lot. The title sits at the top of the frame; keep it to a few words that tell the viewer why to stay. Hindi, Bengali and emoji are drawn correctly because the text is rendered by your browser.
+
+Captions are not generated automatically. If you want them, first create an SRT file timed to the full long video with the [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/), then import it here. Each short picks up only the lines inside its own time range.
+
+## Speed, phones and file size
+
+Encoding 1080×1920 video in a browser is demanding. On a laptop, expect each minute of HD output to take a few minutes; on a phone it can be much slower, and long batches may run out of memory. The **720×1280 · faster** option is there for exactly this reason. Keep the tab open while it works.
+
+Clips export as H.264 video with AAC audio, the format YouTube, Instagram and Facebook all accept. Upload them from the official apps, and check each app's current length limit, as these change. At the time of writing, YouTube allows Shorts up to 3 minutes for most channels, while the Instagram in-app editor generally works with Reels up to 90 seconds.
+
+## Mistakes to avoid
+
+- **Starting mid-sentence.** The first second decides whether someone keeps watching, so begin on a clean line.
+- **Covering faces with the title.** Preview the clip, and choose a smaller title size if the speaker's head sits high in the frame.
+- **Using Center crop on slides.** Text at the edges will be cut off; Fit + blur keeps the whole slide readable.
+- **Reposting clips you do not own.** Platforms can remove reposted content and issue copyright strikes. Work only with your own footage or material you have rights to.
+- **Expecting a guaranteed audience.** Vertical clips can help new people find a channel, but views depend on the content and the platform, not the tool.
+
+Not sure whether a finished clip meets each platform's requirements? Run it through the Video Specs Checker before posting. If you only need to change the shape of a whole video, without cutting clips, the [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/) is simpler.
+
+Q: How does the tool decide which moments are highlights?
+A: It measures loudness across the soundtrack and, if you tick the option, looks for sudden visual changes between frames. Loud peaks such as laughter, cheering or a raised voice score highly. It does not understand what is being said, so a quiet but important point can be missed. Treat suggestions as a shortlist and adjust them.
+
+Q: What does Follow faces do if two people are talking?
+A: The on-device face detector looks for faces in sampled frames and pans smoothly towards the main one it finds. With two people far apart in a wide shot, a 9:16 crop cannot hold both, so one may be cut off. For interviews like that, Fit + blur or Choose position often gives a better result.
+
+Q: Can I add captions to my shorts?
+A: Yes, if you already have an SRT or VTT file timed to the original long video. Import it under Captions (optional) and each short uses only the lines that fall inside its time range, shifted to start correctly. You can create that file first with the Subtitle & Caption Maker.
+
+Q: Should I choose 1080×1920 or 720×1280?
+A: 1080×1920 is the usual size for Shorts and Reels and looks sharper. It also takes much longer to encode, especially on phones. If you are working on a phone or making many clips, 720×1280 finishes faster and still looks acceptable on most mobile screens.
+
+Q: Why did my clip get centre-cropped when I chose Follow faces?
+A: The result card explains each clip. If no clear face was found in enough frames, or the face model could not load in your browser, that clip falls back to a centre crop. Side profiles, small faces, dim lighting and heavy motion all make detection harder.
+
 ## How to Sign a PDF Online for Free (Draw, Type or Upload)
 
 URL: https://biscsindia.com/blog/sign-pdf-online-free-draw-signature/
@@ -13476,6 +13662,104 @@ A: No. An uploaded image is only used locally to draw the preview in your browse
 Q: Do Open Graph tags help SEO?
 A: They are not a Google ranking factor. Their value is in how your links look when shared, which affects how many people click them on social apps and messaging platforms. Google relies on your title tag and page content instead.
 
+## Check Video Requirements for YouTube, Reels and WhatsApp
+
+URL: https://biscsindia.com/blog/check-video-requirements-youtube-reels-whatsapp/
+Tool: Video Specs Checker (https://biscsindia.com/tools/social-video-checker/)
+
+Quick answer: Before posting, check a video's shape, length, resolution, file size and codec against each platform's common recommendations, so it is not cropped, rejected or squashed. BISCS India’s free Video Specs Checker reads your file in the browser and gives a pass, fix or note for YouTube, Shorts, Reels, the Facebook feed and WhatsApp Status.
+
+Most upload problems are predictable. A landscape clip posted as a Reel shrinks to a thin strip; a 75-second clip is too long for a single WhatsApp Status; an unusual codec plays on your laptop but not in an app. Checking five or six numbers before you post avoids almost all of it.
+
+The [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/) reads those numbers from your file and compares them with common recommendations for five destinations. It runs in your browser, so the video is never uploaded.
+
+## What the checker looks at
+
+For every video it reads:
+
+- **Length**, shown in minutes and seconds.
+- **Resolution**, such as 1920 × 1080.
+- **Shape**, the aspect ratio, like 16:9, 9:16, 1:1 or 4:5.
+- **File size** in MB.
+- **Format**, from the file extension, such as MP4 or MOV.
+
+With the optional deeper check, it adds the **video codec** (H.264, HEVC and so on), **audio** codec, **frame rate** and **bitrate**.
+
+It then builds a **Platform checklist** with a section for each destination:
+
+| Section | Main checks |
+|---|---|
+| YouTube (regular video) | File type, codecs, shape, resolution, frame rate, length and size |
+| YouTube Shorts | Vertical or square shape, length, resolution |
+| Instagram & Facebook Reels | 9:16 shape, length, resolution, file size |
+| Facebook feed | Square or 4:5 shape, codec, resolution, file size |
+| WhatsApp Status | Length per status, file size, shape |
+
+Each row gets **Pass**, **Fix** or **Note**, with a short explanation. A section with no Fix rows shows a **Ready** badge; otherwise it says **Needs changes**.
+
+## How to check a video
+
+1. Open the [Video Specs Checker](https://biscsindia.com/tools/social-video-checker/).
+2. Choose a video, or drag it onto the page. Any common format works.
+3. Read the **Your video** card for the basic details.
+4. Optionally press **Check codecs and bitrate**. This downloads the video engine once (about 32 MB, then cached) and reads the deeper details on your device.
+5. Scroll through the **Platform checklist**. Look at the badge on each platform first, then at any row marked Fix.
+6. Where a fix is suggested, the note links straight to the tool that can do it, such as resizing to 9:16, trimming, compressing or converting to MP4.
+7. Fix the file, then run the new version through the checker again.
+
+## Understanding the common results
+
+**"Landscape videos are not shown as Shorts."** A Short needs to be vertical or square. Make a vertical version with the [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/), which can follow faces or add a blurred background.
+
+**Shorts length.** Under 60 seconds always passes. Between 60 seconds and 3 minutes passes with a reminder that, at the time of writing, YouTube allows Shorts up to 3 minutes for most channels. Longer clips are flagged.
+
+**Reels length.** Within 90 seconds passes on both apps. Longer clips get a note: Instagram has been allowing longer Reels, but the in-app editor and Facebook have commonly worked with a 90-second limit. Check the app you are using.
+
+**"Vertical video may be shown cropped to 4:5 in the feed."** Facebook often trims tall videos in the main feed. A 4:5 or 1:1 version from the [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/) takes up the space properly.
+
+**WhatsApp Status length.** Each status has generally held around 60 seconds at the time of writing. Longer videos are split or must be trimmed in the app.
+
+**WhatsApp file size.** Files above roughly 16 MB are compressed heavily by WhatsApp. Making a smaller file yourself usually gives a cleaner result than letting the app do it.
+
+**Low resolution.** Anything with a short side under 720 pixels is marked as soft. Re-exporting at a higher resolution will not add detail, so the fix is usually to find the original file.
+
+## Why the checker hedges
+
+Platform rules change often, and the limits shown differ between accounts, countries and app versions. The checker reflects common recommendations at the time of writing and says so on the page. Treat a Pass as "very likely fine" and a Fix as "worth sorting out first", then glance at the app's own guidance before posting anything important.
+
+The tool also does not judge content. It cannot tell you whether music is licensed, whether a video follows community guidelines, or how many people will watch it.
+
+## Tips for a smooth upload
+
+- **Export from your editor as MP4, H.264 and AAC.** It is the format least likely to cause trouble.
+- **Keep 1080 pixels on the short side** for most posts. 4K is fine for YouTube, but large for everything else.
+- **Stick to common frame rates:** 24, 25, 30 or 60 fps.
+- **Make one version per shape.** A single file rarely suits YouTube, Reels and the Facebook feed equally well.
+- **Re-check after editing.** Compression and resizing change the numbers.
+
+## A quick example
+
+Imagine a 75-second vertical phone video, 1080 × 1920, 140 MB, in HEVC. The checker would likely mark both YouTube sections and the Reels section as ready, since 75 seconds is within the usual Shorts and Reels limits. The Facebook feed section would note that a tall video may be cropped. WhatsApp Status would show two fixes: the clip is longer than one status, and the file is well above 16 MB. One trimmed and compressed copy for WhatsApp, and the original for everything else, would cover all five.
+
+## Mistakes to avoid
+
+- **Assuming a phone recording is ready everywhere.** Phone videos are often HEVC and very large; fine for YouTube, heavy for WhatsApp.
+- **Uploading a landscape clip as a Reel.** It works technically but looks tiny on screen.
+- **Ignoring file size on mobile data.** A 1 GB upload over a weak connection may fail halfway.
+- **Treating every note as an error.** Notes are information. Only Fix rows normally need action.
+
+Q: What does the Check codecs and bitrate button add?
+A: The basic check reads length, resolution, shape, file size and format using your browser's own player. The button runs a deeper scan with the video engine to read the video codec, audio codec, frame rate and bitrate. That fills in the codec, audio and frame-rate rows of the checklist.
+
+Q: What is the best video format for social media?
+A: An MP4 file with H.264 video and AAC audio is accepted almost everywhere and plays on nearly every phone. HEVC, VP9 and AV1 are also supported by the big platforms, but H.264 remains the safest choice. If the checker flags an unusual codec, converting to H.264 MP4 usually solves it.
+
+Q: Why does a vertical video show black bars on YouTube?
+A: The regular YouTube player on computers and TVs is 16:9, so a 9:16 video fills only a narrow strip in the middle. On phones it can fill the screen. A vertical video of up to 3 minutes may also be treated as a Short, depending on YouTube's current rules.
+
+Q: Why does WhatsApp make my video look blurry?
+A: WhatsApp compresses videos to save data, and large files are compressed hardest. A file of around 16 MB or less, at 720p or 1080p, usually survives better than a huge 4K original. The checker flags large files for WhatsApp Status and links to a compressor.
+
 ## Sort Lines Alphabetically or by Number: Free Online Tool
 
 URL: https://biscsindia.com/blog/sort-lines-alphabetically-numerically-online/
@@ -13923,6 +14207,95 @@ A: Yes. On the Stopwatch tab, press Space to start or pause, L to record a lap a
 
 Q: How accurate is the stopwatch?
 A: It uses the browser’s high-resolution clock and shows time to the millisecond. That is more than accurate enough for workouts, cooking, practice tests and presentations. For official sports timing or scientific measurements, use certified equipment.
+
+## Make SRT Subtitles and Burn Captions into a Video
+
+URL: https://biscsindia.com/blog/make-srt-subtitles-burn-captions-into-video/
+Tool: Subtitle & Caption Maker (https://biscsindia.com/tools/subtitle-maker/)
+
+Quick answer: To add subtitles, write each caption line, give it a start and end time, and either save it as an SRT file for YouTube or burn the text permanently into the picture. BISCS India’s free Subtitle & Caption Maker lets you type and time captions while the video plays, then export SRT or VTT, or create an MP4 with captions drawn on.
+
+Subtitles are just lines of text, each with a start time and an end time. You can deliver them in two ways: as a separate SRT or VTT file that the platform shows on request, or burned permanently into the video picture. Both start with the same job, which is writing the words and timing them to the speech.
+
+The [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/) is built around that job. It does not listen to the audio or transcribe anything; you type or paste the words, and the tool makes timing them quick. If you would rather start from an automatic draft, YouTube Studio can generate captions after you upload a video, and you can correct them there.
+
+## Why captions are worth the effort
+
+- **Many people watch without sound**, on a bus, in an office, or late at night with a sleeping baby nearby.
+- **Viewers who are deaf or hard of hearing** depend on them.
+- **Mixed-language audiences** follow more easily. A Hindi vlog with English subtitles, or the reverse, reaches more people.
+- **Noisy recordings** become understandable when the words are on screen.
+
+## Three ways to begin
+
+On the first screen you can:
+
+- **Choose your video** to time captions while watching and, later, burn them in.
+- Press **Start typing without a video** to write captions with rough times, for example when you already know the timings.
+- Press **Open an SRT / VTT file** to edit an existing caption file.
+
+Choosing a video gives you the most tools, so that is the route described below.
+
+## How to time captions with tap-to-time
+
+Tap-to-time is the fastest method when you have a script.
+
+1. Open the [Subtitle & Caption Maker](https://biscsindia.com/tools/subtitle-maker/) and choose your video.
+2. In the **Script, import & export** card, paste your script into **Paste lines**, one caption per line, and press **Add lines**. The lines appear untimed in **Caption lines**.
+3. Press **Tap-to-time mode** above the editor. The first line appears in a highlighted box.
+4. Play the video. Press and hold **Hold while this line is spoken** (or the T key) as the line begins, and release when it ends. The tool records both times and moves to the next line.
+5. If you slip, press **Back one line** and redo it. Press **Stop** when finished.
+6. Review the list. Each line shows its start and end times, such as `00:00:04,200`, which you can type over. **Start = playhead** and **End = playhead** set either time from the current video position, and the play button replays just that line.
+7. Fix any problem the tool flags, such as "End must be after start" or "Overlaps the previous line".
+8. Under **Download captions**, press **SRT** or **VTT**, or **Copy SRT** to paste the text elsewhere.
+
+Without a script, pause the video wherever someone starts speaking and press **Add caption at playhead**, then type the words. The **Back 2 seconds** and **Forward 2 seconds** buttons help you listen again.
+
+## Writing captions people can read
+
+- **Keep lines short.** Around 35 to 42 characters per line is a common guideline, with no more than two lines on screen.
+- **Split at natural pauses.** Break after a comma or a full phrase, not in the middle of a name.
+- **Give each caption time.** A line shown for under a second is hard to read; one to six seconds is typical.
+- **Write what is said, lightly cleaned.** Remove repeated "umm"s, but do not change meaning.
+- **Use the right script.** Hindi in Devanagari, Bengali in Bengali script, or Hinglish in Roman letters, according to your audience.
+
+## Burning captions into the video
+
+If the video has a file attached, a **Burn captions into the video** card appears below. Choose a **Font**, a **Size** (S, M, L or XL), **Text colour**, **Outline colour** and **Outline width**. Tick **Background box** for a shaded strip behind the words and set its **Box colour** and **Box opacity**. Choose a **Position**: **Bottom**, **Middle** or **Top**. Then press **Burn captions into video**.
+
+Captions are drawn by your browser before being merged into the video, so Hindi, Bengali and emoji appear correctly, which many basic subtitle burners get wrong. The result is an MP4 you can preview and download. The video engine needed for this downloads once (about 32 MB) and is cached; your video is processed on your own device and never uploaded.
+
+Burning is slower than exporting an SRT because every frame is re-encoded. On a phone, start with a short clip to see how long it takes.
+
+## Uploading to YouTube
+
+In YouTube Studio, open the video, choose **Subtitles** from the left menu, pick the language, and select the option to upload a file. Choose "With timing" and select your SRT. At the time of writing that is the usual flow, though YouTube occasionally renames menu items. Facebook also accepts SRT files on many video types. Instagram and WhatsApp do not take caption files, so burn the captions in for those.
+
+If you have chapters in mind for a long video, the [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/) works well alongside your captions.
+
+## Mistakes to avoid
+
+- **Overlapping lines.** Two captions on screen at once look messy. The editor highlights any overlap.
+- **Forgetting the first second.** If the opening words have no caption, people assume captions are missing.
+- **Burning in captions you might need to fix later.** Keep the SRT file as well; burned text cannot be edited afterwards.
+- **Placing captions over on-screen text.** If the video already has lower-thirds at the bottom, choose **Top** or **Middle**.
+
+Making vertical clips from the same video? Import this SRT into the [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/) and each short picks up its own lines.
+
+Q: Does the Subtitle Maker transcribe speech automatically?
+A: No. There is no speech recognition here; you type or paste the words yourself and time them. If you want an automatic draft, upload your video to YouTube and let YouTube Studio generate captions, then review them there. For your own script, typing gives you full control over spelling and wording.
+
+Q: What is the difference between SRT and VTT?
+A: Both are plain-text caption formats listing numbered lines with start and end times. SRT uses a comma before the milliseconds and is the most widely accepted, including by YouTube and Facebook. VTT (WebVTT) uses a full stop and is the format web video players read natively. Download whichever your platform asks for.
+
+Q: Should I upload an SRT or burn the captions in?
+A: Upload an SRT where the platform supports it, such as YouTube, because viewers can turn captions on or off and choose a language. Burn them in for places that ignore caption files, like Instagram Reels or WhatsApp, or when you want styled captions that always show.
+
+Q: My captions appear a second too late. How do I fix all of them?
+A: Use Shift all timings. Enter the number of seconds, for example 1 or 0.5, and press Earlier to move every caption back by that amount, or Later to move them forward. The text stays the same, and each line keeps its length.
+
+Q: Can I edit an existing SRT file?
+A: Yes. Press Open an SRT / VTT file on the first screen to edit without a video, or load a video and use Import SRT / VTT in the Script, import & export card. You can then fix text, adjust times, and export again.
 
 ## Compare Two Texts and Find the Differences Online
 
@@ -15037,6 +15410,93 @@ A: Yes. The first 48 bits are the Unix timestamp in milliseconds, so anyone can 
 Q: Are UUIDs safe to use as secret tokens?
 A: A v4 UUID from a secure generator is hard to guess, but UUIDs were designed to be unique, not secret. For password reset links, API keys or session tokens, prefer a purpose-built random token of at least 128 bits from your framework, and never use v1 or v7 UUIDs, which contain predictable time information.
 
+## Resize Video to 9:16, 1:1 or 4:5 for Instagram and YouTube
+
+URL: https://biscsindia.com/blog/resize-video-9-16-1-1-4-5-instagram-youtube/
+Tool: Video Resizer for Social Media (https://biscsindia.com/tools/video-aspect-converter/)
+
+Quick answer: To resize a video for social media, choose the target shape, such as 9:16 for Reels or 4:5 for the feed, then decide whether to crop, add bars or fill the gaps with a blurred copy. BISCS India’s free Video Resizer for Social Media does all three in your browser and exports an MP4 at 1080p, 720p or 480p.
+
+Every platform prefers its own shape. Reels, Shorts and WhatsApp Status fill a phone screen in 9:16, the Instagram and Facebook feeds give the most space to 4:5 or 1:1, and YouTube's regular player is 16:9. Converting between them means deciding what to do with the part of the picture that no longer fits.
+
+The [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/) gives you three answers to that question, crop, bars or blur, and shows a live preview before you export. The work happens on your own device.
+
+## Common shapes and where they go
+
+| Shape | Output at 1080p | Typical use |
+|---|---|---|
+| 9:16 Vertical | 1080 × 1920 | Shorts, Reels, Status, Stories |
+| 1:1 Square | 1080 × 1080 | Instagram and Facebook feed |
+| 4:5 Portrait | 1080 × 1350 | Feed posts that take up more of the screen |
+| 16:9 Landscape | 1920 × 1080 | YouTube videos, Facebook, presentations |
+| 4:3 Classic | 1440 × 1080 | Older TVs, some slide decks |
+
+The Resolution setting (1080p, 720p or 480p) sets the shorter side, and the longer side follows from the shape. So 9:16 at 720p gives 720 × 1280. Platform recommendations change from time to time, so check the app's help pages if you need an exact current figure.
+
+## Crop, bars or blur: which should you pick?
+
+**Crop** cuts the picture to fill the new shape completely. Nothing looks empty, but you lose the edges. Going from 16:9 to 9:16 removes roughly two thirds of the width, so it only works when the subject sits in a narrow area.
+
+**Fit with bars** shrinks the whole frame to fit inside the new shape and fills the gaps with a solid **Bar colour**. Black is the default; a brand colour or white can look tidier. Nothing is lost, but on a vertical screen a landscape video becomes a small strip in the middle.
+
+**Blur fill** also keeps the whole frame, but fills the gaps with a zoomed, blurred copy of the same video. This is the familiar look of many Reels made from landscape footage. It feels fuller than bars and avoids the harsh lines.
+
+A rough guide:
+
+- One person talking in the centre: **Crop**.
+- Slides, screen recordings, text-heavy footage: **Fit with bars** or **Blur fill**.
+- Group photos, wide scenery, sport: **Blur fill**.
+- A brand video with strict colours: **Fit with bars** with your own colour.
+
+## How to use the Video Resizer
+
+1. Open the [Video Resizer for Social Media](https://biscsindia.com/tools/video-aspect-converter/) and choose a video (MP4, MOV, WebM or MKV), or drag it onto the page.
+2. Under **Target shape**, pick **9:16 Vertical**, **1:1 Square**, **4:5 Portrait**, **16:9 Landscape** or **4:3 Classic**. Landscape videos start with 9:16 selected, and vertical videos with 16:9.
+3. Under **How to fit**, choose **Crop**, **Fit with bars** or **Blur fill**.
+4. For Crop, drag the box on the preview or use the **Crop position** slider to keep the important part in frame. For bars, set the **Bar colour**.
+5. Pick a **Resolution**: **1080p**, **720p** or **480p**. The line underneath shows the exact output size.
+6. Press **Resize video** and keep the tab open while it works.
+7. Preview the result, then download the MP4. Use **Resize another** to start again.
+
+The output is an H.264 MP4 with AAC audio, which every major platform accepts. The video engine downloads once (about 32 MB) and your browser keeps it for next time; your file itself is never uploaded.
+
+## Picking a resolution
+
+1080p is the usual choice for anything you plan to post. It is also the slowest to process, because every frame is re-encoded in the browser. On a phone or an older laptop, a long 1080p conversion can take a while, and 720p finishes noticeably faster. 480p is useful for quick previews or sending a draft to someone on a slow connection, but it will look soft when posted.
+
+If file size matters more than shape, for example to fit a WhatsApp or email limit, use the [Video Compressor](https://biscsindia.com/tools/video-compressor/) after resizing.
+
+## Tips for a cleaner result
+
+- **Shoot with the final shape in mind.** If you know a clip will become vertical, keep the subject near the centre while recording.
+- **Check text near the edges.** Captions or lower-thirds burned into the original can be cut off by Crop. Switch to Blur fill if they matter.
+- **Trim first.** Resizing a ten-minute file to use thirty seconds wastes time. Cut the part you need with the Video Trimmer, then resize the short clip.
+- **Do not upscale small videos.** Turning a 480p clip into 1080p adds pixels but no detail. Choose a resolution close to the original.
+- **Preview on a phone.** A 4:5 post can look fine on a monitor but crowded on a small screen.
+
+## Mistakes to avoid
+
+- **Cropping a moving subject.** The crop position is fixed for the whole video. If the person walks across the frame, they will drift out. For clips like that, the Shorts & Reels Maker can follow faces instead.
+- **Using bars for vertical platforms without thinking.** Thick bars on a Reel leave most of the screen empty. Blur fill usually looks better.
+- **Forgetting the original audio settings.** The tool keeps the soundtrack as it is; it does not add or remove music.
+- **Closing the tab mid-way.** Processing stops if the page is closed or the phone locks for a long time.
+
+## Resizing whole videos versus making clips
+
+This tool converts an entire video, from first frame to last, into a new shape. If your aim is to pull several vertical clips out of a long recording, with titles and highlight suggestions, the [Shorts & Reels Maker](https://biscsindia.com/tools/shorts-maker/) is built for that job. For a single file that just needs a new shape, this resizer is quicker and has fewer settings to think about.
+
+Q: What is the difference between resizing and changing aspect ratio?
+A: Resizing changes the number of pixels, for example 1920×1080 down to 1280×720, while keeping the same shape. Changing aspect ratio changes the shape itself, such as wide 16:9 to tall 9:16. This tool always outputs the shape you pick, and the Resolution setting controls the pixel size of the shorter side.
+
+Q: Which mode keeps my whole picture?
+A: Fit with bars and Blur fill both keep every part of the original frame. Bars fills the leftover space with a solid colour you choose, and Blur fill uses an enlarged, blurred copy of the same video instead. Crop is the only mode that removes part of the picture.
+
+Q: What happens if my video is already the shape I picked?
+A: The tool notices and tells you that it will only be resized. For example, a 1920×1080 clip set to 16:9 at 720p simply becomes 1280×720. This is a quick way to make a smaller copy for sharing, though a dedicated compressor gives more control over file size.
+
+Q: Can I choose which part of the frame stays when cropping?
+A: Yes. With How to fit set to Crop, a box appears on the preview showing what will remain. Drag it, or move the Crop position slider, to keep a person or object in view. The position is fixed for the whole video, so it suits shots where the subject stays roughly in one place.
+
 ## How to Compress a Video for WhatsApp or Email (Free, No Upload)
 
 URL: https://biscsindia.com/blog/compress-video-for-whatsapp-email/
@@ -15222,6 +15682,274 @@ A: The tool converts files already on your device; it does not download from web
 Q: What does Copy streams when possible do?
 A: If the video and audio inside your file already use codecs the new container supports, the converter copies them into the new wrapper without re-encoding. That is much faster and loses no quality. If the codecs are not compatible, it automatically re-encodes instead. This option is not available for WebM output or when changing resolution.
 
+## Extract a Still Frame from a Video in Full Quality
+
+URL: https://biscsindia.com/blog/extract-still-frame-from-video-full-quality/
+Tool: Video Frame Grabber (https://biscsindia.com/tools/video-frame-grabber/)
+
+Quick answer: To save a still from a video at full quality, pause on the exact frame and capture the decoded picture directly rather than taking a screen screenshot. BISCS India’s free Video Frame Grabber does this in your browser at the video's own resolution, as PNG or JPG, and can also capture evenly spaced frames and build a contact sheet.
+
+The cleanest way to get a still image out of a video is to capture the actual video frame, not your screen. That gives you the full resolution the video was recorded at, with no player buttons, cursor or notification bar in the way.
+
+The [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/) does exactly that inside your browser. Pause, step to the perfect frame, and capture it as a PNG or JPG. It can also pull a set of evenly spaced frames from the whole clip and lay them out as a contact sheet.
+
+## Good reasons to grab frames
+
+- **Thumbnails.** A still from your own footage is often the most honest thumbnail you can use.
+- **Family moments.** A birthday candle being blown out, a first step, a wedding pheri: sometimes the video caught it better than any photo.
+- **Work and study.** Save a slide from a recorded lecture, a diagram from a training video, or a reading from a dashboard recording.
+- **Reviews and reports.** Show a client a specific shot, or document a defect seen in inspection footage.
+- **Social posts.** A carousel of stills from a short trip video can work well alongside the video itself.
+
+Use your own recordings, or videos you have the right to use. Frames taken from someone else's film or broadcast are still covered by their copyright.
+
+## How to use the Frame Grabber
+
+1. Open the [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/) and choose a video, or drag it onto the page.
+2. Under **Image format**, pick **PNG (lossless)** for the best quality or **JPG (smaller)** for lighter files.
+3. Set **Frame step** to your video's frame rate: 24, 25, 30, 50 or 60 fps. Most phone videos are 30 fps; Indian TV-style footage is often 25.
+4. Play the video and pause near the moment you want.
+5. Use **Previous frame** and **Next frame** to step precisely. The time display shows the position to the millisecond.
+6. Press **Capture this frame**. The still appears in **Captured frames** with its time.
+7. Repeat for as many frames as you like. Download each one from its own button, or press **Download all (ZIP)**. **Clear** empties the list.
+
+Keyboard users can click the video once, then use the left and right arrow keys to step and the C key to capture. This is the fastest way to work through a long clip.
+
+## Capturing many frames at once
+
+Sometimes you want an overview rather than one perfect moment. In the **Many frames at once** section, set **Number of frames** (from 2 up to 100) and press **Capture evenly spaced frames**. The tool divides the video into equal parts and captures one frame from the middle of each part.
+
+For a five-minute video and 10 frames, that is roughly one frame every 30 seconds. It is a quick way to find the best-looking section before stepping through it frame by frame.
+
+## Building a contact sheet
+
+Once you have some frames, press **Make contact sheet**. You get a single JPG, 1920 pixels wide, with:
+
+- the file name and video length in a header row,
+- your frames arranged in a grid,
+- the time printed on each frame, if **Print the time on each frame** is ticked.
+
+Set **Columns** between 2 and 8 to control the layout. Four columns of twelve frames suits most videos; use more columns for longer reviews. Contact sheets are useful when choosing a thumbnail with someone else, because everyone can see the options at once and refer to them by time.
+
+## PNG or JPG?
+
+| | PNG (lossless) | JPG (smaller) |
+|---|---|---|
+| Quality | Exactly the decoded frame | Very slight compression, rarely visible |
+| File size | Larger, often several MB for 4K | Much smaller |
+| Best for | Editing, printing, thumbnails you will add text to | Sharing on chat apps, email, quick previews |
+
+If you plan to design a thumbnail, take a PNG and load it into the [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/) as a photo.
+
+## When the browser cannot play the video
+
+Some formats, such as certain MKV or older AVI files, will not preview in every browser. In that case the tool shows a **Time to capture** box instead of a player. Type a time such as `1:23.5` and press **Capture at this time**. The frame is then extracted by the in-browser video engine, which downloads once (about 32 MB) and is cached afterwards. Evenly spaced capture also works this way. In every case the video stays on your device.
+
+## Tips for sharper stills
+
+- **Step around motion.** If a frame is blurred, the one before or after is often crisper.
+- **Prefer the original file.** A video that has been forwarded on WhatsApp has been compressed heavily; the copy on the phone that recorded it is far better.
+- **Avoid scaled previews.** The capture is always at full resolution, even if the player on screen looks small.
+- **Watch for interlacing.** Old camcorder footage can show comb-like lines on moving edges. That is in the source, not added by the tool.
+
+## Mistakes to avoid
+
+- **Using the wrong frame step.** A 30 fps step on a 25 fps video will sometimes jump two frames or none.
+- **Expecting a still to look like a photo.** Video frames have less detail and more blur than a camera photo taken at the same moment.
+- **Forgetting to download.** Captured frames live in the page. Closing or refreshing the tab clears them, so save the ZIP first.
+
+To turn a short moment into a moving image instead of a still, the [Video to GIF](https://biscsindia.com/tools/video-to-gif/) tool is the next step.
+
+Q: Why is a captured frame better than a phone screenshot?
+A: A screenshot records whatever is on your display, at your screen's size, often with player controls or a notification on top. The Frame Grabber copies the decoded video frame itself, so a 4K video gives a 3840×2160 image and nothing else appears in it.
+
+Q: How do I move exactly one frame at a time?
+A: Set Frame step to match your video's frame rate, such as 25 or 30 fps, then use the Previous frame and Next frame buttons. After clicking on the video you can also press the left and right arrow keys. With the wrong rate, a step may skip or repeat a frame.
+
+Q: Why do some frames look blurry?
+A: Video is shot as a sequence of moments, and fast movement during each frame's exposure shows up as motion blur. Stepping one frame forward or back often finds a sharper one. Heavily compressed videos, such as those forwarded on messaging apps, can also look soft or blocky.
+
+Q: What is a contact sheet used for?
+A: A contact sheet places many frames in a grid on one image, so you can see the whole video at a glance. It is handy for picking a thumbnail, reviewing footage with a client, documenting a shoot, or checking continuity. The tool can print each frame's time on it.
+
+## Merge Video Clips into One, in Any Order, Free
+
+URL: https://biscsindia.com/blog/merge-video-clips-into-one-online/
+Tool: Video Merger (https://biscsindia.com/tools/video-merger/)
+
+Quick answer: To merge videos, put the clips in order, choose one output size and frame rate so they match, and export them as a single file. BISCS India’s free Video Merger joins two or more clips in your browser, fits clips of different shapes with bars, blur or crop, and can add a short fade between them.
+
+Merging videos sounds like sticking files end to end, but clips from different phones, apps and cameras rarely match. One is vertical, one is landscape; one runs at 30 frames per second, another at 25; one has no sound. A reliable merger first makes them all the same, then joins them.
+
+The [Video Merger](https://biscsindia.com/tools/video-merger/) does both in your browser. Add two or more clips, arrange them, choose an output size, and get one MP4 back. Nothing leaves your device.
+
+## When you might merge clips
+
+- **Family events.** Several short clips of a wedding, a birthday or a Diwali evening become one video for the family group.
+- **Trips.** Clips from each day of a holiday, in order, make a simple travel diary.
+- **Lessons and demos.** Record a tutorial in parts, then join them.
+- **Shorts series.** Combine three related Shorts into one longer landscape video for your main channel.
+- **School and office projects.** Put each team member's recorded section into a single submission.
+
+## How to merge videos step by step
+
+1. Open the [Video Merger](https://biscsindia.com/tools/video-merger/) and click **Choose two or more videos**. You can select several at once, or drag them onto the page.
+2. The clips appear under **Clips (in order)**, each with its length, size and file size. Drag a row to move it, or use the up and down arrow buttons. The bin button removes a clip.
+3. Need more? Use **Add more clips** below the list.
+4. Choose an **Output size**: **Match first clip**, **1920×1080** (16:9, YouTube), **1080×1920** (9:16, Shorts and Reels), **1080×1080** (square) or **1280×720** (smaller and faster).
+5. Under **Clips with a different shape**, pick **Fit with bars**, **Blur fill** or **Crop to fill**. With bars, you can set the **Bar colour**.
+6. Pick a **Frame rate**: 24, 25, 30 or 60. 30 suits most phone video.
+7. Tick **Smooth 0.5 s fade between clips** if you want soft transitions.
+8. Check the summary line, which shows the clip count and total length, then press **Merge videos**.
+9. Preview the result and download `merged-video.mp4`.
+
+The first merge downloads the browser video engine (about 32 MB), which is then cached. Keep the tab open while the clips are processed.
+
+## Choosing an output size
+
+**Match first clip** is the simplest: if your first clip is 1080×1920 from a phone, the whole video will be too. Reorder your clips if you want a different clip to set the size.
+
+Pick a fixed size when you know where the video is going. For YouTube, 1920×1080 is standard. For Reels or Shorts, choose 1080×1920. If the merge is slow on your device, 1280×720 cuts processing time substantially and is still sharp on phones.
+
+## Mixed shapes: bars, blur or crop
+
+When a landscape clip goes into a vertical video (or the reverse), something has to give.
+
+- **Fit with bars** keeps the whole picture and fills the gaps with a plain colour.
+- **Blur fill** keeps the whole picture and fills the gaps with a soft, blurred copy of the clip. Most viewers find this easier on the eye.
+- **Crop to fill** zooms in until there are no gaps, cutting off edges. It works when the action is in the centre.
+
+If almost all your clips share one shape, choose that shape as the output and the setting only affects the odd ones out.
+
+## Fades and frame rate
+
+The fade option blends half a second of each clip into the next, for both picture and sound. It makes a family video feel more finished and hides small jumps. Because of the overlap, the final video is half a second shorter per join; the summary line accounts for this.
+
+Frame rate matters less than people think. Choosing 30 is safe for nearly all phone footage. Choose 25 if most clips came from a camera set to 25 fps, and 60 only if your clips were recorded at 60 and contain fast action.
+
+## Tips before you merge
+
+- **Trim first.** Remove dead time from each clip with the [Video Trimmer](https://biscsindia.com/tools/video-trimmer/). Merging is faster with shorter clips, and the result is tighter.
+- **Name files in order.** Selecting `01.mp4`, `02.mp4`, `03.mp4` together usually lists them in sequence, saving dragging later.
+- **Watch the total size.** Above about 500 MB the tool warns that your browser could run short of memory. A laptop handles more than a phone.
+- **Add music afterwards.** Join the clips first, then lay one track over the whole video with [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/).
+
+## Mistakes to avoid
+
+- **Mixing very different quality clips at 1080p.** A blurry 480p clip will not look better when scaled up; consider 1280×720 instead.
+- **Forgetting the order.** Double-check the numbers in the list before pressing merge.
+- **Using clips you do not have rights to.** Compilations of other people's videos can be removed by platforms. Merge your own recordings, or footage you are allowed to use.
+- **Closing the browser mid-way.** The work happens on your device and stops if the page closes.
+
+## A quick example
+
+Say you have four clips from a school annual day: two vertical clips from your phone, one landscape clip from a relative's phone, and one short silent clip of the stage decoration. Choose **1080×1920** as the output, since most clips are vertical, and **Blur fill** for the landscape one. Leave the frame rate at 30 and tick the fade option. The silent clip gets a quiet soundtrack automatically, the landscape clip sits in the middle with a soft blurred border, and the whole video plays smoothly from start to finish.
+
+## What you get
+
+One MP4 file with H.264 video and AAC audio, at the size and frame rate you chose, containing every clip in order. No logo or watermark is added, and no account is needed.
+
+Q: Can I merge portrait and landscape clips together?
+A: Yes. Every clip is converted to the same output size. Clips with a different shape are handled by the setting under Clips with a different shape: Fit with bars, Blur fill or Crop to fill. Blur fill is usually the most pleasant for mixing phone clips shot in both orientations.
+
+Q: Why does merging take longer than I expected?
+A: Clips from different sources rarely share the exact same size, frame rate and audio format, so the tool re-encodes each one to match before joining. That is the reliable way to avoid glitches, but it means work proportional to the total length. Choosing 1280×720 instead of 1080p speeds it up noticeably.
+
+Q: What happens to a clip that has no sound?
+A: Silent clips, such as some screen recordings or time-lapses, get a silent audio track of the right length added automatically. This keeps the soundtrack in step, so later clips do not start playing their audio early.
+
+Q: Is there a limit on how many clips I can merge?
+A: There is no fixed number, but everything happens in your browser's memory. If the clips add up to more than about 500 MB, the tool warns that the browser may run out of memory. For big projects, compress or trim the clips first, or merge them in smaller batches.
+
+Q: Why were my fades skipped?
+A: A fade blends the last half-second of one clip into the first half-second of the next. If any clip is shorter than about 1.1 seconds, there is not enough footage for that, so the tool merges without fades and tells you on the result card.
+
+## Speed Up or Slow Down a Video Online (0.25× to 4×)
+
+URL: https://biscsindia.com/blog/speed-up-slow-down-video-online/
+Tool: Video Speed Changer (https://biscsindia.com/tools/video-speed-changer/)
+
+Quick answer: To change a video's speed, choose a factor such as 2× to halve its length or 0.5× for slow motion, then re-encode it so the new timing is saved in the file. BISCS India’s free Video Speed Changer does this in your browser from 0.25× to 4×, keeps the voice at a natural pitch, and shows the new length first.
+
+Changing a video's speed is simple arithmetic: at 2× a ten-minute video becomes five minutes, and at 0.5× it becomes twenty. The part that takes care is the sound. Played faster, voices normally rise into a cartoon squeak; played slower, they drop into a growl.
+
+The [Video Speed Changer](https://biscsindia.com/tools/video-speed-changer/) keeps speech at its natural pitch while changing the tempo, and lets you pick any speed from 0.25× to 4×. It runs in your browser on your own file.
+
+## Where a speed change helps
+
+- **Recipe and craft videos.** Stirring for five minutes becomes twenty seconds of satisfying fast-forward.
+- **Screen recordings and tutorials.** Speed up the slow install bar, keep the explanation at normal speed (after splitting the clip).
+- **Lectures and long talks.** A 1.25× copy is easier to revise from without losing clarity.
+- **Sport and dance.** Slow down a cover drive or a footwork sequence to study it.
+- **Travel clips.** A fast drive along the ghats or a sunset in time-lapse style adds variety to a reel.
+
+## How to use the Video Speed Changer
+
+1. Open the [Video Speed Changer](https://biscsindia.com/tools/video-speed-changer/) and choose a video (MP4, MOV, WebM or MKV), or drag it onto the page.
+2. Under **Quick choice**, tap **0.5×**, **0.75×**, **1.25×**, **1.5×** or **2×**. The tool starts at 2×.
+3. For any other value, drag the **Speed** slider. It moves in steps of 0.05, from 0.25× up to 4×.
+4. Read the line underneath. It shows the new length, such as "New length: 2:30 (from 5:00)", and a note on audio or slow motion.
+5. Play the preview. It plays at the chosen speed so you can judge it before exporting, though the browser preview may sound slightly different from the final file.
+6. Tick **Remove audio (mute)** if you plan to add music later or the sped-up sound is not useful.
+7. Press **Change speed**. When it finishes, preview and download the MP4.
+
+The first time you process a video, the browser downloads the video engine (about 32 MB) from this site and stores it for later visits. Your video is not uploaded at any point.
+
+## Choosing the right speed
+
+| Speed | Effect | Good for |
+|---|---|---|
+| 0.25× | Very slow, visibly steppy | Short moments recorded at high frame rates |
+| 0.5× | Classic slow motion | Sport, dance, splashes, a child's first steps |
+| 0.75× | Gently slowed | Following fast instructions, musical practice |
+| 1.25× to 1.5× | Brisk but natural | Talks, tutorials, long vlogs |
+| 2× | Clearly fast-forward | Cooking prep, walking routes, setup steps |
+| 3× to 4× | Time-lapse feel | Traffic, clouds, building something over hours |
+
+## Making slow motion look good
+
+True slow motion is recorded, not created afterwards. Many phones offer a slow-motion mode that films at 120 or 240 frames per second; that footage slows down beautifully. Ordinary 30 fps video has only 30 pictures per second, so at 0.5× each picture is held for two frame slots, and at 0.25× for four. Movement then looks like a slideshow.
+
+For the best results with regular footage:
+
+- **Stay at 0.5× or above** for anything with fast motion.
+- **Choose steady shots.** Camera shake becomes very obvious when slowed down.
+- **Keep it short.** A few seconds of slow motion has impact; a minute of it drags.
+
+## Speeding up without losing the viewer
+
+Fast-forward works best when the viewer can still follow what is happening. At 2× most actions stay readable. Above 3×, people and hands start to blur, which can look lively in a time-lapse but confusing in a tutorial. For sped-up sections with no useful speech, consider muting the audio and adding a light background track with [Add Music to Video](https://biscsindia.com/tools/add-music-to-video/).
+
+If you are speeding a video up to fit a length limit, such as a 60-second Short, check the new length line before exporting. Changing speed is not always the best fix, though; trimming dull parts usually keeps the video more watchable.
+
+## A worked example
+
+Suppose you filmed an eight-minute video of a rangoli being drawn and want it to fit a 60-second Reel. Eight minutes is 480 seconds, so you would need 8× to reach one minute, which is beyond the 4× maximum and far too fast to follow anyway. A better plan is to trim the clip to the three most interesting minutes, then apply 3×. That gives exactly 60 seconds, the pattern still builds visibly, and the speed feels lively rather than frantic. Mute the sped-up chatter and add a soft music track, and the result is ready to post.
+
+## Mistakes to avoid
+
+- **Speeding up talking-head videos too far.** Above 1.5×, many viewers find speech tiring.
+- **Expecting smooth 0.25× from phone video.** Without high frame rate footage, very slow speeds will stutter.
+- **Choosing 1× and pressing the button.** The tool asks you to pick a different speed, since 1× would change nothing.
+- **Changing speed on a very long video on a phone.** Re-encoding is heavy work; trim to the part you need first with the [Video Trimmer](https://biscsindia.com/tools/video-trimmer/).
+- **Closing the tab during processing.** The export stops, and you will need to start again.
+
+## What the output looks like
+
+You get an MP4 (H.264 video, AAC audio) named after your file with the speed added, for example `holiday-2x.mp4`. When speeding up, the frame rate is capped at 30 fps; for slow motion it keeps the source frame rate up to 60. There is no watermark, no account to create, and the file is ready to post or share as it is.
+
+Q: Will speeding up a video make voices sound squeaky?
+A: No. The audio is time-stretched separately from the picture, so speech gets faster without rising in pitch. At 1.25× to 1.5× it usually sounds like a brisk speaker. At 3× or 4× words run together and become hard to follow, so many people tick Remove audio for those speeds.
+
+Q: Why does my slow-motion video look jerky?
+A: Slow motion needs more frames than the video has. At 0.5× each original frame is shown twice as long, and at 0.25× four times as long, so movement steps instead of flowing. Footage recorded at 60 fps or higher slows down far more smoothly than ordinary 30 fps phone video.
+
+Q: Can I change the speed of only part of a video?
+A: This tool applies one speed to the whole file. To speed up just one section, cut that section out with a trimmer, change its speed here, and join it back with the other parts using the Video Merger. For short clips, it is often simpler to trim first and speed up the entire clip.
+
+Q: What happens to the frame rate when I speed a video up?
+A: When speeding up, the output is capped at 30 frames per second. Extra frames are dropped rather than packed in, which keeps the file a sensible size and plays smoothly on phones. Slow-motion output keeps the original frame rate up to 60 fps.
+
 ## How to Convert a Video to GIF (Small Size, Good Quality)
 
 URL: https://biscsindia.com/blog/convert-video-to-gif-online/
@@ -15405,6 +16133,97 @@ A: Yes. The trimmer works in modern mobile browsers. Fast mode is quick even on 
 
 Q: Which formats can I trim?
 A: Common formats such as MP4, MOV, WebM, MKV, AVI and 3GP are supported. In Fast mode the clip keeps the original format where possible. Precise mode exports MP4, or WebM when the source is WebM and your browser’s engine supports it. Use the Video Converter if you need a different format afterwards.
+
+## Add a Logo or Channel Name Watermark to a Video
+
+URL: https://biscsindia.com/blog/add-logo-watermark-to-video-online/
+Tool: Video Watermark (https://biscsindia.com/tools/video-watermark/)
+
+Quick answer: To watermark a video, place a small logo or text such as your channel handle in a corner, at partial opacity, so it identifies you without hiding the content. BISCS India’s free Video Watermark tool adds a logo, text or both in any of nine positions, with adjustable size, margin, opacity and timing, in your browser.
+
+A good watermark is small, consistent and slightly see-through. It tells anyone who sees a reposted clip where it came from, without getting in the way of the video itself. A corner logo or a short @handle at 60 to 80 percent opacity does that job well.
+
+The [Video Watermark](https://biscsindia.com/tools/video-watermark/) tool adds a logo image, a line of text, or both, to any video on your own device. A live preview shows the result before you export.
+
+## Why creators and businesses watermark videos
+
+- **Credit travels with the clip.** Videos are forwarded on WhatsApp and reposted on other pages; your name goes along.
+- **Brand recall.** A consistent mark in the same corner across all your videos builds familiarity.
+- **Client previews.** A visible "Draft" or "Sample" label discourages use of unpaid work.
+- **Local businesses.** A shop name and phone number on a product video means anyone who sees it knows whom to contact.
+
+A watermark is not a security lock, and no visible mark can stop a determined copier. It mainly discourages lazy reposting and makes the original source clear.
+
+## How to add a watermark
+
+1. Open the [Video Watermark](https://biscsindia.com/tools/video-watermark/) tool and choose a video (MP4, MOV, WebM or MKV), or drag it in.
+2. To use a logo, press **Choose logo image**. A transparent PNG gives the cleanest look. **Remove logo** takes it off again.
+3. To add text, type it in the **Text** box, for example `@YourChannel` or a website. Hindi, Bengali and emoji are drawn correctly by your browser.
+4. Pick a **Text colour** and a **Font**: **Sans (clean)**, **Impact (bold)**, **Rounded**, **Serif** or **Monospace**. Keep **Soft shadow (readable on any background)** ticked unless you have a reason not to.
+5. Choose a **Position** from the nine options: the four corners, the middle of each edge, or **Centre**.
+6. Adjust **Size (width of video)** (4% to 60%, starting at 18%), **Margin** (space from the edge) and **Opacity** (10% to 100%, starting at 80%).
+7. Leave **Show for the whole video** ticked, or untick it and enter **Show from** and **Until** times.
+8. Check the preview, then press **Add watermark**. Download the MP4 when it is ready, or use **Watermark another**.
+
+On a first run the browser fetches the video engine (about 32 MB) from this site and caches it. Your video and logo are processed locally and not uploaded.
+
+## Choosing size, position and opacity
+
+**Size.** For a corner logo, 10% to 18% of the video width is a common range. Larger than about 25% starts to feel like an advert rather than a signature. Text watermarks can be slightly wider because letters are thinner than a logo.
+
+**Position.** Bottom right is the traditional choice, but think about where platforms put their own interface. On Reels and Shorts, the right edge holds like and comment buttons and the bottom holds the caption, so a **Top left** or **Top right** mark is often more visible. On YouTube's regular player, the bottom bar appears when viewers pause or hover.
+
+**Margin.** A margin of 3% to 5% keeps the mark away from the very edge, where phones with rounded corners or notches can hide it.
+
+**Opacity.** 60% to 80% is visible without being heavy. Drop it to around 40% for a centre watermark on client previews.
+
+## Logo or text?
+
+| | Logo image | Text |
+|---|---|---|
+| Brand recognition | Strong if your logo is familiar | Good for new channels and handles |
+| Readability at small sizes | Depends on the design | Usually clear with a shadow |
+| Setup | Needs a PNG file | Type and go |
+| Best combined with | A short handle beside it | A simple symbol, via a logo |
+
+Using both is common: a small icon plus `@handle` reads well and stays compact. If you need a simple logo, the [Logo Maker](https://biscsindia.com/tools/logo-maker/) can create one that exports with a transparent background.
+
+## Timing the watermark
+
+Some creators only show their mark for the first few seconds, or reveal a larger one at the end. Untick **Show for the whole video**, then type times like `0:00` and `0:05`. The tool checks that the end time comes after the start time before it runs.
+
+A permanent small mark is the better protection against reposts, since clips are often cut from the middle of a video.
+
+## Mistakes to avoid
+
+- **A JPG logo with a white box around it.** Export your logo as a transparent PNG first.
+- **Watermarking someone else's content.** Adding your name to a video you do not own does not make it yours, and can mislead viewers.
+- **Covering subtitles or faces.** Check the preview at the moments where on-screen text appears.
+- **Thin, light text with no shadow.** It disappears over bright skies and white walls.
+- **Changing position every video.** Consistency is what makes a watermark recognisable.
+
+## Watermarks for Indian small businesses
+
+Shops, tutors and home bakers increasingly sell through WhatsApp, Instagram and Facebook, where videos are forwarded far beyond the first person you sent them to. A watermark with your business name and a phone number or handle means a forwarded product video can still bring a customer back to you. Keep it short: a name and one contact detail are enough. Place it in a top corner so it is not covered by the caption bar on Reels, and use a light colour with the soft shadow for clips filmed in bright shop lighting.
+
+## Quality notes
+
+The picture is re-encoded to H.264 to draw the watermark, while AAC or MP3 audio is copied without change. Long or 4K videos take a while in a browser, especially on phones; trim them first if you only need part of the video. For still images, the [Image Watermark](https://biscsindia.com/tools/image-watermark/) tool applies the same idea to photos.
+
+Q: What logo file works best as a video watermark?
+A: A PNG with a transparent background. It sits cleanly over the video without a white or black rectangle around it. A JPG logo always carries its background box. Use a reasonably large source image, say 500 pixels wide or more, so it stays crisp when scaled to the size you choose.
+
+Q: Can I add both a logo and text?
+A: Yes. Choose a logo image and type text in the Text box, and the tool places them side by side as one watermark. The combined mark then follows the same position, size, margin and opacity settings, which keeps the branding tidy.
+
+Q: Does a watermark stop people from stealing my video?
+A: It discourages casual reposting and makes the source obvious, but it does not prevent copying. A determined person can crop or blur a corner mark. A centre watermark is harder to remove but more distracting. For serious misuse, platforms have copyright reporting processes.
+
+Q: Can I show the watermark only at the start or end?
+A: Yes. Untick Show for the whole video, then type the Show from and Until times, such as 0:00 and 0:05. The watermark appears only between those times, which suits a short opening credit or an end card.
+
+Q: Will the watermark be in the right place on a vertical video?
+A: Yes. Position, size and margin are calculated from the actual video dimensions, so the same settings work on a 1080×1920 vertical clip and a 1920×1080 landscape one. The preview shows exactly where it will sit before you export.
 
 ## How to Add a Text or Logo Watermark to a PDF for Free
 
@@ -15854,6 +16673,111 @@ A: No. The converter reads the .docx file inside your browser and the PDF is pro
 Q: What is the best way to get a PDF that matches Word exactly?
 A: If you have Microsoft Word, use File, Save As and choose PDF, or Export, Create PDF. Word renders its own layout most faithfully. This tool is best when you do not have Word installed, are on a phone or shared computer, or do not want to upload a private document to a website.
 
+## YouTube Chapters: Timestamp Rules and a Free Checker
+
+URL: https://biscsindia.com/blog/youtube-chapters-timestamps-rules-generator/
+Tool: YouTube Chapters Generator (https://biscsindia.com/tools/youtube-chapters-generator/)
+
+Quick answer: YouTube creates chapters from a list of timestamps in your video description, as long as the first one is 0:00, there are at least three, and each chapter lasts at least 10 seconds. BISCS India’s free YouTube Chapters Generator helps you set those times, checks every rule as you type, and gives you text ready to paste.
+
+YouTube chapters come from plain text. Write a list of timestamps with titles anywhere in your video description, and YouTube splits the progress bar into labelled sections, provided the list follows its rules. Get one rule wrong and the chapters quietly fail to appear.
+
+The [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/) checks those rules for you while you type, and can play your video so you set each timestamp at the right moment.
+
+## The rules YouTube applies
+
+At the time of writing, YouTube's help pages list these requirements:
+
+1. **The first timestamp must be 0:00.** Not 0:01, not 0:05.
+2. **At least three timestamps** are needed.
+3. **Each chapter must be at least 10 seconds long.**
+4. **Times must go up in order.**
+
+There is a practical fifth point: the last chapter also needs 10 seconds before the video ends. The tool checks that too when it knows the video's length.
+
+A valid example looks like this:
+
+```
+0:00 Intro
+0:45 What you need
+3:10 Step-by-step method
+7:55 Common problems
+10:20 Final result
+```
+
+## Why chapters are worth adding
+
+- **Viewers jump straight to what they need**, which is especially useful for tutorials, recipes, reviews and lectures.
+- **Chapter titles show in the player**, so people see the structure at a glance.
+- **Search results may show key moments.** Google and YouTube can display chapters as links to parts of the video, though this is not guaranteed.
+
+Chapters do not promise more views. They make a long video easier to use, which viewers tend to appreciate.
+
+## How to use the Chapters Generator
+
+1. Open the [YouTube Chapters Generator](https://biscsindia.com/tools/youtube-chapters-generator/). The **Chapters** list starts with **0:00 Intro** and two empty rows.
+2. Optionally drop your video on **Optional: load your video**. It plays in the page, and its length fills in automatically. The file stays on your device.
+3. For each chapter, type a time in the left box and a title on the right. With a video loaded, play to the right moment and press the clock button beside a row to set its time from the video.
+4. Press **Add chapter** for more rows; the trash button deletes one.
+5. If no video is loaded, type the **Video length (optional)** so the tool can check the last chapter.
+6. Watch the message above the output. It lists every problem, such as "The first chapter must start at 0:00" or a chapter that is only 6 seconds long, and turns green with "Looks good" when all rules pass.
+7. Press **Copy for description** and paste the text into your video's description in YouTube Studio.
+
+Already have timestamps written somewhere? Paste them into **Paste existing timestamps**, one per line, and press **Use these lines**.
+
+## Planning chapters for different kinds of videos
+
+The right number of chapters depends on the video. As a rough guide:
+
+- **Recipes:** ingredients, preparation, cooking, plating and tasting. Five chapters cover most dishes.
+- **Product reviews:** unboxing, design, features, performance, battery or value, and verdict.
+- **Tutorials:** one chapter per major step, plus a short opening that says what viewers will learn.
+- **Lectures and webinars:** one chapter per topic or slide section, which also makes revision easier for students.
+- **Podcasts:** one chapter per question or guest segment, named after the question itself.
+
+For a short video of three or four minutes, three or four chapters are plenty. Splitting a short clip into many tiny sections makes the progress bar crowded and adds little for the viewer.
+
+## Writing chapter titles that help
+
+- **Describe, do not tease.** "Setting up the router" beats "You won't believe this part".
+- **Keep them short.** Long titles get cut off in the player on phones.
+- **Use the viewer's words.** If people search "how to fill Form 16", use that phrase rather than your internal jargon.
+- **Stay consistent.** Either number every step or none of them.
+- **Match the language of the video.** A Hindi video can have Hindi chapter titles; YouTube shows them as written.
+
+The first chapter does not have to be called Intro. If your video starts straight into content, name it after that content.
+
+## Where to paste the chapters
+
+Chapters can go anywhere in the description, but placing them near the top or just after a short summary makes them easy for viewers to find. Keep each timestamp on its own line with nothing before it. A full description with links and hashtags can be drafted with the [YouTube Description Generator](https://biscsindia.com/tools/youtube-description-generator/), which has a section for chapters too.
+
+After saving, chapters can take a little while to show. If they still do not appear, open the video's details in YouTube Studio, click **Show more**, and confirm that automatic chapters or chapter display has not been switched off.
+
+## Mistakes to avoid
+
+- **Starting at 0:01.** This is the most common reason chapters fail.
+- **Using full stops or dashes instead of colons.** `4.05` is not read as a time; write `4:05`.
+- **Very short sections.** A 7-second "Subscribe reminder" chapter breaks the whole list.
+- **Rows out of order.** The tool does not reorder rows for you; it flags the time that is not after the one before, so you can fix it.
+- **Leaving titles blank.** The tool warns you and writes "Chapter" as a placeholder, which helps nobody.
+- **Editing times after trimming the video.** If you cut part of the video in YouTube Studio's editor, update the timestamps to match.
+
+## Sharing a single moment instead
+
+Sometimes you only want to send someone one part of a video, not split the whole thing. The [YouTube Timestamp Link Generator](https://biscsindia.com/tools/youtube-timestamp-link/) makes a link that starts playing at an exact time, which is handy for replying to a question in comments or a WhatsApp group.
+
+Q: Why are my YouTube chapters not showing?
+A: Usually a rule is broken: the list does not start at 0:00, there are fewer than three timestamps, a chapter is shorter than 10 seconds, or the times are out of order. Chapters can also be turned off in the video's advanced settings. Paste your list into the tool to see which rule fails.
+
+Q: Do chapter times need to be in a particular format?
+A: Use minutes and seconds like 4:05, or hours, minutes and seconds like 1:02:30 for long videos. Put the time at the start of the line, followed by a space and the chapter title. The tool writes this format for you and switches to the hour form automatically when a chapter starts after one hour.
+
+Q: What are automatic chapters in YouTube Studio?
+A: For some videos, YouTube can suggest chapters on its own when you have not added any. You can usually turn this off in the upload settings. Chapters you write yourself in the description take priority, and you control the wording.
+
+Q: Can I reuse timestamps I already wrote?
+A: Yes. Paste them into the Paste existing timestamps box, one per line, and press Use these lines. The tool reads lines such as 1:23 Title or Title - 1:23 and loads them as rows. It then checks them against YouTube's rules and shows any problems.
+
 ## YouTube Description Template: Chapters, Links and Hashtags
 
 URL: https://biscsindia.com/blog/youtube-description-template-chapters-links/
@@ -16231,6 +17155,89 @@ A: It can help a little when people search for your channel by name, especially 
 
 Q: What happens to tags past the 500-character limit?
 A: The generator crosses them out and leaves them out when you press “Copy (comma-separated)”. You can drag the important ones higher, delete weak ones, or press “Trim to 500” to remove everything over the limit in one go.
+
+## YouTube Thumbnail Maker: 1280×720 Design Under 2 MB
+
+URL: https://biscsindia.com/blog/youtube-thumbnail-maker-1280x720-under-2mb/
+Tool: YouTube Thumbnail Maker (https://biscsindia.com/tools/youtube-thumbnail-maker/)
+
+Quick answer: A YouTube custom thumbnail should be 1280×720 pixels in a 16:9 shape, saved as JPG, PNG or GIF and kept under 2 MB. BISCS India’s free YouTube Thumbnail Maker lets you pick a frame from your own video or use a photo, add bold text, shapes and stickers, and download a JPG that stays under the limit.
+
+Make your thumbnail 1280 × 720 pixels, keep it below 2 MB, and save it as a JPG. Those are YouTube's long-standing custom thumbnail requirements, and a thumbnail that meets them looks sharp everywhere from a phone feed to a TV.
+
+The [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/) builds to that size automatically. You can start from a still of your own video, a photo, or a plain coloured background, then layer text, shapes and stickers on top.
+
+## What makes a thumbnail work
+
+A thumbnail is seen at a tiny size, often no wider than a matchbox on a phone. That changes the rules compared with a poster or banner.
+
+- **One clear subject.** A face with a strong expression, the finished dish, the product. Clutter disappears at small sizes.
+- **Three to five words, maximum.** The title already explains the video; the thumbnail adds a hook.
+- **High contrast.** Light text on a dark area, or dark text on a light area, with an outline for safety.
+- **Honesty.** A thumbnail that promises something the video does not deliver drives viewers away, and misleading thumbnails can break YouTube's policies.
+
+No design guarantees clicks, but a clean, readable thumbnail gives a good video a fair chance.
+
+## How to make a thumbnail step by step
+
+1. Open the [YouTube Thumbnail Maker](https://biscsindia.com/tools/youtube-thumbnail-maker/).
+2. Click **Choose a video or photo**, or press **Start with a plain colour background**.
+3. If you chose a video, a player appears under **Pick a frame for the background**. Play or scrub to a good moment, use **Previous frame** and **Next frame** for fine control, and press **Use this frame**.
+4. Pick one of the **Templates**: **Bold left**, **Centre box**, **Bottom bar**, **Arrow & circle** or **Hindi title**. It replaces any layers you have.
+5. Click a text layer in the **Layers** list and change the wording in **Text**. Adjust **Font**, **Align**, **Size**, **Text colour**, **Outline colour** and **Outline width**, and tick **Drop shadow** or **Background box** if needed.
+6. Add more with the **Text**, **Box**, **Circle** and **Arrow** buttons, or open **Stickers** for icons like a star, flame, rupee sign or tick.
+7. Drag any layer on the canvas to move it. Arrow keys nudge the selected layer, and **Bring forward**, **Send back**, **Duplicate** and **Delete** manage the stack.
+8. Under **Background**, use **Darken background**, the **Shade** menu (**Dark on the left**, **Dark at the bottom**, **Vignette**), **Zoom** and the move sliders to frame the picture.
+9. Press **Download JPG**. A **PNG** button is there too if you need a lossless copy.
+
+## Picking a good frame from your video
+
+The best frames are usually not the ones you expect. A mid-sentence face is often blurred or caught with eyes half closed. Step through a few frames with the arrow buttons until you find a sharp, expressive one. Bright, even lighting helps; you can deepen the background later with **Darken background** without making the face dark too, by combining it with the **Dark on the left** shade and placing yourself on the right.
+
+If your browser cannot play the video format, the tool says so. Take a screenshot, or convert the file to MP4 with the Video Converter and try again. For collecting many full-resolution stills to choose from, the [Video Frame Grabber](https://biscsindia.com/tools/video-frame-grabber/) captures them in a batch, and you can load the chosen still here as a photo.
+
+## Text in Hindi, Bengali and other scripts
+
+Indian audiences often respond well to thumbnails in their own language. The **Hindi title** template is a ready starting point, and any text layer accepts Devanagari, Bengali, other Indian scripts and emoji. The letters are drawn by your browser, so they join correctly. Results depend on fonts installed on your device; the **Sans (clean)** font is the safest choice for Indian scripts, while **Impact (bold)** suits short English words.
+
+Keep Indian-language text large. Conjunct characters have fine detail that vanishes at small sizes, so aim for two short lines rather than one long one.
+
+## Watch the bottom-right corner
+
+YouTube places the video duration over the bottom-right corner of every thumbnail. Anything you put there, a face, a price, a key word, will be partly hidden. The **Show the timestamp safe area (bottom right)** checkbox shades that region on the canvas while you design. It is not included in the download.
+
+## Size, format and upload
+
+The canvas is fixed at 1280 × 720, the 16:9 size YouTube recommends. JPG downloads are compressed to stay under 2 MB; the tool shows the saved size in a message. If a PNG export goes over 2 MB, you will get a warning suggesting the JPG instead. At the time of writing, YouTube accepts JPG, PNG and GIF for custom thumbnails; check YouTube's help pages if you run into an error.
+
+To upload, open YouTube Studio, go to the video's **Details** page, and choose **Upload file** in the thumbnail section. On the mobile app, the option sits under the video's edit screen.
+
+## Mistakes to avoid
+
+- **Copying another creator's design or photos.** Use your own frames and images, or ones you have permission to use.
+- **Text that repeats the title word for word.** Use the space for a different angle.
+- **Thin fonts with no outline.** They vanish against busy backgrounds. Add an outline width of 6 to 10 pixels.
+- **Too many stickers.** One arrow or circle draws the eye; four of them compete.
+- **Forgetting dark mode.** Many viewers browse YouTube in dark theme, where a mostly black thumbnail blends into the page.
+
+## Privacy
+
+Your video and images stay in your browser. Frames are read by the browser's own video player, so there is no engine to download and nothing is uploaded or stored. For matching channel artwork, the [Channel Banner & Cover Maker](https://biscsindia.com/tools/channel-banner-maker/) uses a similar layer editor at banner sizes.
+
+Q: Why can't I upload a custom thumbnail on YouTube?
+A: YouTube usually asks you to verify your account, often with a phone number, before custom thumbnails are enabled. Some channels also have the feature limited after policy strikes. Check the Features eligibility section of YouTube Studio settings, as the requirements can change.
+
+Q: Should I download the thumbnail as JPG or PNG?
+A: Use JPG for YouTube. The tool saves it at a quality that keeps it under the 2 MB limit. PNG is lossless and handy for editing elsewhere, but a busy photo background can push it over 2 MB, and the tool warns you when that happens.
+
+Q: What is the timestamp safe area?
+A: YouTube shows the video length in a small box at the bottom-right corner of every thumbnail. The tool can draw that area on the canvas so you avoid placing text or faces underneath it. Turn it on or off with the Show the timestamp safe area checkbox.
+
+Q: Does the thumbnail maker need the video engine download?
+A: No. Frames are taken from the video using your browser's own player, and the design is drawn on a canvas. There is no 32 MB engine to download, so the thumbnail maker opens quickly even on a slow connection.
+
+Q: Can I use a template and still change everything?
+A: Yes. A template simply fills the canvas with a set of layers. You can then edit, move, duplicate or delete any of them. Applying another template replaces your current layers, so pick the template first and edit afterwards.
 
 ## How to Share a YouTube Link That Starts at a Specific Time
 
