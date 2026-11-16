@@ -33,6 +33,8 @@ const SITE = {
     { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/biscsindia/' }
   ],
   published: '2026-11-02',
+  // How the number of tools is shown to visitors (keeps working as tools are added).
+  toolsLabel: '100+',
   // Last significant update of tool/category pages (sitemap <lastmod>). Bump when tools change.
   updated: '2026-11-04',
   // IndexNow key (Bing, Yandex, Seznam…): served as /<key>.txt so search engines can verify pings.
@@ -195,7 +197,7 @@ ${body}
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="logo" href="${base}"><span class="logo-mark">${icon('zap')}</span><span>BISCS <em>India</em></span></a>
-        <p>${TOOLS.length} free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
+        <p>${SITE.toolsLabel} free tools for PDFs, money, text, images and code. Everything runs in your browser, so your files never leave your device.</p>
         <address class="footer-contact">
           <a href="mailto:${SITE.email}">${icon('mail')} ${SITE.email}</a>
           <span>${icon('map-pin')} ${esc(addressLine())}</span>
@@ -238,14 +240,14 @@ function buildHome() {
   <div class="hero-tiles" aria-hidden="true">${CATEGORIES.map((c, i) => `<span class="ht ht${i}" style="--c:${c.color}">${icon(c.icon)}</span>`).join('')}</div>
   <div class="container">
     <h1>Every tool you need, <span class="grad">in one place.</span></h1>
-    <p class="lead">${TOOLS.length} free tools for PDFs, AI photo editing, video, GST and tax, office work, design and SEO. They're fast and private: your files are processed on your device and never uploaded.</p>
+    <p class="lead">${SITE.toolsLabel} free tools for PDFs, AI photo editing, video, GST and tax, office work, design and SEO. They're fast and private: your files are processed on your device and never uploaded.</p>
     <form class="hero-search" role="search" action="#all-tools">
       ${icon('search')}
       <input type="search" data-filter-input placeholder="Try “merge pdf”, “emi”, “compress image”…" aria-label="Search tools" autocomplete="off">
       <button class="btn btn-primary" type="submit">Search</button>
     </form>
     <div class="hero-stats">
-      <span>${icon('zap')} ${TOOLS.length} free tools</span>
+      <span>${icon('zap')} ${SITE.toolsLabel} free tools</span>
       <span>${icon('lock')} No uploads, 100% private</span>
       <span>${icon('smartphone')} Works on mobile</span>
       <span>${icon('gift')} No sign-up</span>
@@ -302,7 +304,7 @@ ${ARTICLES.length ? `<section class="section" style="padding-top:0">
 
 <section class="section" id="all-tools" style="padding-top:0">
   <div class="container">
-    <div class="section-head"><div><h2>All ${TOOLS.length} tools</h2><p>Filter by category or search above.</p></div></div>
+    <div class="section-head"><div><h2>All tools</h2><p>Filter by category or search above.</p></div></div>
     <div class="cat-bar">
       <div class="chips" role="toolbar" aria-label="Filter by category">
         <button class="chip" type="button" data-cat-chip="all" aria-pressed="true">All</button>
@@ -331,8 +333,8 @@ ${ARTICLES.length ? `<section class="section" style="padding-top:0">
   }, ORG];
   write('index.html', layout({
     base, canonical: '/',
-    title: `${SITE.name}: ${TOOLS.length} Free Online Tools (PDF, GST, EMI, Image & More)`,
-    description: `${TOOLS.length} free online tools: PDF editor, GST and income tax calculators, AI background remover, video compressor, resume maker and SEO tools. No uploads, no sign-up.`,
+    title: `${SITE.name}: ${SITE.toolsLabel} Free Online Tools (PDF, GST, EMI, Image & More)`,
+    description: `${SITE.toolsLabel} free online tools: PDF editor, GST and income tax calculators, AI background remover, video compressor, resume maker and SEO tools. No uploads, no sign-up.`,
     body, jsonld,
     scripts: `<script type="module" src="assets/js/hero3d.js?v=${SITE.version}"></script>`
   }));
@@ -492,8 +494,8 @@ function buildPage(slug, title, description, html, opts = {}) {
 
 function buildStaticPages() {
   const updated = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-  buildPage('about', 'About Us', `About ${SITE.name}, a Kolkata team building ${TOOLS.length} free, private browser-based tools and guides for PDFs, GST, images, video and SEO.`, `
-<p>${SITE.name} is a Kolkata-based team that builds simple, fast and private tools for everyday work. The site offers ${TOOLS.length} free tools covering PDFs, GST and income tax, images and AI photo editing, video, office documents, design, and SEO, GEO and AEO, made with Indian users in mind.</p>
+  buildPage('about', 'About Us', `About ${SITE.name}, a Kolkata team building ${SITE.toolsLabel} free, private browser-based tools and guides for PDFs, GST, images, video and SEO.`, `
+<p>${SITE.name} is a Kolkata-based team that builds simple, fast and private tools for everyday work. The site offers ${SITE.toolsLabel} free tools covering PDFs, GST and income tax, images and AI photo editing, video, office documents, design, and SEO, GEO and AEO, made with Indian users in mind.</p>
 <h2>Why we built it</h2>
 <p>Most online tools ask you to upload your documents to someone else’s server. Our tools run entirely in your web browser, so your PDFs, photos and data stay on your device.</p>
 <h2>Our software</h2>
@@ -568,7 +570,7 @@ function buildStaticPages() {
 </div>
 <p style="margin-top:20px"><a class="btn" href="../../">${icon('arrow-left')} Back to all tools</a></p>`, { noindex: true });
 
-  buildPage('sitemap', 'Sitemap', `Sitemap of ${SITE.name}: all ${TOOLS.length} free online tools and ${ARTICLES.length} how-to guides, organised by category, with links to every page.`, `
+  buildPage('sitemap', 'Sitemap', `Sitemap of ${SITE.name}: all ${SITE.toolsLabel} free online tools and ${ARTICLES.length} how-to guides, organised by category, with links to every page.`, `
 <p>Every page on ${SITE.name}. Search engines can also use our <a href="../sitemap.xml">XML sitemap</a>.</p>
 <h2>Main pages</h2>
 <ul><li><a href="../">Home</a></li><li><a href="../blog/">Blog &amp; Guides</a></li><li><a href="../about/">About</a></li><li><a href="../contact/">Contact</a></li><li><a href="../privacy/">Privacy Policy</a></li><li><a href="../terms/">Terms of Use</a></li></ul>
@@ -610,8 +612,8 @@ ${CATEGORIES.map((c) => `<h2><a href="../category/${c.id}/">${esc(c.name)}</a></
 <p>Email <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>`);
 
   write('404.html', layout({
-    base: '/', canonical: '/404.html', title: `Page not found | ${SITE.name}`, description: `This page doesn't exist. Search ${SITE.name}'s ${TOOLS.length} free online tools for PDFs, GST, images, video, office work and SEO.`,
-    body: `<div class="container"><div class="prose" style="text-align:center;margin:0 auto"><h1>Page not found</h1><p>The page you’re looking for doesn’t exist. Try searching our ${TOOLS.length} free tools.</p><p><button class="btn btn-primary" data-search-open type="button">${icon('search')} Search tools</button> <a class="btn" href="/">Go home</a></p></div></div>`
+    base: '/', canonical: '/404.html', title: `Page not found | ${SITE.name}`, description: `This page doesn't exist. Search ${SITE.name}'s ${SITE.toolsLabel} free online tools for PDFs, GST, images, video, office work and SEO.`,
+    body: `<div class="container"><div class="prose" style="text-align:center;margin:0 auto"><h1>Page not found</h1><p>The page you’re looking for doesn’t exist. Try searching our ${SITE.toolsLabel} free tools.</p><p><button class="btn btn-primary" data-search-open type="button">${icon('search')} Search tools</button> <a class="btn" href="/">Go home</a></p></div></div>`
   }));
 }
 
@@ -862,7 +864,7 @@ ${ARTICLES.map((a) => `<item><title>${x(a.title)}</title><link>${SITE.url}/blog/
  */
 function buildLlmsTxt() {
   const lines = [`# ${SITE.name}`, '',
-    `> ${SITE.name} (biscsindia.com) offers ${TOOLS.length} free online tools that run entirely in the web browser, so files are never uploaded. Tools cover PDF editing and conversion, GST and income tax calculators for India, image and AI photo editing, video and audio, office documents, design, and SEO/GEO/AEO. Made by BISCS India, Kolkata, West Bengal.`, '',
+    `> ${SITE.name} (biscsindia.com) offers ${SITE.toolsLabel} free online tools that run entirely in the web browser, so files are never uploaded. Tools cover PDF editing and conversion, GST and income tax calculators for India, image and AI photo editing, video and audio, office documents, design, and SEO/GEO/AEO. Made by BISCS India, Kolkata, West Bengal.`, '',
     `Contact: ${SITE.email}. Free to use, no sign-up. Guides explain how each tool works and when to use it. Social: ${SITE.socials.map((x) => x.url).join(', ')}.`, ''];
   for (const c of CATEGORIES) {
     lines.push(`## ${c.name}`, '');

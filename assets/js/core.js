@@ -610,7 +610,7 @@
   function initSearch() {
     var modal = BT.h('div.search-modal', { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Search tools' });
     modal.innerHTML = '<div class="search-panel"><div class="sp-input">' + BT.icon('search') +
-      '<input type="search" placeholder="Search ' + REG.TOOLS.length + ' free tools…" aria-label="Search tools" autocomplete="off">' +
+      '<input type="search" placeholder="Search 100+ free tools…" aria-label="Search tools" autocomplete="off">' +
       '<button class="icon-btn" data-close aria-label="Close search">' + BT.icon('x') + '</button></div>' +
       '<div class="search-results" role="listbox"></div></div>';
     doc.body.appendChild(modal);
