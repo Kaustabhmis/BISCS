@@ -383,6 +383,114 @@
     wire(root, update);
   });
 
+  // ========================================================= Loan prepayment
+  /**
+   * Simulate a loan month by month with optional prepayments.
+   * o: {P, R (annual %), months, paid (EMIs already paid), once, onceAt (month no.),
+   *     monthly (extra each month), yearly (extra every 12 months), mode 'tenure'|'emi'}
+   */
+  function prepaySim(o) {
+    var i = o.R / 1200, n = o.months;
+    var emiOf = function (bal, left) { return i === 0 ? bal / left : bal * i * Math.pow(1 + i, left) / (Math.pow(1 + i, left) - 1); };
+    var emi = emiOf(o.P, n), bal = o.P, interest = 0, prepaid = 0, m = 0, years = [], yI = 0, firstEmi = emi, lastEmi = emi;
+    while (bal > 0.005 && m < n) {
+      m++;
+      var int = bal * i, pr = Math.min(bal, emi - int);
+      interest += int; yI += int; bal -= pr;
+      var extra = 0;
+      if (m > o.paid && bal > 0) {
+        if (o.monthly > 0) extra += o.monthly;
+        if (o.yearly > 0 && (m - o.paid) % 12 === 0) extra += o.yearly;
+        if (o.once > 0 && m === o.onceAt) extra += o.once;
+      }
+      extra = Math.min(extra, bal);
+      if (extra > 0) {
+        bal -= extra; prepaid += extra;
+        if (o.mode === 'emi' && bal > 0.005 && m < n) { emi = emiOf(bal, n - m); lastEmi = emi; }
+      }
+      if (m % 12 === 0 || bal <= 0.005 || m === n) { years.push({ y: Math.ceil(m / 12), bal: Math.max(0, bal), int: yI }); yI = 0; }
+    }
+    return { emi: firstEmi, lastEmi: lastEmi, months: m, interest: interest, prepaid: prepaid, years: years };
+  }
+
+  BT.impl('loan-prepayment-calculator', function (root) {
+    root.innerHTML = layout(
+      card('Your loan',
+        S({ id: 'lp-p', label: 'Loan amount', value: 3000000, amt: true, pre: '₹', min: 100000, max: 50000000, step: 50000, scale: ['₹1 L', '₹5 Cr'] }) +
+        S({ id: 'lp-r', label: 'Interest rate (p.a.)', value: 8.5, post: '%', min: 1, max: 20, step: 0.05, scale: ['1%', '20%'] }) +
+        S({ id: 'lp-n', label: 'Original tenure', value: 20, post: 'Yr', min: 1, max: 30, step: 1, scale: ['1 Yr', '30 Yr'] }) +
+        F({ id: 'lp-paid', label: 'EMIs already paid', value: '0', post: 'EMIs', hint: 'Prepayments start after these months. Leave 0 for a new loan.' })) +
+      card('Your prepayment',
+        '<div class="row cols-2">' + F({ id: 'lp-once', label: 'One-time prepayment', value: '200000', amt: true, pre: '₹' }) +
+        F({ id: 'lp-at', label: 'Paid in month no.', value: '12', hint: 'Counted from the start of the loan.' }) + '</div>' +
+        '<div class="row cols-2">' + F({ id: 'lp-mon', label: 'Extra every month', value: '0', amt: true, pre: '₹' }) +
+        F({ id: 'lp-yr', label: 'Extra every year', value: '0', amt: true, pre: '₹', hint: 'For example, part of your annual bonus.' }) + '</div>' +
+        SegField('lp-mode', 'After prepaying, reduce my', [['tenure', 'Tenure (keep EMI)'], ['emi', 'EMI (keep tenure)']], 'tenure') +
+        F({ id: 'lp-fee', label: 'Prepayment charge (optional)', value: '0', post: '%', hint: 'RBI rules bar prepayment charges on floating-rate loans to individual borrowers. Fixed-rate loans may carry a fee; check your loan agreement.' })),
+      '<div id="lp-out"></div>',
+      '<div class="card" id="lp-sched"></div>'
+    );
+    function update() {
+      var P = val(root, 'lp-p'), R = val(root, 'lp-r'), Y = val(root, 'lp-n');
+      var paid = Math.max(0, Math.round(val(root, 'lp-paid') || 0));
+      var once = Math.max(0, val(root, 'lp-once') || 0), at = Math.round(val(root, 'lp-at') || 0);
+      var mon = Math.max(0, val(root, 'lp-mon') || 0), yr = Math.max(0, val(root, 'lp-yr') || 0);
+      var fee = Math.max(0, val(root, 'lp-fee') || 0), mode = segVal(root, 'lp-mode') || 'tenure';
+      var months = Math.round(Y * 12);
+      var out = $('#lp-out', root), sch = $('#lp-sched', root);
+      if (!ok(P) || P <= 0 || !ok(R) || R < 0 || R > 100 || !ok(months) || months < 1 || months > 600) {
+        out.innerHTML = emptyHero('Interest saved', 'Enter a loan amount, an interest rate between 0 and 100% and a tenure of up to 50 years.');
+        sch.innerHTML = ''; return;
+      }
+      if (paid >= months) {
+        out.innerHTML = emptyHero('Interest saved', 'EMIs already paid must be fewer than the total tenure of ' + months + ' months.');
+        sch.innerHTML = ''; return;
+      }
+      if (once > 0 && (at <= paid || at > months)) at = paid + 1;
+      var base = prepaySim({ P: P, R: R, months: months, paid: paid, once: 0, onceAt: 0, monthly: 0, yearly: 0, mode: mode });
+      var pre = prepaySim({ P: P, R: R, months: months, paid: paid, once: once, onceAt: at, monthly: mon, yearly: yr, mode: mode });
+      var saved = base.interest - pre.interest, charges = pre.prepaid * fee / 100, net = saved - charges;
+      var mSaved = base.months - pre.months;
+      var dur = function (m) { var y = Math.floor(m / 12), r = m % 12; return (y ? y + ' yr' + (y > 1 ? 's' : '') : '') + (y && r ? ' ' : '') + (r || !y ? r + ' mo' : ''); };
+      if (pre.prepaid <= 0) {
+        out.innerHTML = hero('Monthly EMI', INR(base.emi), '<span>Total interest <b>' + INR(base.interest) + '</b></span>') +
+          notice('info', 'Enter a one-time, monthly or yearly prepayment to see how much interest and time you save.');
+        sch.innerHTML = ''; return;
+      }
+      var sub = pre.months < base.months && (mode === 'tenure' || pre.lastEmi >= base.emi - 0.5)
+        ? '<span>Loan ends <b>' + dur(mSaved) + '</b> earlier</span><span>New tenure <b>' + dur(pre.months) + '</b></span>'
+        : '<span>EMI falls to <b>' + INR(pre.lastEmi) + '</b></span><span>from ' + INR(base.emi) + '</span>';
+      out.innerHTML = hero('Interest saved', INR(saved), sub) +
+        card('', stats([
+          ['Total prepaid', INR(pre.prepaid)],
+          ['Interest without prepaying', INR(base.interest), C3],
+          ['Interest with prepaying', INR(pre.interest), C2],
+          charges > 0 ? ['Prepayment charges', INR(charges), C4] : null,
+          charges > 0 ? ['Net saving', INR(net)] : null,
+          ['Return on each ₹1 prepaid', '₹' + N(saved / pre.prepaid, 2)]
+        ]) +
+        '<div class="fx-mt">' + table(['Compare', 'Without prepayment', 'With prepayment'], [
+          ['Monthly EMI', INR(base.emi), mode === 'emi' ? INR(pre.lastEmi) + ' (after last prepayment)' : INR(pre.emi)],
+          ['Tenure', dur(base.months), dur(pre.months)],
+          ['Total interest', INR(base.interest), INR(pre.interest)],
+          ['Total paid (principal + interest' + (charges > 0 ? ' + charges' : '') + ')', INR(P + base.interest), INR(P + pre.interest + charges)]
+        ], 1) + '</div>' +
+        (net < 0 ? notice('warn', 'The prepayment charges are more than the interest you save, so prepaying costs you money.') : '') +
+        '<p class="fx-note">Reducing the tenure usually saves more interest than reducing the EMI. Assumes a fixed interest rate, monthly reducing balance and prepayments made right after that month’s EMI. Your lender’s figures may differ slightly. Before prepaying, compare the saving with what the money could earn elsewhere, and keep an emergency fund.</p>');
+      var ny = Math.max(base.years.length, pre.years.length), rows = [], chart = [];
+      for (var k = 0; k < ny; k++) {
+        var b = base.years[k], p = pre.years[k];
+        rows.push(['Year ' + (k + 1), INR(b ? b.bal : 0), INR(p ? p.bal : 0), INR((b ? b.int : 0) - (p ? p.int : 0))]);
+        chart.push({ x: 'Y' + (k + 1), parts: [p ? p.bal : 0, Math.max(0, (b ? b.bal : 0) - (p ? p.bal : 0))] });
+      }
+      var wasOpen = $('details', sch) && $('details', sch).open;
+      sch.innerHTML = '<div class="card-title"><h3>Outstanding balance by year</h3></div>' +
+        columns(chart, [{ name: 'Balance with prepayment', color: C1 }, { name: 'Extra balance without prepayment', color: C3 }], 'Outstanding loan balance by year, with and without prepayment') +
+        '<div class="fx-mt">' + details('Show year-by-year table', table(['Year', 'Balance without', 'Balance with', 'Interest saved that year'], rows, 1), wasOpen) + '</div>';
+    }
+    wire(root, update);
+  });
+
   // ============================================================ SIP / Lumpsum
   function growthTable(rows) {
     return table(['Year', 'Invested', 'Returns', 'Value'], rows.map(function (r) { return ['Year ' + r.y, INR(r.inv), INR(r.val - r.inv), INR(r.val)]; }));
@@ -643,6 +751,88 @@
     return { gross: gross, std: std, ded: ded, dedRows: dedRows, taxable: taxable, slabs: st.rows, slabTax: tax, rebate: rebate, relief: relief,
       after: after, sr: sr, surcharge: surcharge, cess: cess, total: total };
   }
+
+  // ================================================== CTC to in-hand salary
+  BT.impl('ctc-to-inhand-calculator', function (root) {
+    root.innerHTML = layout(
+      card('Your CTC <span class="badge">FY 2025-26</span>',
+        S({ id: 'ct-ctc', label: 'Annual CTC', value: 1200000, amt: true, pre: '₹', min: 200000, max: 10000000, step: 10000, scale: ['₹2 L', '₹1 Cr'] }) +
+        S({ id: 'ct-basic', label: 'Basic salary (% of CTC)', value: 50, post: '%', min: 20, max: 70, step: 1, scale: ['20%', '70%'], hint: 'Check your offer letter. Many companies use 40–50%.' }) +
+        F({ id: 'ct-bonus', label: 'Variable pay / bonus included in CTC (per year)', value: '0', pre: '₹', amt: true, hint: 'Paid separately, not in the monthly salary.' }) +
+        SegField('ct-pf', 'Provident fund (PF)', [['full', '12% of basic'], ['cap', 'Capped at ₹1,800/month'], ['none', 'No PF']], 'full') +
+        '<div class="row cols-2">' + F({ id: 'ct-pt', label: 'Professional tax (per year)', value: '2,400', pre: '₹', amt: true, hint: 'Depends on your state, usually up to ₹2,500. Use 0 if your state has none.' }) +
+        F({ id: 'ct-ins', label: 'Other deductions (per month)', value: '0', pre: '₹', amt: true, hint: 'Insurance, meal card, loans etc.' }) + '</div>' +
+        SegField('ct-grat', 'Gratuity', [['yes', 'Included in CTC'], ['no', 'Not in CTC']], 'yes')) +
+      card('Old regime deductions <span class="badge">optional</span>',
+        '<div class="row cols-2">' + F({ id: 'ct-hra', label: 'HRA exemption (per year)', value: '0', pre: '₹', amt: true }) +
+        F({ id: 'ct-80c', label: 'Other 80C (beyond your PF)', value: '0', pre: '₹', amt: true }) + '</div>' +
+        '<div class="row cols-2">' + F({ id: 'ct-80d', label: 'Section 80D (health insurance)', value: '0', pre: '₹', amt: true }) +
+        F({ id: 'ct-home', label: 'Home loan interest', value: '0', pre: '₹', amt: true }) + '</div>' +
+        '<p class="fx-note">These only affect the old regime. The new regime is the default and ignores them.</p>'),
+      '<div id="ct-out"></div>',
+      '<div class="card" id="ct-tbl"></div>'
+    );
+    function update() {
+      var ctc = val(root, 'ct-ctc'), bp = val(root, 'ct-basic'), bonus = Math.max(0, val(root, 'ct-bonus') || 0);
+      var pt = Math.max(0, val(root, 'ct-pt') || 0), ins = Math.max(0, val(root, 'ct-ins') || 0) * 12;
+      var pfMode = segVal(root, 'ct-pf') || 'full', grat = segVal(root, 'ct-grat') !== 'no';
+      var out = $('#ct-out', root), tb = $('#ct-tbl', root);
+      if (!ok(ctc) || ctc <= 0 || !ok(bp) || bp <= 0 || bp > 100 || bonus >= ctc) {
+        out.innerHTML = emptyHero('Monthly in-hand salary', 'Enter your annual CTC, a basic salary percentage and a bonus smaller than the CTC.');
+        tb.innerHTML = ''; return;
+      }
+      var fixed = ctc - bonus;
+      // Basic is a share of fixed pay; employer PF and gratuity sit inside the CTC.
+      var basic = fixed * bp / 100;
+      var pfOf = function (b) { return pfMode === 'none' ? 0 : pfMode === 'cap' ? Math.min(b, 180000) * 0.12 : b * 0.12; };
+      var erPF = pfOf(basic), eePF = erPF;
+      var gratuity = grat ? basic * 0.0481 : 0;
+      var gross = ctc - erPF - gratuity;           // taxable gross salary incl. bonus
+      if (gross <= 0) { out.innerHTML = emptyHero('Monthly in-hand salary', 'The basic salary percentage is too high for this CTC.'); tb.innerHTML = ''; return; }
+      var hra = Math.max(0, val(root, 'ct-hra') || 0), c80 = Math.max(0, val(root, 'ct-80c') || 0);
+      var d80 = Math.max(0, val(root, 'ct-80d') || 0), home = Math.max(0, val(root, 'ct-home') || 0);
+      var base = { salaried: true, salary: gross, other: 0, age: '0' };
+      var nw = computeTax('new', Object.assign({}, base, { hra: 0, home: 0, c80: 0, d80: 0, nps: 0, oth: 0 }));
+      var od = computeTax('old', Object.assign({}, base, { hra: hra, home: home, c80: eePF + c80, d80: d80, nps: 0, oth: pt }));
+      var best = od.total < nw.total ? 'old' : 'new', tax = best === 'old' ? od.total : nw.total;
+      var takeHome = gross - eePF - pt - ins - tax;
+      var monthly = (gross - bonus - eePF - pt - ins - tax) / 12;
+      out.innerHTML = hero('Monthly in-hand salary', INR(Math.max(0, monthly)), '<span>Take-home a year <b>' + INR(takeHome) + '</b></span><span>' + (best === 'new' ? 'New' : 'Old') + ' regime</span>') +
+        card('', stats([
+          ['Gross salary', INR(gross)],
+          ['Income tax (with cess)', INR(tax), C4],
+          ['Your PF (12%)', INR(eePF), C1],
+          ['Employer PF + gratuity', INR(erPF + gratuity), C3]
+        ]) +
+        '<div class="fx-mt">' + donut([
+          { v: Math.max(0, takeHome), color: C2, label: 'Take-home' },
+          { v: tax, color: C4, label: 'Income tax' },
+          { v: eePF + erPF + gratuity, color: C1, label: 'PF and gratuity (your savings)' },
+          { v: pt + ins, color: C3, label: 'Professional tax and other' }
+        ], 'Where your CTC goes') + '</div>' +
+        notice(best === 'new' ? 'ok' : 'info', 'Tax: new regime ' + INR(nw.total) + ', old regime ' + INR(od.total) + '. The ' + best + ' regime saves you ' + INR(Math.abs(nw.total - od.total)) + ' a year.') +
+        (bonus > 0 ? '<p class="fx-note">Your bonus of ' + INR(bonus) + ' is paid separately. The monthly figure assumes tax on the whole year’s salary, including the bonus, is spread evenly across 12 months; your employer may deduct more tax in the month the bonus is paid.</p>' : '') +
+        '<p class="fx-note">An estimate for a salaried employee below 60 with no other income. Employer and employee PF are 12% of basic; gratuity is 4.81% of basic. Actual payslips vary with your company’s salary structure, so check with HR.</p>');
+      var rows = [
+        ['Annual CTC', INR(ctc), INR(ctc / 12)],
+        ['− Employer PF', INR(erPF), INR(erPF / 12)],
+        ['− Gratuity', INR(gratuity), INR(gratuity / 12)],
+        ['= Gross salary', INR(gross), INR(gross / 12)],
+        ['− Bonus (paid separately)', INR(bonus), '—'],
+        ['− Employee PF', INR(eePF), INR(eePF / 12)],
+        ['− Professional tax', INR(pt), INR(pt / 12)],
+        ['− Other deductions', INR(ins), INR(ins / 12)],
+        ['− Income tax (TDS)', INR(tax), INR(tax / 12)],
+        ['= In-hand salary', INR(gross - bonus - eePF - pt - ins - tax), INR(Math.max(0, monthly))]
+      ];
+      tb.innerHTML = '<div class="card-title"><h3>Salary breakdown</h3></div>' + table(['Component', 'Per year', 'Per month'], rows, 1) +
+        '<div class="fx-mt">' + details('Basic salary and allowances', table(['Component', 'Per year', 'Per month'], [
+          ['Basic salary', INR(basic), INR(basic / 12)],
+          ['Allowances (HRA, special etc.)', INR(Math.max(0, gross - bonus - basic)), INR(Math.max(0, gross - bonus - basic) / 12)]
+        ], 1)) + '</div>';
+    }
+    wire(root, update);
+  });
 
   BT.impl('income-tax-calculator', function (root) {
     root.innerHTML = layout(

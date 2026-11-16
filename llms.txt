@@ -32,12 +32,14 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 
 - [GST Calculator](https://biscsindia.com/tools/gst-calculator/): Add or remove GST at any rate (5%, 18%, 40% and more) with CGST/SGST split. Guide: https://biscsindia.com/blog/gst-calculator-add-remove-gst/
 - [EMI Calculator](https://biscsindia.com/tools/emi-calculator/): Monthly EMI, total interest and amortisation schedule for any loan. Guide: https://biscsindia.com/blog/emi-calculator-formula-home-loan/
+- [Loan Prepayment Calculator](https://biscsindia.com/tools/loan-prepayment-calculator/): See how much interest and time a part-prepayment saves on your home, car or personal loan.
 - [SIP Calculator](https://biscsindia.com/tools/sip-calculator/): Estimate the future value of your monthly mutual fund SIP. Guide: https://biscsindia.com/blog/sip-calculator-mutual-fund-returns/
 - [Lumpsum Calculator](https://biscsindia.com/tools/lumpsum-calculator/): Project the growth of a one-time investment. Guide: https://biscsindia.com/blog/lumpsum-calculator-one-time-investment/
 - [FD Calculator](https://biscsindia.com/tools/fd-calculator/): Maturity amount and interest earned on a fixed deposit. Guide: https://biscsindia.com/blog/fd-calculator-maturity-interest/
 - [RD Calculator](https://biscsindia.com/tools/rd-calculator/): Maturity value of a recurring deposit with quarterly compounding. Guide: https://biscsindia.com/blog/rd-calculator-recurring-deposit-maturity/
 - [PPF Calculator](https://biscsindia.com/tools/ppf-calculator/): Public Provident Fund maturity over 15 years with yearly breakdown. Guide: https://biscsindia.com/blog/ppf-calculator-maturity-15-years/
 - [Income Tax Calculator](https://biscsindia.com/tools/income-tax-calculator/): Compare new vs old regime tax for FY 2025-26 (AY 2026-27). Guide: https://biscsindia.com/blog/income-tax-calculator-new-vs-old-regime/
+- [CTC to In-Hand Salary Calculator](https://biscsindia.com/tools/ctc-to-inhand-calculator/): Convert your annual CTC into monthly take-home pay after PF, gratuity, professional tax and income tax.
 - [HRA Exemption Calculator](https://biscsindia.com/tools/hra-calculator/): Work out the tax-exempt part of your House Rent Allowance. Guide: https://biscsindia.com/blog/hra-exemption-calculation-rules/
 - [Gratuity Calculator](https://biscsindia.com/tools/gratuity-calculator/): Gratuity payable under the Payment of Gratuity Act. Guide: https://biscsindia.com/blog/gratuity-calculation-formula-india/
 - [Compound Interest](https://biscsindia.com/tools/compound-interest-calculator/): Compound interest with any compounding frequency and contributions. Guide: https://biscsindia.com/blog/compound-interest-formula-calculator/
@@ -80,6 +82,7 @@ Contact: info@biscsindia.com. Free to use, no sign-up. Guides explain how each t
 - [Text Compare](https://biscsindia.com/tools/text-diff/): Compare two texts and highlight the differences line by line. Guide: https://biscsindia.com/blog/compare-two-texts-find-differences/
 - [Slug Generator](https://biscsindia.com/tools/slug-generator/): Create clean, SEO-friendly URL slugs from titles. Guide: https://biscsindia.com/blog/url-slug-generator-seo-friendly/
 - [Whitespace Cleaner](https://biscsindia.com/tools/whitespace-cleaner/): Remove extra spaces, tabs, blank lines and line breaks. Guide: https://biscsindia.com/blog/remove-extra-spaces-line-breaks-text/
+- [Typing Speed Test](https://biscsindia.com/tools/typing-speed-test/): Test your typing speed in words per minute (WPM) and accuracy with a 1, 2 or 5 minute test.
 - [Text to Speech](https://biscsindia.com/tools/text-to-speech/): Read text aloud using your device’s voices, including Indian English and Hindi. Guide: https://biscsindia.com/blog/text-to-speech-online-hindi-indian-english/
 - [Markdown Preview](https://biscsindia.com/tools/markdown-preview/): Write Markdown and see the formatted result live; export HTML. Guide: https://biscsindia.com/blog/markdown-editor-live-preview-html/
 - [Fancy Text Generator](https://biscsindia.com/tools/fancy-text-generator/): Stylish Unicode fonts for Instagram bios, WhatsApp and more. Guide: https://biscsindia.com/blog/fancy-text-generator-instagram-whatsapp-fonts/
