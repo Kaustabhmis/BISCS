@@ -64,7 +64,11 @@
     '@media (min-width:900px){.pe-side{display:block}}',
     '.pe-side .thumb{margin-bottom:12px;padding:6px}',
     '.pe-side .thumb.current{border-color:var(--brand)}',
-    '.pe-scroll{flex:1;min-width:0;overflow:auto;position:relative;scroll-behavior:smooth}',
+    '.pe-scroll{flex:1;min-width:0;overflow:auto;position:relative;touch-action:pan-x pan-y}',
+    '.pe-pages.pinching{will-change:transform}',
+    '.pe-props .pe-size{display:inline-flex;align-items:center;gap:6px}',
+    '.pe-props .pe-size input[type=range]{width:140px}',
+    '.pe-props .pe-size output{min-width:42px;font-variant-numeric:tabular-nums;color:var(--text-2)}',
     '.pe-pages{display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 16px 80px;min-width:min-content}',
     '.pe-page{position:relative;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.12),0 18px 40px -20px rgba(0,0,0,.35);flex:none}',
     '.pe-page canvas{position:absolute;inset:0;width:100%;height:100%;display:block}',
@@ -83,6 +87,8 @@
     '.pe-a.path svg path.hit{pointer-events:stroke;cursor:move}',
     '.pe-sel{position:absolute;border:1.5px solid var(--brand);pointer-events:none;border-radius:2px;z-index:5}',
     '.pe-h{position:absolute;width:12px;height:12px;background:#fff;border:2px solid var(--brand);border-radius:50%;pointer-events:auto;touch-action:none;margin:-6px 0 0 -6px}',
+    '.pe-h::after{content:"";position:absolute;inset:-8px;border-radius:50%}',
+    '@media (pointer:coarse){.pe-h{width:22px;height:22px;margin:-11px 0 0 -11px;border-width:3px}.pe-h::after{inset:-10px}.pe-selbar button{height:38px;min-width:38px}}',
     '.pe-h[data-h="nw"],.pe-h[data-h="se"]{cursor:nwse-resize}.pe-h[data-h="ne"],.pe-h[data-h="sw"]{cursor:nesw-resize}',
     '.pe-selbar{position:absolute;display:flex;gap:4px;pointer-events:auto;transform:translateY(-100%);margin-top:-8px;z-index:6}',
     '.pe-selbar button{height:30px;min-width:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow-sm)}',
@@ -263,6 +269,7 @@
       document.addEventListener('keydown', onKey);
       window.addEventListener('beforeunload', onUnload);
       el.scroll.addEventListener('scroll', BT.debounce(updateCurrentPage, 80));
+      bindPinch();
       if (window.ResizeObserver) {
         var lastW = 0;
         S.ro = new ResizeObserver(BT.debounce(function () {
@@ -336,11 +343,77 @@
     }
 
     function setZoom(z) {
-      var sc = el.scroll, ratio = sc.scrollTop / (sc.scrollHeight || 1);
-      S.zoom = Math.max(0.25, Math.min(4, z));
+      var r = el.scroll.getBoundingClientRect();
+      zoomAt(z, r.left + r.width / 2, r.top + Math.min(r.height, 300) / 2);
+    }
+
+    /** Change zoom so the PDF point under (clientX, clientY) stays under it. */
+    function zoomAt(z, cx, cy, panX, panY) {
+      var sc = el.scroll, old = S.zoom;
+      z = Math.max(0.25, Math.min(4, z));
+      var anchor = null;
+      S.pages.forEach(function (p) {
+        var r = p.wrap.getBoundingClientRect();
+        if (!anchor || (cy >= r.top - 10 && cy <= r.bottom + 10)) anchor = { p: p, x: (cx - r.left) / old, y: (cy - r.top) / old };
+      });
+      S.zoom = z;
       S.autoFit = false;
       applyZoom();
-      sc.scrollTop = ratio * sc.scrollHeight;
+      if (anchor) {
+        var r2 = anchor.p.wrap.getBoundingClientRect();
+        sc.scrollLeft += r2.left + anchor.x * z - cx - (panX || 0);
+        sc.scrollTop += r2.top + anchor.y * z - cy - (panY || 0);
+      }
+    }
+
+    /** Two-finger pinch on touch screens; Ctrl+wheel / trackpad pinch on desktop. */
+    function bindPinch() {
+      var sc = el.scroll, pw = el.pagesWrap, pinch = null, touchPtrs = {};
+      function nPtrs() { return Object.keys(touchPtrs).length; }
+      // A second finger cancels whatever the first finger started (drawing, moving...).
+      sc.addEventListener('pointerdown', function (e) {
+        if (e.pointerType !== 'touch') return;
+        touchPtrs[e.pointerId] = 1;
+        if (nPtrs() >= 2) { S.pinchCount = (S.pinchCount || 0) + 1; e.stopPropagation(); }
+      }, true);
+      function lift(e) { delete touchPtrs[e.pointerId]; }
+      window.addEventListener('pointerup', lift, true);
+      window.addEventListener('pointercancel', lift, true);
+      function mid(t) { return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2, d: Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY) || 1 }; }
+      sc.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 2) return;
+        e.preventDefault();
+        var m = mid(e.touches), wr = pw.getBoundingClientRect();
+        pinch = { m0: m, s: 1, dx: 0, dy: 0 };
+        S.pinching = true;
+        pw.classList.add('pinching');
+        pw.style.transformOrigin = (m.x - wr.left) + 'px ' + (m.y - wr.top) + 'px';
+      }, { passive: false });
+      sc.addEventListener('touchmove', function (e) {
+        if (!pinch || e.touches.length < 2) return;
+        e.preventDefault();
+        var m = mid(e.touches);
+        pinch.s = Math.max(0.25 / S.zoom, Math.min(4 / S.zoom, m.d / pinch.m0.d));
+        pinch.dx = m.x - pinch.m0.x; pinch.dy = m.y - pinch.m0.y;
+        pw.style.transform = 'translate(' + pinch.dx + 'px,' + pinch.dy + 'px) scale(' + pinch.s + ')';
+      }, { passive: false });
+      function endPinch() {
+        if (!pinch) return;
+        var p = pinch;
+        pinch = null;
+        pw.style.transform = '';
+        pw.style.transformOrigin = '';
+        pw.classList.remove('pinching');
+        zoomAt(S.zoom * p.s, p.m0.x, p.m0.y, p.dx, p.dy);
+        setTimeout(function () { S.pinching = false; }, 50);
+      }
+      sc.addEventListener('touchend', function (e) { if (e.touches.length < 2) endPinch(); });
+      sc.addEventListener('touchcancel', endPinch);
+      sc.addEventListener('wheel', function (e) {
+        if (!e.ctrlKey && !e.metaKey) return;
+        e.preventDefault();
+        zoomAt(S.zoom * Math.exp(-e.deltaY * (e.deltaMode ? 0.05 : 0.0025)), e.clientX, e.clientY);
+      }, { passive: false });
     }
 
     var renderQueue = Promise.resolve();
@@ -489,7 +562,7 @@
     }
 
     var HINTS = {
-      select: 'Click an item to select it. Drag to move, use the handles to resize, and press Delete to remove.',
+      select: 'Tap an item to select it. Drag to move it and use the corners or the Size slider to resize. Pinch with two fingers to zoom.',
       edittext: 'Click any line of text in the PDF to replace it.',
       text: 'Click anywhere on a page to add text.',
       whiteout: 'Drag over an area to cover it with a white box.',
@@ -531,8 +604,32 @@
       var kind = currentKind();
       var p = el.props;
       p.innerHTML = '';
+      if (kind === 'image' && selected()) {
+        var im = selected(), pg = pageOf(im);
+        var pct = Math.round(im.w / pg.vp1.width * 100);
+        var out = BT.h('output', { text: pct + '%' });
+        var rng = BT.h('input', { type: 'range', min: 3, max: 100, step: 1, value: Math.max(3, pct), 'aria-label': 'Size as a percentage of the page width' });
+        var first = true;
+        rng.addEventListener('input', function () {
+          if (first) { pushUndo(); first = false; }
+          scaleAnn(im, pg.vp1.width * rng.value / 100);
+          out.textContent = rng.value + '%';
+        });
+        rng.addEventListener('change', function () { first = true; });
+        var minus = BT.h('button.pe-tog', { type: 'button', 'aria-label': 'Make smaller', text: '−' });
+        var plus = BT.h('button.pe-tog', { type: 'button', 'aria-label': 'Make larger', text: '+' });
+        function step(f) { pushUndo(); scaleAnn(im, im.w * f); var v = Math.round(im.w / pg.vp1.width * 100); rng.value = v; out.textContent = v + '%'; }
+        minus.addEventListener('click', function () { step(1 / 1.15); });
+        plus.addEventListener('click', function () { step(1.15); });
+        p.appendChild(BT.h('span.pe-size', {}, [BT.h('span', { text: 'Size' }), minus, rng, plus, out]));
+        p.appendChild(rangeCtl('Opacity', im.opacity == null ? 1 : im.opacity, 0.2, 1, 0.05, function (v, fin) {
+          if (fin) pushUndo(); im.opacity = v; layoutAnn(im); markDirty();
+        }));
+        p.appendChild(BT.h('span.pe-hint', { text: 'Or drag a corner. Drag the middle to move it.' }));
+        return;
+      }
       if (!kind || kind === 'image') {
-        p.appendChild(BT.h('span.pe-hint', { html: BT.icon('info') + ' ' + (kind === 'image' ? 'Drag the corners to resize. Hold Shift to keep proportions free.' : (HINTS[S.tool] || '')) }));
+        p.appendChild(BT.h('span.pe-hint', { html: BT.icon('info') + ' ' + (HINTS[S.tool] || '') }));
         return;
       }
       var t = propTarget(kind);
@@ -733,6 +830,10 @@
       }
       var bar = BT.h('div.pe-selbar');
       if (a.type === 'text') bar.appendChild(BT.h('button', { type: 'button', title: 'Edit text', 'aria-label': 'Edit text', html: BT.icon('pencil'), onclick: function () { startEditing(a); } }));
+      if (a.type === 'image') {
+        bar.appendChild(BT.h('button', { type: 'button', title: 'Make smaller', 'aria-label': 'Make smaller', html: BT.icon('minus'), onclick: function () { pushUndo(); scaleAnn(a, a.w / 1.15); renderProps(); } }));
+        bar.appendChild(BT.h('button', { type: 'button', title: 'Make larger', 'aria-label': 'Make larger', html: BT.icon('plus'), onclick: function () { pushUndo(); scaleAnn(a, a.w * 1.15); renderProps(); } }));
+      }
       bar.appendChild(BT.h('button', { type: 'button', title: 'Duplicate (Ctrl+D)', 'aria-label': 'Duplicate', html: BT.icon('copy'), onclick: function () { duplicate(a); } }));
       bar.appendChild(BT.h('button', { type: 'button', title: 'Delete (Del)', 'aria-label': 'Delete', html: BT.icon('trash-2'), onclick: function () { removeAnn(a, true); } }));
       box.appendChild(bar);
@@ -823,6 +924,7 @@
       if (e.button !== undefined && e.button !== 0) return;
       if (e.target !== p.ov) return;
       var tool = S.tool;
+      if (S.pinching) return;
       var pt = viewPoint(e, p);
       if (tool === 'select' || tool === 'edittext') { select(null); return; }
       e.preventDefault();
@@ -841,7 +943,7 @@
         return;
       }
       // drag-to-create tools
-      var start = pt, draft = null, pts = [pt];
+      var start = pt, draft = null, pts = [pt], pinch0 = S.pinchCount || 0;
       p.ov.setPointerCapture(e.pointerId);
       if (tool === 'draw') {
         var dd = S.defaults.draw;
@@ -856,6 +958,7 @@
         p.ov.appendChild(draft);
       }
       function move(ev) {
+        if (ev.pointerId !== e.pointerId || S.pinching || (S.pinchCount || 0) !== pinch0) return;
         var q = viewPoint(ev, p);
         q = [Math.max(0, Math.min(p.vp1.width, q[0])), Math.max(0, Math.min(p.vp1.height, q[1]))];
         if (tool === 'draw') {
@@ -877,10 +980,12 @@
           draft._r = { x: x, y: y, w: w, h: h };
         }
       }
-      function up() {
+      function up(ev) {
+        if (ev && ev.pointerId !== e.pointerId) return;
         p.ov.removeEventListener('pointermove', move);
         p.ov.removeEventListener('pointerup', up);
         p.ov.removeEventListener('pointercancel', up);
+        if ((S.pinchCount || 0) !== pinch0) { if (draft && draft.node) draft.node.remove(); else if (draft && draft.remove) draft.remove(); return; }
         if (tool === 'draw' || tool === 'line') {
           var b = bbox(draft);
           if (pts.length < 2 && tool === 'draw') { draft.node.remove(); return; }
@@ -920,10 +1025,14 @@
       e.preventDefault();
       e.stopPropagation();
       if (S.sel !== a.id) select(a.id);
-      var p = pageOf(a), start = viewPoint(e, p), orig = JSON.parse(JSON.stringify(strip(a))), moved = false;
+      var p = pageOf(a), start = viewPoint(e, p), orig = JSON.parse(JSON.stringify(strip(a))), moved = false, pinch0 = S.pinchCount || 0;
       var target = e.currentTarget;
       target.setPointerCapture(e.pointerId);
       function move(ev) {
+        if ((S.pinchCount || 0) !== pinch0) {
+          if (moved) { if (a.pts) a.pts = orig.pts; else { a.x = orig.x; a.y = orig.y; } layoutAnn(a); drawSelection(); }
+          return;
+        }
         var q = viewPoint(ev, p), dx = q[0] - start[0], dy = q[1] - start[1];
         if (!moved && Math.hypot(dx, dy) < 2 / S.zoom) return;
         if (!moved) { S.undo.push(JSON.stringify(S.anns.map(function (x) { return x === a ? orig : strip(x); }))); S.redo = []; updateUndo(); }
@@ -949,9 +1058,10 @@
       e.stopPropagation();
       var p = pageOf(a), start = viewPoint(e, p), orig = JSON.parse(JSON.stringify(strip(a))), b0 = bbox(orig);
       var keepRatio = a.type === 'image';
-      var target = e.currentTarget, moved = false;
-      target.setPointerCapture(e.pointerId);
+      var moved = false, pid = e.pointerId;
       function move(ev) {
+        if (ev.pointerId !== pid || S.pinching) return;
+        ev.preventDefault();
         var q = viewPoint(ev, p), dx = q[0] - start[0], dy = q[1] - start[1];
         if (!moved) { S.undo.push(JSON.stringify(S.anns.map(function (x) { return x === a ? orig : strip(x); }))); S.redo = []; updateUndo(); moved = true; }
         var x = b0.x, y = b0.y, w = b0.w, hgt = b0.h;
@@ -970,13 +1080,29 @@
         layoutAnn(a);
         drawSelection();
       }
-      function up() {
-        target.removeEventListener('pointermove', move);
-        target.removeEventListener('pointerup', up);
-        if (moved) markDirty();
+      function up(ev) {
+        if (ev.pointerId !== pid) return;
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
+        if (moved) { markDirty(); renderProps(); }
       }
-      target.addEventListener('pointermove', move);
-      target.addEventListener('pointerup', up);
+      window.addEventListener('pointermove', move, { passive: false });
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
+    }
+
+    /** Scale a box annotation (image / signature) around its centre, kept on the page. */
+    function scaleAnn(a, newW) {
+      var p = pageOf(a), ratio = a.h / a.w;
+      newW = Math.max(12, Math.min(p.vp1.width, newW));
+      var newH = newW * ratio;
+      if (newH > p.vp1.height) { newH = p.vp1.height; newW = newH / ratio; }
+      var cx = a.x + a.w / 2, cy = a.y + a.h / 2;
+      a.w = newW; a.h = newH;
+      a.x = Math.max(0, Math.min(p.vp1.width - newW, cx - newW / 2));
+      a.y = Math.max(0, Math.min(p.vp1.height - newH, cy - newH / 2));
+      layoutAnn(a); drawSelection(); markDirty();
     }
 
     function onKey(e) {
