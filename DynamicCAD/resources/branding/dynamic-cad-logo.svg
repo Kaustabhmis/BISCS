@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DYNAMIC CAD application mark. Original artwork, Copyright (c) Dynamic Engineers.
+     NOTE: this is the software product mark, not the Dynamic Engineers company logo. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64">
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="#153A5B"/>
+  <circle cx="30" cy="34" r="16" fill="none" stroke="#FFFFFF" stroke-width="5"/>
+  <line x1="10" y1="54" x2="54" y2="10" stroke="#F4B400" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="54" cy="10" r="5" fill="#F4B400"/>
+</svg>

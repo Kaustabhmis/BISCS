@@ -1,0 +1,61 @@
+# Builds and tests DYNAMIC CAD on Windows (MSVC, the release platform) and Linux.
+name: DYNAMIC CAD
+
+on:
+  push:
+    paths: ['DynamicCAD/**', '.github/workflows/dynamiccad.yml']
+  pull_request:
+    paths: ['DynamicCAD/**', '.github/workflows/dynamiccad.yml']
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: Windows x64 (MSVC, Qt 6.5 LTS)
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt (official open-source binaries, LGPL)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.3'
+          arch: 'win64_msvc2019_64'
+          cache: true
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        run: cmake -S DynamicCAD -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: ctest --test-dir build --output-on-failure --timeout 300
+      - name: Package (dynamic Qt DLLs via windeployqt)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item build/DynamicCAD.exe dist/
+          windeployqt --release --no-translations --no-system-d3d-compiler --no-opengl-sw dist/DynamicCAD.exe
+          Copy-Item -Recurse DynamicCAD/LICENSES dist/licenses
+          Copy-Item -Recurse DynamicCAD/docs/samples dist/samples
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DynamicCAD-windows-x64
+          path: dist
+
+  linux:
+    name: Linux (GCC, sanitizers)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y qt6-base-dev ninja-build
+      - name: Build (ASan + UBSan)
+        run: |
+          cmake -S DynamicCAD -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DDYNCAD_SANITIZE=ON
+          cmake --build build
+      - name: Test
+        env:
+          QT_QPA_PLATFORM: offscreen
+          ASAN_OPTIONS: detect_leaks=0
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: ctest --test-dir build --output-on-failure --timeout 300

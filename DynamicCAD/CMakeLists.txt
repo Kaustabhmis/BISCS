@@ -1,0 +1,87 @@
+# DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
+cmake_minimum_required(VERSION 3.21)
+
+project(DynamicCAD VERSION 0.1.0 LANGUAGES CXX
+        DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+option(DYNCAD_BUILD_TESTS "Build the automated test suite" ON)
+option(DYNCAD_SANITIZE "Build with AddressSanitizer + UBSan (GCC/Clang, for testing)" OFF)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
+# Qt 6 is used under the LGPL v3: link dynamically (shared Qt libraries), never
+# statically, so end users can replace the Qt DLLs. See LICENSES/.
+find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Widgets)
+
+if(MSVC)
+    add_compile_options(/W4 /permissive- /utf-8 /Zc:__cplusplus)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic)
+    if(DYNCAD_SANITIZE)
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address,undefined)
+    endif()
+endif()
+
+configure_file(src/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h @ONLY)
+
+# ---------------------------------------------------------------- core library
+# GUI-independent engine: geometry, entities, document/undo, commands,
+# selection, view math and file I/O. Depends on QtCore only (JSON, files).
+add_library(dyncad_core STATIC
+    src/geometry/Vec2.h
+    src/geometry/BoundingBox.h
+    src/geometry/Geometry.h            src/geometry/Geometry.cpp
+    src/entities/Entity.h
+    src/entities/LineEntity.h          src/entities/LineEntity.cpp
+    src/entities/CircleEntity.h        src/entities/CircleEntity.cpp
+    src/entities/PolylineEntity.h      src/entities/PolylineEntity.cpp
+    src/document/UndoStack.h           src/document/UndoStack.cpp
+    src/document/Document.h            src/document/Document.cpp
+    src/document/EditCommands.h        src/document/EditCommands.cpp
+    src/selection/SelectionSet.h       src/selection/SelectionSet.cpp
+    src/commands/InputParser.h         src/commands/InputParser.cpp
+    src/commands/InteractiveCommand.h  src/commands/InteractiveCommand.cpp
+    src/commands/DrawCommands.h        src/commands/DrawCommands.cpp
+    src/commands/CommandProcessor.h    src/commands/CommandProcessor.cpp
+    src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
+    src/fileio/DynFormat.h             src/fileio/DynFormat.cpp
+)
+target_include_directories(dyncad_core PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/generated)
+target_link_libraries(dyncad_core PUBLIC Qt6::Core)
+
+# ---------------------------------------------------------------- UI library
+add_library(dyncad_ui STATIC
+    src/canvas/CadCanvas.h       src/canvas/CadCanvas.cpp
+    src/ui/Theme.h               src/ui/Theme.cpp
+    src/ui/Icons.h               src/ui/Icons.cpp
+    src/ui/CommandLine.h         src/ui/CommandLine.cpp
+    src/ui/PropertiesPanel.h     src/ui/PropertiesPanel.cpp
+    src/ui/Ribbon.h              src/ui/Ribbon.cpp
+    src/ui/MainWindow.h          src/ui/MainWindow.cpp
+    resources/resources.qrc
+)
+target_link_libraries(dyncad_ui PUBLIC dyncad_core Qt6::Gui Qt6::Widgets)
+
+# ---------------------------------------------------------------- application
+add_executable(DynamicCAD WIN32 src/app/main.cpp)
+target_link_libraries(DynamicCAD PRIVATE dyncad_ui)
+set_target_properties(DynamicCAD PROPERTIES OUTPUT_NAME "DynamicCAD")
+
+install(TARGETS DynamicCAD RUNTIME DESTINATION .)
+install(DIRECTORY LICENSES/ DESTINATION licenses)
+install(DIRECTORY docs/samples/ DESTINATION samples)
+
+# ---------------------------------------------------------------- tests
+if(DYNCAD_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

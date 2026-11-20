@@ -1,0 +1,19 @@
+find_package(Qt6 REQUIRED COMPONENTS Test)
+
+function(dyncad_add_test name)
+    add_executable(${name} ${name}.cpp)
+    target_link_libraries(${name} PRIVATE ${ARGN} Qt6::Test)
+    add_test(NAME ${name} COMMAND ${name})
+    # Headless: tests never need a visible display.
+    set_tests_properties(${name} PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+endfunction()
+
+dyncad_add_test(test_geometry    dyncad_core)
+dyncad_add_test(test_document    dyncad_core)
+dyncad_add_test(test_commands    dyncad_core)
+dyncad_add_test(test_selection   dyncad_core)
+dyncad_add_test(test_view        dyncad_core)
+dyncad_add_test(test_fileio      dyncad_core)
+dyncad_add_test(test_gui         dyncad_ui)
+dyncad_add_test(test_performance dyncad_ui)
+target_compile_definitions(test_fileio PRIVATE DYNCAD_SAMPLES_DIR="${PROJECT_SOURCE_DIR}/docs/samples")

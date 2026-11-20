@@ -1,0 +1,219 @@
+{
+    "format": "DynamicCAD-Drawing",
+    "formatVersion": 1,
+    "application": "DYNAMIC CAD 0.1.0",
+    "units": "mm",
+    "entities": [
+        {
+            "type": "POLYLINE",
+            "layer": "PART",
+            "closed": true,
+            "vertices": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    200,
+                    0
+                ],
+                [
+                    200,
+                    150
+                ],
+                [
+                    0,
+                    150
+                ]
+            ]
+        },
+        {
+            "type": "CIRCLE",
+            "layer": "PART",
+            "center": [
+                25,
+                25
+            ],
+            "radius": 8.75
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                13,
+                25
+            ],
+            "end": [
+                37,
+                25
+            ]
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                25,
+                13
+            ],
+            "end": [
+                25,
+                37
+            ]
+        },
+        {
+            "type": "CIRCLE",
+            "layer": "PART",
+            "center": [
+                25,
+                125
+            ],
+            "radius": 8.75
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                13,
+                125
+            ],
+            "end": [
+                37,
+                125
+            ]
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                25,
+                113
+            ],
+            "end": [
+                25,
+                137
+            ]
+        },
+        {
+            "type": "CIRCLE",
+            "layer": "PART",
+            "center": [
+                175,
+                25
+            ],
+            "radius": 8.75
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                163,
+                25
+            ],
+            "end": [
+                187,
+                25
+            ]
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                175,
+                13
+            ],
+            "end": [
+                175,
+                37
+            ]
+        },
+        {
+            "type": "CIRCLE",
+            "layer": "PART",
+            "center": [
+                175,
+                125
+            ],
+            "radius": 8.75
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                163,
+                125
+            ],
+            "end": [
+                187,
+                125
+            ]
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                175,
+                113
+            ],
+            "end": [
+                175,
+                137
+            ]
+        },
+        {
+            "type": "CIRCLE",
+            "layer": "PART",
+            "center": [
+                100,
+                75
+            ],
+            "radius": 30
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                60,
+                75
+            ],
+            "end": [
+                140,
+                75
+            ]
+        },
+        {
+            "type": "LINE",
+            "layer": "CENTER",
+            "start": [
+                100,
+                35
+            ],
+            "end": [
+                100,
+                115
+            ]
+        },
+        {
+            "type": "POLYLINE",
+            "layer": "PART",
+            "closed": true,
+            "vertices": [
+                [
+                    230,
+                    0
+                ],
+                [
+                    238,
+                    0
+                ],
+                [
+                    238,
+                    150
+                ],
+                [
+                    230,
+                    150
+                ]
+            ]
+        }
+    ]
+}

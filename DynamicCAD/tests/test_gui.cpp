@@ -1,0 +1,194 @@
+// DYNAMIC CAD - GUI integration tests (headless, offscreen platform).
+// Drives the real MainWindow with simulated mouse and keyboard input.
+#include "canvas/CadCanvas.h"
+#include "entities/CircleEntity.h"
+#include "entities/LineEntity.h"
+#include "ui/CommandLine.h"
+#include "ui/MainWindow.h"
+
+#include <QLineEdit>
+#include <QTemporaryDir>
+#include <QtTest>
+
+using namespace dyncad;
+
+class TestGui : public QObject {
+    Q_OBJECT
+    QPoint screenOf(MainWindow& w, Vec2 world) {
+        const Vec2 s = w.canvas()->view().worldToScreen(world);
+        return QPoint(int(std::lround(s.x)), int(std::lround(s.y)));
+    }
+private slots:
+    void initTestCase() {
+        QCoreApplication::setOrganizationName("DynamicEngineersTest");
+        QCoreApplication::setApplicationName("DynamicCADTest");
+    }
+
+    void drawWithCommandLineSelectAndDelete() {
+        MainWindow w;
+        w.resize(1200, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        auto& doc = w.document();
+
+        // Type into the command line widget exactly like a user.
+        QLineEdit* in = w.commandLine()->input();
+        for (const char* line : {"L", "0,0", "100,0", "@0,50", ""}) {
+            in->setFocus();
+            QTest::keyClicks(in, line);
+            QTest::keyClick(in, Qt::Key_Return);
+        }
+        QCOMPARE(doc.entityCount(), std::size_t(2));
+        w.executeCommandText("C");
+        w.executeCommandText("200,100");
+        w.executeCommandText("25");
+        w.executeCommandText("REC");
+        w.executeCommandText("300,0");
+        w.executeCommandText("@50,40");
+        QCOMPARE(doc.entityCount(), std::size_t(4));
+
+        w.executeCommandText("ZOOM E");
+        CadCanvas* c = w.canvas();
+
+        // Click exactly on the first line -> selected.
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {50, 0}));
+        QCOMPARE(w.selection().size(), std::size_t(1));
+        QCOMPARE(w.selection().ids().front(), doc.entities()[0]->id());
+        // Shift+click removes it again.
+        QTest::mouseClick(c, Qt::LeftButton, Qt::ShiftModifier, screenOf(w, {50, 0}));
+        QVERIFY(w.selection().empty());
+
+        // Window selection (left -> right) around the circle only.
+        QTest::mousePress(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {160, 60}));
+        QTest::mouseMove(c, screenOf(w, {240, 140}));
+        QTest::mouseRelease(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {240, 140}));
+        QCOMPARE(w.selection().size(), std::size_t(1));
+        QVERIFY(doc.findEntity(w.selection().ids().front())->type() == EntityType::Circle);
+
+        // Delete key erases it; Ctrl+Z restores it.
+        c->setFocus();
+        QTest::keyClick(c, Qt::Key_Delete);
+        QCOMPARE(doc.entityCount(), std::size_t(3));
+        QVERIFY(w.selection().empty());
+        QTest::keyClick(c, Qt::Key_Z, Qt::ControlModifier);
+        QCOMPARE(doc.entityCount(), std::size_t(4));
+        QTest::keyClick(c, Qt::Key_Y, Qt::ControlModifier);
+        QCOMPARE(doc.entityCount(), std::size_t(3));
+
+        // Crossing selection (right -> left) touching both lines.
+        QTest::mousePress(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {110, 20}));
+        QTest::mouseMove(c, screenOf(w, {90, -5}));
+        QTest::mouseRelease(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {90, -5}));
+        QCOMPARE(w.selection().size(), std::size_t(2));
+        QTest::keyClick(c, Qt::Key_Escape);
+        QVERIFY(w.selection().empty());
+    }
+
+    void mouseDrawingAndTypingOnCanvas() {
+        MainWindow w;
+        w.resize(1000, 700);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        CadCanvas* c = w.canvas();
+        c->setFocus();
+        // Typing on the canvas goes to the command line.
+        QTest::keyClicks(c, "l");
+        QCOMPARE(w.commandLine()->input()->text(), QString("l"));
+        QTest::keyClick(w.commandLine()->input(), Qt::Key_Return);
+        QVERIFY(w.processor().isActive());
+
+        const Vec2 a = c->view().screenToWorld({200, 300});
+        const Vec2 b = c->view().screenToWorld({500, 300});
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, QPoint(200, 300));
+        QTest::mouseMove(c, QPoint(500, 300));
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, QPoint(500, 300));
+        QTest::mouseClick(c, Qt::RightButton, Qt::NoModifier, QPoint(500, 300)); // right-click = Enter
+        QVERIFY(!w.processor().isActive());
+        QCOMPARE(w.document().entityCount(), std::size_t(1));
+        const auto& l = static_cast<const LineEntity&>(*w.document().entities()[0]);
+        QVERIFY(nearlyEqual(l.start(), a, 1e-9));
+        QVERIFY(nearlyEqual(l.end(), b, 1e-9));
+    }
+
+    void snapPlacesPointsOnGrid() {
+        MainWindow w;
+        w.resize(1000, 700);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        CadCanvas* c = w.canvas();
+        c->setSnapEnabled(true);
+        w.executeCommandText("C");
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, QPoint(333, 222));
+        w.executeCommandText("7");
+        QCOMPARE(w.document().entityCount(), std::size_t(1));
+        const auto& circ = static_cast<const CircleEntity&>(*w.document().entities()[0]);
+        const double step = c->currentGridStep();
+        QVERIFY(std::abs(std::remainder(circ.center().x, step)) < 1e-9);
+        QVERIFY(std::abs(std::remainder(circ.center().y, step)) < 1e-9);
+    }
+
+    void zoomWheelAndPan() {
+        MainWindow w;
+        w.resize(1000, 700);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        CadCanvas* c = w.canvas();
+        const QPointF pos(321, 234);
+        const Vec2 before = c->view().screenToWorld({pos.x(), pos.y()});
+        const double s0 = c->view().scale();
+        QWheelEvent wheel(pos, c->mapToGlobal(pos), QPoint(), QPoint(0, 120), Qt::NoButton, Qt::NoModifier,
+                          Qt::NoScrollPhase, false);
+        QApplication::sendEvent(c, &wheel);
+        QVERIFY(c->view().scale() > s0);
+        QVERIFY(nearlyEqual(c->view().screenToWorld({pos.x(), pos.y()}), before, 1e-9));
+
+        QTest::mousePress(c, Qt::MiddleButton, Qt::NoModifier, QPoint(300, 300));
+        QMouseEvent move(QEvent::MouseMove, QPointF(350, 280), c->mapToGlobal(QPointF(350, 280)), Qt::NoButton,
+                         Qt::MiddleButton, Qt::NoModifier);
+        const Vec2 w0 = c->view().screenToWorld({300, 300});
+        QApplication::sendEvent(c, &move);
+        QTest::mouseRelease(c, Qt::MiddleButton, Qt::NoModifier, QPoint(350, 280));
+        QVERIFY(nearlyEqual(c->view().worldToScreen(w0), {350, 280}, 1e-6));
+    }
+
+    void saveAndReopen() {
+        QTemporaryDir dir;
+        const QString path = dir.filePath("gui.dyn");
+        {
+            MainWindow w;
+            w.executeCommandText("REC");
+            w.executeCommandText("0,0");
+            w.executeCommandText("10,10");
+            QVERIFY(w.isWindowModified() || w.document().isModified());
+            QVERIFY(w.saveToFile(path));
+            QVERIFY(!w.document().isModified());
+            QVERIFY(w.windowTitle().startsWith("gui.dyn"));
+        }
+        MainWindow w2;
+        QVERIFY(w2.openFile(path));
+        QCOMPARE(w2.document().entityCount(), std::size_t(1));
+        QVERIFY(!w2.document().isModified());
+    }
+
+    void renderScreenshot() {
+        // Renders the full window for visual review (written to the build dir).
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1400, 860);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        for (const char* l : {"REC", "0,0", "420,297", "L", "40,40", "200,40", "@0,120", "@-160,0", "C", "C", "120,100",
+                              "35", "C", "120,100", "D", "30", "REC", "250,60", "@120,80", "C", "310,100", "20"})
+            w.executeCommandText(l);
+        w.executeCommandText("ZOOM E");
+        QTest::mouseClick(w.canvas(), Qt::LeftButton, Qt::NoModifier, screenOf(w, {155, 100}));
+        QTest::mouseMove(w.canvas(), screenOf(w, {260, 230}));
+        QApplication::processEvents();
+        const QImage img = w.grab().toImage();
+        QVERIFY(!img.isNull());
+        img.save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_main_window.png"));
+    }
+};
+
+QTEST_MAIN(TestGui)
+#include "test_gui.moc"

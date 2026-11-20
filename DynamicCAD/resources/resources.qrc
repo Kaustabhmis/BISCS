@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/legal">
+        <file alias="THIRD_PARTY_NOTICES.md">../LICENSES/THIRD_PARTY_NOTICES.md</file>
+    </qresource>
+    <qresource prefix="/branding">
+        <file alias="dynamic-cad-logo.svg">branding/dynamic-cad-logo.svg</file>
+    </qresource>
+</RCC>
