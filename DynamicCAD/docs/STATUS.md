@@ -4,8 +4,10 @@
 
 * Linux cloud container (Ubuntu 24.04), GCC 13.3, CMake 3.28, Ninja, Qt 6.4.2 (Ubuntu packages).
 * **No Windows machine was available.** The code is portable C++17/Qt 6 and a GitHub Actions job compiles and tests
-  it with MSVC + Qt 6.5.3 on Windows Server 2022. See the CI run for the Windows result. Hands-on Windows
-  desktop testing is still outstanding.
+  it with MSVC + Qt 6.5.3 on Windows Server 2022.
+* **Windows CI result (run #1): build, all 8 test programs and windeployqt packaging passed** on
+  `windows-2022` with MSVC and Qt 6.5.3. The Linux ASan/UBSan job also passed.
+  Hands-on testing on a Windows 10/11 desktop (real mouse, display scaling, an ordinary office PC) is still outstanding.
 
 ## Completed and tested
 

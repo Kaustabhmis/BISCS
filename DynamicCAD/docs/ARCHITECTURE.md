@@ -79,7 +79,7 @@ without a commercial Qt licence). Copying from AutoCAD or using Autodesk SDKs, a
 
 The release target is Windows 10/11 x64. Development and CI also run on Linux (the same code); the CI workflow
 compiles with MSVC on Windows for every push. **Milestone 1 was developed and tested on Linux; the Windows build is
-covered by CI but has not yet been run by hand on a Windows desktop.**
+built and tested by CI (MSVC + Qt 6.5.3, all tests passing) but has not yet been run by hand on a Windows desktop.**
 
 ## 6. Measured performance (Milestone 1)
 
