@@ -4,3 +4,4 @@ out/
 *.user
 .vs/
 CMakeSettings.json
+dist-download/
