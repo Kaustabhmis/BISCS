@@ -19,7 +19,7 @@ endif()
 
 # Qt 6 is used under the LGPL v3: link dynamically (shared Qt libraries), never
 # statically, so end users can replace the Qt DLLs. See LICENSES/.
-find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Widgets PrintSupport)
 
 if(MSVC)
     add_compile_options(/W4 /permissive- /utf-8 /Zc:__cplusplus)
@@ -76,6 +76,9 @@ add_library(dyncad_core STATIC
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp
     src/dxf/DxfReader.h                src/dxf/DxfReader.cpp
+    src/sheets/PlotLayout.h            src/sheets/PlotLayout.cpp
+    src/sheets/SheetTemplates.h        src/sheets/SheetTemplates.cpp
+    src/commands/SheetCommands.h       src/commands/SheetCommands.cpp
 )
 target_include_directories(dyncad_core PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/generated)
 target_link_libraries(dyncad_core PUBLIC Qt6::Core)
@@ -91,9 +94,10 @@ add_library(dyncad_ui STATIC
     src/ui/LayerPanel.h          src/ui/LayerPanel.cpp
     src/ui/Ribbon.h              src/ui/Ribbon.cpp
     src/ui/MainWindow.h          src/ui/MainWindow.cpp
+    src/ui/Plotter.h             src/ui/Plotter.cpp
     resources/resources.qrc
 )
-target_link_libraries(dyncad_ui PUBLIC dyncad_core Qt6::Gui Qt6::Widgets)
+target_link_libraries(dyncad_ui PUBLIC dyncad_core Qt6::Gui Qt6::Widgets Qt6::PrintSupport)
 
 # ---------------------------------------------------------------- application
 set(DYNCAD_APP_SOURCES src/app/main.cpp)

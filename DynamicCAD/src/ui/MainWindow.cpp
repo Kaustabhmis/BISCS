@@ -11,6 +11,7 @@
 #include "ui/PropertiesPanel.h"
 #include "ui/StyleWidgets.h"
 #include "commands/ModifyCommands.h"
+#include "ui/Plotter.h"
 #include "ui/Ribbon.h"
 #include "version.h"
 
@@ -143,6 +144,15 @@ void MainWindow::createActions() {
         const QString path = QFileDialog::getOpenFileName(this, tr("Import DXF"), s.value("files/lastDir").toString(),
                                                           tr("AutoCAD DXF (*.dxf);;All Files (*)"));
         if (!path.isEmpty()) importDxfPath(path);
+    });
+    actSheet_ = make(tr("Drawing S&heet..."), "sheet", QKeySequence(), tr("Insert a drawing sheet with title block (SHEET)"));
+    actSheet_->setIconText(tr("Sheet"));
+    actPlot_ = make(tr("&Plot / Export PDF..."), "plot", QKeySequence::Print, tr("Print or export the drawing to PDF at scale (PLOT)"));
+    actPlot_->setIconText(tr("Plot"));
+    connect(actSheet_, &QAction::triggered, this, [this] { startCommand("SHEET"); });
+    connect(actPlot_, &QAction::triggered, this, [this] {
+        PlotDialog dlg(*canvas_, doc_, this);
+        dlg.exec();
     });
     connect(actSave_, &QAction::triggered, this, &MainWindow::save);
     connect(actSaveAs_, &QAction::triggered, this, &MainWindow::saveAs);
@@ -384,6 +394,8 @@ void MainWindow::createMenus() {
     file->addSeparator();
     file->addAction(actImportDxf_);
     file->addSeparator();
+    file->addActions({actSheet_, actPlot_});
+    file->addSeparator();
     file->addAction(actExit_);
 
     QMenu* edit = menuBar()->addMenu(tr("&Edit"));
@@ -437,7 +449,7 @@ void MainWindow::createMenus() {
 void MainWindow::createRibbon() {
     ribbon_ = new Ribbon(this);
     RibbonPage* home = ribbon_->addPage(tr("Home"));
-    home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
+    home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_, actPlot_});
     home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_, actHatch_});
     home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_, actDonut_, actRevcloud_});
     home->addGroup(tr("Edit"), {actErase_, actUndo_, actRedo_});
@@ -452,6 +464,7 @@ void MainWindow::createRibbon() {
     anno->addGroup(tr("Measure"), {actDist_, actArea_, actId_});
     RibbonPage* insertTab = ribbon_->addPage(tr("Insert"));
     insertTab->addGroup(tr("Blocks"), {actBlock_, actInsert_, actPurge_});
+    insertTab->addGroup(tr("Sheet && Output"), {actSheet_, actPlot_});
     RibbonPage* construct = ribbon_->addPage(tr("Construction"));
     construct->addGroup(tr("Construction Lines"), {actXline_, actRay_});
     home->addGroup(tr("Selection"), {actSelectAll_});
@@ -622,6 +635,7 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("NEW", {}, [this](const std::vector<std::string>&) { newDrawing(); });
     proc_.registerAction("OPEN", {}, [this](const std::vector<std::string>&) { openDrawing(); });
     proc_.registerAction("DXFIN", {"IMPORT"}, [this](const std::vector<std::string>&) { actImportDxf_->trigger(); });
+    proc_.registerAction("PLOT", {"PRINT", "EXPORTPDF"}, [this](const std::vector<std::string>&) { actPlot_->trigger(); });
     proc_.registerAction("SAVE", {"QSAVE"}, [this](const std::vector<std::string>&) { save(); });
     proc_.registerAction("SAVEAS", {}, [this](const std::vector<std::string>&) { saveAs(); });
     proc_.registerAction("GRID", {}, [this](const std::vector<std::string>&) { actGrid_->toggle(); }, true);

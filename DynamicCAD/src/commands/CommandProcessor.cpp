@@ -7,6 +7,7 @@
 #include "commands/CurveEdit.h"
 #include "commands/AnnotationCommands.h"
 #include "commands/BlockHatchCommands.h"
+#include "commands/SheetCommands.h"
 #include "geometry/Geometry.h"
 
 #include <sstream>
@@ -253,6 +254,7 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("BLOCK", {"B"}, [] { return std::make_unique<BlockCommand>(); });
     proc.registerCommand("INSERT", {"I"}, [] { return std::make_unique<InsertCommand>(); });
     proc.registerCommand("HATCH", {"H", "BH"}, [] { return std::make_unique<HatchCommand>(); });
+    proc.registerCommand("SHEET", {"TITLEBLOCK", "MVSETUP"}, [] { return std::make_unique<SheetCommand>(); });
     proc.registerAction("PURGE", {"PU"}, [&doc, &proc](const std::vector<std::string>&) {
         const auto removed = doc.purgeBlocksWithUndo();
         // Unused layers (not 0, not current).

@@ -267,6 +267,14 @@ void CadCanvas::drawAxes(QPainter& p) const {
 }
 
 QPen CadCanvas::penFor(const Document::Resolved& r) const {
+    if (plot_) {
+        QColor c = r.foreground || r.rgb == 0xFFFFFF ? QColor(Qt::black) : QColor::fromRgb(QRgb(0xFF000000u | r.rgb));
+        if (plot_->monochrome) c = Qt::black;
+        const int lw = plot_->lineweights && r.lineweight > 0 ? r.lineweight : kLwDefaultValue;
+        QPen pen(c, std::max(1.0, lw / 100.0 * plot_->dotsPerMm), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        pen.setCosmetic(true); // drawing is done in device coordinates
+        return pen;
+    }
     QColor c = r.foreground ? colors_.entity : QColor::fromRgb(QRgb(0xFF000000u | r.rgb));
     if (r.locked) c.setAlpha(110); // locked layers are drawn faded
     double w = 1.0;
@@ -279,7 +287,7 @@ QPen CadCanvas::penFor(const Document::Resolved& r) const {
 void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible, const Document::Resolved* style) const {
     // Clip to a margin around the view so huge zoom levels never overflow the
     // raster engine's fixed-point range.
-    const BoundingBox clip = visible.inflated(view_.pixelsToWorld(10.0));
+    const BoundingBox clip = visible.inflated(vt().pixelsToWorld(10.0));
     // Linetype dashing in world units, continuous along the whole entity.
     const std::vector<double>* pattern = nullptr;
     double dashScale = 1.0, total = 0.0, phase = 0.0;
@@ -287,9 +295,9 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         dashScale = style->ltscale;
         total = style->linetype->patternLength() * dashScale;
         // Too dense to see on screen: draw solid (as CAD programs do).
-        if (total > 0 && total * view_.scale() >= 4.0) pattern = &style->linetype->pattern;
+        if (total > 0 && total * vt().scale() >= 4.0) pattern = &style->linetype->pattern;
     }
-    auto line = [&](const Vec2& a, const Vec2& b) { p.drawLine(qp(view_.worldToScreen(a)), qp(view_.worldToScreen(b))); };
+    auto line = [&](const Vec2& a, const Vec2& b) { p.drawLine(qp(vt().worldToScreen(a)), qp(vt().worldToScreen(b))); };
     auto drawSeg = [&](const Vec2& a, const Vec2& b) {
         const double L = distance(a, b);
         if (!pattern) {
@@ -310,7 +318,7 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
             while (d < s1 && ++guard < 200000) {
                 const double elen = std::abs(pat[k]) * dashScale;
                 if (pat[k] == 0.0) { // dot
-                    if (ph == 0.0) { const QPointF q = qp(view_.worldToScreen(a + u * d)); p.drawPoint(q); }
+                    if (ph == 0.0) { const QPointF q = qp(vt().worldToScreen(a + u * d)); p.drawPoint(q); }
                     k = (k + 1) % pat.size();
                     ph = 0;
                     continue;
@@ -331,7 +339,7 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
     };
     auto drawArc = [&](const ArcGeom& g) {
         if (!clip.intersects(geom::arcBounds(g))) return;
-        const auto pts = geom::tessellateArc(g, view_.pixelsToWorld(0.25));
+        const auto pts = geom::tessellateArc(g, vt().pixelsToWorld(0.25));
         for (std::size_t i = 1; i < pts.size(); ++i) drawSeg(pts[i - 1], pts[i]);
     };
     switch (e.type()) {
@@ -343,11 +351,11 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
     case EntityType::Circle: {
         const auto& c = static_cast<const CircleEntity&>(e);
         if (!geom::circleIntersectsRect(c.center(), c.radius(), clip)) break;
-        const double rpx = c.radius() * view_.scale();
+        const double rpx = c.radius() * vt().scale();
         if (rpx < 0.5) {
-            p.drawPoint(qp(view_.worldToScreen(c.center())));
+            p.drawPoint(qp(vt().worldToScreen(c.center())));
         } else if (rpx < 1e5) {
-            p.drawEllipse(qp(view_.worldToScreen(c.center())), rpx, rpx);
+            p.drawEllipse(qp(vt().worldToScreen(c.center())), rpx, rpx);
         } else {
             // Very large on-screen radius: draw as fine segments (clipped).
             const int n = 4096;
@@ -367,14 +375,14 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         break;
     }
     case EntityType::Point: {
-        const Vec2 s = view_.worldToScreen(static_cast<const PointEntity&>(e).position());
+        const Vec2 s = vt().worldToScreen(static_cast<const PointEntity&>(e).position());
         p.drawLine(QPointF(s.x - 4, s.y), QPointF(s.x + 4, s.y));
         p.drawLine(QPointF(s.x, s.y - 4), QPointF(s.x, s.y + 4));
         break;
     }
     case EntityType::XLine: {
         if (auto c = static_cast<const XLineEntity&>(e).clipped(clip))
-            p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
+            p.drawLine(qp(vt().worldToScreen(c->first)), qp(vt().worldToScreen(c->second)));
         break;
     }
     case EntityType::Insert: {
@@ -400,15 +408,20 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         if (h.pattern().solid || !style) {
             QPainterPath path;
             path.setFillRule(Qt::OddEvenFill);
-            for (const auto& poly : h.loopPolygons(view_.pixelsToWorld(0.5))) {
+            for (const auto& poly : h.loopPolygons(vt().pixelsToWorld(0.5))) {
                 for (std::size_t i = 0; i < poly.size(); ++i) {
-                    const QPointF q = qp(view_.worldToScreen(poly[i]));
+                    const QPointF q = qp(vt().worldToScreen(poly[i]));
                     if (i == 0) path.moveTo(q); else path.lineTo(q);
                 }
                 path.closeSubpath();
             }
             QColor fill = col;
             if (!style) fill.setAlpha(90); // selection highlight: translucent
+            if (plot_ && plot_->monochrome && style) { // keep fills readable: grey by luminance
+                const QColor src = QColor::fromRgb(QRgb(0xFF000000u | style->rgb));
+                const int g = style->foreground ? 0 : qGray(src.rgb());
+                fill = QColor(g, g, g);
+            }
             p.fillPath(path, fill);
             break;
         }
@@ -416,14 +429,14 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         double spacingPx = 1e9;
         for (const auto& f : h.pattern().families) {
             const double r = degToRad(f.angleDeg);
-            spacingPx = std::min(spacingPx, std::abs(f.offset.dot(Vec2{-std::sin(r), std::cos(r)})) * view_.scale());
+            spacingPx = std::min(spacingPx, std::abs(f.offset.dot(Vec2{-std::sin(r), std::cos(r)})) * vt().scale());
         }
         if (spacingPx < 2.0) {
             QPainterPath path;
             path.setFillRule(Qt::OddEvenFill);
-            for (const auto& poly : h.loopPolygons(view_.pixelsToWorld(0.5))) {
+            for (const auto& poly : h.loopPolygons(vt().pixelsToWorld(0.5))) {
                 for (std::size_t i = 0; i < poly.size(); ++i) {
-                    const QPointF q = qp(view_.worldToScreen(poly[i]));
+                    const QPointF q = qp(vt().worldToScreen(poly[i]));
                     if (i == 0) path.moveTo(q); else path.lineTo(q);
                 }
                 path.closeSubpath();
@@ -434,7 +447,7 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
             break;
         }
         for (const auto& seg : h.cachedSegments()) {
-            if (seg.first == seg.second) { p.drawPoint(qp(view_.worldToScreen(seg.first))); continue; }
+            if (seg.first == seg.second) { p.drawPoint(qp(vt().worldToScreen(seg.first))); continue; }
             if (auto c = geom::clipSegment(seg.first, seg.second, clip)) line(c->first, c->second);
         }
         break;
@@ -453,43 +466,43 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
     case EntityType::Ellipse: {
         const EllipseGeom& g = static_cast<const EllipseEntity&>(e).geom();
         if (!clip.intersects(geom::ellipseBounds(g))) break;
-        drawPolylinePts(geom::tessellateEllipse(g, view_.pixelsToWorld(0.25)));
+        drawPolylinePts(geom::tessellateEllipse(g, vt().pixelsToWorld(0.25)));
         break;
     }
     case EntityType::Spline: {
         const auto& sp = static_cast<const SplineEntity&>(e);
         // Re-tessellate for the current zoom, but never finer than needed on screen.
-        drawPolylinePts(sp.curve().tessellate(view_.pixelsToWorld(0.25)));
+        drawPolylinePts(sp.curve().tessellate(vt().pixelsToWorld(0.25)));
         break;
     }
     case EntityType::Polyline: {
         const auto& pl = static_cast<const PolylineEntity&>(e);
         const std::size_t n = pl.segmentCount();
-        if (pl.isFilled() || pl.width() * view_.scale() > 1.5) pattern = nullptr; // fills and wide plines draw solid
+        if (pl.isFilled() || pl.width() * vt().scale() > 1.5) pattern = nullptr; // fills and wide plines draw solid
         if (pl.isFilled()) {
             QPainterPath path;
             for (std::size_t i = 0; i < n; ++i) {
                 std::vector<Vec2> pts;
-                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, view_.pixelsToWorld(0.25));
+                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, vt().pixelsToWorld(0.25));
                 else pts = {pl.segmentStart(i), pl.segmentEnd(i)};
                 for (std::size_t k = (i == 0 ? 0 : 1); k < pts.size(); ++k) {
-                    const QPointF q = qp(view_.worldToScreen(pts[k]));
+                    const QPointF q = qp(vt().worldToScreen(pts[k]));
                     if (i == 0 && k == 0) path.moveTo(q); else path.lineTo(q);
                 }
             }
             path.closeSubpath();
             p.fillPath(path, p.pen().color());
         }
-        const double wpx = pl.width() * view_.scale();
+        const double wpx = pl.width() * vt().scale();
         if (wpx > 1.5) {
             // Wide polyline: stroke the centre line with a pen of the true width.
             QPainterPath path;
             for (std::size_t i = 0; i < n; ++i) {
                 std::vector<Vec2> pts;
-                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, view_.pixelsToWorld(0.25));
+                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, vt().pixelsToWorld(0.25));
                 else pts = {pl.segmentStart(i), pl.segmentEnd(i)};
                 for (std::size_t k = (i == 0 ? 0 : 1); k < pts.size(); ++k) {
-                    const QPointF q = qp(view_.worldToScreen(pts[k]));
+                    const QPointF q = qp(vt().worldToScreen(pts[k]));
                     if (i == 0 && k == 0) path.moveTo(q); else path.lineTo(q);
                 }
             }
@@ -511,11 +524,11 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
 
 void CadCanvas::drawText(QPainter& p, const std::string& text, const Vec2& insert, double rotationDeg, double height,
                          TextJustify justify, const std::string& font, double wrap) const {
-    const double hpx = height * view_.scale();
+    const double hpx = height * vt().scale();
     const TextLayout lay = layoutText(text, height, justify, font, wrap);
     const QColor col = p.pen().color();
     p.save();
-    const Vec2 s = view_.worldToScreen(insert);
+    const Vec2 s = vt().worldToScreen(insert);
     p.translate(s.x, s.y);
     p.rotate(-rotationDeg);
     if (hpx < 3.0) {
@@ -523,8 +536,8 @@ void CadCanvas::drawText(QPainter& p, const std::string& text, const Vec2& inser
         const BoundingBox b = lay.box;
         p.setPen(QPen(col, 1));
         p.setBrush(Qt::NoBrush);
-        p.drawRect(QRectF(QPointF(b.min.x * view_.scale(), -b.max.y * view_.scale()),
-                          QPointF(b.max.x * view_.scale(), -b.min.y * view_.scale())));
+        p.drawRect(QRectF(QPointF(b.min.x * vt().scale(), -b.max.y * vt().scale()),
+                          QPointF(b.max.x * vt().scale(), -b.min.y * vt().scale())));
         p.restore();
         return;
     }
@@ -533,18 +546,36 @@ void CadCanvas::drawText(QPainter& p, const std::string& text, const Vec2& inser
     p.setFont(f);
     p.setPen(col);
     for (const auto& line : lay.lines)
-        p.drawText(QPointF(line.start.x * view_.scale(), -line.start.y * view_.scale()), QString::fromStdString(line.text));
+        p.drawText(QPointF(line.start.x * vt().scale(), -line.start.y * vt().scale()), QString::fromStdString(line.text));
     p.restore();
 }
 
 void CadCanvas::drawAnnotation(QPainter& p, const AnnotationGraphics& g) const {
-    for (const auto& l : g.lines) p.drawLine(qp(view_.worldToScreen(l.first)), qp(view_.worldToScreen(l.second)));
+    for (const auto& l : g.lines) p.drawLine(qp(vt().worldToScreen(l.first)), qp(vt().worldToScreen(l.second)));
     p.save();
     p.setBrush(p.pen().color());
     for (const auto& a : g.arrows)
-        p.drawPolygon(QPolygonF({qp(view_.worldToScreen(a[0])), qp(view_.worldToScreen(a[1])), qp(view_.worldToScreen(a[2]))}));
+        p.drawPolygon(QPolygonF({qp(vt().worldToScreen(a[0])), qp(vt().worldToScreen(a[1])), qp(vt().worldToScreen(a[2]))}));
     p.restore();
     for (const auto& t : g.texts) drawText(p, t.text, t.position, t.rotationDeg, t.height, t.justify, t.font, 0.0);
+}
+
+void CadCanvas::renderPlot(QPainter& p, const ViewTransform& v, const PlotPenOptions& opt) const {
+    const ViewTransform* keepV = vt_;
+    vt_ = &v;
+    plot_ = &opt;
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setBrush(Qt::NoBrush);
+    const BoundingBox visible = v.visibleWorldRect();
+    for (const auto& e : doc_.entities()) {
+        if (!e->isInfinite() && !visible.intersects(e->bounds())) continue;
+        const Document::Resolved st = doc_.resolve(*e);
+        if (!st.visible) continue;
+        p.setPen(penFor(st));
+        drawEntity(p, *e, visible, &st);
+    }
+    plot_ = nullptr;
+    vt_ = keepV;
 }
 
 double capHeightRatio(const std::string& font) {

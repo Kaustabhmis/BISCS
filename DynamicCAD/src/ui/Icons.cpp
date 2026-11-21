@@ -163,6 +163,15 @@ void paintIcon(QPainter& p, const QString& n) {
         p.setPen(QPen(gold, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         p.drawLine(QPointF(33, 22), QPointF(33, 48));
         p.drawPolyline(QPolygonF({QPointF(23, 38), QPointF(33, 48), QPointF(43, 38)}));
+    } else if (n == "sheet") {
+        p.drawRect(QRectF(6, 12, 52, 40));
+        p.drawRect(QRectF(10, 16, 44, 32));
+        p.setPen(Qt::NoPen); p.setBrush(gold); p.drawRect(QRectF(34, 36, 20, 12));
+    } else if (n == "plot") {
+        p.drawRect(QRectF(18, 6, 28, 16));
+        p.drawRoundedRect(QRectF(6, 22, 52, 22), 3, 3);
+        p.drawRect(QRectF(18, 38, 28, 20));
+        p.setPen(Qt::NoPen); p.setBrush(gold); p.drawRect(QRectF(22, 44, 20, 4)); p.drawRect(QRectF(22, 51, 14, 3));
     } else if (n == "save") {
         p.drawRoundedRect(QRectF(8, 8, 48, 48), 4, 4);
         p.drawRect(QRectF(18, 8, 26, 16));

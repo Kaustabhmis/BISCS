@@ -17,6 +17,14 @@ namespace dyncad {
 double capHeightRatio(const std::string& font);
 void installTextMetrics();
 
+// Pen settings used when plotting (PDF / printer): colour 7 and white plot
+// black, lineweights become true widths in device dots.
+struct PlotPenOptions {
+    double dotsPerMm = 600.0 / 25.4;
+    bool monochrome = false;
+    bool lineweights = true;
+};
+
 // Model-space drawing canvas: grid, crosshair, entities, selection, previews.
 // Mouse: wheel = zoom at cursor, middle-drag = pan, middle double-click =
 // zoom extents, left = pick point / select, right = Enter.
@@ -51,6 +59,9 @@ public:
     const std::optional<PolarResult>& currentPolar() const { return polar_now_; }
     // Recomputes snapping/tracking for the current mouse position.
     void refreshTracking();
+    // Draws all visible entities through the given transform for plotting
+    // (no grid, selection, grips or previews).
+    void renderPlot(QPainter& p, const ViewTransform& v, const PlotPenOptions& opt) const;
 
 public slots:
     void zoomExtents();
@@ -103,6 +114,9 @@ private:
     void finishWindow(const QPointF& end, bool shift);
     bool selectionMode() const { return !proc_.isActive() || proc_.isSelecting(); }
     void updateHover();
+    const ViewTransform& vt() const { return vt_ ? *vt_ : view_; }
+    mutable const ViewTransform* vt_ = nullptr;
+    mutable const PlotPenOptions* plot_ = nullptr;
 
     Document& doc_;
     SelectionSet& selection_;
