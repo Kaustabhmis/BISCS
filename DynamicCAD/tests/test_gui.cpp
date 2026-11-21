@@ -399,7 +399,8 @@ private slots:
             const QPoint s = screenOf(w, world);
             for (int dy = -1; dy <= 1; ++dy) {
                 const QColor px = img.pixelColor(s.x(), s.y() + dy);
-                if (px.red() > 200 && px.green() < 80 && px.blue() < 80) return true;
+                // Red-dominant (a 1 px line between two pixel rows is anti-aliased to half intensity).
+                if (px.red() > px.green() + 60 && px.red() > px.blue() + 60) return true;
             }
             return false;
         };
