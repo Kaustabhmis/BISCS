@@ -200,11 +200,16 @@ public:
         }
         if (!sawEntities_) return fail("The file has no ENTITIES section; it does not look like a DXF drawing.", 0);
         finishHeader();
-        convertList(entities_, Affine2D{}, 0, std::string(), true);
+        convertList(entities_, Affine2D{}, 0, true);
         return true;
     }
 
     std::vector<EntityPtr> takeEntities() { return std::move(out_); }
+    StyleTables takeTables() {
+        if (ltscale_ && *ltscale_ > 0) tables_.setLtscale(*ltscale_);
+        if (!clayer_.empty()) tables_.setCurrentLayer(clayer_);
+        return std::move(tables_);
+    }
 
 private:
     bool fail(const std::string& msg, std::size_t line) {
@@ -242,6 +247,8 @@ private:
             if (g.code == 9) var = std::string(trimView(g.value));
             else if (var == "$ACADVER" && g.code == 1) r_.acadVersion = std::string(trimView(g.value));
             else if (var == "$INSUNITS" && g.code == 70) insUnits_ = toInt(g.value);
+            else if (var == "$LTSCALE" && g.code == 40) ltscale_ = toDouble(g.value);
+            else if (var == "$CLAYER" && g.code == 8) clayer_ = decode(g.value);
             else if (var == "$MEASUREMENT" && g.code == 70) measurement_ = toInt(g.value);
             ++pos_;
         }
@@ -269,28 +276,60 @@ private:
         while (!atEnd() && !atMarker("ENDSEC") && !atMarker("EOF")) {
             if (atMarker("LAYER")) {
                 ++pos_;
-                std::string name;
-                long long color = 7, flags = 0;
+                Layer l;
+                long long color = 7;
+                bool hasTrue = false;
+                std::uint32_t trueColor = 0;
+                long long flags = 0;
                 while (!atEnd() && cur().code != 0) {
-                    if (cur().code == 2) name = decode(cur().value);
-                    else if (cur().code == 62) color = toInt(cur().value).value_or(7);
-                    else if (cur().code == 70) flags = toInt(cur().value).value_or(0);
+                    switch (cur().code) {
+                    case 2: l.name = decode(cur().value); break;
+                    case 62: color = toInt(cur().value).value_or(7); break;
+                    case 420: hasTrue = true; trueColor = static_cast<std::uint32_t>(toInt(cur().value).value_or(0)); break;
+                    case 70: flags = toInt(cur().value).value_or(0); break;
+                    case 6: l.linetype = decode(cur().value); break;
+                    case 370: l.lineweight = static_cast<int>(toInt(cur().value).value_or(kLwDefault)); break;
+                    case 290: l.plot = toInt(cur().value).value_or(1) != 0; break;
+                    default: break;
+                    }
                     ++pos_;
                 }
-                if (!name.empty() && layers_.insert(name).second) {
-                    if (color < 0) ++off;
-                    if (flags & 1) ++frozen;
+                if (l.name.empty() || !StyleTables::validName(l.name)) continue;
+                l.on = color >= 0;
+                const int idx = static_cast<int>(color < 0 ? -color : color);
+                l.color = hasTrue ? CadColor::fromRgb(trueColor) : CadColor::fromIndex(idx >= 1 && idx <= 255 ? idx : 7);
+                l.frozen = (flags & 1) != 0;
+                l.locked = (flags & 4) != 0;
+                if (l.lineweight < 0) l.lineweight = kLwDefault;
+                if (!l.on) ++off;
+                if (l.frozen) ++frozen;
+                if (Layer* existing = tables_.layer(l.name)) *existing = l; // layer "0" is predefined
+                else tables_.addLayer(l);
+                continue;
+            }
+            if (atMarker("LTYPE")) {
+                ++pos_;
+                Linetype lt;
+                while (!atEnd() && cur().code != 0) {
+                    if (cur().code == 2) lt.name = decode(cur().value);
+                    else if (cur().code == 3) lt.description = decode(cur().value);
+                    else if (cur().code == 49) lt.pattern.push_back(toDouble(cur().value).value_or(0.0));
+                    ++pos_;
+                }
+                const std::string u = upperName(lt.name);
+                if (!lt.name.empty() && u != "BYLAYER" && u != "BYBLOCK" && u != "CONTINUOUS") {
+                    tables_.addLinetype(lt);
+                    ++linetypesImported_;
                 }
                 continue;
             }
             ++pos_;
         }
         if (atMarker("ENDSEC")) ++pos_;
-        r_.layerCount = layers_.size();
+        r_.layerCount = tables_.layers().size();
         if (off || frozen)
-            r_.warnings.push_back(std::to_string(off + frozen) +
-                                  " layer(s) are turned off or frozen in the source drawing. DYNAMIC CAD currently shows "
-                                  "all layers (layer visibility control is planned).");
+            r_.warnings.push_back(std::to_string(off) + " layer(s) are turned off and " + std::to_string(frozen) +
+                                  " frozen in the source drawing; their objects are imported but hidden (see the Layers panel).");
     }
 
     // ---- entity lists (ENTITIES section and block bodies)
@@ -352,15 +391,47 @@ private:
             if (e.num(c, 0.0) != 0.0) { ++nonZeroZ_; return; }
     }
 
-    std::string layerOf(const RawEntity& e, const std::string& inherit) {
-        std::string layer = e.has(8) ? decode(e.find(8)->value) : std::string("0");
-        if (layer.empty()) layer = "0";
-        if (layer == "0" && !inherit.empty()) layer = inherit; // block content on layer 0 takes the INSERT's layer
-        if (!layers_.count(layer)) { layers_.insert(layer); r_.layerCount = layers_.size(); }
-        return layer;
+    // Layer, colour, linetype, lineweight and linetype scale of a DXF entity,
+    // resolving layer-0 / ByBlock inheritance from the enclosing INSERT.
+    EntityStyle styleOf(const RawEntity& e) {
+        EntityStyle st;
+        const EntityStyle* parent = parents_.empty() ? nullptr : &parents_.back();
+        st.layer = e.has(8) ? decode(e.find(8)->value) : std::string("0");
+        if (st.layer.empty()) st.layer = "0";
+        if (st.layer == "0" && parent) st.layer = parent->layer; // block content on layer 0 takes the INSERT's layer
+        ensureLayer(st.layer);
+        if (e.has(420)) st.color = CadColor::fromRgb(static_cast<std::uint32_t>(e.integer(420)));
+        else if (e.has(62)) {
+            const long long c = e.integer(62, 256);
+            if (c == 0) st.color = CadColor::byBlock();
+            else if (c >= 1 && c <= 255) st.color = CadColor::fromIndex(static_cast<int>(c));
+        }
+        if (e.has(6)) st.linetype = decode(e.find(6)->value);
+        if (e.has(370)) st.lineweight = static_cast<int>(e.integer(370, kLwByLayer));
+        if (e.has(48)) st.ltscale = e.num(48, 1.0) > 0 ? e.num(48, 1.0) : 1.0;
+        if (parent) { // ByBlock: take the INSERT's (resolved) property
+            const Layer* pl = tables_.layer(parent->layer);
+            if (st.color.kind == CadColor::Kind::ByBlock)
+                st.color = parent->color.kind == CadColor::Kind::ByLayer && pl ? pl->color : parent->color;
+            if (upperName(st.linetype) == "BYBLOCK")
+                st.linetype = upperName(parent->linetype) == "BYLAYER" && pl ? pl->linetype : parent->linetype;
+            if (st.lineweight == kLwByBlock)
+                st.lineweight = parent->lineweight == kLwByLayer && pl ? pl->lineweight : parent->lineweight;
+        }
+        if (upperName(st.linetype) != "BYLAYER" && upperName(st.linetype) != "BYBLOCK" && !tables_.linetype(st.linetype))
+            missingLinetypes_.insert(st.linetype);
+        return st;
     }
 
-    void addEntity(std::unique_ptr<Entity> local, const Affine2D& xf, const std::string& layer) {
+    void ensureLayer(const std::string& name) {
+        if (tables_.hasLayer(name)) return;
+        Layer l;
+        l.name = name;
+        tables_.addLayer(l);
+        r_.layerCount = tables_.layers().size();
+    }
+
+    void addEntity(std::unique_ptr<Entity> local, const Affine2D& xf, const EntityStyle& style) {
         if (!local) return;
         std::unique_ptr<Entity> world = xf.isIdentity() ? std::move(local) : local->transformed(xf);
         if (!world) {
@@ -377,12 +448,11 @@ private:
             if (g) world = EllipseEntity(*g).transformed(xf);
         }
         if (!world) { ++nonUniform_; return; }
-        world->setLayer(layer);
+        world->setStyle(style);
         out_.push_back(EntityPtr(std::move(world)));
     }
 
-    void convertList(const std::vector<RawEntity>& list, const Affine2D& xf, int depth, const std::string& inheritLayer,
-                     bool topLevel) {
+    void convertList(const std::vector<RawEntity>& list, const Affine2D& xf, int depth, bool topLevel) {
         for (std::size_t i = 0; i < list.size(); ++i) {
             const RawEntity& e = list[i];
             if (topLevel && e.integer(67, 0) == 1) {
@@ -394,29 +464,29 @@ private:
                 std::vector<const RawEntity*> verts;
                 while (i + 1 < list.size() && list[i + 1].type == "VERTEX") verts.push_back(&list[++i]);
                 if (i + 1 < list.size() && list[i + 1].type == "SEQEND") ++i;
-                convertPolyline(e, verts, xf, inheritLayer);
+                convertPolyline(e, verts, xf);
                 continue;
             }
             if (e.type == "INSERT") {
-                convertInsert(e, xf, depth, inheritLayer);
+                convertInsert(e, xf, depth);
                 if (e.integer(66, 0) == 1) { // attributes follow
                     while (i + 1 < list.size() && list[i + 1].type == "ATTRIB") { ++i; unsupported("ATTRIB (block attribute text)"); }
                     if (i + 1 < list.size() && list[i + 1].type == "SEQEND") ++i;
                 }
                 continue;
             }
-            convertSimple(e, xf, inheritLayer);
+            convertSimple(e, xf);
         }
     }
 
     void invalid(const std::string& type) { r_.unsupported[type + " (invalid data)"]++; }
 
-    void convertSimple(const RawEntity& e, const Affine2D& xf, const std::string& inherit) {
+    void convertSimple(const RawEntity& e, const Affine2D& xf) {
         const std::string& t = e.type;
         if (t == "LINE") {
             if (!e.numValid(10) || !e.numValid(20) || !e.numValid(11) || !e.numValid(21)) return invalid(t);
             checkZ(e, {30, 31});
-            addEntity(std::make_unique<LineEntity>(Vec2{e.num(10), e.num(20)}, Vec2{e.num(11), e.num(21)}), xf, layerOf(e, inherit));
+            addEntity(std::make_unique<LineEntity>(Vec2{e.num(10), e.num(20)}, Vec2{e.num(11), e.num(21)}), xf, styleOf(e));
         } else if (t == "CIRCLE" || t == "ARC") {
             const double r = e.num(40, -1.0);
             if (!e.numValid(10) || !e.numValid(20) || !(r > 0.0)) return invalid(t);
@@ -430,11 +500,11 @@ private:
                 if (std::fmod(std::abs(a1 - a0), 360.0) == 0.0) return invalid(t); // zero-length arc
                 local = std::make_unique<ArcEntity>(c, r, a0, a1);
             }
-            addEntity(std::move(local), xf * *o, layerOf(e, inherit));
+            addEntity(std::move(local), xf * *o, styleOf(e));
         } else if (t == "POINT") {
             if (!e.numValid(10) || !e.numValid(20)) return invalid(t);
             checkZ(e, {30});
-            addEntity(std::make_unique<PointEntity>(Vec2{e.num(10), e.num(20)}), xf, layerOf(e, inherit));
+            addEntity(std::make_unique<PointEntity>(Vec2{e.num(10), e.num(20)}), xf, styleOf(e));
         } else if (t == "LWPOLYLINE") {
             auto o = ocs(e);
             if (!o) return;
@@ -456,7 +526,7 @@ private:
                 if (same) w = sw.front();
                 else { ++varyingWidth_; w = 0.0; }
             }
-            addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, layerOf(e, inherit), w);
+            addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, styleOf(e), w);
         } else if (t == "ELLIPSE") {
             EllipseGeom g;
             g.center = {e.num(10, NAN), e.num(20, NAN)};
@@ -475,7 +545,7 @@ private:
                 g.endParam = -s0;
             }
             checkZ(e, {30});
-            addEntity(std::make_unique<EllipseEntity>(g), xf, layerOf(e, inherit));
+            addEntity(std::make_unique<EllipseEntity>(g), xf, styleOf(e));
         } else if (t == "SPLINE") {
             NurbsCurve c;
             c.degree = static_cast<int>(e.integer(71, 3));
@@ -502,7 +572,7 @@ private:
             }
             if (!c.isValid()) return invalid(t);
             if (zSpline_) { ++nonZeroZ_; zSpline_ = false; }
-            addEntity(std::make_unique<SplineEntity>(std::move(c)), xf, layerOf(e, inherit));
+            addEntity(std::make_unique<SplineEntity>(std::move(c)), xf, styleOf(e));
         } else if (t == "SOLID" || t == "TRACE") {
             auto o = ocs(e);
             if (!o) return;
@@ -516,12 +586,12 @@ private:
                 if (!q.isFinite()) return invalid(t);
             auto pl = std::make_unique<PolylineEntity>(std::move(v), true);
             pl->setFilled(true);
-            addEntity(std::move(pl), xf * *o, layerOf(e, inherit));
+            addEntity(std::move(pl), xf * *o, styleOf(e));
         } else if (t == "XLINE" || t == "RAY") {
             const Vec2 base{e.num(10, NAN), e.num(20, NAN)}, dir{e.num(11, NAN), e.num(21, NAN)};
             if (!base.isFinite() || !dir.isFinite() || !(dir.length() > 0)) return invalid(t);
             checkZ(e, {30, 31});
-            addEntity(std::make_unique<XLineEntity>(base, dir, t == "RAY"), xf, layerOf(e, inherit));
+            addEntity(std::make_unique<XLineEntity>(base, dir, t == "RAY"), xf, styleOf(e));
         } else if (t == "SEQEND" || t == "VERTEX" || t == "ENDBLK") {
             // structural; handled by their parents
         } else if (t == "TEXT" || t == "MTEXT" || t == "ATTDEF") {
@@ -534,7 +604,7 @@ private:
     }
 
     void addPolyline(const std::string& type, std::vector<Vec2> v, std::vector<double> b, bool closed, const Affine2D& xf,
-                     const std::string& layer, double width = 0.0) {
+                     const EntityStyle& layer, double width = 0.0) {
         for (const Vec2& p : v)
             if (!p.isFinite()) return invalid(type);
         if (v.size() < 2) return invalid(type);
@@ -543,8 +613,7 @@ private:
         addEntity(std::move(pl), xf, layer);
     }
 
-    void convertPolyline(const RawEntity& e, const std::vector<const RawEntity*>& verts, const Affine2D& xf,
-                         const std::string& inherit) {
+    void convertPolyline(const RawEntity& e, const std::vector<const RawEntity*>& verts, const Affine2D& xf) {
         const long long flags = e.integer(70);
         if (flags & (16 | 64)) { unsupported(flags & 64 ? "POLYLINE (polyface mesh)" : "POLYLINE (3D mesh)"); return; }
         const bool is3d = (flags & 8) != 0;
@@ -562,10 +631,10 @@ private:
         if (e.num(41, w) != w) { ++varyingWidth_; w = 0.0; }
         for (const RawEntity* vx : verts)
             if ((vx->has(40) && vx->num(40) != w) || (vx->has(41) && vx->num(41) != w)) { ++varyingWidth_; w = 0.0; break; }
-        addPolyline("POLYLINE", std::move(v), std::move(b), (flags & 1) != 0, xf * *o, layerOf(e, inherit), w);
+        addPolyline("POLYLINE", std::move(v), std::move(b), (flags & 1) != 0, xf * *o, styleOf(e), w);
     }
 
-    void convertInsert(const RawEntity& e, const Affine2D& parent, int depth, const std::string& inherit) {
+    void convertInsert(const RawEntity& e, const Affine2D& parent, int depth) {
         const std::string name = decode(e.str(2));
         auto it = blocks_.find(toUpperAscii(name));
         if (it == blocks_.end()) {
@@ -584,13 +653,14 @@ private:
         const double dx = e.num(44, 0.0), dy = e.num(45, 0.0);
         const Affine2D place = Affine2D::translation({e.num(10), e.num(20)}) * Affine2D::rotationDeg(e.num(50, 0.0));
         const Affine2D local = Affine2D::scaling(sx, sy) * Affine2D::translation(-blk.base);
-        const std::string layer = layerOf(e, inherit);
+        parents_.push_back(styleOf(e));
         for (long long r = 0; r < rows; ++r)
             for (long long c = 0; c < cols; ++c) {
                 const Affine2D xf = parent * *o * place * Affine2D::translation({c * dx, r * dy}) * local;
-                convertList(blk.entities, xf, depth + 1, layer, false);
+                convertList(blk.entities, xf, depth + 1, false);
                 ++r_.blockInsertsExpanded;
             }
+        parents_.pop_back();
     }
 
 public:
@@ -608,6 +678,11 @@ public:
         if (varyingWidth_)
             r_.warnings.push_back(std::to_string(varyingWidth_) +
                                   " polyline(s) have varying (tapered) widths; they are shown as thin centre lines.");
+        if (!missingLinetypes_.empty()) {
+            std::string names;
+            for (const auto& n : missingLinetypes_) names += (names.empty() ? "" : ", ") + n;
+            r_.warnings.push_back("Linetype(s) not defined in the file are drawn continuous: " + names + ".");
+        }
         if (tooDeep_) r_.warnings.push_back("Block nesting deeper than 32 levels (possibly circular) was skipped.");
         for (const auto& x : xrefs_)
             r_.warnings.push_back("External reference \"" + x + "\" was not loaded (xrefs are not supported yet).");
@@ -620,12 +695,17 @@ private:
     bool sawEntities_ = false;
     bool utf8_ = false;
     std::optional<long long> insUnits_, measurement_;
-    std::set<std::string> layers_;
     std::unordered_map<std::string, Block> blocks_;
     std::vector<RawEntity> entities_;
     std::vector<EntityPtr> out_;
     std::size_t nonZeroZ_ = 0, nonPlanar_ = 0, nonUniform_ = 0, tooDeep_ = 0;
     bool zSpline_ = false;
+    StyleTables tables_;
+    std::vector<EntityStyle> parents_;
+    std::set<std::string> missingLinetypes_;
+    std::size_t linetypesImported_ = 0;
+    std::optional<double> ltscale_;
+    std::string clayer_;
     std::size_t varyingWidth_ = 0;
     std::set<std::string> xrefs_;
 };
@@ -657,7 +737,7 @@ DxfImportResult importDxf(const QByteArray& data, Document& doc) {
                           "download or copy). Compare with the original drawing.");
     std::vector<EntityPtr> ents = imp.takeEntities();
     r.imported = ents.size();
-    doc.reset(std::move(ents), r.units);
+    doc.reset(std::move(ents), r.units, imp.takeTables());
     r.ok = true;
     return r;
 }

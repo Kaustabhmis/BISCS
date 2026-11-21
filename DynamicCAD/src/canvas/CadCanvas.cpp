@@ -107,14 +107,17 @@ void CadCanvas::paintEvent(QPaintEvent*) {
     p.setRenderHint(QPainter::Antialiasing, true);
     const BoundingBox visible = view_.visibleWorldRect();
 
-    QPen entityPen(colors_.entity, 1.0);
-    entityPen.setCosmetic(true);
-    p.setPen(entityPen);
     p.setBrush(Qt::NoBrush);
+    QPen lastPen;
+    bool havePen = false;
     for (const auto& e : doc_.entities()) {
         if (selection_.contains(e->id()) || e->id() == hover_) continue;
         if (!e->isInfinite() && !visible.intersects(e->bounds())) continue; // view culling
-        drawEntity(p, *e, visible);
+        const Document::Resolved st = doc_.resolve(*e);
+        if (!st.visible) continue; // layer off or frozen
+        const QPen pen = penFor(st);
+        if (!havePen || pen != lastPen) { p.setPen(pen); lastPen = pen; havePen = true; }
+        drawEntity(p, *e, visible, &st);
     }
 
     if (hover_ != kInvalidEntityId && !selection_.contains(hover_)) {
@@ -261,13 +264,64 @@ void CadCanvas::drawAxes(QPainter& p) const {
     }
 }
 
-void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible) const {
+QPen CadCanvas::penFor(const Document::Resolved& r) const {
+    QColor c = r.foreground ? colors_.entity : QColor::fromRgb(QRgb(0xFF000000u | r.rgb));
+    if (r.locked) c.setAlpha(110); // locked layers are drawn faded
+    double w = 1.0;
+    if (lwDisplay_) w = std::clamp(std::round(r.lineweight / 25.0), 1.0, 12.0); // 0.25 mm = 1 px
+    QPen pen(c, w, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+    pen.setCosmetic(true);
+    return pen;
+}
+
+void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible, const Document::Resolved* style) const {
     // Clip to a margin around the view so huge zoom levels never overflow the
     // raster engine's fixed-point range.
     const BoundingBox clip = visible.inflated(view_.pixelsToWorld(10.0));
+    // Linetype dashing in world units, continuous along the whole entity.
+    const std::vector<double>* pattern = nullptr;
+    double dashScale = 1.0, total = 0.0, phase = 0.0;
+    if (style && style->linetype) {
+        dashScale = style->ltscale;
+        total = style->linetype->patternLength() * dashScale;
+        // Too dense to see on screen: draw solid (as CAD programs do).
+        if (total > 0 && total * view_.scale() >= 4.0) pattern = &style->linetype->pattern;
+    }
+    auto line = [&](const Vec2& a, const Vec2& b) { p.drawLine(qp(view_.worldToScreen(a)), qp(view_.worldToScreen(b))); };
     auto drawSeg = [&](const Vec2& a, const Vec2& b) {
-        if (auto c = geom::clipSegment(a, b, clip))
-            p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
+        const double L = distance(a, b);
+        if (!pattern) {
+            if (auto c = geom::clipSegment(a, b, clip)) line(c->first, c->second);
+            return;
+        }
+        if (L <= 0) return;
+        if (auto c = geom::clipSegment(a, b, clip)) {
+            const Vec2 u = (b - a) / L;
+            const double s0 = distance(a, c->first), s1 = distance(a, c->second);
+            const auto& pat = *pattern;
+            // Locate the pattern element at distance s0.
+            double ph = std::fmod(phase + s0, total);
+            std::size_t k = 0;
+            while (ph >= std::abs(pat[k]) * dashScale && std::abs(pat[k]) > 0) { ph -= std::abs(pat[k]) * dashScale; k = (k + 1) % pat.size(); }
+            double d = s0;
+            int guard = 0;
+            while (d < s1 && ++guard < 200000) {
+                const double elen = std::abs(pat[k]) * dashScale;
+                if (pat[k] == 0.0) { // dot
+                    if (ph == 0.0) { const QPointF q = qp(view_.worldToScreen(a + u * d)); p.drawPoint(q); }
+                    k = (k + 1) % pat.size();
+                    ph = 0;
+                    continue;
+                }
+                const double piece = std::min(elen - ph, s1 - d);
+                if (pat[k] > 0) line(a + u * d, a + u * (d + piece));
+                d += piece;
+                ph += piece;
+                if (ph >= elen - 1e-12) { ph = 0; k = (k + 1) % pat.size(); }
+            }
+            if (guard >= 200000) line(a + u * d, a + u * s1); // safety: rest solid
+        }
+        phase = std::fmod(phase + L, total);
     };
     // Arcs are tessellated to within 0.25 px of the true curve, then clipped.
     auto drawPolylinePts = [&](const std::vector<Vec2>& pts) {
@@ -336,6 +390,7 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
     case EntityType::Polyline: {
         const auto& pl = static_cast<const PolylineEntity&>(e);
         const std::size_t n = pl.segmentCount();
+        if (pl.isFilled() || pl.width() * view_.scale() > 1.5) pattern = nullptr; // fills and wide plines draw solid
         if (pl.isFilled()) {
             QPainterPath path;
             for (std::size_t i = 0; i < n; ++i) {
@@ -419,10 +474,13 @@ void CadCanvas::drawCrosshair(QPainter& p) const {
 
 void CadCanvas::drawUcsIcon(QPainter& p) const {
     const QPointF o(24, height() - 24);
-    p.setPen(QPen(colors_.axisX, 2));
+    QColor ax = colors_.axisX, ay = colors_.axisY;
+    ax.setAlpha(255);
+    ay.setAlpha(255);
+    p.setPen(QPen(ax, 2));
     p.drawLine(o, o + QPointF(36, 0));
     p.drawText(o + QPointF(40, 4), "X");
-    p.setPen(QPen(colors_.axisY, 2));
+    p.setPen(QPen(ay, 2));
     p.drawLine(o, o + QPointF(0, -36));
     p.drawText(o + QPointF(-4, -42), "Y");
 }

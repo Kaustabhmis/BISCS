@@ -28,7 +28,7 @@ namespace dyncad {
 std::unique_ptr<Entity> CircleEntity::transformed(const Affine2D& xf) const {
     if (!xf.isSimilarity()) return nullptr;
     auto e = std::make_unique<CircleEntity>(xf.apply(center_), radius_ * xf.uniformScale());
-    e->setLayer(layer());
+    e->copyStyleFrom(*this);
     return e;
 }
 } // namespace dyncad

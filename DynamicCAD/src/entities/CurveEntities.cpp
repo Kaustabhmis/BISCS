@@ -45,7 +45,7 @@ std::unique_ptr<Entity> EllipseEntity::transformed(const Affine2D& xf) const {
         if (out.endParam <= out.startParam) out.endParam += 2.0 * kPi;
     }
     auto ent = std::make_unique<EllipseEntity>(out);
-    ent->setLayer(layer());
+    ent->copyStyleFrom(*this);
     return ent;
 }
 
@@ -88,7 +88,7 @@ std::unique_ptr<Entity> SplineEntity::transformed(const Affine2D& xf) const {
     NurbsCurve c = curve_;
     for (Vec2& p : c.ctrl) p = xf.apply(p); // NURBS are affinely invariant
     auto ent = std::make_unique<SplineEntity>(std::move(c));
-    ent->setLayer(layer());
+    ent->copyStyleFrom(*this);
     return ent;
 }
 

@@ -40,6 +40,25 @@ void RibbonPage::addGroup(const QString& title, const QList<QAction*>& actions) 
     label->setEnabled(false);
     v->addWidget(label);
 
+    insertGroup(group);
+}
+
+void RibbonPage::addWidgetGroup(const QString& title, QWidget* content) {
+    auto* group = new QWidget(this);
+    auto* v = new QVBoxLayout(group);
+    v->setContentsMargins(4, 2, 4, 0);
+    v->setSpacing(2);
+    content->setParent(group);
+    v->addWidget(content, 1);
+    auto* label = new QLabel(title, group);
+    label->setObjectName("RibbonGroupTitle");
+    label->setAlignment(Qt::AlignCenter);
+    label->setEnabled(false);
+    v->addWidget(label);
+    insertGroup(group);
+}
+
+void RibbonPage::insertGroup(QWidget* group) {
     const int insertAt = layout_->count() - 1; // before the stretch
     if (insertAt > 0) {
         auto* sep = new QFrame(this);

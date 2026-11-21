@@ -1,4 +1,29 @@
-# DYNAMIC CAD: Status Report (v0.4.0, in progress)
+# DYNAMIC CAD: Status Report (v0.5.0)
+
+## Milestone 6: layers and properties (done)
+
+| Feature | Verified by |
+|---|---|
+| Layer table: create, rename (objects follow, one undo), delete (only empty, not 0/current), current layer, on/off, freeze, lock, colour, linetype, lineweight | `test_layers`, `test_gui::layersColoursAndProperties` |
+| Hidden (off/frozen) layers: not drawn, not selectable, no snaps, not cut by TRIM; locked layers: drawn faded, not selectable, still snap | `test_layers::visibilityAffectsPickSnapSelect`, pixel check |
+| Per-object colour (ByLayer, 255 colour indices, true RGB), linetype, lineweight, linetype scale; new objects go on the current layer | `test_layers::resolveAndCurrentLayer` |
+| Linetypes: Continuous, DASHED, HIDDEN, CENTER, DASHDOT, PHANTOM, DOT, BORDER, DIVIDE (own mm definitions) + any defined in DXF; dashes in drawing units, stable while panning; global LTSCALE | pixel check of dash gaps |
+| Lineweights: 24 standard values; LWT toggle shows them on screen | screenshot |
+| Layer manager panel (dock, tabbed with Properties) | `test_gui` |
+| Home ribbon "Layers & Properties": current-layer drop-down (moves selected objects), colour/linetype/lineweight drop-downs, MATCHPROP | `test_gui` |
+| Editable Properties panel: layer/colour/linetype/lineweight/linetype scale for any selection; coordinates, radius, angles, length, width, vertices for one object | `test_gui` (`editGeometry`) |
+| MATCHPROP (MA), LAYER (LA), LTSCALE, LWDISPLAY | `test_layers` |
+| `.dyn` v5 stores layers, linetypes, current layer, LTSCALE and per-object properties (bit-exact round trip) | `test_layers::stylesSurviveSaveAndTransform` |
+| DXF: LAYER table (colour, true colour, off, frozen, locked, linetype, lineweight), LTYPE table, entity colour/true colour/linetype/lineweight/ltscale, ByBlock inside blocks, $LTSCALE, $CLAYER | `test_layers::dxfLayersColorsLinetypes` |
+
+**Found and fixed during this milestone:** a potential crash (panels rebuilding the widget whose signal was still
+running; refreshes are now queued); axis lines drawn over red centre lines hid their dashes (axes dimmed).
+
+**Not yet:** plot styles, transparency, complex linetypes with text/shapes, layer filters/states, a "current colour"
+for new objects (new objects are ByLayer), editing every spline/ellipse property in the panel.
+
+**Performance note:** drawing 100,000 objects with per-object style resolution: about 83 ms on the test VM
+(was 58 ms without styles).
 
 ## Milestone 5: editing (done)
 

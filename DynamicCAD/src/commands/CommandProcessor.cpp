@@ -229,6 +229,7 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("FILLET", {"F"}, [] { return std::make_unique<CornerCommand>(false); });
     proc.registerCommand("CHAMFER", {"CHA"}, [] { return std::make_unique<CornerCommand>(true); });
     proc.registerCommand("STRETCH", {"S"}, [] { return std::make_unique<StretchCommand>(); });
+    proc.registerCommand("MATCHPROP", {"MA"}, [] { return std::make_unique<MatchPropCommand>(); });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

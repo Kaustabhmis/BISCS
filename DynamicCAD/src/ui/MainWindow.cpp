@@ -7,7 +7,10 @@
 #include "fileio/DynFormat.h"
 #include "ui/CommandLine.h"
 #include "ui/Icons.h"
+#include "ui/LayerPanel.h"
 #include "ui/PropertiesPanel.h"
+#include "ui/StyleWidgets.h"
+#include "commands/ModifyCommands.h"
 #include "ui/Ribbon.h"
 #include "version.h"
 
@@ -24,6 +27,8 @@
 #include <QFileInfo>
 #include <QClipboard>
 #include <QGuiApplication>
+#include <QComboBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QMimeData>
 #include <QLineEdit>
@@ -34,6 +39,8 @@
 #include <QTextBrowser>
 #include <QToolButton>
 #include <QVBoxLayout>
+
+#include <set>
 
 namespace dyncad {
 
@@ -55,7 +62,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
     proc_.onMessage = [this](const std::string& m) { message(QString::fromStdString(m)); };
     proc_.onStateChanged = [this] { onProcessorState(); };
     selection_.onChanged = [this] {
-        props_->refresh();
+        props_->scheduleRefresh();
+        refreshPropertyCombos();
         actErase_->setEnabled(!selection_.empty() || !proc_.isActive());
         canvas_->update();
     };
@@ -89,6 +97,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
     message(tr("DYNAMIC CAD %1 - Dynamic Engineers. Type HELP for commands.").arg(DYNCAD_VERSION_STRING));
     onProcessorState();
     updateTitle();
+    refreshPropertyCombos();
     canvas_->setFocus();
 }
 
@@ -120,6 +129,7 @@ void MainWindow::createActions() {
     actNew_ = make(tr("&New"), "new", QKeySequence::New, tr("Start a new drawing"));
     actOpen_ = make(tr("&Open..."), "open", QKeySequence::Open, tr("Open a drawing (*.dyn) or import a DXF file"));
     actImportDxf_ = make(tr("&Import DXF..."), "import-dxf", QKeySequence(), tr("Import an AutoCAD DXF file"));
+    actImportDxf_->setIconText(tr("Import"));
     actSave_ = make(tr("&Save"), "save", QKeySequence::Save, tr("Save the drawing"));
     actSaveAs_ = make(tr("Save &As..."), "", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S), tr("Save the drawing under a new name"));
     actExit_ = make(tr("E&xit"), "", QKeySequence(Qt::ALT | Qt::Key_F4), tr("Exit DYNAMIC CAD"));
@@ -199,6 +209,18 @@ void MainWindow::createActions() {
         const QString cmd = t.cmd;
         connect(*t.act, &QAction::triggered, this, [this, cmd] { startCommand(cmd); });
     }
+    actLwt_ = make(tr("L&WT"), "lwt", QKeySequence(), tr("Show lineweights"));
+    actLwt_->setCheckable(true);
+    actLwt_->setChecked(QSettings().value("aids/lwt", false).toBool());
+    canvas_->setLineweightDisplay(actLwt_->isChecked());
+    connect(actLwt_, &QAction::toggled, this, [this](bool on) {
+        canvas_->setLineweightDisplay(on);
+        QSettings().setValue("aids/lwt", on);
+    });
+    actLayers_ = make(tr("&Layer Manager"), "layers", QKeySequence(), tr("Open the layer manager (LAYER)"));
+    connect(actLayers_, &QAction::triggered, this, [this] { layerDock_->show(); layerDock_->raise(); });
+    actMatchProp_ = make(tr("&Match Properties"), "matchprop", QKeySequence(), tr("Copy properties from one object to others (MA)"));
+    connect(actMatchProp_, &QAction::triggered, this, [this] { startCommand("MATCHPROP"); });
     actCutClip_ = make(tr("Cu&t"), "cut", QKeySequence::Cut, tr("Cut selected objects to the clipboard"));
     actCopyClip_ = make(tr("Copy C&lip"), "copyclip", QKeySequence::Copy, tr("Copy selected objects to the clipboard"));
     actPasteClip_ = make(tr("&Paste"), "paste", QKeySequence::Paste, tr("Paste objects from the clipboard"));
@@ -386,6 +408,7 @@ void MainWindow::createRibbon() {
     home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
     home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_, actDonut_, actRevcloud_});
     home->addGroup(tr("Edit"), {actErase_, actUndo_, actRedo_});
+    createLayerRibbonGroup(home);
     RibbonPage* mod = ribbon_->addPage(tr("Modify"));
     mod->addGroup(tr("Transform"), {actMove_, actCopy_, actRotate_, actScale_, actMirror_, actStretch_, actArray_});
     mod->addGroup(tr("Edit Geometry"), {actOffset_, actTrim_, actExtend_, actFillet_, actChamfer_, actBreak_, actJoin_, actExplode_});
@@ -406,6 +429,96 @@ void MainWindow::createRibbon() {
     addDockWidget(Qt::TopDockWidgetArea, dock);
 }
 
+void MainWindow::createLayerRibbonGroup(RibbonPage* home) {
+    auto* box = new QWidget;
+    auto* grid = new QGridLayout(box);
+    grid->setContentsMargins(0, 0, 0, 0);
+    grid->setSpacing(3);
+    layerCombo_ = new QComboBox(box);
+    layerCombo_->setMinimumWidth(150);
+    layerCombo_->setToolTip(tr("Current layer (with objects selected: move them to this layer)"));
+    colorCombo_ = new QComboBox(box);
+    colorCombo_->setToolTip(tr("Colour of the selected objects"));
+    ltCombo_ = new QComboBox(box);
+    ltCombo_->setToolTip(tr("Linetype of the selected objects"));
+    lwCombo_ = new QComboBox(box);
+    lwCombo_->setToolTip(tr("Lineweight of the selected objects"));
+    auto* mgr = new QToolButton(box);
+    mgr->setDefaultAction(actLayers_);
+    mgr->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    mgr->setAutoRaise(true);
+    auto* match = new QToolButton(box);
+    match->setDefaultAction(actMatchProp_);
+    match->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    match->setAutoRaise(true);
+    grid->addWidget(mgr, 0, 0);
+    grid->addWidget(layerCombo_, 0, 1, 1, 2);
+    grid->addWidget(match, 1, 0);
+    grid->addWidget(colorCombo_, 1, 1);
+    grid->addWidget(ltCombo_, 1, 2);
+    grid->addWidget(lwCombo_, 2, 1, 1, 2);
+    home->addWidgetGroup(tr("Layers & Properties"), box);
+
+    connect(layerCombo_, &QComboBox::activated, this, [this] {
+        const std::string name = layerCombo_->currentData().toString().toStdString();
+        if (!selection_.empty()) {
+            changeEntityStyles(doc_, selection_.ids(), [&](EntityStyle& s) { s.layer = name; }, "Change layer");
+        } else {
+            StyleTables t = doc_.styles();
+            if (t.setCurrentLayer(name)) doc_.setStylesWithUndo(std::move(t), "Set current layer");
+            else message(tr("Layer %1 is frozen and cannot be current.").arg(QString::fromStdString(name)));
+        }
+        canvas_->setFocus();
+    });
+    connect(colorCombo_, &QComboBox::activated, this, [this] {
+        if (selection_.empty()) { refreshPropertyCombos(); return; }
+        if (auto c = StyleWidgets::colorFromCombo(colorCombo_, this))
+            changeEntityStyles(doc_, selection_.ids(), [&](EntityStyle& s) { s.color = *c; }, "Change colour");
+        refreshPropertyCombos();
+    });
+    connect(ltCombo_, &QComboBox::activated, this, [this] {
+        if (selection_.empty()) return;
+        const std::string v = ltCombo_->currentData().toString().toStdString();
+        changeEntityStyles(doc_, selection_.ids(), [&](EntityStyle& s) { s.linetype = v; }, "Change linetype");
+    });
+    connect(lwCombo_, &QComboBox::activated, this, [this] {
+        if (selection_.empty()) return;
+        const int v = lwCombo_->currentData().toInt();
+        changeEntityStyles(doc_, selection_.ids(), [&](EntityStyle& s) { s.lineweight = v; }, "Change lineweight");
+    });
+}
+
+void MainWindow::refreshPropertyCombos() {
+    if (!layerCombo_) return;
+    const StyleTables& t = doc_.styles();
+    {
+        const QSignalBlocker b(layerCombo_);
+        layerCombo_->clear();
+        std::string shown = t.currentLayer();
+        if (!selection_.empty()) {
+            std::set<std::string> ls;
+            for (EntityId id : selection_.ids()) if (auto e = doc_.findEntity(id)) ls.insert(e->layer());
+            if (ls.size() == 1) shown = *ls.begin();
+        }
+        for (const Layer& l : t.layers()) {
+            QString label = QString::fromStdString(l.name);
+            if (!l.visible()) label += tr("  (hidden)");
+            if (l.locked) label += tr("  (locked)");
+            layerCombo_->addItem(StyleWidgets::colorSwatch(l.color), label, QString::fromStdString(l.name));
+        }
+        layerCombo_->setCurrentIndex(std::max(0, layerCombo_->findData(QString::fromStdString(shown))));
+    }
+    CadColor c;
+    std::string lt = kByLayer;
+    int lw = kLwByLayer;
+    if (selection_.size() >= 1)
+        if (auto e = doc_.findEntity(selection_.ids().front())) { c = e->color(); lt = e->linetype(); lw = e->lineweight(); }
+    StyleWidgets::fillColorCombo(colorCombo_, true, c);
+    StyleWidgets::fillLinetypeCombo(ltCombo_, t, true, lt);
+    StyleWidgets::fillLineweightCombo(lwCombo_, true, lw);
+    for (QComboBox* b : {colorCombo_, ltCombo_, lwCombo_}) b->setEnabled(!selection_.empty());
+}
+
 void MainWindow::createDocks() {
     props_ = new PropertiesPanel(doc_, selection_, this);
     auto* propDock = new QDockWidget(tr("Properties"), this);
@@ -422,7 +535,19 @@ void MainWindow::createDocks() {
     resizeDocks({cmdDock}, {130}, Qt::Vertical);
     resizeDocks({propDock}, {280}, Qt::Horizontal);
 
-    if (auto* view = menuBar()->findChild<QMenu*>("ViewMenu")) view->addAction(propDock->toggleViewAction());
+    layers_ = new LayerPanel(doc_, this);
+    layerDock_ = new QDockWidget(tr("Layers"), this);
+    layerDock_->setObjectName("LayersDock");
+    layerDock_->setWidget(layers_);
+    addDockWidget(Qt::RightDockWidgetArea, layerDock_);
+    tabifyDockWidget(propDock, layerDock_);
+    propDock->raise();
+    connect(layers_, &LayerPanel::message, this, &MainWindow::message);
+    connect(props_, &PropertiesPanel::message, this, &MainWindow::message);
+    if (auto* view = menuBar()->findChild<QMenu*>("ViewMenu")) {
+        view->addAction(propDock->toggleViewAction());
+        view->addAction(layerDock_->toggleViewAction());
+    }
 }
 
 void MainWindow::createStatusBar() {
@@ -430,7 +555,7 @@ void MainWindow::createStatusBar() {
     coordLabel_->setMinimumWidth(220);
     coordLabel_->setToolTip(tr("Cursor coordinates (X, Y) in drawing units"));
     statusBar()->addWidget(coordLabel_);
-    for (QAction* a : {actGrid_, actSnap_, actOrtho_, actPolar_, actOsnap_, actDyn_}) {
+    for (QAction* a : {actGrid_, actSnap_, actOrtho_, actPolar_, actOsnap_, actDyn_, actLwt_}) {
         auto* b = new QToolButton(this);
         b->setDefaultAction(a);
         if (a->menu()) {
@@ -475,12 +600,27 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("COPYCLIP", {}, [this](const std::vector<std::string>&) { copyToClipboard(false); });
     proc_.registerAction("CUTCLIP", {}, [this](const std::vector<std::string>&) { copyToClipboard(true); });
     proc_.registerAction("PASTECLIP", {}, [this](const std::vector<std::string>&) { pasteFromClipboard(); });
+    proc_.registerAction("LAYER", {"LA"}, [this](const std::vector<std::string>&) { actLayers_->trigger(); }, true);
+    proc_.registerAction("LWDISPLAY", {}, [this](const std::vector<std::string>&) { actLwt_->toggle(); }, true);
+    proc_.registerAction("LTSCALE", {"LTS"}, [this](const std::vector<std::string>& args) {
+        auto v = args.empty() ? std::nullopt : parseNumber(args.front());
+        if (!v || !(*v > 0)) {
+            message(tr("Usage: LTSCALE <factor>   (current %1)").arg(doc_.styles().ltscale()));
+            return;
+        }
+        StyleTables t = doc_.styles();
+        t.setLtscale(*v);
+        doc_.setStylesWithUndo(std::move(t), "Linetype scale");
+        message(tr("Global linetype scale: %1").arg(*v));
+    }, true);
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
         message(tr("Draw: LINE (L), PLINE (PL), ARC (A), CIRCLE (C), ELLIPSE (EL), SPLINE (SPL), RECTANGLE (REC),"
                    " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW), DONUT (DO), REVCLOUD (RC), XLINE (XL), RAY."));
         message(tr("Modify: MOVE (M), COPY (CO), ROTATE (RO), SCALE (SC), MIRROR (MI), STRETCH (S), ARRAY (AR), OFFSET (O),"
                    " TRIM (TR), EXTEND (EX), FILLET (F), CHAMFER (CHA), BREAK (BR), JOIN (J), EXPLODE (X)."
                    " Click a grip of a selected object to reshape it. Ctrl+C / Ctrl+X / Ctrl+V use the clipboard."));
+        message(tr("Layers: LAYER (LA), MATCHPROP (MA), LTSCALE <factor>, LWDISPLAY. Use the Home ribbon drop-downs to"
+                   " change the layer, colour, linetype and lineweight of selected objects."));
         message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
                    " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"
@@ -517,7 +657,9 @@ void MainWindow::onProcessorState() {
 
 void MainWindow::onDocumentChanged() {
     selection_.prune(doc_);
-    props_->refresh();
+    props_->scheduleRefresh();
+    if (layers_) layers_->scheduleRefresh();
+    refreshPropertyCombos();
     actUndo_->setEnabled(doc_.undoStack().canUndo());
     actRedo_->setEnabled(doc_.undoStack().canRedo());
     updateTitle();

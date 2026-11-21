@@ -12,12 +12,15 @@
 class QAction;
 class QLabel;
 class QMenu;
+class QComboBox;
+class QDockWidget;
 
 namespace dyncad {
 
 class CadCanvas;
 class CommandLine;
 class PropertiesPanel;
+class LayerPanel;
 class Ribbon;
 
 class MainWindow : public QMainWindow {
@@ -38,6 +41,8 @@ public:
     CommandProcessor& processor() { return proc_; }
     CadCanvas* canvas() const { return canvas_; }
     CommandLine* commandLine() const { return cmdLine_; }
+    LayerPanel* layerPanel() const { return layers_; }
+    PropertiesPanel* propertiesPanel() const { return props_; }
     const QString& currentFile() const { return currentFile_; }
 
 public slots:
@@ -81,6 +86,17 @@ private:
     CadCanvas* canvas_ = nullptr;
     CommandLine* cmdLine_ = nullptr;
     PropertiesPanel* props_ = nullptr;
+    LayerPanel* layers_ = nullptr;
+    QDockWidget* layerDock_ = nullptr;
+    QComboBox* layerCombo_ = nullptr;
+    QComboBox* colorCombo_ = nullptr;
+    QComboBox* ltCombo_ = nullptr;
+    QComboBox* lwCombo_ = nullptr;
+    QAction* actLwt_ = nullptr;
+    QAction* actLayers_ = nullptr;
+    QAction* actMatchProp_ = nullptr;
+    void refreshPropertyCombos();
+    void createLayerRibbonGroup(class RibbonPage* home);
     Ribbon* ribbon_ = nullptr;
     QLabel* coordLabel_ = nullptr;
     QLabel* unitsLabel_ = nullptr;

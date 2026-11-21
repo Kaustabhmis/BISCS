@@ -36,7 +36,12 @@ bool fromJson(const QJsonValue& val, Vec2& out) {
 
 QJsonObject entityToJson(const Entity& e) {
     QJsonObject o;
-    o["layer"] = QString::fromStdString(e.layer());
+    o["layer"] = QString::fromStdString(e.layer().empty() ? std::string("0") : e.layer());
+    // Display properties are written only when not ByLayer (keeps files small).
+    if (e.color().kind != CadColor::Kind::ByLayer) o["color"] = QString::fromStdString(e.color().toString());
+    if (upperName(e.linetype()) != "BYLAYER") o["linetype"] = QString::fromStdString(e.linetype());
+    if (e.lineweight() != kLwByLayer) o["lineweight"] = e.lineweight();
+    if (e.ltscale() != 1.0) o["ltscale"] = e.ltscale();
     switch (e.type()) {
     case EntityType::Line: {
         const auto& l = static_cast<const LineEntity&>(e);
@@ -212,9 +217,95 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
     }
     const QString layer = o.value("layer").toString("0");
     e->setLayer(layer.isEmpty() ? "0" : layer.toStdString());
+    if (o.contains("color")) {
+        CadColor c;
+        if (CadColor::parse(o.value("color").toString().toStdString(), c)) e->setColor(c);
+    }
+    if (o.contains("linetype")) e->setLinetype(o.value("linetype").toString().toStdString());
+    if (o.contains("lineweight")) {
+        const int lw = o.value("lineweight").toInt(kLwByLayer);
+        if (lw >= kLwDefault && lw <= 211) e->setLineweight(lw);
+    }
+    if (o.contains("ltscale")) e->setLtscale(o.value("ltscale").toDouble(1.0));
     return e;
 }
 
+} // namespace
+
+namespace {
+QJsonObject tablesToJson(const StyleTables& t, QJsonObject root) {
+    QJsonArray layers;
+    for (const Layer& l : t.layers()) {
+        QJsonObject o;
+        o["name"] = QString::fromStdString(l.name);
+        o["color"] = QString::fromStdString(l.color.toString());
+        o["linetype"] = QString::fromStdString(l.linetype);
+        o["lineweight"] = l.lineweight;
+        o["on"] = l.on;
+        o["frozen"] = l.frozen;
+        o["locked"] = l.locked;
+        o["plot"] = l.plot;
+        layers.append(o);
+    }
+    root["layers"] = layers;
+    root["currentLayer"] = QString::fromStdString(t.currentLayer());
+    root["ltscale"] = t.ltscale();
+    QJsonArray lts;
+    const auto& builtin = builtinLinetypes();
+    for (const Linetype& lt : t.linetypes()) {
+        bool isBuiltin = false;
+        for (const auto& b : builtin) isBuiltin |= (upperName(b.name) == upperName(lt.name) && b.pattern == lt.pattern);
+        if (isBuiltin) continue;
+        QJsonObject o;
+        o["name"] = QString::fromStdString(lt.name);
+        o["description"] = QString::fromStdString(lt.description);
+        QJsonArray pat;
+        for (double d : lt.pattern) pat.append(d);
+        o["pattern"] = pat;
+        lts.append(o);
+    }
+    if (!lts.isEmpty()) root["linetypes"] = lts;
+    return root;
+}
+
+StyleTables tablesFromJson(const QJsonObject& root, std::vector<std::string>& warnings) {
+    StyleTables t;
+    for (const auto& v : root.value("linetypes").toArray()) {
+        const QJsonObject o = v.toObject();
+        Linetype lt;
+        lt.name = o.value("name").toString().toStdString();
+        lt.description = o.value("description").toString().toStdString();
+        bool ok = !lt.name.empty();
+        for (const auto& d : o.value("pattern").toArray()) {
+            ok &= d.isDouble() && std::isfinite(d.toDouble());
+            lt.pattern.push_back(d.toDouble());
+        }
+        if (ok) t.addLinetype(lt);
+        else warnings.push_back("A linetype definition is invalid and was skipped.");
+    }
+    for (const auto& v : root.value("layers").toArray()) {
+        const QJsonObject o = v.toObject();
+        Layer l;
+        l.name = o.value("name").toString().toStdString();
+        if (!StyleTables::validName(l.name)) { warnings.push_back("Layer with an invalid name skipped."); continue; }
+        CadColor c;
+        if (CadColor::parse(o.value("color").toString("7").toStdString(), c) && c.kind != CadColor::Kind::ByLayer &&
+            c.kind != CadColor::Kind::ByBlock)
+            l.color = c;
+        l.linetype = o.value("linetype").toString(kContinuous).toStdString();
+        l.lineweight = o.value("lineweight").toInt(kLwDefault);
+        if (l.lineweight < kLwDefault || l.lineweight > 211) l.lineweight = kLwDefault;
+        l.on = o.value("on").toBool(true);
+        l.frozen = o.value("frozen").toBool(false);
+        l.locked = o.value("locked").toBool(false);
+        l.plot = o.value("plot").toBool(true);
+        if (Layer* existing = t.layer(l.name)) *existing = l;
+        else t.addLayer(l);
+    }
+    t.setLtscale(root.value("ltscale").toDouble(1.0));
+    t.setCurrentLayer(root.value("currentLayer").toString("0").toStdString());
+    return t;
+}
 } // namespace
 
 QByteArray serializeDyn(const Document& doc) {
@@ -223,6 +314,7 @@ QByteArray serializeDyn(const Document& doc) {
     root["formatVersion"] = kDynFormatVersion;
     root["application"] = QStringLiteral("DYNAMIC CAD %1").arg(DYNCAD_VERSION_STRING);
     root["units"] = QString::fromStdString(doc.units());
+    root = tablesToJson(doc.styles(), root);
     QJsonArray ents;
     for (const auto& e : doc.entities()) ents.append(entityToJson(*e));
     root["entities"] = ents;
@@ -263,7 +355,8 @@ FileResult deserializeDyn(const QByteArray& data, Document& doc) {
         ++index;
     }
     QString units = root.value("units").toString("mm");
-    doc.reset(std::move(entities), units.isEmpty() ? "mm" : units.toStdString());
+    StyleTables tables = tablesFromJson(root, r.warnings);
+    doc.reset(std::move(entities), units.isEmpty() ? "mm" : units.toStdString(), std::move(tables));
     r.ok = true;
     return r;
 }

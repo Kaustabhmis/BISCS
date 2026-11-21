@@ -132,7 +132,7 @@ std::unique_ptr<Entity> PolylineEntity::transformed(const Affine2D& xf) const {
     auto out = std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed_);
     out->setFilled(filled_);
     out->setWidth(width_ * std::sqrt(std::abs(xf.det())));
-    out->setLayer(layer());
+    out->copyStyleFrom(*this);
     return out;
 }
 

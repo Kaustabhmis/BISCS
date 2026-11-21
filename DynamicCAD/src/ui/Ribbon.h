@@ -16,8 +16,11 @@ class RibbonPage : public QWidget {
 public:
     explicit RibbonPage(QWidget* parent = nullptr);
     void addGroup(const QString& title, const QList<QAction*>& actions);
+    // Group containing arbitrary widgets (e.g. layer / colour drop-downs).
+    void addWidgetGroup(const QString& title, QWidget* content);
 
 private:
+    void insertGroup(QWidget* group);
     QHBoxLayout* layout_;
 };
 

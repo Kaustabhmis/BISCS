@@ -3,6 +3,7 @@
 
 #include "document/UndoStack.h"
 #include "entities/Entity.h"
+#include "layers/LayerTable.h"
 
 #include <functional>
 #include <map>
@@ -48,9 +49,32 @@ public:
     void markSaved() { undo_.setClean(); notifyChanged(); }
 
     // Replaces the whole drawing (used by New/Open). Clears undo history.
-    void reset(std::vector<EntityPtr> entities = {}, std::string units = "mm");
+    void reset(std::vector<EntityPtr> entities = {}, std::string units = "mm", StyleTables styles = StyleTables());
 
     const std::string& units() const { return units_; }
+
+    // ---- Layers, linetypes and effective display properties ----
+    const StyleTables& styles() const { return styles_; }
+    // Replaces the layer/linetype tables as one undo step (layer manager edits).
+    void setStylesWithUndo(StyleTables tables, const std::string& description);
+    void setStylesNoUndo(StyleTables tables) { styles_ = std::move(tables); notifyChanged(); }
+    // Renames a layer and every object on it (one undo step).
+    bool renameLayerWithUndo(const std::string& from, const std::string& to);
+    // Deletes an unused layer (not "0", not current). Returns false otherwise.
+    bool deleteLayerWithUndo(const std::string& name);
+    std::size_t countOnLayer(const std::string& name) const;
+    struct Resolved {
+        std::uint32_t rgb = 0xFFFFFF;
+        bool foreground = true;              // colour 7: drawn in the theme's foreground colour
+        const Linetype* linetype = nullptr;  // nullptr = continuous
+        double ltscale = 1.0;                // global x entity
+        int lineweight = kLwDefaultValue;    // 1/100 mm
+        bool visible = true;                 // layer on and thawed
+        bool locked = false;
+    };
+    Resolved resolve(const Entity& e) const;
+    bool isVisible(const Entity& e) const;
+    bool isSelectable(const Entity& e) const; // visible and not on a locked layer
 
     // ---- Low level (used by undo commands; do not call from UI) ----
     void appendEntities(const std::vector<EntityPtr>& entities);
@@ -72,6 +96,7 @@ private:
     EntityId nextId_ = 1;
     UndoStack undo_;
     std::string units_ = "mm";
+    StyleTables styles_;
     std::map<int, Listener> listeners_;
     int nextListener_ = 1;
 };

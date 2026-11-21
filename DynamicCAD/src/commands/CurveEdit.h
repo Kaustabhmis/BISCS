@@ -13,7 +13,7 @@ struct EditPath {
     std::vector<Primitive> prims;
     bool closed = false;
     EntityType sourceType = EntityType::Line;
-    std::string layer;
+    EntityStyle style;
     double width = 0.0;
 
     double length() const { return static_cast<double>(prims.size()); } // parameter range

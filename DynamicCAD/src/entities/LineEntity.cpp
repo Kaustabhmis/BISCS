@@ -18,7 +18,7 @@ double LineEntity::angleDeg() const { return geom::angleDeg(start_, end_); }
 namespace dyncad {
 std::unique_ptr<Entity> LineEntity::transformed(const Affine2D& xf) const {
     auto e = std::make_unique<LineEntity>(xf.apply(start_), xf.apply(end_));
-    e->setLayer(layer());
+    e->copyStyleFrom(*this);
     return e;
 }
 } // namespace dyncad

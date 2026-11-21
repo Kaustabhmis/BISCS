@@ -76,14 +76,17 @@ std::vector<std::pair<EntityId, EntityPtr>> Document::swapEntities(const std::ve
     return out;
 }
 
-void Document::reset(std::vector<EntityPtr> entities, std::string units) {
+void Document::reset(std::vector<EntityPtr> entities, std::string units, StyleTables styles) {
     entities_.clear();
     index_.clear();
     nextId_ = 1;
     undo_.clear();
     units_ = std::move(units);
+    styles_ = std::move(styles);
     for (auto& e : entities) {
         if (!e) continue;
+        if (e->layer().empty()) e->setLayer("0");
+        if (!styles_.hasLayer(e->layer())) { Layer l; l.name = e->layer(); styles_.addLayer(l); }
         e->setId(kInvalidEntityId);
         assignId(*e);
         index_[e->id()] = e;
@@ -94,6 +97,13 @@ void Document::reset(std::vector<EntityPtr> entities, std::string units) {
 
 void Document::appendEntities(const std::vector<EntityPtr>& entities) {
     for (const auto& e : entities) {
+        // New geometry goes on the current layer; foreign layers are created.
+        if (e->layer().empty()) e->setLayer(styles_.currentLayer());
+        if (!styles_.hasLayer(e->layer())) {
+            Layer l;
+            l.name = e->layer();
+            if (!styles_.addLayer(l)) e->setLayer("0");
+        }
         assignId(*e);
         index_[e->id()] = e;
         entities_.push_back(e);
@@ -128,6 +138,99 @@ void Document::restoreEntities(const std::vector<IndexedEntity>& removed) {
     }
     while (src < entities_.size()) merged.push_back(entities_[src++]);
     entities_.swap(merged);
+}
+
+namespace {
+class StylesCommand final : public UndoCommand {
+public:
+    StylesCommand(Document& doc, StyleTables t, std::string text) : doc_(doc), other_(std::move(t)), text_(std::move(text)) {}
+    void redo() override { swap(); }
+    void undo() override { swap(); }
+    std::string text() const override { return text_; }
+
+private:
+    void swap() {
+        StyleTables cur = doc_.styles();
+        doc_.setStylesNoUndo(other_);
+        other_ = std::move(cur);
+    }
+    Document& doc_;
+    StyleTables other_;
+    std::string text_;
+};
+} // namespace
+
+void Document::setStylesWithUndo(StyleTables tables, const std::string& description) {
+    if (tables == styles_) return;
+    undo_.push(std::make_unique<StylesCommand>(*this, std::move(tables), description));
+}
+
+std::size_t Document::countOnLayer(const std::string& name) const {
+    std::size_t n = 0;
+    for (const auto& e : entities_)
+        if (sameName(e->layer(), name.c_str())) ++n;
+    return n;
+}
+
+bool Document::renameLayerWithUndo(const std::string& from, const std::string& to) {
+    StyleTables t = styles_;
+    if (!t.renameLayer(from, to)) return false;
+    std::vector<std::pair<EntityId, EntityPtr>> repl;
+    for (const auto& e : entities_)
+        if (sameName(e->layer(), from.c_str())) {
+            EntityPtr c(e->clone());
+            c->setLayer(to);
+            repl.emplace_back(e->id(), c);
+        }
+    auto group = std::make_unique<CompositeCommand>(*this, "Rename layer");
+    group->add(std::make_unique<StylesCommand>(*this, std::move(t), "Rename layer"));
+    if (!repl.empty()) group->add(std::make_unique<ModifyEntitiesCommand>(*this, std::move(repl), "Rename layer"));
+    undo_.push(std::move(group));
+    return true;
+}
+
+bool Document::deleteLayerWithUndo(const std::string& name) {
+    if (countOnLayer(name) > 0) return false;
+    StyleTables t = styles_;
+    if (!t.removeLayer(name)) return false;
+    setStylesWithUndo(std::move(t), "Delete layer");
+    return true;
+}
+
+Document::Resolved Document::resolve(const Entity& e) const {
+    Resolved r;
+    const Layer* layer = styles_.layer(e.layer().empty() ? styles_.currentLayer() : e.layer());
+    static const Layer kDefault{"0"};
+    if (!layer) layer = &kDefault;
+    r.visible = layer->visible();
+    r.locked = layer->locked;
+    CadColor c = e.color();
+    if (c.kind == CadColor::Kind::ByLayer) c = layer->color;
+    if (c.kind == CadColor::Kind::ByBlock || c.kind == CadColor::Kind::ByLayer) c = CadColor::fromIndex(7);
+    r.foreground = c.isForeground();
+    r.rgb = c.kind == CadColor::Kind::Rgb ? c.rgb : colorIndexToRgb(c.index);
+    const std::string& lt = sameName(e.linetype(), "BYLAYER") ? layer->linetype : e.linetype();
+    if (sameName(lt, "BYBLOCK") || sameName(lt, "CONTINUOUS")) r.linetype = nullptr;
+    else {
+        r.linetype = styles_.linetype(lt);
+        if (r.linetype && r.linetype->pattern.empty()) r.linetype = nullptr;
+    }
+    r.ltscale = styles_.ltscale() * e.ltscale();
+    int lw = e.lineweight();
+    if (lw == kLwByLayer) lw = layer->lineweight;
+    if (lw < 0) lw = kLwDefaultValue;
+    r.lineweight = lw;
+    return r;
+}
+
+bool Document::isVisible(const Entity& e) const {
+    const Layer* l = styles_.layer(e.layer());
+    return !l || l->visible();
+}
+
+bool Document::isSelectable(const Entity& e) const {
+    const Layer* l = styles_.layer(e.layer());
+    return !l || (l->visible() && !l->locked);
 }
 
 int Document::addListener(Listener listener) {

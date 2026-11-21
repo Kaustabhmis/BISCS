@@ -7,7 +7,11 @@
 #include "entities/LineEntity.h"
 #include "ui/CommandLine.h"
 #include "snapping/SnapEngine.h"
+#include "ui/LayerPanel.h"
 #include "ui/MainWindow.h"
+#include "ui/PropertiesPanel.h"
+#include <QComboBox>
+#include <QTableWidget>
 
 #include <QLineEdit>
 #include <QTabWidget>
@@ -367,6 +371,104 @@ private slots:
             QApplication::processEvents();
             w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_modify_tab.png"));
         }
+    }
+
+    void layersColoursAndProperties() {
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1200, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        auto* c = w.canvas();
+        c->setGridVisible(false);
+        c->setOsnapEnabled(false);
+        auto& doc = w.document();
+        // New layer via the panel, make it red + CENTER, make it current.
+        const QString name = w.layerPanel()->newLayer();
+        StyleTables t = doc.styles();
+        t.layer(name.toStdString())->color = CadColor::fromIndex(1);
+        doc.setStylesWithUndo(t, "red");
+        QVERIFY(w.layerPanel()->setCurrent(name));
+        w.executeCommandText("L"); w.executeCommandText("0,0"); w.executeCommandText("100,0"); w.executeCommandText("");
+        w.executeCommandText("ZOOM E");
+        QApplication::processEvents();
+        QCOMPARE(QString::fromStdString(doc.entities()[0]->layer()), name);
+        // The line is drawn in red on screen.
+        auto redAt = [&](Vec2 world) {
+            const QImage img = c->grab().toImage();
+            const QPoint s = screenOf(w, world);
+            for (int dy = -1; dy <= 1; ++dy) {
+                const QColor px = img.pixelColor(s.x(), s.y() + dy);
+                if (px.red() > 200 && px.green() < 80 && px.blue() < 80) return true;
+            }
+            return false;
+        };
+        QTest::mouseMove(c, QPoint(5, 5));
+        QVERIFY(redAt({50, 0}));
+        // Dashed linetype leaves gaps along the line.
+        t = doc.styles();
+        t.layer(name.toStdString())->linetype = "DASHED";
+        t.setLtscale(1.0);
+        doc.setStylesWithUndo(t, "dashed");
+        QApplication::processEvents();
+        int gaps = 0, dashes = 0;
+        for (double x = 2; x < 98; x += 0.5) (redAt({x, 0}) ? dashes : gaps)++;
+        QVERIFY2(gaps > 20 && dashes > 20, qPrintable(QString("%1 gaps %2 dashes").arg(gaps).arg(dashes)));
+        // Turning the layer off hides and protects its objects.
+        t = doc.styles();
+        t.layer(name.toStdString())->on = false;
+        doc.setStylesWithUndo(t, "off");
+        QApplication::processEvents();
+        QVERIFY(!redAt({50, 0}));
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {50, 0}));
+        QVERIFY(w.selection().empty());
+        QTest::keyClick(c, Qt::Key_Escape); // that click started a selection window: cancel it
+        w.executeCommandText("U");
+        QApplication::processEvents();
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {30, 0}));
+        QCOMPARE(w.selection().size(), std::size_t(1));
+        // Properties panel: edit the line end, and the layer panel lists the layer.
+        QApplication::processEvents();
+        QVERIFY(w.propertiesPanel()->editGeometry("End", "100, 25"));
+        QCOMPARE(static_cast<const LineEntity&>(*doc.entities()[0]).end(), Vec2(100, 25));
+        QVERIFY(!w.propertiesPanel()->editGeometry("End", "garbage"));
+        QApplication::processEvents();
+        QCOMPARE(w.layerPanel()->table()->rowCount(), 2);
+        // Ribbon layer combo moves the selected line back to layer 0.
+        auto combos = w.findChildren<QComboBox*>();
+        QComboBox* layerCombo = nullptr;
+        for (auto* cb : combos) if (cb->toolTip().startsWith("Current layer")) layerCombo = cb;
+        QVERIFY(layerCombo);
+        layerCombo->setCurrentIndex(layerCombo->findData("0"));
+        emit layerCombo->activated(layerCombo->currentIndex());
+        QCOMPARE(QString::fromStdString(doc.entities()[0]->layer()), QString("0"));
+        QVERIFY(w.layerPanel()->deleteLayer(name) == false); // still current
+        w.layerPanel()->setCurrent("0");
+        QVERIFY(w.layerPanel()->deleteLayer(name));          // now empty and not current
+        w.executeCommandText("LTSCALE 2");
+        QCOMPARE(doc.styles().ltscale(), 2.0);
+    }
+
+    void layersScreenshot() {
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1400, 860);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/../../../docs/samples/sample-flange.dxf", false));
+        StyleTables t = w.document().styles();
+        t.layer("CENTER")->linetype = "CENTER";
+        t.layer("PART")->lineweight = 50;
+        t.setLtscale(1.5);
+        w.document().setStylesWithUndo(t, "styles");
+        w.executeCommandText("LWDISPLAY");
+        w.executeCommandText("LAYER");
+        w.executeCommandText("ZOOM E");
+        QTest::mouseMove(w.canvas(), QPoint(10, 10));
+        QApplication::processEvents();
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_layers.png"));
+        w.executeCommandText("LWDISPLAY");
     }
 
     void toolsScreenshot() {

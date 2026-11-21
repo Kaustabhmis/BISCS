@@ -1,7 +1,7 @@
 # DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 cmake_minimum_required(VERSION 3.21)
 
-project(DynamicCAD VERSION 0.4.0 LANGUAGES CXX
+project(DynamicCAD VERSION 0.5.0 LANGUAGES CXX
         DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -53,6 +53,8 @@ add_library(dyncad_core STATIC
     src/entities/CurveEntities.h       src/entities/CurveEntities.cpp
     src/entities/EntityGeometry.h      src/entities/EntityGeometry.cpp
     src/entities/XLineEntity.h         src/entities/XLineEntity.cpp
+    src/layers/Style.h                 src/layers/Style.cpp
+    src/layers/LayerTable.h            src/layers/LayerTable.cpp
     src/document/UndoStack.h           src/document/UndoStack.cpp
     src/document/Document.h            src/document/Document.cpp
     src/document/EditCommands.h        src/document/EditCommands.cpp
@@ -80,6 +82,8 @@ add_library(dyncad_ui STATIC
     src/ui/Icons.h               src/ui/Icons.cpp
     src/ui/CommandLine.h         src/ui/CommandLine.cpp
     src/ui/PropertiesPanel.h     src/ui/PropertiesPanel.cpp
+    src/ui/StyleWidgets.h        src/ui/StyleWidgets.cpp
+    src/ui/LayerPanel.h          src/ui/LayerPanel.cpp
     src/ui/Ribbon.h              src/ui/Ribbon.cpp
     src/ui/MainWindow.h          src/ui/MainWindow.cpp
     resources/resources.qrc

@@ -5,24 +5,42 @@
 #include "selection/SelectionSet.h"
 
 #include <QWidget>
+#include <functional>
 
 class QTreeWidget;
+class QTreeWidgetItem;
 
 namespace dyncad {
 
-// Shows real geometric data of the selection (read-only in this release):
-// type, layer, coordinates, length, angle, radius, area, perimeter.
+// Properties of the selection. General properties (layer, colour, linetype,
+// lineweight, linetype scale) are editable for any selection; geometry is
+// editable for a single object (coordinates as "x, y"). Every edit is one
+// undo step.
 class PropertiesPanel : public QWidget {
     Q_OBJECT
 public:
-    PropertiesPanel(const Document& doc, const SelectionSet& sel, QWidget* parent = nullptr);
+    PropertiesPanel(Document& doc, SelectionSet& sel, QWidget* parent = nullptr);
     void refresh();
+    void scheduleRefresh();
     QTreeWidget* tree() const { return tree_; }
+    // Applies a geometry edit by property name (as shown in the panel) to
+    // the single selected object. Returns false if the value is invalid.
+    bool editGeometry(const QString& property, const QString& value);
+
+signals:
+    void message(const QString& text);
 
 private:
-    const Document& doc_;
-    const SelectionSet& sel_;
+    QTreeWidgetItem* section(const QString& title);
+    void addRow(QTreeWidgetItem* parent, const QString& key, const QString& value);
+    void addEditRow(QTreeWidgetItem* parent, const QString& key, const QString& value);
+    void addGeneral(QTreeWidgetItem* parent);
+    void changeStyle(const std::function<void(EntityStyle&)>& f, const char* what);
+
+    Document& doc_;
+    SelectionSet& sel_;
     QTreeWidget* tree_;
+    bool pending_ = false;
 };
 
 } // namespace dyncad

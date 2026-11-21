@@ -204,6 +204,17 @@ void paintIcon(QPainter& p, const QString& n) {
         p.drawLine(QPointF(14, 32), QPointF(50, 32)); p.drawLine(QPointF(32, 14), QPointF(32, 50));
         p.setPen(QPen(gold, 3));
         p.drawRect(QRectF(36, 38, 24, 16));
+    } else if (n == "layers") {
+        for (int i = 0; i < 3; ++i) {
+            p.setPen(QPen(i == 0 ? gold : ink, 4));
+            p.drawPolygon(QPolygonF({QPointF(8, 40 - i * 12), QPointF(32, 30 - i * 12), QPointF(56, 40 - i * 12), QPointF(32, 50 - i * 12)}));
+        }
+    } else if (n == "matchprop") {
+        p.drawLine(QPointF(10, 54), QPointF(34, 30));
+        p.setPen(Qt::NoPen); p.setBrush(gold);
+        p.drawRoundedRect(QRectF(30, 8, 24, 24), 4, 4);
+    } else if (n == "lwt") {
+        for (int i = 0; i < 3; ++i) { p.setPen(QPen(ink, 2 + i * 3)); p.drawLine(QPointF(10, 16 + i * 16), QPointF(54, 16 + i * 16)); }
     } else if (n == "theme") {
         p.drawEllipse(QPointF(32, 32), 22, 22);
         p.setPen(Qt::NoPen); p.setBrush(gold);

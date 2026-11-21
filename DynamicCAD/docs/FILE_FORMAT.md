@@ -1,4 +1,4 @@
-# DYNAMIC CAD native drawing format (`.dyn`), version 3
+# DYNAMIC CAD native drawing format (`.dyn`), version 5
 
 UTF-8 JSON. Readers must reject files whose `format` is not `DynamicCAD-Drawing` or whose `formatVersion`
 is newer than they support. Unknown or invalid entities are skipped with a warning (never silently).
@@ -6,9 +6,18 @@ is newer than they support. Unknown or invalid entities are skipped with a warni
 ```json
 {
   "format": "DynamicCAD-Drawing",
-  "formatVersion": 3,
-  "application": "DYNAMIC CAD 0.3.0",
+  "formatVersion": 5,
+  "application": "DYNAMIC CAD 0.5.0",
   "units": "mm",
+  "layers": [
+    { "name": "0", "color": "7", "linetype": "Continuous", "lineweight": -3,
+      "on": true, "frozen": false, "locked": false, "plot": true },
+    { "name": "CENTER", "color": "1", "linetype": "CENTER", "lineweight": 25,
+      "on": true, "frozen": false, "locked": false, "plot": true }
+  ],
+  "currentLayer": "0",
+  "ltscale": 1.0,
+  "linetypes": [ { "name": "MYDASH", "description": "custom", "pattern": [2, -1, 0, -1] } ],
   "entities": [
     { "type": "LINE",     "layer": "0", "start": [0, 0], "end": [100, 0] },
     { "type": "CIRCLE",   "layer": "0", "center": [50, 50], "radius": 25 },
@@ -40,7 +49,16 @@ is newer than they support. Unknown or invalid entities are skipped with a warni
   `controlPoints`, optional `weights` (> 0) for rational curves.
 * POLYLINE `filled: true` (closed polylines only) draws a solid fill.
 
+* Per-entity `color` ("ByLayer", "ByBlock", "1"–"255" or "#RRGGBB"), `linetype` (name, "ByLayer", "ByBlock"),
+  `lineweight` (1/100 mm; -1 ByLayer, -2 ByBlock, -3 Default) and `ltscale` are written only when not the default.
+* `layers` always contains layer "0". Built-in linetypes are not written; `linetypes` lists only extra ones
+  (pattern in drawing units: positive dash, negative gap, 0 dot).
+* XLINE / RAY: `base` and unit `direction`. POLYLINE `width`: constant width.
+
 ## Version history
+
+* **5** (v0.5.0): layers, linetypes, colours, lineweights, linetype scales.
+* **4** (v0.4.0): XLINE, RAY, polyline width.
 
 * **3** (v0.3.0): ELLIPSE, SPLINE, filled polylines.
 

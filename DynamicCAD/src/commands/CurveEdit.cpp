@@ -124,14 +124,14 @@ EntityPtr EditPath::piece(double u0, double u1) const {
         static_cast<PolylineEntity&>(*pl).setWidth(width);
         e = pl;
     }
-    e->setLayer(layer);
+    e->setStyle(style);
     return e;
 }
 
 std::optional<EditPath> editPathOf(const Entity& e) {
     EditPath p;
     p.sourceType = e.type();
-    p.layer = e.layer();
+    p.style = e.style();
     switch (e.type()) {
     case EntityType::Line:
     case EntityType::Arc:
@@ -161,7 +161,7 @@ std::vector<double> cuttingParams(const EditPath& path, const Document& doc, Ent
     for (const auto& pr : path.prims) pb.expand(pr.bounds());
     pb = pb.inflated(1e-9 * (1.0 + std::max(pb.width(), pb.height())));
     for (const auto& ep : doc.entities()) {
-        if (ep->id() == self) continue;
+        if (ep->id() == self || !doc.isVisible(*ep)) continue;
         if (!ep->isInfinite() && !pb.intersects(ep->bounds())) continue;
         const auto others = entityPrimitives(*ep, pb);
         for (std::size_t i = 0; i < path.prims.size(); ++i)
@@ -253,7 +253,7 @@ bool TrimCommand::extendAt(CommandContext& ctx, const Vec2& p) {
     double bestT = std::numeric_limits<double>::infinity();
     Vec2 hit;
     for (const auto& ep : ctx.doc.entities()) {
-        if (ep->id() == id) continue;
+        if (ep->id() == id || !ctx.doc.isVisible(*ep)) continue;
         for (const Primitive& o : entityPrimitives(*ep, ext.bounds().inflated(1e-9)))
             for (const Vec2& x : geom::intersect(ext, o)) {
                 const double t = fractionOn(ext, x);
@@ -278,7 +278,7 @@ bool TrimCommand::extendAt(CommandContext& ctx, const Vec2& p) {
         out = polylineFrom(prims, false);
         static_cast<PolylineEntity&>(*out).setWidth(path->width);
     }
-    out->setLayer(path->layer);
+    out->setStyle(path->style);
     ctx.doc.modifyWithUndo({{id, out}}, "Extend");
     return true;
 }
@@ -470,7 +470,7 @@ EntityPtr offsetEntity(const Entity& e, double d, const Vec2& side, std::string*
         if (why) *why = std::string(e.typeName()) + " cannot be offset in this version";
         return nullptr;
     }
-    if (out) out->setLayer(e.layer());
+    if (out) out->copyStyleFrom(e);
     return out;
 }
 
@@ -597,10 +597,10 @@ std::optional<CornerResult> filletLines(const Entity& e1, const Vec2& p1, const 
         double a1 = geom::angleDeg(center, t1), a2 = geom::angleDeg(center, t2);
         if ((t1 - center).cross(t2 - center) < 0) std::swap(a1, a2);
         out.joint = std::make_shared<ArcEntity>(center, r, a1, a2);
-        out.joint->setLayer(e1.layer());
+        out.joint->copyStyleFrom(e1);
     }
-    out.first->setLayer(e1.layer());
-    out.second->setLayer(e2.layer());
+    out.first->copyStyleFrom(e1);
+    out.second->copyStyleFrom(e2);
     return out;
 }
 
@@ -618,10 +618,10 @@ std::optional<CornerResult> chamferLines(const Entity& e1, const Vec2& p1, const
     out.second = std::make_shared<LineEntity>(b, c->far2);
     if (d1 > 0 || d2 > 0) {
         out.joint = std::make_shared<LineEntity>(a, b);
-        out.joint->setLayer(e1.layer());
+        out.joint->copyStyleFrom(e1);
     }
-    out.first->setLayer(e1.layer());
-    out.second->setLayer(e2.layer());
+    out.first->copyStyleFrom(e1);
+    out.second->copyStyleFrom(e2);
     return out;
 }
 
@@ -660,7 +660,7 @@ EntityPtr filletPolyline(const Entity& e, double r, bool chamfer, int* corners, 
     if (!done) { if (why) *why = "no corner was long enough"; return nullptr; }
     auto out = std::make_shared<PolylineEntity>(std::move(nv), std::move(nb), closed);
     out->setWidth(pl.width());
-    out->setLayer(e.layer());
+    out->copyStyleFrom(e);
     return out;
 }
 
@@ -791,7 +791,7 @@ EntityPtr StretchCommand::stretched(const Entity& e, const BoundingBox& w, const
     case EntityType::Arc: // arcs move only when completely inside
         break;
     }
-    if (out) out->setLayer(e.layer());
+    if (out) out->copyStyleFrom(e);
     return out;
 }
 

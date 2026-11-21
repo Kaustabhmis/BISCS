@@ -3,6 +3,7 @@
 
 #include "geometry/Affine2D.h"
 #include "geometry/BoundingBox.h"
+#include "layers/Style.h"
 #include "geometry/Vec2.h"
 
 #include <cstdint>
@@ -14,6 +15,20 @@ namespace dyncad {
 
 using EntityId = std::uint64_t;
 inline constexpr EntityId kInvalidEntityId = 0;
+
+// Display properties of an entity. An empty layer means "the current layer"
+// and is filled in when the entity is added to a drawing.
+struct EntityStyle {
+    std::string layer;
+    CadColor color = CadColor::byLayer();
+    std::string linetype = kByLayer;
+    int lineweight = kLwByLayer;
+    double ltscale = 1.0;
+    bool operator==(const EntityStyle& o) const {
+        return layer == o.layer && color == o.color && upperName(linetype) == upperName(o.linetype) &&
+               lineweight == o.lineweight && ltscale == o.ltscale;
+    }
+};
 
 enum class EntityType { Line, Circle, Arc, Polyline, Point, Ellipse, Spline, XLine };
 
@@ -47,8 +62,20 @@ public:
 
     EntityId id() const { return id_; }
     void setId(EntityId id) { id_ = id; }
-    const std::string& layer() const { return layer_; }
-    void setLayer(std::string layer) { layer_ = std::move(layer); }
+    const std::string& layer() const { return style_.layer; }
+    void setLayer(std::string layer) { style_.layer = std::move(layer); }
+    const EntityStyle& style() const { return style_; }
+    void setStyle(const EntityStyle& s) { style_ = s; }
+    // Copies layer, colour, linetype, lineweight and linetype scale.
+    void copyStyleFrom(const Entity& o) { style_ = o.style_; }
+    const CadColor& color() const { return style_.color; }
+    void setColor(const CadColor& c) { style_.color = c; }
+    const std::string& linetype() const { return style_.linetype; }
+    void setLinetype(std::string lt) { style_.linetype = std::move(lt); }
+    int lineweight() const { return style_.lineweight; }
+    void setLineweight(int lw) { style_.lineweight = lw; }
+    double ltscale() const { return style_.ltscale; }
+    void setLtscale(double s) { if (s > 0) style_.ltscale = s; }
 
 protected:
     Entity() = default;
@@ -57,7 +84,7 @@ protected:
 
 private:
     EntityId id_ = kInvalidEntityId;
-    std::string layer_ = "0";
+    EntityStyle style_;
 };
 
 using EntityPtr = std::shared_ptr<Entity>;

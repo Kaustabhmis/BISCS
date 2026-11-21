@@ -2,9 +2,9 @@
 
 Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engineers**.
 
-![DYNAMIC CAD drawing tools](docs/screenshots/m3-draw-tools.png)
+![DYNAMIC CAD](docs/screenshots/m6-layers.png)
 
-> **Status: version 0.3.0. Core, DXF import and the complete set of 2D drawing tools are done.**
+> **Status: version 0.5.0. Core, DXF import, all 2D drawing tools, object snaps, editing commands and layers/properties are done.**
 > See [docs/STATUS.md](docs/STATUS.md) for exactly what works and what does not yet.
 
 ## What works today
@@ -14,10 +14,12 @@ Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engi
 | Window | Ribbon (Home / View), menus, Properties panel, command line, status bar, dark (default) and light theme |
 | Canvas | Adaptive grid, X/Y axes, crosshair cursor with pick box, UCS icon, live X,Y coordinates |
 | Navigation | Wheel zoom at cursor, middle-drag pan, middle double-click = zoom extents, `ZOOM E/IN/OUT/factor` |
-| Drawing | `LINE`, `PLINE` (lines + arcs), `ARC` (3P, centre), `CIRCLE` (radius, Diameter, 2P, 3P), `ELLIPSE`, `SPLINE` (fit points / control vertices), `RECTANGLE` (Fillet, Chamfer, Dimensions), `SQUARE`, `POLYGON` (inscribed, circumscribed, edge), `POINT`, `ARROW` (filled head, size, double) |
+| Drawing | `LINE`, `PLINE` (lines + arcs, width), `XLINE`, `RAY`, `DONUT`, `REVCLOUD`, `ARC` (3P, centre), `CIRCLE` (radius, Diameter, 2P, 3P), `ELLIPSE`, `SPLINE` (fit points / control vertices), `RECTANGLE` (Fillet, Chamfer, Dimensions), `SQUARE`, `POLYGON` (inscribed, circumscribed, edge), `POINT`, `ARROW` (filled head, size, double) |
 | Input | `x,y`  `@dx,dy`  `@dist<angle`  `dist<angle`  direct distance entry, GRID (F7), ORTHO (F8), SNAP (F9) |
+| Drafting aids | Object snaps (END, MID, CEN, QUA, INT, PER, TAN, NEA, NOD) with markers and one-shot overrides, polar tracking, ORTHO, dynamic input |
 | Selection | Click, Shift+click to remove, window (drag left to right), crossing (drag right to left), hover highlight, grips |
-| Editing | `ERASE` / Delete key, unlimited Undo (Ctrl+Z) / Redo (Ctrl+Y) |
+| Editing | `MOVE`, `COPY`, `ROTATE`, `SCALE`, `MIRROR`, `STRETCH`, `ARRAY`, `OFFSET`, `TRIM`, `EXTEND`, `FILLET`, `CHAMFER`, `BREAK`, `JOIN`, `EXPLODE`, `ERASE`, grip editing, Ctrl+C/X/V, unlimited Undo/Redo |
+| Layers & properties | Layer manager (on/off, freeze, lock, colour, linetype, lineweight), per-object colour/linetype/lineweight, `MATCHPROP`, editable Properties panel, `LTSCALE`, LWT display |
 | Files | New, Open, Save, Save As in the native `.dyn` format (bit-exact coordinates, atomic save, unsaved-changes prompt) |
 | DXF import | AutoCAD R12 to 2018 ASCII DXF: lines, circles, arcs, ellipses, splines, solid fills, polylines (incl. curved segments), points, layers, units, blocks (nested, scaled, rotated, mirrored, arrays). Everything not imported is listed in a report. |
 

@@ -86,7 +86,7 @@ EntityPtr withGripMoved(const Entity& e, std::size_t i, const Vec2& to) {
     case EntityType::XLine:
         return translateAll();
     }
-    if (out) out->setLayer(e.layer());
+    if (out) out->copyStyleFrom(e);
     return out;
 }
 

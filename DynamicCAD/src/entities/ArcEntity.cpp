@@ -18,13 +18,13 @@ std::unique_ptr<Entity> ArcEntity::transformed(const Affine2D& xf) const {
     double a0 = geom::angleDeg(c, s), a1 = geom::angleDeg(c, e);
     if (xf.det() < 0) std::swap(a0, a1); // mirroring reverses direction; keep CCW
     auto out = std::make_unique<ArcEntity>(c, radius_ * xf.uniformScale(), a0, a1);
-    out->setLayer(layer());
+    out->copyStyleFrom(*this);
     return out;
 }
 
 std::unique_ptr<Entity> PointEntity::transformed(const Affine2D& xf) const {
     auto out = std::make_unique<PointEntity>(xf.apply(pos_));
-    out->setLayer(layer());
+    out->copyStyleFrom(*this);
     return out;
 }
 

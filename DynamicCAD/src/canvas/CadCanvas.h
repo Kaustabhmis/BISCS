@@ -39,6 +39,7 @@ public:
     std::uint32_t snapModes() const { return snapModes_; }
     void setSnapModes(std::uint32_t m) { snapModes_ = m; refreshTracking(); }
     bool dynamicInput() const { return dyn_; }
+    bool lineweightDisplay() const { return lwDisplay_; }
     // Point the next left click will deliver (after snap / ortho / polar).
     Vec2 effectivePoint() const { return effective_; }
     const std::optional<SnapResult>& currentSnap() const { return snap_now_; }
@@ -54,6 +55,7 @@ public slots:
     void resetView(); // shows an A3-sized region (420 x 297) around the origin
     void setOsnapEnabled(bool on);
     void setDynamicInput(bool on) { dyn_ = on; update(); }
+    void setLineweightDisplay(bool on) { lwDisplay_ = on; update(); }
     void setDynamicInputText(const QString& t) { dynText_ = t; update(); }
 
 signals:
@@ -81,7 +83,8 @@ private:
 
     void drawGrid(QPainter& p) const;
     void drawAxes(QPainter& p) const;
-    void drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible) const;
+    void drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible, const Document::Resolved* style = nullptr) const;
+    QPen penFor(const Document::Resolved& r) const;
     void drawGrips(QPainter& p, const Entity& e) const;
     void drawSelectionWindow(QPainter& p) const;
     void drawCrosshair(QPainter& p) const;
@@ -117,6 +120,7 @@ private:
     bool osnap_ = true;
     std::uint32_t snapModes_ = kDefaultSnapModes;
     bool dyn_ = true;
+    bool lwDisplay_ = false;
     QString dynText_;
     Vec2 effective_;
     std::optional<SnapResult> snap_now_;

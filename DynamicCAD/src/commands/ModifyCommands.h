@@ -3,6 +3,8 @@
 
 #include "commands/InteractiveCommand.h"
 
+#include <functional>
+
 namespace dyncad {
 
 // Base for commands that first need a selection set: uses the pre-selection,
@@ -152,5 +154,26 @@ protected:
     std::string stagePrompt() const override { return {}; }
     CommandStatus stagePoint(CommandContext&, const Vec2&) override { return CommandStatus::Continue; }
 };
+
+// MATCHPROP: copies layer, colour, linetype, lineweight and linetype scale
+// from a source object to the selected destination objects.
+class MatchPropCommand final : public InteractiveCommand {
+public:
+    std::string name() const override { return "MATCHPROP"; }
+    CommandStatus start(CommandContext&) override { return CommandStatus::Continue; }
+    std::string prompt() const override {
+        return source_ ? "MATCHPROP  Select destination objects (Enter to apply):" : "MATCHPROP  Pick the source object:";
+    }
+    CommandStatus point(CommandContext& ctx, const Vec2& p) override;
+    CommandStatus enter(CommandContext& ctx) override;
+    bool wantsSelection() const override { return source_.has_value(); }
+
+private:
+    std::optional<EntityStyle> source_;
+};
+
+// Applies 'change' to a copy of every listed entity as one undo step.
+void changeEntityStyles(Document& doc, const std::vector<EntityId>& ids, const std::function<void(EntityStyle&)>& change,
+                        const std::string& what);
 
 } // namespace dyncad

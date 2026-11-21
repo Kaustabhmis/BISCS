@@ -7,6 +7,7 @@
 #include "geometry/Geometry.h"
 
 #include <cmath>
+#include <functional>
 
 namespace dyncad {
 
@@ -378,7 +379,7 @@ std::vector<EntityPtr> ExplodeCommand::explode(const Entity& e) {
         } else {
             piece = std::make_shared<LineEntity>(pl.segmentStart(i), pl.segmentEnd(i));
         }
-        piece->setLayer(e.layer());
+        piece->copyStyleFrom(e);
         out.push_back(piece);
     }
     return out;
@@ -410,7 +411,7 @@ struct Chain {
     std::vector<Vec2> v;
     std::vector<double> b; // size == v.size(); b.back() unused
     std::vector<EntityId> ids;
-    std::string layer;
+    EntityStyle style;
     Vec2 front() const { return v.front(); }
     Vec2 back() const { return v.back(); }
     void reverse() {
@@ -430,7 +431,7 @@ struct Chain {
 std::optional<Chain> toChain(const Entity& e) {
     Chain c;
     c.ids = {e.id()};
-    c.layer = e.layer();
+    c.style = e.style();
     switch (e.type()) {
     case EntityType::Line: {
         const auto& l = static_cast<const LineEntity&>(e);
@@ -503,7 +504,7 @@ std::vector<EntityPtr> JoinCommand::join(const std::vector<EntityPtr>& pieces, s
         EntityPtr e;
         if (straight) e = std::make_shared<LineEntity>(cur.v.front(), cur.v.back());
         else e = std::make_shared<PolylineEntity>(cur.v, cur.b, closed);
-        e->setLayer(cur.layer);
+        e->setStyle(cur.style);
         out.push_back(e);
         consumed.insert(consumed.end(), cur.ids.begin(), cur.ids.end());
     }
@@ -525,6 +526,43 @@ CommandStatus JoinCommand::afterSelection(CommandContext& ctx) {
     ctx.doc.changeWithUndo(consumed, std::move(joined), "Join");
     ctx.selection.clear();
     ctx.say(plural(n, "object", "objects") + " joined.");
+    return CommandStatus::Done;
+}
+
+// ================================================================ MATCHPROP
+
+void changeEntityStyles(Document& doc, const std::vector<EntityId>& ids, const std::function<void(EntityStyle&)>& change,
+                        const std::string& what) {
+    std::vector<std::pair<EntityId, EntityPtr>> repl;
+    for (EntityId id : ids) {
+        auto e = doc.findEntity(id);
+        if (!e) continue;
+        EntityStyle st = e->style();
+        change(st);
+        if (st == e->style()) continue;
+        EntityPtr copy(e->clone());
+        copy->setStyle(st);
+        repl.emplace_back(id, copy);
+    }
+    doc.modifyWithUndo(std::move(repl), what);
+}
+
+CommandStatus MatchPropCommand::point(CommandContext& ctx, const Vec2& p) {
+    if (source_) { ctx.say("Pick destination objects with the cursor, then press Enter."); return CommandStatus::Continue; }
+    const EntityId id = pickEntity(ctx.doc, p, ctx.pickTolerance);
+    if (!id) { ctx.say("No object at that point."); return CommandStatus::Continue; }
+    source_ = ctx.doc.findEntity(id)->style();
+    ctx.selection.clear();
+    return CommandStatus::Continue;
+}
+
+CommandStatus MatchPropCommand::enter(CommandContext& ctx) {
+    if (!source_ || ctx.selection.empty()) return CommandStatus::Cancelled;
+    const EntityStyle src = *source_;
+    const auto ids = ctx.selection.ids();
+    changeEntityStyles(ctx.doc, ids, [&](EntityStyle& st) { st = src; }, "Match properties");
+    ctx.selection.clear();
+    ctx.say(std::to_string(ids.size()) + (ids.size() == 1 ? " object matched." : " objects matched."));
     return CommandStatus::Done;
 }
 

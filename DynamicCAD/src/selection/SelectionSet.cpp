@@ -53,6 +53,7 @@ EntityId pickEntity(const Document& doc, const Vec2& p, double tolerance) {
     for (auto it = ents.rbegin(); it != ents.rend(); ++it) {
         const Entity& e = **it;
         if (!e.isInfinite() && !probe.intersects(e.bounds())) continue; // cheap rejection
+        if (!doc.isSelectable(e)) continue;                              // hidden or locked layer
         const double d = e.distanceTo(p);
         if (d <= tolerance && d < bestDist) {
             bestDist = d;
@@ -66,6 +67,7 @@ std::vector<EntityId> selectInRect(const Document& doc, const BoundingBox& rect,
     std::vector<EntityId> out;
     if (!rect.isValid()) return out;
     for (const auto& e : doc.entities()) {
+        if (!doc.isSelectable(*e)) continue;
         const bool hit = mode == RectSelectMode::Window ? e->insideRect(rect) : e->crossesRect(rect);
         if (hit) out.push_back(e->id());
     }

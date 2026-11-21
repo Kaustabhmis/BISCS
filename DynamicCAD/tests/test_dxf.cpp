@@ -387,7 +387,7 @@ private slots:
         const qint64 ms = t.elapsed();
         QVERIFY(r.ok);
         QCOMPARE(doc.entityCount(), std::size_t(n));
-        QCOMPARE(r.layerCount, std::size_t(50));
+        QCOMPARE(r.layerCount, std::size_t(51)); // 50 named layers + the predefined layer "0"
         qInfo() << "DXF import:" << n << "lines," << data.size() / (1024 * 1024) << "MB in" << ms << "ms";
         QVERIFY(ms < 30000);
     }

@@ -27,7 +27,7 @@ std::unique_ptr<Entity> XLineEntity::transformed(const Affine2D& xf) const {
     const Vec2 d = xf.applyVector(dir_);
     if (!(d.length() > 0)) return nullptr;
     auto e = std::make_unique<XLineEntity>(xf.apply(base_), d, ray_);
-    e->setLayer(layer());
+    e->copyStyleFrom(*this);
     return e;
 }
 
