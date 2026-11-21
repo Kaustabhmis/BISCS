@@ -3,6 +3,7 @@
 
 #include "geometry/Vec2.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace dyncad {
