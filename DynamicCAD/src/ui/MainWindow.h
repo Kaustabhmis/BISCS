@@ -102,7 +102,7 @@ private:
     QLabel* unitsLabel_ = nullptr;
     QString importedFrom_; // source DXF of an imported, not-yet-saved drawing
 
-    QAction *actNew_{}, *actOpen_{}, *actImportDxf_{}, *actSheet_{}, *actPlot_{}, *actSave_{}, *actSaveAs_{}, *actExit_{};
+    QAction *actNew_{}, *actOpen_{}, *actImportDxf_{}, *actSheet_{}, *actPlot_{}, *actExportDxf_{}, *actSave_{}, *actSaveAs_{}, *actExit_{};
     QAction *actUndo_{}, *actRedo_{}, *actErase_{}, *actSelectAll_{}, *actDeselect_{};
     QAction *actLine_{}, *actCircle_{}, *actRect_{};
     QAction *actPline_{}, *actArc_{}, *actPolygon_{}, *actEllipse_{}, *actSpline_{}, *actPoint_{}, *actSquare_{}, *actArrow_{};

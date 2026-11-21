@@ -11,6 +11,7 @@
 #include "ui/PropertiesPanel.h"
 #include "ui/StyleWidgets.h"
 #include "commands/ModifyCommands.h"
+#include "dxf/DxfWriter.h"
 #include "ui/Plotter.h"
 #include "ui/Ribbon.h"
 #include "version.h"
@@ -149,6 +150,20 @@ void MainWindow::createActions() {
     actSheet_->setIconText(tr("Sheet"));
     actPlot_ = make(tr("&Plot / Export PDF..."), "plot", QKeySequence::Print, tr("Print or export the drawing to PDF at scale (PLOT)"));
     actPlot_->setIconText(tr("Plot"));
+    actExportDxf_ = make(tr("&Export DXF..."), "", QKeySequence(), tr("Export the drawing as AutoCAD 2000 DXF (DXFOUT)"));
+    connect(actExportDxf_, &QAction::triggered, this, [this] {
+        QSettings s;
+        QString base = currentFile_.isEmpty() ? s.value("files/lastDir").toString() + "/drawing.dxf"
+                                              : QFileInfo(currentFile_).path() + "/" + QFileInfo(currentFile_).completeBaseName() + ".dxf";
+        const QString path = QFileDialog::getSaveFileName(this, tr("Export DXF"), base, tr("AutoCAD 2000 DXF (*.dxf)"));
+        if (path.isEmpty()) return;
+        const DxfExportResult r = exportDxfFile(doc_, path);
+        if (!r.ok) { QMessageBox::warning(this, tr("Export DXF"), QString::fromStdString(r.error)); return; }
+        QString msg = tr("Exported %1 objects and %2 block definitions to %3 (DXF AutoCAD 2000).").arg(r.entities).arg(r.blocks).arg(path);
+        for (const auto& kv : r.notes) msg += "\n" + QString::fromStdString(kv.first) + ": " + QString::number(kv.second);
+        message(msg);
+        statusBar()->showMessage(tr("DXF exported"), 4000);
+    });
     connect(actSheet_, &QAction::triggered, this, [this] { startCommand("SHEET"); });
     connect(actPlot_, &QAction::triggered, this, [this] {
         PlotDialog dlg(*canvas_, doc_, this);
@@ -392,7 +407,7 @@ void MainWindow::createMenus() {
     QMenu* file = menuBar()->addMenu(tr("&File"));
     file->addActions({actNew_, actOpen_, actSave_, actSaveAs_});
     file->addSeparator();
-    file->addAction(actImportDxf_);
+    file->addActions({actImportDxf_, actExportDxf_});
     file->addSeparator();
     file->addActions({actSheet_, actPlot_});
     file->addSeparator();
@@ -635,6 +650,7 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("NEW", {}, [this](const std::vector<std::string>&) { newDrawing(); });
     proc_.registerAction("OPEN", {}, [this](const std::vector<std::string>&) { openDrawing(); });
     proc_.registerAction("DXFIN", {"IMPORT"}, [this](const std::vector<std::string>&) { actImportDxf_->trigger(); });
+    proc_.registerAction("DXFOUT", {"EXPORTDXF"}, [this](const std::vector<std::string>&) { actExportDxf_->trigger(); });
     proc_.registerAction("PLOT", {"PRINT", "EXPORTPDF"}, [this](const std::vector<std::string>&) { actPlot_->trigger(); });
     proc_.registerAction("SAVE", {"QSAVE"}, [this](const std::vector<std::string>&) { save(); });
     proc_.registerAction("SAVEAS", {}, [this](const std::vector<std::string>&) { saveAs(); });

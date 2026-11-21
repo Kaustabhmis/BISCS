@@ -76,6 +76,7 @@ add_library(dyncad_core STATIC
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp
     src/dxf/DxfReader.h                src/dxf/DxfReader.cpp
+    src/dxf/DxfWriter.h                src/dxf/DxfWriter.cpp
     src/sheets/PlotLayout.h            src/sheets/PlotLayout.cpp
     src/sheets/SheetTemplates.h        src/sheets/SheetTemplates.cpp
     src/commands/SheetCommands.h       src/commands/SheetCommands.cpp
