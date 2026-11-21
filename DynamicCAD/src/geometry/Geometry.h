@@ -20,6 +20,10 @@ double distancePointToSegment(const Vec2& p, const Vec2& a, const Vec2& b);
 // Clips segment a-b to rect (Liang-Barsky). Returns nullopt if fully outside.
 std::optional<std::pair<Vec2, Vec2>> clipSegment(const Vec2& a, const Vec2& b, const BoundingBox& rect);
 bool segmentIntersectsRect(const Vec2& a, const Vec2& b, const BoundingBox& rect);
+// Clips the parametric line p(t) = origin + dir * t, t in [tMin, tMax]
+// (may be +-infinity) to rect.
+std::optional<std::pair<Vec2, Vec2>> clipParametric(const Vec2& origin, const Vec2& dir, double tMin, double tMax,
+                                                    const BoundingBox& rect);
 
 // True if the circle *curve* (not the disc) touches the closed rectangle region.
 bool circleIntersectsRect(const Vec2& center, double radius, const BoundingBox& rect);

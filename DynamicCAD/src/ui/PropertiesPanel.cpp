@@ -4,6 +4,7 @@
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -120,6 +121,12 @@ void PropertiesPanel::refresh() {
         add(tr("Length (approx.)"), num(sp.length()));
         break;
     }
+    case EntityType::XLine: {
+        const auto& x = static_cast<const XLineEntity&>(*e);
+        add(tr("Base point"), pt(x.base()));
+        add(tr("Direction (deg)"), num(radToDeg(std::atan2(x.direction().y, x.direction().x))));
+        break;
+    }
     case EntityType::Point: {
         add(tr("Position"), pt(static_cast<const PointEntity&>(*e).position()));
         break;
@@ -130,6 +137,7 @@ void PropertiesPanel::refresh() {
         add(tr("Arc segments"), p.hasArcs() ? tr("Yes") : tr("No"));
         add(tr("Closed"), p.isClosed() ? tr("Yes") : tr("No"));
         if (p.isFilled()) add(tr("Fill"), tr("Solid"));
+        if (p.width() > 0) add(tr("Width"), num(p.width()));
         add(tr("Length"), num(p.length()));
         if (p.isClosed()) add(tr("Area"), num(p.area()));
         const BoundingBox b = p.bounds();

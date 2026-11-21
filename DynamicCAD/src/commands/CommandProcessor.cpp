@@ -200,6 +200,10 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("POINT", {"PO"}, [] { return std::make_unique<PointCommand>(); });
     proc.registerCommand("SQUARE", {"SQ"}, [] { return std::make_unique<SquareCommand>(); });
     proc.registerCommand("ARROW", {"ARW"}, [] { return std::make_unique<ArrowCommand>(); });
+    proc.registerCommand("XLINE", {"XL"}, [] { return std::make_unique<XLineCommand>(false); });
+    proc.registerCommand("RAY", {}, [] { return std::make_unique<XLineCommand>(true); });
+    proc.registerCommand("DONUT", {"DO"}, [] { return std::make_unique<DonutCommand>(); });
+    proc.registerCommand("REVCLOUD", {"RC"}, [] { return std::make_unique<RevcloudCommand>(); });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

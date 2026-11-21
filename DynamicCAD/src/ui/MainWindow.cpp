@@ -163,6 +163,10 @@ void MainWindow::createActions() {
         {&actPoint_, "Poin&t", "point", "POINT", "Place a point (PO)"},
         {&actSquare_, "S&quare", "square", "SQUARE", "Draw a square (SQ)"},
         {&actArrow_, "Arro&w", "arrow", "ARROW", "Draw an arrow with a filled head (ARW)"},
+        {&actXline_, "&Xline", "xline", "XLINE", "Infinite construction line (XL)"},
+        {&actRay_, "&Ray", "ray", "RAY", "Construction line starting at a point"},
+        {&actDonut_, "&Donut", "donut", "DONUT", "Filled ring or disc (DO)"},
+        {&actRevcloud_, "Re&vcloud", "revcloud", "REVCLOUD", "Revision cloud around changed areas (RC)"},
     };
     for (const Tool& t : tools) {
         *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
@@ -314,7 +318,9 @@ void MainWindow::createMenus() {
     draw->addSeparator();
     draw->addActions({actRect_, actSquare_, actPolygon_});
     draw->addSeparator();
-    draw->addActions({actPoint_, actArrow_});
+    draw->addActions({actPoint_, actArrow_, actDonut_, actRevcloud_});
+    draw->addSeparator();
+    draw->addActions({actXline_, actRay_});
 
     QMenu* view = menuBar()->addMenu(tr("&View"));
     view->addActions({actZoomExt_, actZoomIn_, actZoomOut_});
@@ -339,7 +345,9 @@ void MainWindow::createRibbon() {
     RibbonPage* home = ribbon_->addPage(tr("Home"));
     home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
     home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
-    home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_});
+    home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_, actDonut_, actRevcloud_});
+    RibbonPage* construct = ribbon_->addPage(tr("Construction"));
+    construct->addGroup(tr("Construction Lines"), {actXline_, actRay_});
     home->addGroup(tr("Modify"), {actErase_, actUndo_, actRedo_});
     home->addGroup(tr("Selection"), {actSelectAll_});
     RibbonPage* view = ribbon_->addPage(tr("View"));
@@ -423,7 +431,7 @@ void MainWindow::registerUiCommands() {
     }, true);
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
         message(tr("Draw: LINE (L), PLINE (PL), ARC (A), CIRCLE (C), ELLIPSE (EL), SPLINE (SPL), RECTANGLE (REC),"
-                   " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW)."));
+                   " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW), DONUT (DO), REVCLOUD (RC), XLINE (XL), RAY."));
         message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
                    " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"

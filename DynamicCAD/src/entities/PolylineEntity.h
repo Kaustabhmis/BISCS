@@ -4,6 +4,7 @@
 #include "entities/Entity.h"
 #include "geometry/Arc.h"
 
+#include <cmath>
 #include <optional>
 
 namespace dyncad {
@@ -33,6 +34,9 @@ public:
     // Solid fill (closed polylines only): arrowheads, DXF SOLID/TRACE.
     bool isFilled() const { return filled_ && closed_; }
     void setFilled(bool on) { filled_ = on; }
+    // Constant drawn width in drawing units (0 = thin line). DONUT uses it.
+    double width() const { return width_; }
+    void setWidth(double w) { width_ = (w > 0 && std::isfinite(w)) ? w : 0.0; }
     std::size_t segmentCount() const;
     // Segment i as an arc, or nullopt if it is straight.
     std::optional<ArcGeom> segmentArc(std::size_t i) const;
@@ -47,6 +51,7 @@ private:
     std::vector<double> bulges_; // same size as vertices_
     bool closed_;
     bool filled_ = false;
+    double width_ = 0.0;
 };
 
 } // namespace dyncad

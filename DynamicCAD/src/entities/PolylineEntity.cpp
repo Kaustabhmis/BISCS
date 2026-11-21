@@ -43,7 +43,7 @@ BoundingBox PolylineEntity::bounds() const {
     const std::size_t n = segmentCount();
     for (std::size_t i = 0; i < n; ++i)
         if (auto a = segmentArc(i)) b.expand(geom::arcBounds(*a));
-    return b;
+    return b.inflated(width_ / 2.0);
 }
 
 namespace {
@@ -81,11 +81,14 @@ double PolylineEntity::distanceTo(const Vec2& p) const {
                              : geom::distancePointToSegment(p, segmentStart(i), segmentEnd(i));
         best = std::min(best, d);
     }
-    return best;
+    return std::max(0.0, best - width_ / 2.0);
 }
 
-bool PolylineEntity::crossesRect(const BoundingBox& rect) const {
-    if (!rect.intersects(bounds())) return false;
+bool PolylineEntity::crossesRect(const BoundingBox& rectIn) const {
+    if (!rectIn.intersects(bounds())) return false;
+    // A wide polyline touches the rectangle if its centre line comes within
+    // half the width (approximated by growing the rectangle).
+    const BoundingBox rect = rectIn.inflated(width_ / 2.0);
     if (vertices_.size() == 1) return rect.contains(vertices_.front());
     const std::size_t n = segmentCount();
     for (std::size_t i = 0; i < n; ++i) {
@@ -128,6 +131,7 @@ std::unique_ptr<Entity> PolylineEntity::transformed(const Affine2D& xf) const {
         for (double& x : b) x = -x; // mirroring reverses arc direction
     auto out = std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed_);
     out->setFilled(filled_);
+    out->setWidth(width_ * std::sqrt(std::abs(xf.det())));
     out->setLayer(layer());
     return out;
 }

@@ -5,6 +5,7 @@
 #include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
+#include "entities/XLineEntity.h"
 #include "geometry/Geometry.h"
 
 #include <cmath>
@@ -26,15 +27,18 @@ bool validPoint(CommandContext& ctx, const Vec2& p) {
 
 // ================================================================ PLINE
 
+double PlineCommand::width_ = 0.0;
+
 std::string PlineCommand::prompt() const {
-    if (pts_.empty()) return "PLINE  Specify start point:";
+    if (askingWidth_) return "PLINE  Specify width <" + fmtNum(width_) + ">:";
+    if (pts_.empty()) return "PLINE  Specify start point or [Width]:";
     const std::string close = pts_.size() >= 3 || (arcMode_ && pts_.size() >= 2) ? "Close/" : "";
-    if (arcMode_) return "PLINE  Specify end point of arc or [Line/" + close + "Undo]:";
-    return "PLINE  Specify next point or [Arc/" + close + "Undo]:";
+    if (arcMode_) return "PLINE  Specify end point of arc or [Line/" + close + "Undo/Width]:";
+    return "PLINE  Specify next point or [Arc/" + close + "Undo/Width]:";
 }
 
 std::optional<Vec2> PlineCommand::basePoint() const {
-    if (pts_.empty()) return std::nullopt;
+    if (pts_.empty() || askingWidth_) return std::nullopt;
     return pts_.back();
 }
 
@@ -76,7 +80,18 @@ CommandStatus PlineCommand::point(CommandContext& ctx, const Vec2& p) {
     return CommandStatus::Continue;
 }
 
+CommandStatus PlineCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>& cursor) {
+    if (askingWidth_) {
+        if (v < 0) { ctx.say("Width cannot be negative."); return CommandStatus::Continue; }
+        width_ = v;
+        askingWidth_ = false;
+        return CommandStatus::Continue;
+    }
+    return InteractiveCommand::number(ctx, v, cursor);
+}
+
 CommandStatus PlineCommand::keyword(CommandContext& ctx, const std::string& kw) {
+    if (kw == "W" || kw == "WIDTH") { askingWidth_ = true; return CommandStatus::Continue; }
     if (kw == "A" || kw == "ARC") { arcMode_ = true; return CommandStatus::Continue; }
     if (kw == "L" || kw == "LINE") { arcMode_ = false; return CommandStatus::Continue; }
     if (kw == "U" || kw == "UNDO") {
@@ -97,13 +112,18 @@ CommandStatus PlineCommand::keyword(CommandContext& ctx, const std::string& kw) 
     return InteractiveCommand::keyword(ctx, kw);
 }
 
-CommandStatus PlineCommand::enter(CommandContext& ctx) { return commit(ctx, false); }
+CommandStatus PlineCommand::enter(CommandContext& ctx) {
+    if (askingWidth_) { askingWidth_ = false; return CommandStatus::Continue; }
+    return commit(ctx, false);
+}
 
 CommandStatus PlineCommand::commit(CommandContext& ctx, bool closed) {
     if (pts_.size() >= 2) {
         std::vector<double> b = bulges_;
         if (!closed) b.back() = 0.0;
-        ctx.doc.addWithUndo({std::make_shared<PolylineEntity>(pts_, std::move(b), closed)}, "Polyline");
+        auto pl = std::make_shared<PolylineEntity>(pts_, std::move(b), closed);
+        pl->setWidth(width_);
+        ctx.doc.addWithUndo({pl}, "Polyline");
     }
     pts_.clear();
     bulges_.clear();
@@ -122,7 +142,11 @@ void PlineCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entit
         v.push_back(cursor);
         b.push_back(0.0);
     }
-    if (v.size() >= 2) out.push_back(std::make_unique<PolylineEntity>(std::move(v), std::move(b), false));
+    if (v.size() >= 2) {
+        auto pl = std::make_unique<PolylineEntity>(std::move(v), std::move(b), false);
+        pl->setWidth(width_);
+        out.push_back(std::move(pl));
+    }
 }
 
 // ================================================================ ARC
@@ -352,7 +376,10 @@ std::optional<EllipseGeom> EllipseCommand::make(const Vec2& center, const Vec2& 
 
 std::string EllipseCommand::prompt() const {
     switch (stage_) {
-    case Stage::Axis1: return "ELLIPSE  Specify axis endpoint of ellipse or [Center]:";
+    case Stage::Axis1: return arc_ ? "ELLIPSE  Specify axis endpoint of elliptical arc or [Center]:"
+                                   : "ELLIPSE  Specify axis endpoint of ellipse or [Arc/Center]:";
+    case Stage::StartAngle: return "ELLIPSE  Specify start angle (point or degrees from the major axis):";
+    case Stage::EndAngle: return "ELLIPSE  Specify end angle (point or degrees, counter-clockwise):";
     case Stage::Axis2: return "ELLIPSE  Specify other endpoint of axis:";
     case Stage::Center: return "ELLIPSE  Specify center of ellipse:";
     case Stage::AxisEnd: return "ELLIPSE  Specify endpoint of axis:";
@@ -366,6 +393,8 @@ std::optional<Vec2> EllipseCommand::basePoint() const {
     case Stage::Axis2: return a_;
     case Stage::AxisEnd:
     case Stage::Other: return center_;
+    case Stage::StartAngle:
+    case Stage::EndAngle: return pending_.center;
     default: return std::nullopt;
     }
 }
@@ -376,10 +405,33 @@ double EllipseCommand::otherFromPoint(const Vec2& p) const {
     return std::abs(u.cross(p - center_));
 }
 
+double EllipseCommand::paramFromTheta(double ratio, double theta) {
+    return std::atan2(std::sin(theta), ratio * std::cos(theta));
+}
+
+double EllipseCommand::thetaOf(const Vec2& p) const {
+    return std::atan2(p.y - pending_.center.y, p.x - pending_.center.x) - std::atan2(pending_.major.y, pending_.major.x);
+}
+
 CommandStatus EllipseCommand::create(CommandContext& ctx, double other) {
     auto g = make(center_, axisEnd_, other);
     if (!g) { ctx.say("The other axis must have a length greater than zero."); return CommandStatus::Continue; }
+    if (arc_) {
+        pending_ = *g;
+        stage_ = Stage::StartAngle;
+        return CommandStatus::Continue;
+    }
     ctx.doc.addWithUndo({std::make_shared<EllipseEntity>(*g)}, "Ellipse");
+    return CommandStatus::Done;
+}
+
+CommandStatus EllipseCommand::finishArc(CommandContext& ctx, double endTheta) {
+    EllipseGeom g = pending_;
+    g.startParam = paramFromTheta(g.ratio, startTheta_);
+    g.endParam = paramFromTheta(g.ratio, endTheta);
+    while (g.endParam <= g.startParam) g.endParam += 2.0 * kPi;
+    if (g.endParam - g.startParam < 1e-12) { ctx.say("Start and end angles must differ."); return CommandStatus::Continue; }
+    ctx.doc.addWithUndo({std::make_shared<EllipseEntity>(g)}, "Elliptical arc");
     return CommandStatus::Done;
 }
 
@@ -395,17 +447,22 @@ CommandStatus EllipseCommand::point(CommandContext& ctx, const Vec2& p) {
         if (nearlyEqual(p, center_, 0.0)) { ctx.say("Axis length must be greater than zero."); return CommandStatus::Continue; }
         axisEnd_ = p; stage_ = Stage::Other; return CommandStatus::Continue;
     case Stage::Other: return create(ctx, otherFromPoint(p));
+    case Stage::StartAngle: startTheta_ = thetaOf(p); stage_ = Stage::EndAngle; return CommandStatus::Continue;
+    case Stage::EndAngle: return finishArc(ctx, thetaOf(p));
     }
     return CommandStatus::Continue;
 }
 
 CommandStatus EllipseCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>& cursor) {
     if (stage_ == Stage::Other) return create(ctx, v);
+    if (stage_ == Stage::StartAngle) { startTheta_ = degToRad(v); stage_ = Stage::EndAngle; return CommandStatus::Continue; }
+    if (stage_ == Stage::EndAngle) return finishArc(ctx, degToRad(v));
     return InteractiveCommand::number(ctx, v, cursor);
 }
 
 CommandStatus EllipseCommand::keyword(CommandContext& ctx, const std::string& kw) {
     if (stage_ == Stage::Axis1 && (kw == "C" || kw == "CENTER")) { stage_ = Stage::Center; return CommandStatus::Continue; }
+    if (stage_ == Stage::Axis1 && !arc_ && (kw == "A" || kw == "ARC")) { arc_ = true; return CommandStatus::Continue; }
     return InteractiveCommand::keyword(ctx, kw);
 }
 
@@ -415,6 +472,15 @@ void EllipseCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Ent
     } else if (stage_ == Stage::Other) {
         if (auto g = make(center_, axisEnd_, otherFromPoint(cursor))) out.push_back(std::make_unique<EllipseEntity>(*g));
         out.push_back(std::make_unique<LineEntity>(center_, cursor));
+    } else if (stage_ == Stage::StartAngle || stage_ == Stage::EndAngle) {
+        EllipseGeom g = pending_;
+        if (stage_ == Stage::EndAngle) {
+            g.startParam = paramFromTheta(g.ratio, startTheta_);
+            g.endParam = paramFromTheta(g.ratio, thetaOf(cursor));
+            while (g.endParam <= g.startParam) g.endParam += 2.0 * kPi;
+        }
+        out.push_back(std::make_unique<EllipseEntity>(g));
+        out.push_back(std::make_unique<LineEntity>(g.center, cursor));
     }
 }
 
@@ -603,6 +669,163 @@ void ArrowCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entit
     auto ents = build(*tail_, cursor, headSize_, double_);
     if (ents.empty()) out.push_back(std::make_unique<LineEntity>(*tail_, cursor));
     for (auto& e : ents) out.push_back(std::move(e));
+}
+
+} // namespace dyncad
+
+namespace dyncad {
+
+// ================================================================ XLINE / RAY
+
+std::string XLineCommand::prompt() const {
+    if (mode_ == Mode::AskAngle) return "XLINE  Enter angle of xline (degrees):";
+    if (ray_) return base_ ? "RAY  Specify through point (Enter to finish):" : "RAY  Specify start point:";
+    if (mode_ == Mode::Fixed) return "XLINE  Specify through point (Enter to finish):";
+    return base_ ? "XLINE  Specify through point (Enter to finish):" : "XLINE  Specify a point or [Hor/Ver/Ang]:";
+}
+
+CommandStatus XLineCommand::point(CommandContext& ctx, const Vec2& p) {
+    if (!validPoint(ctx, p)) return CommandStatus::Continue;
+    if (mode_ == Mode::Fixed) {
+        ctx.doc.addWithUndo({std::make_shared<XLineEntity>(p, fixedDir_, false)}, "Xline");
+        return CommandStatus::Continue;
+    }
+    if (!base_) { base_ = p; return CommandStatus::Continue; }
+    if (nearlyEqual(p, *base_, 0.0)) { ctx.say("Through point must differ from the base point."); return CommandStatus::Continue; }
+    ctx.doc.addWithUndo({std::make_shared<XLineEntity>(*base_, p - *base_, ray_)}, ray_ ? "Ray" : "Xline");
+    return CommandStatus::Continue;
+}
+
+CommandStatus XLineCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>& cursor) {
+    if (mode_ == Mode::AskAngle) {
+        fixedDir_ = Vec2::fromPolar(1.0, degToRad(v));
+        mode_ = Mode::Fixed;
+        return CommandStatus::Continue;
+    }
+    return InteractiveCommand::number(ctx, v, cursor);
+}
+
+CommandStatus XLineCommand::keyword(CommandContext& ctx, const std::string& kw) {
+    if (!ray_ && !base_ && mode_ == Mode::Through) {
+        if (kw == "H" || kw == "HOR") { fixedDir_ = {1, 0}; mode_ = Mode::Fixed; return CommandStatus::Continue; }
+        if (kw == "V" || kw == "VER") { fixedDir_ = {0, 1}; mode_ = Mode::Fixed; return CommandStatus::Continue; }
+        if (kw == "A" || kw == "ANG") { mode_ = Mode::AskAngle; return CommandStatus::Continue; }
+    }
+    return InteractiveCommand::keyword(ctx, kw);
+}
+
+void XLineCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entity>>& out) const {
+    if (mode_ == Mode::Fixed) out.push_back(std::make_unique<XLineEntity>(cursor, fixedDir_, false));
+    else if (base_ && !nearlyEqual(cursor, *base_, 0.0)) out.push_back(std::make_unique<XLineEntity>(*base_, cursor - *base_, ray_));
+}
+
+// ================================================================ DONUT
+
+double DonutCommand::inside_ = 10.0;
+double DonutCommand::outside_ = 20.0;
+
+std::unique_ptr<Entity> DonutCommand::make(const Vec2& c, double inside, double outside) {
+    // Two half-circle bulges at the mid radius, drawn with width = ring thickness.
+    const double rm = (inside + outside) / 4.0;
+    auto pl = std::make_unique<PolylineEntity>(std::vector<Vec2>{c + Vec2{rm, 0}, c - Vec2{rm, 0}}, std::vector<double>{1.0, 1.0}, true);
+    pl->setWidth((outside - inside) / 2.0);
+    return pl;
+}
+
+std::string DonutCommand::prompt() const {
+    switch (stage_) {
+    case Stage::Inside: return "DONUT  Specify inside diameter <" + fmtNum(inside_) + ">:";
+    case Stage::Outside: return "DONUT  Specify outside diameter <" + fmtNum(outside_) + ">:";
+    case Stage::Center: return "DONUT  Specify center (Enter to finish):";
+    }
+    return {};
+}
+
+CommandStatus DonutCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>& cursor) {
+    if (stage_ == Stage::Inside) {
+        if (v < 0) { ctx.say("Diameter cannot be negative."); return CommandStatus::Continue; }
+        inside_ = v; stage_ = Stage::Outside; return CommandStatus::Continue;
+    }
+    if (stage_ == Stage::Outside) {
+        if (!(v > inside_)) { ctx.say("Outside diameter must be larger than the inside diameter."); return CommandStatus::Continue; }
+        outside_ = v; stage_ = Stage::Center; return CommandStatus::Continue;
+    }
+    return InteractiveCommand::number(ctx, v, cursor);
+}
+
+CommandStatus DonutCommand::enter(CommandContext&) {
+    if (stage_ == Stage::Inside) { stage_ = Stage::Outside; return CommandStatus::Continue; }
+    if (stage_ == Stage::Outside) {
+        if (!(outside_ > inside_)) outside_ = inside_ + 1.0;
+        stage_ = Stage::Center;
+        return CommandStatus::Continue;
+    }
+    return CommandStatus::Done;
+}
+
+CommandStatus DonutCommand::point(CommandContext& ctx, const Vec2& p) {
+    if (!validPoint(ctx, p)) return CommandStatus::Continue;
+    if (stage_ != Stage::Center) { ctx.say("Type the diameter (or press Enter for the default)."); return CommandStatus::Continue; }
+    ctx.doc.addWithUndo({EntityPtr(make(p, inside_, outside_))}, "Donut");
+    return CommandStatus::Continue; // repeat until Enter
+}
+
+void DonutCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entity>>& out) const {
+    if (stage_ == Stage::Center) out.push_back(make(cursor, inside_, outside_));
+}
+
+// ================================================================ REVCLOUD
+
+double RevcloudCommand::arcLength_ = 15.0;
+
+std::unique_ptr<Entity> RevcloudCommand::make(const Vec2& a, const Vec2& b, double arcLen) {
+    const double x0 = std::min(a.x, b.x), x1 = std::max(a.x, b.x), y0 = std::min(a.y, b.y), y1 = std::max(a.y, b.y);
+    if (!(x1 > x0) || !(y1 > y0) || !(arcLen > 0)) return nullptr;
+    const Vec2 corners[4] = {{x0, y0}, {x1, y0}, {x1, y1}, {x0, y1}}; // counter-clockwise
+    std::vector<Vec2> v;
+    for (int s = 0; s < 4; ++s) {
+        const Vec2 p = corners[s], q = corners[(s + 1) % 4];
+        const int n = std::max(1, static_cast<int>(std::lround(distance(p, q) / arcLen)));
+        for (int i = 0; i < n; ++i) v.push_back(p + (q - p) * (static_cast<double>(i) / n));
+    }
+    // Positive bulge on a counter-clockwise outline = scallops bulging outwards.
+    std::vector<double> bulges(v.size(), 0.5);
+    return std::make_unique<PolylineEntity>(std::move(v), std::move(bulges), true);
+}
+
+std::string RevcloudCommand::prompt() const {
+    if (askingLength_) return "REVCLOUD  Specify approximate arc chord length <" + fmtNum(arcLength_) + ">:";
+    return corner_ ? "REVCLOUD  Specify opposite corner:" : "REVCLOUD  Specify first corner or [Arc length]:";
+}
+
+CommandStatus RevcloudCommand::point(CommandContext& ctx, const Vec2& p) {
+    if (!validPoint(ctx, p)) return CommandStatus::Continue;
+    if (askingLength_) { ctx.say("Type the arc length."); return CommandStatus::Continue; }
+    if (!corner_) { corner_ = p; return CommandStatus::Continue; }
+    auto e = make(*corner_, p, arcLength_);
+    if (!e) { ctx.say("The cloud needs a width and a height."); return CommandStatus::Continue; }
+    ctx.doc.addWithUndo({EntityPtr(std::move(e))}, "Revision cloud");
+    return CommandStatus::Done;
+}
+
+CommandStatus RevcloudCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>& cursor) {
+    if (askingLength_) {
+        if (!(v > 0)) { ctx.say("Arc length must be greater than zero."); return CommandStatus::Continue; }
+        arcLength_ = v;
+        askingLength_ = false;
+        return CommandStatus::Continue;
+    }
+    return InteractiveCommand::number(ctx, v, cursor);
+}
+
+CommandStatus RevcloudCommand::keyword(CommandContext& ctx, const std::string& kw) {
+    if (!corner_ && (kw == "A" || kw == "ARC")) { askingLength_ = true; return CommandStatus::Continue; }
+    return InteractiveCommand::keyword(ctx, kw);
+}
+
+void RevcloudCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entity>>& out) const {
+    if (corner_ && !askingLength_)
+        if (auto e = make(*corner_, cursor, arcLength_)) out.push_back(std::move(e));
 }
 
 } // namespace dyncad

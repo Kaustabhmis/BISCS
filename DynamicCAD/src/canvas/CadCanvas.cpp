@@ -4,6 +4,7 @@
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "geometry/Geometry.h"
@@ -110,7 +111,7 @@ void CadCanvas::paintEvent(QPaintEvent*) {
     p.setBrush(Qt::NoBrush);
     for (const auto& e : doc_.entities()) {
         if (selection_.contains(e->id()) || e->id() == hover_) continue;
-        if (!visible.intersects(e->bounds())) continue; // view culling
+        if (!e->isInfinite() && !visible.intersects(e->bounds())) continue; // view culling
         drawEntity(p, *e, visible);
     }
 
@@ -125,7 +126,7 @@ void CadCanvas::paintEvent(QPaintEvent*) {
     QPen selPen(colors_.selected, 2.0, Qt::DashLine);
     for (EntityId id : selection_.ids()) {
         auto e = doc_.findEntity(id);
-        if (!e || !visible.intersects(e->bounds())) continue;
+        if (!e || (!e->isInfinite() && !visible.intersects(e->bounds()))) continue;
         p.setPen(selPen);
         drawEntity(p, *e, visible);
     }
@@ -313,6 +314,11 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         p.drawLine(QPointF(s.x, s.y - 4), QPointF(s.x, s.y + 4));
         break;
     }
+    case EntityType::XLine: {
+        if (auto c = static_cast<const XLineEntity&>(e).clipped(clip))
+            p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
+        break;
+    }
     case EntityType::Ellipse: {
         const EllipseGeom& g = static_cast<const EllipseEntity&>(e).geom();
         if (!clip.intersects(geom::ellipseBounds(g))) break;
@@ -341,6 +347,26 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
             }
             path.closeSubpath();
             p.fillPath(path, p.pen().color());
+        }
+        const double wpx = pl.width() * view_.scale();
+        if (wpx > 1.5) {
+            // Wide polyline: stroke the centre line with a pen of the true width.
+            QPainterPath path;
+            for (std::size_t i = 0; i < n; ++i) {
+                std::vector<Vec2> pts;
+                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, view_.pixelsToWorld(0.25));
+                else pts = {pl.segmentStart(i), pl.segmentEnd(i)};
+                for (std::size_t k = (i == 0 ? 0 : 1); k < pts.size(); ++k) {
+                    const QPointF q = qp(view_.worldToScreen(pts[k]));
+                    if (i == 0 && k == 0) path.moveTo(q); else path.lineTo(q);
+                }
+            }
+            if (pl.isClosed()) path.closeSubpath();
+            QPen wide(p.pen().color(), wpx, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+            p.save();
+            p.strokePath(path, wide);
+            p.restore();
+            break;
         }
         for (std::size_t i = 0; i < n; ++i) {
             if (auto a = pl.segmentArc(i)) drawArc(*a);

@@ -6,6 +6,7 @@
 #include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
+#include "entities/XLineEntity.h"
 
 #include <cmath>
 
@@ -61,6 +62,13 @@ std::vector<Primitive> entityPrimitives(const Entity& e, const BoundingBox& regi
     case EntityType::Spline:
         addPolyPoints(static_cast<const SplineEntity&>(e).approximation(), out, region);
         break;
+    case EntityType::XLine: {
+        const auto& x = static_cast<const XLineEntity&>(e);
+        // Unbounded: clip to the region, or to a very large box around the base.
+        const BoundingBox box = region.isValid() ? region : BoundingBox(x.base() - Vec2{1e9, 1e9}, x.base() + Vec2{1e9, 1e9});
+        if (auto c = x.clipped(box)) out.push_back(Primitive::segment(c->first, c->second));
+        break;
+    }
     case EntityType::Point:
         break;
     }
@@ -143,6 +151,12 @@ EntityKeyPoints entityKeyPoints(const Entity& e) {
     case EntityType::Point:
         k.nodes = {static_cast<const PointEntity&>(e).position()};
         break;
+    case EntityType::XLine: {
+        const auto& x = static_cast<const XLineEntity&>(e);
+        if (x.isRay()) k.endpoints = {x.base()};
+        else k.midpoints = {x.base()};
+        break;
+    }
     }
     return k;
 }

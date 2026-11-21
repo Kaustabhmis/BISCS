@@ -66,6 +66,22 @@ void paintIcon(QPainter& p, const QString& n) {
         p.drawLine(QPointF(8, 52), QPointF(42, 22));
         p.setPen(Qt::NoPen); p.setBrush(gold);
         p.drawPolygon(QPolygonF({QPointF(56, 10), QPointF(36, 18), QPointF(48, 32)}));
+    } else if (n == "xline") {
+        p.drawLine(QPointF(2, 50), QPointF(62, 14));
+        dot({32, 32});
+    } else if (n == "ray") {
+        p.drawLine(QPointF(12, 50), QPointF(62, 14));
+        dot({12, 50});
+    } else if (n == "donut") {
+        p.setPen(QPen(ink, 10));
+        p.drawEllipse(QPointF(32, 32), 18, 18);
+    } else if (n == "revcloud") {
+        for (int i = 0; i < 4; ++i) {
+            p.drawArc(QRectF(6 + i * 13, 10, 14, 12), 0, 180 * 16);
+            p.drawArc(QRectF(6 + i * 13, 42, 14, 12), 180 * 16, 180 * 16);
+        }
+        p.drawArc(QRectF(2, 18, 12, 28), 90 * 16, 180 * 16);
+        p.drawArc(QRectF(50, 18, 12, 28), -90 * 16, 180 * 16);
     } else if (n == "erase") {
         p.drawLine(QPointF(14, 50), QPointF(50, 14));
         p.setPen(QPen(QColor(0xE0, 0x50, 0x50), 6, Qt::SolidLine, Qt::RoundCap));

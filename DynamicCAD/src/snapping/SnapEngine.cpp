@@ -77,7 +77,7 @@ std::optional<SnapResult> SnapEngine::find(const Document& doc, const Vec2& curs
         const Entity& e = *ep;
         const BoundingBox b = e.bounds();
         // Every snap point of an entity (centres included) lies inside its bounds.
-        if (!probe.intersects(b)) continue;
+        if (!e.isInfinite() && !probe.intersects(b)) continue;
         const bool curveNear = e.distanceTo(cursor) <= aperture;
         const EntityKeyPoints k = entityKeyPoints(e);
         if (modes & SnapCenter) {

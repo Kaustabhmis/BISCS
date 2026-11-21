@@ -2,6 +2,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
+#include "entities/XLineEntity.h"
 #include "selection/SelectionSet.h"
 
 #include <QtTest>
@@ -39,6 +40,19 @@ private slots:
         auto inside = selectInRect(doc, BoundingBox({210, 10}, {290, 90}), RectSelectMode::Crossing);
         QVERIFY(inside.empty()); // box inside closed polyline touches no edge
     }
+    void infiniteLines() {
+        Document d;
+        auto x = std::make_shared<XLineEntity>(Vec2{0, 0}, Vec2{1, 0}, false);
+        auto r = std::make_shared<XLineEntity>(Vec2{0, 10}, Vec2{1, 0}, true);
+        d.addWithUndo({x, r}, "x");
+        QVERIFY(selectInRect(d, BoundingBox({-1, -1}, {1, 1}), RectSelectMode::Window).empty()); // never inside
+        auto cross = selectInRect(d, BoundingBox({1000, -1}, {1001, 11}), RectSelectMode::Crossing);
+        QCOMPARE(cross.size(), std::size_t(2));
+        cross = selectInRect(d, BoundingBox({-1001, -1}, {-1000, 11}), RectSelectMode::Crossing);
+        QCOMPARE(cross.size(), std::size_t(1)); // the ray does not extend backwards
+        QCOMPARE(pickEntity(d, {5e6, 0.1}, 0.5), x->id());
+    }
+
     void setOperations() {
         SelectionSet s;
         int changes = 0;

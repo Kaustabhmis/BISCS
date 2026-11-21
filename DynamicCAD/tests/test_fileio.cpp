@@ -27,6 +27,9 @@ private slots:
         auto pl = std::make_shared<PolylineEntity>(std::vector<Vec2>{{0, 0}, {10, 0}, {10, 5}}, false);
         pl->setLayer("OUTLINE");
         ents.push_back(pl);
+        auto wide = std::make_shared<PolylineEntity>(std::vector<Vec2>{{0, 0}, {1, 0}}, false);
+        wide->setWidth(0.35);
+        ents.push_back(wide);
         a.addWithUndo(ents, "x");
 
         QTemporaryDir dir;

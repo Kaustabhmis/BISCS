@@ -52,7 +52,7 @@ EntityId pickEntity(const Document& doc, const Vec2& p, double tolerance) {
     const auto& ents = doc.entities();
     for (auto it = ents.rbegin(); it != ents.rend(); ++it) {
         const Entity& e = **it;
-        if (!probe.intersects(e.bounds())) continue; // cheap rejection
+        if (!e.isInfinite() && !probe.intersects(e.bounds())) continue; // cheap rejection
         const double d = e.distanceTo(p);
         if (d <= tolerance && d < bestDist) {
             bestDist = d;

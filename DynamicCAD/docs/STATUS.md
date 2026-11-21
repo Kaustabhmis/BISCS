@@ -1,5 +1,19 @@
 # DYNAMIC CAD: Status Report (v0.4.0, in progress)
 
+## Milestone 4: remaining drawing commands (done)
+
+| Command | Options | Verified by |
+|---|---|---|
+| XLINE / RAY | through points (repeat), Hor, Ver, Ang; infinite lines are pickable anywhere, never window-selected, ignored by zoom extents | `test_commands`, `test_selection::infiniteLines` |
+| DONUT | inside/outside diameter (disc when inside = 0), repeated centres | ring hit-testing, outer radius exact |
+| REVCLOUD | rectangular cloud, Arc length | scallop count and outward bulge |
+| ELLIPSE Arc | start/end angle by point or degrees from the major axis | end points exact |
+| PLINE Width | constant width, drawn at true scale | `test_commands` |
+| DXF | XLINE, RAY, LWPOLYLINE/POLYLINE constant width; tapered widths reported | `test_dxf::xlinesAndPolylineWidths` |
+
+**Bug found and fixed:** construction lines could not be clicked or snapped far from their base point (bounding-box
+pre-filter); now handled for infinite entities.
+
 ## Milestone 3b: snaps and drafting aids (done)
 
 | Feature | Verified by |

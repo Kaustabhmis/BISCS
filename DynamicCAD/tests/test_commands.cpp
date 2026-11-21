@@ -5,6 +5,7 @@
 #include "entities/CurveEntities.h"
 #include "commands/DrawCommands.h"
 #include "commands/ShapeCommands.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -298,6 +299,66 @@ private slots:
         f.type({"REC", "F", "50", "0,0", "10,10"}); // fillet too large: sharp corners
         QCOMPARE(f.at<PolylineEntity>(3).vertices().size(), std::size_t(4));
         RectangleCommand::resetCornerOptions();
+    }
+
+    void xlineRayDonutRevcloud() {
+        Fixture f;
+        f.type({"XL", "0,0", "10,10", "10,-10", ""});    // two xlines through the origin
+        f.type({"XLINE", "H", "0,5", "0,6", ""});        // two horizontal
+        f.type({"XL", "A", "30", "1,1", ""});            // fixed angle
+        f.type({"RAY", "5,5", "5,10", ""});
+        QCOMPARE(f.doc.entityCount(), std::size_t(6));
+        const auto& x0 = f.at<XLineEntity>(0);
+        QVERIFY(nearlyEqual(x0.direction(), Vec2{1, 1}.normalized(), 1e-15));
+        QCOMPARE(f.at<XLineEntity>(2).direction(), Vec2(1, 0));
+        QVERIFY(std::abs(radToDeg(std::atan2(f.at<XLineEntity>(4).direction().y, f.at<XLineEntity>(4).direction().x)) - 30) < 1e-12);
+        const auto& ray = f.at<XLineEntity>(5);
+        QVERIFY(ray.isRay());
+        QCOMPARE(ray.distanceTo({5, 0}), 5.0);   // behind the ray start
+        QCOMPARE(ray.distanceTo({7, 100}), 2.0); // beside it, far away
+        // Extents ignore infinity: only base points count.
+        QVERIFY(f.doc.extents().max.x <= 5.0);
+
+        Fixture g;
+        g.type({"DO", "10", "20", "0,0", "50,0", ""});
+        QCOMPARE(g.doc.entityCount(), std::size_t(2));
+        const auto& d = g.at<PolylineEntity>(0);
+        QCOMPARE(d.width(), 5.0);
+        QVERIFY(nearlyEqual(d.bounds().max, {10, 10}, 1e-12)); // outer radius 10
+        QCOMPARE(d.distanceTo({7.5, 0}), 0.0);                  // inside the ring material
+        QVERIFY(std::abs(d.distanceTo({0, 0}) - 5.0) < 1e-12);  // the hole
+        g.type({"DO", "0", "8", "100,0", ""});                  // disc
+        QCOMPARE(g.at<PolylineEntity>(2).distanceTo({100, 0}), 0.0);
+        g.type({"DO", "5", "3"});                               // outside must exceed inside
+        QVERIFY(g.proc.isActive());
+        g.proc.cancel();
+
+        Fixture h;
+        h.type({"RC", "A", "10", "0,0", "40,20"});
+        const auto& c = h.at<PolylineEntity>(0);
+        QCOMPARE(c.vertices().size(), std::size_t(12)); // 4 + 2 + 4 + 2 scallops
+        QVERIFY(c.hasArcs() && c.isClosed());
+        QVERIFY(c.area() > 800.0);                      // scallops bulge outwards
+    }
+
+    void ellipseArcAndPlineWidth() {
+        Fixture f;
+        f.type({"EL", "A", "-10,0", "10,0", "5", "0", "90"});
+        const EllipseGeom& g = static_cast<const EllipseEntity&>(*f.doc.entities()[0]).geom();
+        QVERIFY(!g.isFull());
+        QVERIFY(nearlyEqual(g.pointAt(g.startParam), {10, 0}, 1e-12));
+        QVERIFY(nearlyEqual(g.pointAt(g.endParam), {0, 5}, 1e-12));
+        // Angle 45 deg from the major axis lands where the ray at 45 deg hits the ellipse.
+        QCOMPARE(EllipseCommand::paramFromTheta(1.0, 0.7), 0.7); // circle: param == angle
+        const double t = EllipseCommand::paramFromTheta(0.5, kPi / 4);
+        const Vec2 p{10 * std::cos(t), 5 * std::sin(t)};
+        QVERIFY(std::abs(p.x - p.y) < 1e-12);
+
+        PlineCommand::setWidth(0);
+        f.type({"PL", "W", "2", "0,0", "50,0", ""});
+        QCOMPARE(f.at<PolylineEntity>(1).width(), 2.0);
+        QCOMPARE(f.at<PolylineEntity>(1).distanceTo({25, 0.9}), 0.0);
+        PlineCommand::setWidth(0);
     }
 
     void eraseWithPreselectionAndUndo() {

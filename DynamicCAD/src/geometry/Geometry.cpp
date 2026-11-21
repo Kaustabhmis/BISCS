@@ -44,6 +44,24 @@ std::optional<std::pair<Vec2, Vec2>> clipSegment(const Vec2& a, const Vec2& b, c
     return std::make_pair(ca, cb);
 }
 
+std::optional<std::pair<Vec2, Vec2>> clipParametric(const Vec2& o, const Vec2& d, double t0, double t1,
+                                                    const BoundingBox& rect) {
+    if (!rect.isValid()) return std::nullopt;
+    const double p[4] = {-d.x, d.x, -d.y, d.y};
+    const double q[4] = {o.x - rect.min.x, rect.max.x - o.x, o.y - rect.min.y, rect.max.y - o.y};
+    for (int i = 0; i < 4; ++i) {
+        if (p[i] == 0.0) {
+            if (q[i] < 0.0) return std::nullopt;
+        } else {
+            const double r = q[i] / p[i];
+            if (p[i] < 0.0) { if (r > t1) return std::nullopt; if (r > t0) t0 = r; }
+            else { if (r < t0) return std::nullopt; if (r < t1) t1 = r; }
+        }
+    }
+    if (!std::isfinite(t0) || !std::isfinite(t1)) return std::nullopt;
+    return std::make_pair(o + d * t0, o + d * t1);
+}
+
 bool segmentIntersectsRect(const Vec2& a, const Vec2& b, const BoundingBox& rect) {
     return clipSegment(a, b, rect).has_value();
 }

@@ -4,6 +4,7 @@
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "version.h"
@@ -87,6 +88,13 @@ QJsonObject entityToJson(const Entity& e) {
         }
         break;
     }
+    case EntityType::XLine: {
+        const auto& x = static_cast<const XLineEntity&>(e);
+        o["type"] = x.isRay() ? "RAY" : "XLINE";
+        o["base"] = toJson(x.base());
+        o["direction"] = toJson(x.direction());
+        break;
+    }
     case EntityType::Point: {
         o["type"] = "POINT";
         o["position"] = toJson(static_cast<const PointEntity&>(e).position());
@@ -105,6 +113,7 @@ QJsonObject entityToJson(const Entity& e) {
             o["bulges"] = bulges;
         }
         if (p.isFilled()) o["filled"] = true;
+        if (p.width() > 0) o["width"] = p.width();
         break;
     }
     }
@@ -145,6 +154,9 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
         }
         auto pl = std::make_shared<PolylineEntity>(std::move(verts), std::move(bulges), o.value("closed").toBool(false));
         pl->setFilled(o.value("filled").toBool(false));
+        const double w = o.value("width").toDouble(0.0);
+        if (!std::isfinite(w) || w < 0) { reason = "POLYLINE has an invalid width"; return nullptr; }
+        pl->setWidth(w);
         e = pl;
     } else if (type == "ARC") {
         Vec2 c;
@@ -156,6 +168,13 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
             return nullptr;
         }
         e = std::make_shared<ArcEntity>(c, r, a0.toDouble(), a1.toDouble());
+    } else if (type == "XLINE" || type == "RAY") {
+        Vec2 b, d;
+        if (!fromJson(o.value("base"), b) || !fromJson(o.value("direction"), d) || !(d.length() > 0)) {
+            reason = type.toStdString() + " has invalid base/direction";
+            return nullptr;
+        }
+        e = std::make_shared<XLineEntity>(b, d, type == "RAY");
     } else if (type == "ELLIPSE") {
         EllipseGeom g;
         g.ratio = o.value("ratio").toDouble(-1.0);

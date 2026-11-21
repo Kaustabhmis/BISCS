@@ -7,6 +7,7 @@
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -444,7 +445,18 @@ private:
                 else if (g.code == 20 && !v.empty()) v.back().y = toDouble(g.value).value_or(NAN);
                 else if (g.code == 42 && !b.empty()) b.back() = toDouble(g.value).value_or(0.0);
             }
-            addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, layerOf(e, inherit));
+            // Constant width (43), or equal per-vertex widths (40/41).
+            double w = e.num(43, 0.0);
+            std::vector<double> sw;
+            for (const Group& g : e.groups)
+                if (g.code == 40 || g.code == 41) sw.push_back(toDouble(g.value).value_or(0.0));
+            if (!sw.empty()) {
+                bool same = true;
+                for (double x : sw) same &= (x == sw.front());
+                if (same) w = sw.front();
+                else { ++varyingWidth_; w = 0.0; }
+            }
+            addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, layerOf(e, inherit), w);
         } else if (t == "ELLIPSE") {
             EllipseGeom g;
             g.center = {e.num(10, NAN), e.num(20, NAN)};
@@ -505,6 +517,11 @@ private:
             auto pl = std::make_unique<PolylineEntity>(std::move(v), true);
             pl->setFilled(true);
             addEntity(std::move(pl), xf * *o, layerOf(e, inherit));
+        } else if (t == "XLINE" || t == "RAY") {
+            const Vec2 base{e.num(10, NAN), e.num(20, NAN)}, dir{e.num(11, NAN), e.num(21, NAN)};
+            if (!base.isFinite() || !dir.isFinite() || !(dir.length() > 0)) return invalid(t);
+            checkZ(e, {30, 31});
+            addEntity(std::make_unique<XLineEntity>(base, dir, t == "RAY"), xf, layerOf(e, inherit));
         } else if (t == "SEQEND" || t == "VERTEX" || t == "ENDBLK") {
             // structural; handled by their parents
         } else if (t == "TEXT" || t == "MTEXT" || t == "ATTDEF") {
@@ -517,11 +534,13 @@ private:
     }
 
     void addPolyline(const std::string& type, std::vector<Vec2> v, std::vector<double> b, bool closed, const Affine2D& xf,
-                     const std::string& layer) {
+                     const std::string& layer, double width = 0.0) {
         for (const Vec2& p : v)
             if (!p.isFinite()) return invalid(type);
         if (v.size() < 2) return invalid(type);
-        addEntity(std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed), xf, layer);
+        auto pl = std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed);
+        pl->setWidth(width);
+        addEntity(std::move(pl), xf, layer);
     }
 
     void convertPolyline(const RawEntity& e, const std::vector<const RawEntity*>& verts, const Affine2D& xf,
@@ -539,7 +558,11 @@ private:
             v.push_back({vx->num(10, NAN), vx->num(20, NAN)});
             b.push_back(is3d ? 0.0 : vx->num(42, 0.0));
         }
-        addPolyline("POLYLINE", std::move(v), std::move(b), (flags & 1) != 0, xf * *o, layerOf(e, inherit));
+        double w = e.num(40, 0.0);
+        if (e.num(41, w) != w) { ++varyingWidth_; w = 0.0; }
+        for (const RawEntity* vx : verts)
+            if ((vx->has(40) && vx->num(40) != w) || (vx->has(41) && vx->num(41) != w)) { ++varyingWidth_; w = 0.0; break; }
+        addPolyline("POLYLINE", std::move(v), std::move(b), (flags & 1) != 0, xf * *o, layerOf(e, inherit), w);
     }
 
     void convertInsert(const RawEntity& e, const Affine2D& parent, int depth, const std::string& inherit) {
@@ -582,6 +605,9 @@ public:
             r_.warnings.push_back(std::to_string(nonUniform_) +
                                   " curved polyline(s) inside non-uniformly scaled blocks cannot be represented exactly "
                                   "and were skipped.");
+        if (varyingWidth_)
+            r_.warnings.push_back(std::to_string(varyingWidth_) +
+                                  " polyline(s) have varying (tapered) widths; they are shown as thin centre lines.");
         if (tooDeep_) r_.warnings.push_back("Block nesting deeper than 32 levels (possibly circular) was skipped.");
         for (const auto& x : xrefs_)
             r_.warnings.push_back("External reference \"" + x + "\" was not loaded (xrefs are not supported yet).");
@@ -600,6 +626,7 @@ private:
     std::vector<EntityPtr> out_;
     std::size_t nonZeroZ_ = 0, nonPlanar_ = 0, nonUniform_ = 0, tooDeep_ = 0;
     bool zSpline_ = false;
+    std::size_t varyingWidth_ = 0;
     std::set<std::string> xrefs_;
 };
 

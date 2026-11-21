@@ -88,6 +88,7 @@ private:
     QAction *actUndo_{}, *actRedo_{}, *actErase_{}, *actSelectAll_{}, *actDeselect_{};
     QAction *actLine_{}, *actCircle_{}, *actRect_{};
     QAction *actPline_{}, *actArc_{}, *actPolygon_{}, *actEllipse_{}, *actSpline_{}, *actPoint_{}, *actSquare_{}, *actArrow_{};
+    QAction *actXline_{}, *actRay_{}, *actDonut_{}, *actRevcloud_{};
     QAction *actZoomExt_{}, *actZoomIn_{}, *actZoomOut_{};
     QAction *actGrid_{}, *actSnap_{}, *actOrtho_{}, *actDark_{}, *actLight_{};
     QAction *actOsnap_{}, *actPolar_{}, *actDyn_{};

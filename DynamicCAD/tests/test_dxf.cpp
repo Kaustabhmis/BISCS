@@ -5,6 +5,7 @@
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
+#include "entities/XLineEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "fileio/DynFormat.h"
@@ -241,6 +242,27 @@ private slots:
         }
         QVERIFY(z);
         QVERIFY(tilt);
+    }
+
+    void xlinesAndPolylineWidths() {
+        const QByteArray data = dxf({"0\nXLINE\n8\n0\n10\n1\n20\n2\n11\n0\n21\n1\n",
+                                     "0\nRAY\n8\n0\n10\n0\n20\n0\n11\n1\n21\n0\n",
+                                     "0\nLWPOLYLINE\n8\n0\n90\n2\n70\n0\n43\n2.5\n10\n0\n20\n0\n10\n10\n20\n0\n",
+                                     "0\nLWPOLYLINE\n8\n0\n90\n2\n70\n0\n10\n0\n20\n5\n40\n0\n41\n3\n10\n10\n20\n5\n"});
+        Document doc;
+        const DxfImportResult r = importDxf(data, doc);
+        QVERIFY2(r.ok, r.error.c_str());
+        QCOMPARE(doc.entityCount(), std::size_t(4));
+        auto xl = all<XLineEntity>(doc);
+        QCOMPARE(xl.size(), std::size_t(2));
+        QVERIFY(!xl[0]->isRay() && xl[0]->base() == Vec2(1, 2) && xl[0]->direction() == Vec2(0, 1));
+        QVERIFY(xl[1]->isRay());
+        auto pl = all<PolylineEntity>(doc);
+        QCOMPARE(pl[0]->width(), 2.5);
+        QCOMPARE(pl[1]->width(), 0.0); // tapered: thin centre line + warning
+        bool warned = false;
+        for (auto& w : r.warnings) warned |= w.find("varying") != std::string::npos;
+        QVERIFY(warned);
     }
 
     void missingBlockAndCrLf() {

@@ -15,7 +15,7 @@ namespace dyncad {
 using EntityId = std::uint64_t;
 inline constexpr EntityId kInvalidEntityId = 0;
 
-enum class EntityType { Line, Circle, Arc, Polyline, Point, Ellipse, Spline };
+enum class EntityType { Line, Circle, Arc, Polyline, Point, Ellipse, Spline, XLine };
 
 // Base class for every drawing object. Entities hold geometry in world units
 // (double precision) and know how to answer the hit-testing questions used by
@@ -40,7 +40,10 @@ public:
     virtual std::unique_ptr<Entity> transformed(const Affine2D& xf) const = 0;
 
     // True if the entity lies entirely within rect (window selection).
-    bool insideRect(const BoundingBox& rect) const { return rect.contains(bounds()); }
+    virtual bool insideRect(const BoundingBox& rect) const { return rect.contains(bounds()); }
+    // Infinite entities (XLINE/RAY) are drawn without view culling and their
+    // bounds() cover only their base point (used for zoom extents).
+    virtual bool isInfinite() const { return false; }
 
     EntityId id() const { return id_; }
     void setId(EntityId id) { id_ = id; }

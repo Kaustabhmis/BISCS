@@ -1,7 +1,7 @@
 # DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 cmake_minimum_required(VERSION 3.21)
 
-project(DynamicCAD VERSION 0.3.0 LANGUAGES CXX
+project(DynamicCAD VERSION 0.4.0 LANGUAGES CXX
         DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -52,6 +52,7 @@ add_library(dyncad_core STATIC
     src/entities/ArcEntity.h           src/entities/ArcEntity.cpp
     src/entities/CurveEntities.h       src/entities/CurveEntities.cpp
     src/entities/EntityGeometry.h      src/entities/EntityGeometry.cpp
+    src/entities/XLineEntity.h         src/entities/XLineEntity.cpp
     src/document/UndoStack.h           src/document/UndoStack.cpp
     src/document/Document.h            src/document/Document.cpp
     src/document/EditCommands.h        src/document/EditCommands.cpp
