@@ -31,6 +31,7 @@ public:
     // "Clean" = matches the last saved state. Used for the modified flag.
     bool isClean() const { return cleanIndex_ >= 0 && static_cast<std::size_t>(cleanIndex_) == index_; }
     void setClean() { cleanIndex_ = static_cast<long long>(index_); }
+    void setUnreachableClean() { cleanIndex_ = -1; } // e.g. recovered drawing: modified until saved
     void clear();
 
     std::size_t count() const { return commands_.size(); }

@@ -1,4 +1,86 @@
-# DYNAMIC CAD: Status Report (v0.5.0)
+# DYNAMIC CAD: Status Report (v0.9.0)
+
+**Summary.** Milestones 1–11 are done and tested; M12 (DWG evaluation) and M13 (licensing design) are written up;
+M14 delivered autosave, crash recovery, recent files and the Windows installer. 17 automated test programs pass on
+Linux (normal and AddressSanitizer/UBSan builds) and on Windows (GitHub Actions, MSVC).
+
+What is **not** done yet is listed at the end of every section and in "Before a commercial release" below.
+
+## Milestone 14: release candidate items (partly done)
+
+| Feature | Verified by |
+|---|---|
+| Autosave every 5 minutes (`SAVETIME n`, 0 = off) into the per-user data folder; skipped while a command is running; never overwrites the user's drawing | `test_recovery` |
+| Crash recovery: each session holds a lock; autosaves of sessions that ended abnormally (including killed processes with stale locks) are offered at the next start: Recover / keep for later / Discard. A recovered drawing stays "modified" until saved; DXF sources are never overwritten | `test_recovery` (orphan detection, stale lock, full recover → save cycle) |
+| File → Open Recent (10 files, Clear List) | `test_recovery::recentFiles` |
+| Windows installer (NSIS): Program Files, Start menu, optional desktop shortcut, `.dyn` association, uninstaller, installs the Visual C++ runtime if missing | Windows CI artifact |
+
+**Not yet:** code signing (needs a paid certificate: approval required), update check, printed user guide,
+acceptance testing on Dynamic Engineers office PCs.
+
+## Milestone 13: licensing (design only)
+
+No licence enforcement in this build (stated in Help → About). Public-key design, no secrets in the client:
+see [LICENSING.md](LICENSING.md). Implementation waits for pricing/edition decisions and a licence server.
+
+## Milestone 12: DWG evaluation (done as a decision document)
+
+DWG is **not** supported; DXF is the exchange format in both directions. Options (ODA membership, LibreDWG/GPL
+rejected, RealDWG, own reader) are compared in [DWG_EVALUATION.md](DWG_EVALUATION.md).
+
+## Milestone 11: DXF export (done)
+
+| Feature | Verified by |
+|---|---|
+| Own DXF writer, AutoCAD 2000 (AC1015) ASCII: HEADER, CLASSES, TABLES (VPORT, LTYPE, LAYER, STYLE, VIEW, UCS, APPID, DIMSTYLE, BLOCK_RECORD), BLOCKS, ENTITIES, OBJECTS (layouts, groups, multiline style, plot-style dictionaries) | `test_dxf_export::structureAndHandles` (sections, unique handles, every owner/pointer resolves, $HANDSEED) |
+| LINE, CIRCLE, ARC, POINT, LWPOLYLINE (bulges, width), ELLIPSE, SPLINE (NURBS), XLINE, RAY, TEXT, MTEXT, DIMENSION (all five kinds, with graphics block), LEADER, INSERT (nested blocks), HATCH (pattern lines, islands, bulged boundaries) | `test_dxf_export::roundTripThroughReader` (exact coordinates after export → import) |
+| Layers (colour, true colour, off, frozen, locked, no-plot, linetype, lineweight), linetypes, entity colour/linetype/lineweight/ltscale, units, LTSCALE | same |
+| Text in the declared code page (Latin-1 symbols as bytes, others as `\U+XXXX`) | same |
+| External check: exported files audited with ezdxf 1.4.5 (MIT; development only, not shipped): **0 errors, 0 fixes**; rendered by ezdxf's independent renderer and compared visually | `tests/tools/audit_dxf_with_ezdxf.py` |
+| File → Export DXF, `DXFOUT` | |
+
+**Not yet:** opening the exported files in AutoCAD itself (not available here; please test), DXF R12 output for very
+old software, per-dimension style overrides (all dimensions use the first dimension's style in the DIMSTYLE table),
+leader text is exported as a separate MTEXT.
+
+## Milestones 9–10: drawing sheets, PDF and printing (done)
+
+| Feature | Verified by |
+|---|---|
+| `SHEET`: Dynamic Engineers A3 landscape master sheet per `docs/standards/dynamic-engineers-drawing-standard.md` (frame 20/10 mm margins, centring marks, zones 1–8/A–F, 180 mm information panel with 10 general notes, BOM, revision table, first-angle symbol, status stamp, title block with approvals/identification row, graphic scale bar), or ISO A4–A0 portrait/landscape sheets with a compact title block | `test_sheets_plot::dynamicEngineersSheetGeometry`, `isoSheetsAllSizes`, review image `docs/screenshots/m9-sheet-de-a3.png` |
+| Sheets at any drawing scale 1:n (the sheet is n× paper size in model space, so it plots exactly at 1:n); fixed graphics as one block, editable fields as text; company details are bracketed placeholders | `sheetCommandOneUndoAndSaveRoundTrip` |
+| `PLOT` dialog (Ctrl+P): paper A4–A0, orientation, area (Sheet / Extents / Display), scale Fit or 1:n, monochrome, lineweights; Export PDF, Print, Preview | |
+| Vector PDF at the exact paper size (A3 = 1190.55 × 841.89 pt), text as real fonts | `pdfExportPageSize` |
+| Plot scale accuracy: 100 units at 1:5 measured 20.0 mm (±0.1 mm at 254 dpi); 1.00 mm lineweight measured 1.0 mm; colour 7 plots black | `plotScaleAccuracyRaster`, `plotLineweightWidth` |
+
+**Open points from the standard (shown when SHEET runs):** general notes use 2.5 mm text instead of 3.0 mm so all ten
+fit; first-angle symbol orientation must be checked against ISO 5456-2; logo, legal name, address, format number and
+ownership wording are placeholders until approved.
+**Not yet:** paper-space layouts/viewports, SVG export, plot style tables, editing title-block fields in a form.
+
+## Milestone 8: blocks and hatching (done)
+
+BLOCK / INSERT / EXPLODE / PURGE, nested blocks, layer-0 and ByBlock inheritance, HATCH (SOLID, ANSI31, ANSI32,
+ANSI37, NET, LINE, DASH; pick point with automatic islands or select objects), DXF HATCH import, `.dyn` v7.
+Verified by `test_blocks_hatch`. **Not yet:** block attributes, gradient fills, associative hatches, dynamic blocks.
+DXF import still expands block references into separate objects.
+
+## Milestone 7: annotation (done)
+
+TEXT/DTEXT, MTEXT, DIMLINEAR, DIMALIGNED, DIMANGULAR, DIMRADIUS, DIMDIAMETER, LEADER, DIST, AREA, ID; dimensions
+update with STRETCH and grips; DXF import of TEXT, MTEXT, DIMENSION, LEADER; `.dyn` v6. Verified by
+`test_annotation`, `test_gui`. **Not yet:** dimension style manager, ordinate/arc-length dimensions, tolerances,
+multileaders, rich MTEXT formatting (formatting codes are stripped on import).
+
+## Before a commercial release
+
+1. Open DXF exports in AutoCAD and other CAD programs used by customers; fix anything reported.
+2. Acceptance testing on Dynamic Engineers office PCs (Windows 10 and 11) with real drawings.
+3. Approve company details for the title block; verify the projection symbol.
+4. Decide licensing model; implement per LICENSING.md.
+5. Code-signing certificate (paid) so Windows SmartScreen does not warn.
+6. Decide on DWG (DWG_EVALUATION.md).
+
 
 ## Milestone 6: layers and properties (done)
 

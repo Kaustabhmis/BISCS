@@ -21,5 +21,6 @@ int main(int argc, char* argv[]) {
 
     const QStringList args = QApplication::arguments();
     if (args.size() > 1) w.openFile(args.at(1));
+    else w.checkRecovery();
     return app.exec();
 }

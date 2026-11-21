@@ -48,6 +48,7 @@ public:
 
     bool isModified() const { return !undo_.isClean(); }
     void markSaved() { undo_.setClean(); notifyChanged(); }
+    void markUnsaved() { undo_.setUnreachableClean(); notifyChanged(); }
 
     // Replaces the whole drawing (used by New/Open). Clears undo history.
     using BlockTable = std::map<std::string, BlockDefPtr>; // key: upper-case name

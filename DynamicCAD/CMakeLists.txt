@@ -1,7 +1,7 @@
 # DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 cmake_minimum_required(VERSION 3.21)
 
-project(DynamicCAD VERSION 0.7.0 LANGUAGES CXX
+project(DynamicCAD VERSION 0.9.0 LANGUAGES CXX
         DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -75,6 +75,7 @@ add_library(dyncad_core STATIC
     src/commands/CommandProcessor.h    src/commands/CommandProcessor.cpp
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp
+    src/fileio/AutoSave.h              src/fileio/AutoSave.cpp
     src/dxf/DxfReader.h                src/dxf/DxfReader.cpp
     src/dxf/DxfWriter.h                src/dxf/DxfWriter.cpp
     src/sheets/PlotLayout.h            src/sheets/PlotLayout.cpp

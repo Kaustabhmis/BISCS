@@ -28,3 +28,8 @@ under Microsoft's Visual C++ Redistributable licence terms).
 
 This installer was created with NSIS (Nullsoft Scriptable Install System),
 which is distributed under the zlib/libpng licence.
+
+
+TRADEMARKS
+AutoCAD and DWG are trademarks of Autodesk, Inc. DYNAMIC CAD is an independent product of Dynamic Engineers and is
+not affiliated with, endorsed by or sponsored by Autodesk. DYNAMIC CAD exchanges drawings through the DXF format.

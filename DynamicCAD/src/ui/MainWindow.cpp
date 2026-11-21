@@ -38,6 +38,8 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QStatusBar>
+#include <QStandardPaths>
+#include <QLocale>
 #include <QTextBrowser>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -92,6 +94,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
         auto z = [](double v) { return std::abs(v) < 5e-5 ? 0.0 : v; }; // avoid "-0.0000"
         coordLabel_->setText(QStringLiteral("%1, %2").arg(z(x), 0, 'f', 4).arg(z(y), 0, 'f', 4));
     });
+
+    // Autosave every N minutes (SAVETIME; 0 = off) into the per-user data folder.
+    QString asDir = qEnvironmentVariable("DYNCAD_AUTOSAVE_DIR");
+    if (asDir.isEmpty()) asDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/autosave";
+    autosave_ = std::make_unique<AutoSaver>(asDir);
+    autosaveTimer_ = new QTimer(this);
+    connect(autosaveTimer_, &QTimer::timeout, this, [this] { autosaveNow(); });
+    {
+        const int minutes = QSettings().value("autosave/minutes", 5).toInt();
+        if (minutes > 0) autosaveTimer_->start(minutes * 60 * 1000);
+    }
 
     QSettings s;
     restoreGeometry(s.value("window/geometry").toByteArray());
@@ -405,7 +418,10 @@ void MainWindow::setPolarIncrement(double deg) {
 
 void MainWindow::createMenus() {
     QMenu* file = menuBar()->addMenu(tr("&File"));
-    file->addActions({actNew_, actOpen_, actSave_, actSaveAs_});
+    file->addActions({actNew_, actOpen_});
+    recentMenu_ = file->addMenu(tr("Open &Recent"));
+    rebuildRecentMenu();
+    file->addActions({actSave_, actSaveAs_});
     file->addSeparator();
     file->addActions({actImportDxf_, actExportDxf_});
     file->addSeparator();
@@ -651,6 +667,19 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("OPEN", {}, [this](const std::vector<std::string>&) { openDrawing(); });
     proc_.registerAction("DXFIN", {"IMPORT"}, [this](const std::vector<std::string>&) { actImportDxf_->trigger(); });
     proc_.registerAction("DXFOUT", {"EXPORTDXF"}, [this](const std::vector<std::string>&) { actExportDxf_->trigger(); });
+    proc_.registerAction("SAVETIME", {"AUTOSAVE"}, [this](const std::vector<std::string>& args) {
+        if (args.empty()) {
+            message(tr("SAVETIME  Autosave every %1 minute(s) (0 = off). Usage: SAVETIME <minutes>")
+                        .arg(QSettings().value("autosave/minutes", 5).toInt()));
+            return;
+        }
+        const auto v = parseNumber(args[0]);
+        if (!v || *v < 0 || *v > 600) { message(tr("Enter minutes between 0 and 600.")); return; }
+        const int m = int(std::lround(*v));
+        QSettings().setValue("autosave/minutes", m);
+        if (m > 0) autosaveTimer_->start(m * 60 * 1000); else autosaveTimer_->stop();
+        message(m > 0 ? tr("Autosave every %1 minute(s).").arg(m) : tr("Autosave off."));
+    }, true);
     proc_.registerAction("PLOT", {"PRINT", "EXPORTPDF"}, [this](const std::vector<std::string>&) { actPlot_->trigger(); });
     proc_.registerAction("SAVE", {"QSAVE"}, [this](const std::vector<std::string>&) { save(); });
     proc_.registerAction("SAVEAS", {}, [this](const std::vector<std::string>&) { saveAs(); });
@@ -729,6 +758,7 @@ void MainWindow::onProcessorState() {
 }
 
 void MainWindow::onDocumentChanged() {
+    changedSinceAutosave_ = true;
     selection_.prune(doc_);
     props_->scheduleRefresh();
     if (layers_) layers_->scheduleRefresh();
@@ -766,6 +796,7 @@ void MainWindow::newDrawing() {
     importedFrom_.clear();
     canvas_->resetView();
     updateTitle();
+    afterCleanState();
     message(tr("New drawing."));
 }
 
@@ -798,6 +829,8 @@ bool MainWindow::openFile(const QString& path) {
                                 "See the command line for details.", "", int(r.warnings.size())));
     canvas_->zoomExtents();
     updateTitle();
+    afterCleanState();
+    addRecentFile(currentFile_);
     message(tr("Opened %1 (%2 objects).").arg(QDir::toNativeSeparators(currentFile_)).arg(doc_.entityCount()));
     return true;
 }
@@ -818,6 +851,8 @@ bool MainWindow::importDxfPath(const QString& path, bool showReport) {
     QSettings().setValue("files/lastDir", QFileInfo(path).absolutePath());
     canvas_->zoomExtents();
     updateTitle();
+    afterCleanState();
+    addRecentFile(importedFrom_);
 
     QStringList lines;
     lines << tr("Source: %1").arg(QString::fromStdString(describeAcadVersion(r.acadVersion)));
@@ -859,6 +894,8 @@ bool MainWindow::saveToFile(const QString& path) {
     QSettings().setValue("files/lastDir", QFileInfo(path).absolutePath());
     doc_.markSaved();
     updateTitle();
+    afterCleanState();
+    addRecentFile(currentFile_);
     message(tr("Saved %1.").arg(QDir::toNativeSeparators(currentFile_)));
     return true;
 }
@@ -888,7 +925,104 @@ void MainWindow::closeEvent(QCloseEvent* ev) {
     QSettings s;
     s.setValue("window/geometry", saveGeometry());
     s.setValue("window/state", saveState());
+    autosave_->discard(); // normal exit: nothing to recover
     ev->accept();
+}
+
+void MainWindow::afterCleanState() {
+    autosave_->discard();
+    changedSinceAutosave_ = false;
+}
+
+bool MainWindow::autosaveNow() {
+    if (!changedSinceAutosave_ || !doc_.isModified()) return false;
+    if (proc_.isActive()) return false; // never in the middle of a command; try at the next tick
+    QString err;
+    if (!autosave_->save(doc_, currentFile_.isEmpty() ? importedFrom_ : currentFile_, &err)) {
+        message(tr("Autosave failed: %1").arg(err));
+        return false;
+    }
+    changedSinceAutosave_ = false;
+    statusBar()->showMessage(tr("Autosaved"), 3000);
+    return true;
+}
+
+bool MainWindow::recoverFrom(const QString& file, const QString& original) {
+    proc_.cancel();
+    selection_.clear();
+    const FileResult r = loadDynFile(doc_, file);
+    if (!r.ok) {
+        message(tr("Recovery failed: %1").arg(QString::fromStdString(r.error)));
+        return false;
+    }
+    // Keep the original name only for .dyn drawings; a DXF source is never overwritten.
+    const bool dyn = QFileInfo(original).suffix().compare("dyn", Qt::CaseInsensitive) == 0;
+    currentFile_ = dyn ? original : QString();
+    importedFrom_ = dyn ? QString() : original;
+    doc_.markUnsaved(); // the recovered drawing must be saved explicitly
+    canvas_->zoomExtents();
+    updateTitle();
+    changedSinceAutosave_ = true;
+    message(tr("Recovered drawing (%1 objects)%2. Save it to keep the changes.")
+                .arg(doc_.entityCount())
+                .arg(original.isEmpty() ? QString() : tr(" of %1").arg(QDir::toNativeSeparators(original))));
+    return true;
+}
+
+int MainWindow::checkRecovery(bool ask) {
+    int recovered = 0;
+    for (const auto& o : autosave_->orphans()) {
+        const QString name = o.original.isEmpty() ? tr("an unsaved drawing") : QDir::toNativeSeparators(o.original);
+        QMessageBox::StandardButton b = QMessageBox::Yes;
+        if (ask)
+            b = QMessageBox::question(this, tr("Drawing Recovery"),
+                                      tr("DYNAMIC CAD did not close normally. An autosave of %1 from %2 was found.\n\n"
+                                         "Recover it?").arg(name, QLocale().toString(o.savedAt, QLocale::ShortFormat)),
+                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Discard, QMessageBox::Yes);
+        if (b == QMessageBox::Yes && recovered == 0 && recoverFrom(o.file, o.original)) {
+            ++recovered;
+            AutoSaver::removeOrphan(o);
+            autosaveNow(); // the recovered drawing is now protected by this session's autosave
+        } else if (b == QMessageBox::Discard) {
+            AutoSaver::removeOrphan(o);
+        }
+        // "No": keep the file for a later session.
+    }
+    return recovered;
+}
+
+QStringList MainWindow::recentFiles() const { return QSettings().value("files/recent").toStringList(); }
+
+void MainWindow::addRecentFile(const QString& path) {
+    if (path.isEmpty()) return;
+    QStringList l = recentFiles();
+    l.removeAll(path);
+    l.prepend(path);
+    while (l.size() > 10) l.removeLast();
+    QSettings().setValue("files/recent", l);
+    rebuildRecentMenu();
+}
+
+void MainWindow::rebuildRecentMenu() {
+    if (!recentMenu_) return;
+    recentMenu_->clear();
+    const QStringList l = recentFiles();
+    int i = 0;
+    for (const QString& p : l) {
+        QAction* a = recentMenu_->addAction(QStringLiteral("&%1  %2").arg(++i % 10).arg(QDir::toNativeSeparators(p)));
+        connect(a, &QAction::triggered, this, [this, p] {
+            if (!QFileInfo::exists(p)) { QMessageBox::warning(this, tr("Open Recent"), tr("%1 no longer exists.").arg(p)); return; }
+            if (maybeSave()) openFile(p);
+        });
+    }
+    if (l.isEmpty()) recentMenu_->addAction(tr("(none)"))->setEnabled(false);
+    else {
+        recentMenu_->addSeparator();
+        connect(recentMenu_->addAction(tr("Clear List")), &QAction::triggered, this, [this] {
+            QSettings().remove("files/recent");
+            rebuildRecentMenu();
+        });
+    }
 }
 
 // ------------------------------------------------------------------ misc
@@ -906,6 +1040,10 @@ void MainWindow::showAbout() {
                        tr("<h3>DYNAMIC CAD %1</h3>"
                           "<p>Professional 2D CAD by <b>Dynamic Engineers</b>.</p>"
                           "<p>Copyright &copy; Dynamic Engineers. All rights reserved.</p>"
+                          "<p><b>Pre-release for internal evaluation.</b> This build has no licence activation; "
+                          "all features are enabled.</p>"
+                          "<p>File exchange with AutoCAD: DXF import (R12&ndash;2018) and DXF export (AutoCAD 2000). "
+                          "DWG is not supported.</p>"
                           "<p>Built with Qt %2 (LGPL v3). See Help &gt; Third-Party Notices.</p>")
                            .arg(DYNCAD_VERSION_STRING, qVersion()));
 }

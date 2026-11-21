@@ -13,11 +13,11 @@ report, and preserved working code. A feature counts as done only when it works 
 | M5 | **Editing** | MOVE … EXPLODE, grips, clipboard | **Done** |
 | M6 | **Layers & properties** | Layer manager, colours, linetypes, lineweights, MATCHPROP, editable properties, DXF styles | **Done** |
 | (old M3b) | Drafting aids | (merged into M3b–M6 above) | Done |
-| M7 | **Annotation (next)** | TEXT, MTEXT, dimension styles, linear/aligned/angular/radius/diameter dimensions, leaders, MEASURE/DIST/AREA | |
-| M8 | Blocks & hatch | Block definitions/insertions with attributes, HATCH (ANSI31 etc. own pattern definitions), spatial index | |
-| M9 | Engineering sheets | Paper space / layouts, A4–A1 sheets; **Dynamic Engineers A3 master sheet per `docs/standards/dynamic-engineers-drawing-standard.md`** (frame, zones, title block, BOM, revision table, projection symbol, status stamp, scale bar) | |
-| M10 | Output | PDF plotting (exact 420 × 297 mm), print preview, printing, SVG export | |
-| M11 | DXF II | DXF **export** (R2010) and import of text, dimensions, hatches, splines, ellipses as those entities are added; extend own reader/writer: geometry, layers, linetypes, text, dimensions, blocks; compatibility warnings; automated round-trip tests; manual verification by opening exports in a licensed AutoCAD / other CAD | |
-| M12 | DWG evaluation | Written comparison (ODA membership cost vs DXF-only vs other lawful options), test against real customer drawings; no compatibility claim until validated | |
-| M13 | Licensing | Local dev mode first: trial, activation key, machine binding, offline grace; server later (no secrets in the client) | |
-| M14 | Release candidate | Inno Setup installer, code signing, crash recovery/autosave, update check, user guide, Windows acceptance testing on office PCs | |
+| M7 | **Annotation** | TEXT, MTEXT, linear/aligned/angular/radius/diameter dimensions, leaders, DIST/AREA/ID | **Done** (dimension style manager later) |
+| M8 | Blocks & hatch | Block definitions/insertions, HATCH (own pattern definitions); attributes and spatial index later | **Done** (attributes pending) |
+| M9 | Engineering sheets | Paper space / layouts, A4–A1 sheets; **Dynamic Engineers A3 master sheet per `docs/standards/dynamic-engineers-drawing-standard.md`** (frame, zones, title block, BOM, revision table, projection symbol, status stamp, scale bar) | **Done** (sheets in model space; layouts/viewports later) |
+| M10 | Output | PDF plotting (exact 420 × 297 mm), print preview, printing, SVG export | **Done** except SVG |
+| M11 | DXF II | DXF **export** (AutoCAD 2000 format) and import of text, dimensions, hatches, splines, ellipses as those entities are added; extend own reader/writer: geometry, layers, linetypes, text, dimensions, blocks; compatibility warnings; automated round-trip tests; manual verification by opening exports in a licensed AutoCAD / other CAD | **Done** (export AutoCAD 2000; manual AutoCAD check pending) |
+| M12 | DWG evaluation | Written comparison (ODA membership cost vs DXF-only vs other lawful options), test against real customer drawings; no compatibility claim until validated | **Done**: DWG_EVALUATION.md (DXF only for now) |
+| M13 | Licensing | Local dev mode first: trial, activation key, machine binding, offline grace; server later (no secrets in the client) | Design written (LICENSING.md); implementation awaits decisions |
+| M14 | Release candidate | Installer (NSIS), code signing, crash recovery/autosave, update check, user guide, Windows acceptance testing on office PCs | Partly: installer, autosave, crash recovery, recent files done; signing, update check, user guide, acceptance tests open |

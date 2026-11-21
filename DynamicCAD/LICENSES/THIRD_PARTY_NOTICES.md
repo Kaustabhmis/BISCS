@@ -22,3 +22,12 @@ with the Qt runtime.
 ## No other third-party code
 
 All other source code, icons and the DYNAMIC CAD application mark are original work of Dynamic Engineers.
+
+## Trademarks
+
+AutoCAD and DWG are trademarks of Autodesk, Inc. DYNAMIC CAD is not affiliated with Autodesk; it exchanges
+drawings through the DXF format using its own reader and writer. No Autodesk code, libraries or assets are used.
+
+## Development-only tools (not shipped)
+
+* ezdxf (MIT licence) is used only to generate DXF test fixtures and to audit exported DXF files.

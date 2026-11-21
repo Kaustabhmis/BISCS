@@ -57,6 +57,12 @@ is newer than they support. Unknown or invalid entities are skipped with a warni
 
 ## Version history
 
+* **7** (v0.7.0): `blocks` table (name, description, entities; nested blocks), INSERT (`block`, `position`,
+  `scale` [x, y], `rotation`), HATCH (`loops` with `vertices`/`bulges`, `pattern` with `name`, `solid`, `scale`,
+  `angle`, `families` of `angle`/`origin`/`offset`/`dashes`).
+* **6** (v0.6.0): TEXT / MTEXT (`insert`, `text`, `height`, `rotation`, `justify`, `font`, `wrapWidth`),
+  DIMENSION (`kind`, points `a`/`b`/`c`, `location`, `angle`, `textOverride`, `style`), LEADER (`points`, `text`,
+  `style`).
 * **5** (v0.5.0): layers, linetypes, colours, lineweights, linetype scales.
 * **4** (v0.4.0): XLINE, RAY, polyline width.
 

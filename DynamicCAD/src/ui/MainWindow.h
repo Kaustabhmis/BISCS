@@ -7,6 +7,11 @@
 #include "ui/Theme.h"
 
 #include <QMainWindow>
+#include <QTimer>
+
+#include <memory>
+
+#include "fileio/AutoSave.h"
 #include <memory>
 
 class QAction;
@@ -44,6 +49,13 @@ public:
     LayerPanel* layerPanel() const { return layers_; }
     PropertiesPanel* propertiesPanel() const { return props_; }
     const QString& currentFile() const { return currentFile_; }
+    // Autosave: writes the session file now if the drawing changed since the last autosave.
+    bool autosaveNow();
+    AutoSaver& autoSaver() { return *autosave_; }
+    // Offers to recover drawings left by sessions that ended abnormally. Returns number recovered.
+    int checkRecovery(bool ask = true);
+    bool recoverFrom(const QString& autosaveFile, const QString& original);
+    QStringList recentFiles() const;
 
 public slots:
     void newDrawing();
@@ -73,6 +85,9 @@ private:
     void showAbout();
     void showNotices();
     void showHelp();
+    void addRecentFile(const QString& path);
+    void rebuildRecentMenu();
+    void afterCleanState(); // saved / new / opened: no autosave needed
     void copyToClipboard(bool cut);
     void pasteFromClipboard();
 
@@ -81,6 +96,10 @@ private:
     CommandProcessor proc_;
     int docListener_ = 0;
     QString currentFile_;
+    std::unique_ptr<AutoSaver> autosave_;
+    QTimer* autosaveTimer_ = nullptr;
+    bool changedSinceAutosave_ = false;
+    QMenu* recentMenu_ = nullptr;
     ThemeKind theme_ = ThemeKind::Dark;
 
     CadCanvas* canvas_ = nullptr;
