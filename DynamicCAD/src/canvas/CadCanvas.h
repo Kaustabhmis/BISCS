@@ -3,6 +3,7 @@
 
 #include "canvas/ViewTransform.h"
 #include "commands/CommandProcessor.h"
+#include "snapping/SnapEngine.h"
 #include "ui/Theme.h"
 
 #include <QWidget>
@@ -33,12 +34,27 @@ public:
 
     void setColors(const CanvasColors& c) { colors_ = c; update(); }
 
+    // Drafting aids
+    bool osnapEnabled() const { return osnap_; }
+    std::uint32_t snapModes() const { return snapModes_; }
+    void setSnapModes(std::uint32_t m) { snapModes_ = m; refreshTracking(); }
+    bool dynamicInput() const { return dyn_; }
+    // Point the next left click will deliver (after snap / ortho / polar).
+    Vec2 effectivePoint() const { return effective_; }
+    const std::optional<SnapResult>& currentSnap() const { return snap_now_; }
+    const std::optional<PolarResult>& currentPolar() const { return polar_now_; }
+    // Recomputes snapping/tracking for the current mouse position.
+    void refreshTracking();
+
 public slots:
     void zoomExtents();
     void zoomBy(double factor);
     void setGridVisible(bool on);
     void setSnapEnabled(bool on);
     void resetView(); // shows an A3-sized region (420 x 297) around the origin
+    void setOsnapEnabled(bool on);
+    void setDynamicInput(bool on) { dyn_ = on; update(); }
+    void setDynamicInputText(const QString& t) { dynText_ = t; update(); }
 
 signals:
     void cursorMoved(double worldX, double worldY);
@@ -70,6 +86,9 @@ private:
     void drawSelectionWindow(QPainter& p) const;
     void drawCrosshair(QPainter& p) const;
     void drawUcsIcon(QPainter& p) const;
+    void drawTrackingAids(QPainter& p) const;
+    void drawSnapMarker(QPainter& p, const SnapResult& s) const;
+    void drawTooltip(QPainter& p, const QPointF& at, const QStringList& lines) const;
     void finishWindow(const QPointF& end, bool shift);
     bool selectionMode() const { return !proc_.isActive() || proc_.isSelecting(); }
     void updateHover();
@@ -94,6 +113,15 @@ private:
     bool windowDragged_ = false;
     QPointF windowStart_;
     EntityId hover_ = kInvalidEntityId;
+
+    bool osnap_ = true;
+    std::uint32_t snapModes_ = kDefaultSnapModes;
+    bool dyn_ = true;
+    QString dynText_;
+    Vec2 effective_;
+    std::optional<SnapResult> snap_now_;
+    std::optional<PolarResult> polar_now_;
+    static constexpr double kAperturePx = 10.0;
 };
 
 } // namespace dyncad

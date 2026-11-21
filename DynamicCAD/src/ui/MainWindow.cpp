@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
@@ -40,6 +41,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
     setCentralWidget(canvas_);
 
     createActions();
+    createDraftingAids();
     createMenus();
     createRibbon();
     createDocks();
@@ -62,6 +64,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
         canvas_->setFocus();
     });
     connect(canvas_, &CadCanvas::textTyped, cmdLine_, &CommandLine::insertText);
+    connect(cmdLine_->input(), &QLineEdit::textChanged, canvas_, &CadCanvas::setDynamicInputText);
     connect(canvas_, &CadCanvas::enterRequested, this, [this] { executeCommandText(QString()); });
     connect(canvas_, &CadCanvas::escapeRequested, this, [this] {
         if (proc_.isActive()) proc_.cancel();
@@ -207,6 +210,92 @@ void MainWindow::createActions() {
                 actZoomOut_, actGrid_, actSnap_, actOrtho_, actHelp_});
 }
 
+void MainWindow::createDraftingAids() {
+    QSettings st;
+    auto make = [this](const QString& text, const QString& icon, const QKeySequence& key, const QString& tip) {
+        auto* a = new QAction(Icons::get(icon), text, this);
+        a->setShortcut(key);
+        a->setCheckable(true);
+        a->setStatusTip(tip);
+        a->setToolTip(QStringLiteral("%1 (%2)").arg(tip, key.toString(QKeySequence::NativeText)));
+        addAction(a);
+        return a;
+    };
+    actOsnap_ = make(tr("O&snap"), "osnap", QKeySequence(Qt::Key_F3), tr("Object snap: endpoints, midpoints, centres, intersections..."));
+    actPolar_ = make(tr("&Polar"), "polar", QKeySequence(Qt::Key_F10), tr("Polar tracking along fixed angles"));
+    actDyn_ = make(tr("&Dyn"), "dyn", QKeySequence(Qt::Key_F12), tr("Dynamic input: coordinates, length and angle at the cursor"));
+    actOsnap_->setChecked(st.value("aids/osnap", true).toBool());
+    actPolar_->setChecked(st.value("aids/polar", true).toBool());
+    actDyn_->setChecked(st.value("aids/dyn", true).toBool());
+    canvas_->setOsnapEnabled(actOsnap_->isChecked());
+    proc_.setPolar(actPolar_->isChecked() && !actOrtho_->isChecked());
+    canvas_->setDynamicInput(actDyn_->isChecked());
+    connect(actOsnap_, &QAction::toggled, this, [this](bool on) {
+        canvas_->setOsnapEnabled(on);
+        QSettings().setValue("aids/osnap", on);
+        message(on ? tr("<Osnap on>") : tr("<Osnap off>"));
+    });
+    connect(actPolar_, &QAction::toggled, this, [this](bool on) {
+        if (on && actOrtho_->isChecked()) actOrtho_->setChecked(false); // ORTHO and POLAR are exclusive
+        proc_.setPolar(on);
+        QSettings().setValue("aids/polar", on);
+        message(on ? tr("<Polar on>") : tr("<Polar off>"));
+    });
+    connect(actOrtho_, &QAction::toggled, this, [this](bool on) {
+        if (on && actPolar_->isChecked()) actPolar_->setChecked(false);
+    });
+    connect(actDyn_, &QAction::toggled, this, [this](bool on) {
+        canvas_->setDynamicInput(on);
+        QSettings().setValue("aids/dyn", on);
+    });
+
+    // Object snap mode menu.
+    snapMenu_ = new QMenu(tr("Object Snap Modes"), this);
+    const std::uint32_t saved = st.value("aids/snapModes", kDefaultSnapModes).toUInt();
+    canvas_->setSnapModes(saved);
+    const SnapMode modes[] = {SnapEndpoint, SnapMidpoint, SnapCenter, SnapQuadrant, SnapIntersection,
+                              SnapPerpendicular, SnapTangent, SnapNearest, SnapNode};
+    for (SnapMode m : modes) {
+        auto* a = snapMenu_->addAction(tr(snapModeName(m)));
+        a->setCheckable(true);
+        a->setChecked(saved & m);
+        connect(a, &QAction::toggled, this, [this, m](bool on) {
+            std::uint32_t v = canvas_->snapModes();
+            v = on ? (v | m) : (v & ~std::uint32_t(m));
+            canvas_->setSnapModes(v);
+            QSettings().setValue("aids/snapModes", v);
+        });
+    }
+    snapMenu_->addSeparator();
+    connect(snapMenu_->addAction(tr("Select All")), &QAction::triggered, this, [this] {
+        for (QAction* a : snapMenu_->actions()) if (a->isCheckable()) a->setChecked(true);
+    });
+    connect(snapMenu_->addAction(tr("Clear All")), &QAction::triggered, this, [this] {
+        for (QAction* a : snapMenu_->actions()) if (a->isCheckable()) a->setChecked(false);
+    });
+    actOsnap_->setMenu(snapMenu_);
+
+    polarMenu_ = new QMenu(tr("Polar Angle Increment"), this);
+    auto* group = new QActionGroup(this);
+    for (double deg : {5.0, 10.0, 15.0, 22.5, 30.0, 45.0, 90.0}) {
+        auto* a = polarMenu_->addAction(QStringLiteral("%1\u00B0").arg(deg));
+        a->setCheckable(true);
+        a->setData(deg);
+        group->addAction(a);
+        connect(a, &QAction::triggered, this, [this, deg] { setPolarIncrement(deg); });
+    }
+    actPolar_->setMenu(polarMenu_);
+    setPolarIncrement(st.value("aids/polarIncrement", 45.0).toDouble());
+
+}
+
+void MainWindow::setPolarIncrement(double deg) {
+    proc_.setPolarIncrement(deg);
+    QSettings().setValue("aids/polarIncrement", proc_.polarIncrement());
+    if (polarMenu_)
+        for (QAction* a : polarMenu_->actions()) a->setChecked(std::abs(a->data().toDouble() - proc_.polarIncrement()) < 1e-9);
+}
+
 void MainWindow::createMenus() {
     QMenu* file = menuBar()->addMenu(tr("&File"));
     file->addActions({actNew_, actOpen_, actSave_, actSaveAs_});
@@ -230,7 +319,9 @@ void MainWindow::createMenus() {
     QMenu* view = menuBar()->addMenu(tr("&View"));
     view->addActions({actZoomExt_, actZoomIn_, actZoomOut_});
     view->addSeparator();
-    view->addActions({actGrid_, actSnap_, actOrtho_});
+    view->addActions({actGrid_, actSnap_, actOrtho_, actOsnap_, actPolar_, actDyn_});
+    view->addMenu(snapMenu_);
+    view->addMenu(polarMenu_);
     view->addSeparator();
     view->addActions({actDark_, actLight_});
     view->addSeparator();
@@ -253,7 +344,7 @@ void MainWindow::createRibbon() {
     home->addGroup(tr("Selection"), {actSelectAll_});
     RibbonPage* view = ribbon_->addPage(tr("View"));
     view->addGroup(tr("Navigate"), {actZoomExt_, actZoomIn_, actZoomOut_});
-    view->addGroup(tr("Drafting Aids"), {actGrid_, actSnap_, actOrtho_});
+    view->addGroup(tr("Drafting Aids"), {actGrid_, actSnap_, actOrtho_, actOsnap_, actPolar_, actDyn_});
     view->addGroup(tr("Appearance"), {actDark_, actLight_});
     // Menu bar on top, ribbon directly beneath it as a fixed toolbar-like dock.
     auto* dock = new QDockWidget(tr("Ribbon"), this);
@@ -288,9 +379,13 @@ void MainWindow::createStatusBar() {
     coordLabel_->setMinimumWidth(220);
     coordLabel_->setToolTip(tr("Cursor coordinates (X, Y) in drawing units"));
     statusBar()->addWidget(coordLabel_);
-    for (QAction* a : {actGrid_, actSnap_, actOrtho_}) {
+    for (QAction* a : {actGrid_, actSnap_, actOrtho_, actPolar_, actOsnap_, actDyn_}) {
         auto* b = new QToolButton(this);
         b->setDefaultAction(a);
+        if (a->menu()) {
+            b->setPopupMode(QToolButton::MenuButtonPopup);
+            b->setMinimumWidth(b->fontMetrics().horizontalAdvance(a->text().remove('&')) + 34);
+        }
         b->setToolButtonStyle(Qt::ToolButtonTextOnly);
         b->setAutoRaise(true);
         statusBar()->addPermanentWidget(b);
@@ -317,6 +412,15 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("GRID", {}, [this](const std::vector<std::string>&) { actGrid_->toggle(); }, true);
     proc_.registerAction("SNAP", {}, [this](const std::vector<std::string>&) { actSnap_->toggle(); }, true);
     proc_.registerAction("ORTHO", {}, [this](const std::vector<std::string>&) { actOrtho_->toggle(); }, true);
+    proc_.registerAction("OSNAP", {}, [this](const std::vector<std::string>&) { actOsnap_->toggle(); }, true);
+    proc_.registerAction("POLAR", {}, [this](const std::vector<std::string>&) { actPolar_->toggle(); }, true);
+    proc_.registerAction("DYNMODE", {}, [this](const std::vector<std::string>&) { actDyn_->toggle(); }, true);
+    proc_.registerAction("POLARANG", {}, [this](const std::vector<std::string>& args) {
+        auto v = args.empty() ? std::nullopt : parseNumber(args.front());
+        if (!v || !(*v > 0) || *v > 180) { message(tr("Usage: POLARANG <degrees>, e.g. POLARANG 15")); return; }
+        setPolarIncrement(*v);
+        message(tr("Polar angle increment: %1\u00B0").arg(*v));
+    }, true);
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
         message(tr("Draw: LINE (L), PLINE (PL), ARC (A), CIRCLE (C), ELLIPSE (EL), SPLINE (SPL), RECTANGLE (REC),"
                    " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW)."));
@@ -324,7 +428,8 @@ void MainWindow::registerUiCommands() {
                    " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"
                    " while moving the cursor. Enter/Space/right-click = Enter, Esc = cancel."));
-        message(tr("ZOOM, GRID, SNAP, ORTHO and HELP also work in the middle of a command."));
+        message(tr("ZOOM, GRID, SNAP, ORTHO, OSNAP, POLAR, POLARANG and HELP also work in the middle of a command."));
+        message(tr("At a point prompt type END, MID, CEN, QUA, INT, PER, TAN, NEA or NOD for a one-time object snap."));
     }, true);
 }
 

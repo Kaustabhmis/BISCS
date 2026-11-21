@@ -3,6 +3,7 @@
 
 #include "commands/InputParser.h"
 #include "commands/InteractiveCommand.h"
+#include "snapping/SnapEngine.h"
 
 #include <functional>
 #include <map>
@@ -39,9 +40,14 @@ public:
     bool runCommand(const std::string& nameOrAlias);
     // A point picked with the mouse (already grid-snapped). ORTHO is applied here.
     void pointInput(const Vec2& world);
+    // A point that has already been resolved by snapping/tracking (canvas).
+    void pointInputExact(const Vec2& world);
+    // Cursor after object snap / ORTHO / polar tracking, used for previews and
+    // direct distance entry. Cleared by setCursor().
+    void setTrackedCursor(const Vec2& world) { tracked_ = world; }
     void cancel();
 
-    void setCursor(const Vec2& world) { cursor_ = world; }
+    void setCursor(const Vec2& world) { cursor_ = world; tracked_.reset(); }
     // Cursor position after ORTHO, used for previews and direct distance.
     Vec2 constrainedCursor(const Vec2& raw) const;
 
@@ -54,6 +60,13 @@ public:
 
     void setOrtho(bool on) { ortho_ = on; }
     bool ortho() const { return ortho_; }
+    void setPolar(bool on) { polar_ = on; }
+    bool polar() const { return polar_; }
+    void setPolarIncrement(double deg) { if (deg > 0 && deg <= 180) polarInc_ = deg; }
+    double polarIncrement() const { return polarInc_; }
+    // One-shot object snap typed at a point prompt (END, MID, CEN ...).
+    std::optional<SnapMode> snapOverride() const { return snapOverride_; }
+    bool wantsPoint() const { return active_ && !active_->wantsSelection(); }
     const std::optional<Vec2>& lastPoint() const { return lastPoint_; }
     const std::string& lastCommand() const { return lastCommand_; }
 
@@ -82,6 +95,10 @@ private:
     std::unique_ptr<InteractiveCommand> active_;
     std::optional<Vec2> lastPoint_;
     std::optional<Vec2> cursor_;
+    std::optional<Vec2> tracked_;
+    std::optional<SnapMode> snapOverride_;
+    bool polar_ = false;
+    double polarInc_ = 45.0;
     std::string lastCommand_;
     bool ortho_ = false;
 };

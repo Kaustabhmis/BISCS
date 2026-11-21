@@ -1,4 +1,17 @@
-# DYNAMIC CAD: Status Report (v0.3.0)
+# DYNAMIC CAD: Status Report (v0.4.0, in progress)
+
+## Milestone 3b: snaps and drafting aids (done)
+
+| Feature | Verified by |
+|---|---|
+| Object snaps: Endpoint, Midpoint, Center (offered when hovering the curve), Quadrant, Intersection (exact for lines/arcs/circles/polylines; ellipses and splines to 1e-7 of size), Perpendicular, Tangent, Nearest, Node | `test_snapping` (11 cases) |
+| Priorities: precise snaps beat Nearest; Intersection beats a nearby Midpoint | `test_snapping` |
+| Snap markers (distinct shapes) + label; OSNAP F3 with a mode menu (saved) | `test_gui::objectSnapWithMouse`, screenshot |
+| One-shot overrides typed at point prompts: END MID CEN QUA INT PER TAN NEA NOD | `test_snapping`, `test_gui` (PER via mouse) |
+| Polar tracking F10 with increments 5–90° (POLARANG), dotted tracking ray, exact axis directions; exclusive with ORTHO; direct distance follows the tracked angle | `test_snapping` |
+| Dynamic input F12: X/Y or Length/Angle tooltip at the cursor, echoes typed input | screenshot |
+| Performance: object snap 1.0 ms per mouse move on 100,000 entities (all modes) | `test_performance` |
+
 
 ## Environment used
 

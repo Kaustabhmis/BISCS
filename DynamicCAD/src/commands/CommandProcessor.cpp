@@ -53,7 +53,8 @@ Vec2 CommandProcessor::constrainedCursor(const Vec2& raw) const {
 
 std::vector<std::unique_ptr<Entity>> CommandProcessor::previewEntities() const {
     std::vector<std::unique_ptr<Entity>> out;
-    if (active_ && cursor_) active_->preview(constrainedCursor(*cursor_), out);
+    if (active_ && tracked_) active_->preview(*tracked_, out);
+    else if (active_ && cursor_) active_->preview(constrainedCursor(*cursor_), out);
     return out;
 }
 
@@ -77,12 +78,13 @@ bool CommandProcessor::runCommand(const std::string& nameOrAlias) {
 }
 
 void CommandProcessor::finishIf(CommandStatus st) {
-    if (st != CommandStatus::Continue) active_.reset();
+    if (st != CommandStatus::Continue) { active_.reset(); snapOverride_.reset(); }
 }
 
 void CommandProcessor::deliverPoint(const Vec2& p) {
     if (!active_) return;
     lastPoint_ = p;
+    snapOverride_.reset();
     finishIf(active_->point(ctx_, p));
     stateChanged();
 }
@@ -92,7 +94,10 @@ void CommandProcessor::pointInput(const Vec2& world) {
     deliverPoint(constrainedCursor(world));
 }
 
+void CommandProcessor::pointInputExact(const Vec2& world) { deliverPoint(world); }
+
 void CommandProcessor::cancel() {
+    snapOverride_.reset();
     if (!active_) return;
     active_->cancel(ctx_);
     active_.reset();
@@ -142,6 +147,14 @@ bool CommandProcessor::submit(const std::string& rawText) {
     }
 
     if (tryTransparent(text)) return true;
+    if (wantsPoint()) {
+        if (auto m = snapModeFromKeyword(toUpper(text))) {
+            snapOverride_ = *m;
+            say(std::string("Snap override: ") + snapModeName(*m) + " (next point only)");
+            stateChanged();
+            return true;
+        }
+    }
 
     // Relative input (@) is measured from the command's current base point
     // (e.g. the end of the line chain after an in-command Undo), else last point.
@@ -158,7 +171,8 @@ bool CommandProcessor::submit(const std::string& rawText) {
         return true;
     case ParsedInput::Kind::Number: {
         std::optional<Vec2> cur;
-        if (cursor_) cur = constrainedCursor(*cursor_);
+        if (tracked_) cur = tracked_;
+        else if (cursor_) cur = constrainedCursor(*cursor_);
         finishIf(active_->number(ctx_, in.number, cur));
         stateChanged();
         return true;

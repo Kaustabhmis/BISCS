@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QFontMetrics>
 #include <QPainterPath>
 #include <QWheelEvent>
 
@@ -64,7 +65,33 @@ void CadCanvas::zoomBy(double factor) {
 }
 
 void CadCanvas::setGridVisible(bool on) { gridVisible_ = on; update(); }
-void CadCanvas::setSnapEnabled(bool on) { snap_ = on; update(); }
+void CadCanvas::setSnapEnabled(bool on) { snap_ = on; refreshTracking(); update(); }
+void CadCanvas::setOsnapEnabled(bool on) { osnap_ = on; refreshTracking(); update(); }
+
+void CadCanvas::refreshTracking() {
+    const Vec2 raw = view_.screenToWorld(v2(mousePos_));
+    snap_now_.reset();
+    polar_now_.reset();
+    const bool pointMode = proc_.wantsPoint();
+    if (pointMode && (osnap_ || proc_.snapOverride())) {
+        const std::uint32_t modes = proc_.snapOverride() ? std::uint32_t(*proc_.snapOverride()) : snapModes_;
+        snap_now_ = SnapEngine().find(doc_, raw, view_.pixelsToWorld(kAperturePx), modes, proc_.basePoint());
+    }
+    Vec2 eff = snap_now_ ? snap_now_->point : (snap_ ? geom::snapToGrid(raw, currentGridStep()) : raw);
+    if (!snap_now_ && pointMode) {
+        if (proc_.ortho()) {
+            eff = proc_.constrainedCursor(eff);
+        } else if (proc_.polar()) {
+            if (auto base = proc_.basePoint()) {
+                polar_now_ = polarTrack(*base, eff, proc_.polarIncrement(), view_.pixelsToWorld(8.0));
+                if (polar_now_) eff = polar_now_->point;
+            }
+        }
+    }
+    effective_ = eff;
+    proc_.setCursor(raw);
+    if (proc_.isActive()) proc_.setTrackedCursor(eff);
+}
 
 // ------------------------------------------------------------------ painting
 
@@ -114,7 +141,84 @@ void CadCanvas::paintEvent(QPaintEvent*) {
     p.setRenderHint(QPainter::Antialiasing, false);
     if (windowActive_) drawSelectionWindow(p);
     drawUcsIcon(p);
-    if (mouseInside_) drawCrosshair(p);
+    if (mouseInside_) {
+        drawTrackingAids(p);
+        drawCrosshair(p);
+    }
+}
+
+void CadCanvas::drawSnapMarker(QPainter& p, const SnapResult& s) const {
+    const Vec2 c = view_.worldToScreen(s.point);
+    const QPointF q(std::round(c.x) + 0.5, std::round(c.y) + 0.5);
+    const double r = 6.0;
+    p.save();
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setPen(QPen(Theme::brandGold(), 2));
+    p.setBrush(Qt::NoBrush);
+    switch (s.mode) {
+    case SnapEndpoint: p.drawRect(QRectF(q.x() - r, q.y() - r, 2 * r, 2 * r)); break;
+    case SnapMidpoint: p.drawPolygon(QPolygonF({q + QPointF(0, -r), q + QPointF(r, r * 0.8), q + QPointF(-r, r * 0.8)})); break;
+    case SnapCenter: p.drawEllipse(q, r, r); break;
+    case SnapQuadrant: p.drawPolygon(QPolygonF({q + QPointF(0, -r), q + QPointF(r, 0), q + QPointF(0, r), q + QPointF(-r, 0)})); break;
+    case SnapIntersection: p.drawLine(q + QPointF(-r, -r), q + QPointF(r, r)); p.drawLine(q + QPointF(-r, r), q + QPointF(r, -r)); break;
+    case SnapPerpendicular:
+        p.drawLine(q + QPointF(-r, r), q + QPointF(r, r)); p.drawLine(q + QPointF(-r, r), q + QPointF(-r, -r));
+        p.drawLine(q + QPointF(-r, 0), q + QPointF(0, 0)); p.drawLine(q + QPointF(0, 0), q + QPointF(0, r)); break;
+    case SnapTangent: p.drawEllipse(q, r * 0.75, r * 0.75); p.drawLine(q + QPointF(-r, -r), q + QPointF(r, -r)); break;
+    case SnapNearest:
+        p.drawPolygon(QPolygonF({q + QPointF(-r, -r), q + QPointF(r, -r), q + QPointF(-r, r), q + QPointF(r, r)})); break;
+    case SnapNode: p.drawEllipse(q, r, r); p.drawLine(q + QPointF(-r * 0.7, -r * 0.7), q + QPointF(r * 0.7, r * 0.7));
+        p.drawLine(q + QPointF(-r * 0.7, r * 0.7), q + QPointF(r * 0.7, -r * 0.7)); break;
+    default: break;
+    }
+    p.restore();
+}
+
+void CadCanvas::drawTooltip(QPainter& p, const QPointF& at, const QStringList& lines) const {
+    if (lines.isEmpty()) return;
+    p.save();
+    const QFontMetrics fm(font());
+    int w = 0;
+    for (const QString& l : lines) w = std::max(w, fm.horizontalAdvance(l));
+    const int h = fm.height() * int(lines.size()) + 6;
+    QRectF box(at.x(), at.y(), w + 12, h);
+    if (box.right() > width() - 2) box.moveRight(at.x() - 24);
+    if (box.bottom() > height() - 2) box.moveBottom(at.y() - 24);
+    p.setPen(QPen(colors_.crosshair, 1));
+    p.setBrush(QColor(colors_.background.red(), colors_.background.green(), colors_.background.blue(), 225));
+    p.drawRect(box);
+    p.setPen(colors_.entity);
+    for (int i = 0; i < lines.size(); ++i)
+        p.drawText(QPointF(box.left() + 6, box.top() + 3 + fm.ascent() + i * fm.height()), lines.at(i));
+    p.restore();
+}
+
+void CadCanvas::drawTrackingAids(QPainter& p) const {
+    const bool pointMode = proc_.wantsPoint();
+    const auto base = proc_.basePoint();
+    if (polar_now_ && base) { // dotted tracking ray to the view edge
+        const Vec2 b = view_.worldToScreen(*base);
+        const Vec2 dir = Vec2::fromPolar(1.0, degToRad(polar_now_->angleDeg));
+        const Vec2 far = b + Vec2{dir.x, -dir.y} * double(width() + height()) * 2.0;
+        p.setPen(QPen(colors_.preview, 1, Qt::DotLine));
+        p.drawLine(qp(b), qp(far));
+    }
+    if (snap_now_) drawSnapMarker(p, *snap_now_);
+    QStringList tip;
+    if (snap_now_) tip << tr(snapModeName(snap_now_->mode));
+    if (dyn_ && pointMode) {
+        const Vec2 e = effective_;
+        if (base && !nearlyEqual(*base, e, 0.0)) {
+            tip << tr("Length %1   Angle %2\u00B0").arg(distance(*base, e), 0, 'f', 4).arg(geom::angleDeg(*base, e), 0, 'f', 2);
+        } else {
+            tip << QStringLiteral("X %1   Y %2").arg(e.x, 0, 'f', 4).arg(e.y, 0, 'f', 4);
+        }
+        if (polar_now_) tip.last() += tr("   (polar %1\u00B0)").arg(polar_now_->angleDeg, 0, 'g', 6);
+        if (!dynText_.isEmpty()) tip << QStringLiteral("> ") + dynText_;
+    } else if (dyn_ && !dynText_.isEmpty()) {
+        tip << QStringLiteral("> ") + dynText_;
+    }
+    if (!tip.isEmpty()) drawTooltip(p, mousePos_ + QPointF(18, 18), tip);
 }
 
 void CadCanvas::drawGrid(QPainter& p) const {
@@ -270,11 +374,9 @@ void CadCanvas::drawSelectionWindow(QPainter& p) const {
 
 void CadCanvas::drawCrosshair(QPainter& p) const {
     QPointF c = mousePos_;
-    if (snap_ || (proc_.isActive() && !proc_.isSelecting())) {
+    if (proc_.wantsPoint() || snap_) {
         // Show the crosshair where the point will actually be placed.
-        Vec2 w = worldAt(mousePos_);
-        if (proc_.isActive()) w = proc_.constrainedCursor(w);
-        c = qp(view_.worldToScreen(w));
+        c = qp(view_.worldToScreen(proc_.wantsPoint() ? effective_ : worldAt(mousePos_)));
     }
     const double x = std::round(c.x()) + 0.5, y = std::round(c.y()) + 0.5;
     p.setPen(QPen(colors_.crosshair, 1));
@@ -326,9 +428,8 @@ void CadCanvas::mouseMoveEvent(QMouseEvent* ev) {
     mousePos_ = pos;
     mouseInside_ = true;
     if (windowActive_ && (pos - windowStart_).manhattanLength() > kDragThresholdPx) windowDragged_ = true;
-    const Vec2 w = worldAt(pos);
-    proc_.setCursor(w);
-    const Vec2 shown = proc_.isActive() ? proc_.constrainedCursor(w) : w;
+    refreshTracking();
+    const Vec2 shown = proc_.wantsPoint() ? effective_ : worldAt(pos);
     emit cursorMoved(shown.x, shown.y);
     updateHover();
     update();
@@ -349,7 +450,10 @@ void CadCanvas::mousePressEvent(QMouseEvent* ev) {
     if (ev->button() != Qt::LeftButton) return;
 
     if (!selectionMode()) {
-        proc_.pointInput(worldAt(pos));
+        mousePos_ = pos;
+        refreshTracking();
+        proc_.pointInputExact(effective_);
+        refreshTracking(); // the base point has moved
         update();
         return;
     }
@@ -395,7 +499,8 @@ void CadCanvas::wheelEvent(QWheelEvent* ev) {
     const double steps = ev->angleDelta().y() / 120.0;
     if (steps == 0.0) return;
     view_.zoomAt(v2(ev->position()), std::pow(1.25, steps));
-    proc_.setCursor(worldAt(ev->position()));
+    mousePos_ = ev->position();
+    refreshTracking();
     updateHover();
     update();
     ev->accept();

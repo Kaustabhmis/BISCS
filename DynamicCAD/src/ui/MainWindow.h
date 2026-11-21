@@ -11,6 +11,7 @@
 
 class QAction;
 class QLabel;
+class QMenu;
 
 namespace dyncad {
 
@@ -55,6 +56,8 @@ private:
     void createRibbon();
     void createDocks();
     void createStatusBar();
+    void createDraftingAids();
+    void setPolarIncrement(double deg);
     void registerUiCommands();
     void startCommand(const QString& name);
     bool maybeSave();
@@ -87,6 +90,9 @@ private:
     QAction *actPline_{}, *actArc_{}, *actPolygon_{}, *actEllipse_{}, *actSpline_{}, *actPoint_{}, *actSquare_{}, *actArrow_{};
     QAction *actZoomExt_{}, *actZoomIn_{}, *actZoomOut_{};
     QAction *actGrid_{}, *actSnap_{}, *actOrtho_{}, *actDark_{}, *actLight_{};
+    QAction *actOsnap_{}, *actPolar_{}, *actDyn_{};
+    QMenu* snapMenu_ = nullptr;
+    QMenu* polarMenu_ = nullptr;
     QAction *actAbout_{}, *actAboutQt_{}, *actNotices_{}, *actHelp_{};
 };
 

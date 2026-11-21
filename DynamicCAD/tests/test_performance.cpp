@@ -4,6 +4,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "fileio/DynFormat.h"
+#include "snapping/SnapEngine.h"
 #include "ui/MainWindow.h"
 
 #include <QElapsedTimer>
@@ -57,6 +58,11 @@ private slots:
         const qint64 tPick = t.restart();
         const auto sel = selectInRect(w.document(), BoundingBox({0, 0}, {5000, 5000}), RectSelectMode::Crossing);
         const qint64 tWindow = t.restart();
+        SnapEngine snapper;
+        int snaps = 0;
+        for (int i = 0; i < 100; ++i)
+            snaps += snapper.find(w.document(), {i * 97.0, i * 53.0}, 5.0, SnapAll, Vec2{0, 0}) ? 1 : 0;
+        const qint64 tSnap = t.restart();
         QTemporaryDir dir;
         QVERIFY(saveDynFile(w.document(), dir.filePath("big.dyn")).ok);
         const qint64 tSave = t.restart();
@@ -67,9 +73,12 @@ private slots:
 
         qInfo().noquote() << QStringLiteral(
                                  "%1 entities: add %2 ms | render extents %3 ms | render zoomed %4 ms | "
-                                 "100 picks %5 ms (%6 ms each) | crossing select %7 ms (%8 hits) | save %9 ms | load %10 ms")
+                                 "100 picks %5 ms (%6 ms each) | crossing select %7 ms (%8 hits) | save %9 ms | load %10 ms"
+                                 " | object snap %11 ms per mouse move (all modes, %12/100 found)")
                                  .arg(count).arg(tAdd).arg(tRenderAll).arg(tRenderZoom).arg(tPick)
-                                 .arg(tPick / 100.0, 0, 'f', 2).arg(tWindow).arg(sel.size()).arg(tSave).arg(tLoad);
+                                 .arg(tPick / 100.0, 0, 'f', 2).arg(tWindow).arg(sel.size()).arg(tSave).arg(tLoad)
+                                 .arg(tSnap / 100.0, 0, 'f', 2).arg(snaps);
+        QVERIFY(tSnap / 100.0 < 50.0);
         // Generous ceilings: catch pathological regressions only.
         QVERIFY(tPick / 100.0 < 50.0);
         QVERIFY(tRenderAll < 20000);

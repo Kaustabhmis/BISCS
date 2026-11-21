@@ -6,6 +6,7 @@
 #include "entities/PolylineEntity.h"
 #include "entities/LineEntity.h"
 #include "ui/CommandLine.h"
+#include "snapping/SnapEngine.h"
 #include "ui/MainWindow.h"
 
 #include <QLineEdit>
@@ -253,6 +254,57 @@ private slots:
             if (e->type() == EntityType::Polyline && static_cast<const PolylineEntity&>(*e).isFilled())
                 found = nearlyEqual(static_cast<const PolylineEntity&>(*e).vertices()[0], tip, 1e-9);
         QVERIFY(found);
+    }
+
+    void objectSnapWithMouse() {
+        MainWindow w;
+        w.resize(1200, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        auto* c = w.canvas();
+        c->setOsnapEnabled(true);
+        c->setSnapModes(kDefaultSnapModes);
+        w.executeCommandText("C");
+        w.executeCommandText("100,100");
+        w.executeCommandText("40");
+        w.executeCommandText("ZOOM E");
+        // Start a line near (not on) the circle's right quadrant: it must snap exactly.
+        w.executeCommandText("L");
+        const QPoint nearQuad = screenOf(w, {140, 100}) + QPoint(3, -2);
+        QTest::mouseMove(c, nearQuad);
+        QVERIFY(c->currentSnap() && c->currentSnap()->mode == SnapQuadrant);
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, nearQuad);
+        // End near the centre-ish of the curve's top: centre snap is offered on the curve.
+        const QPoint nearTop = screenOf(w, {100, 140}) + QPoint(2, 2);
+        QTest::mouseMove(c, nearTop);
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, nearTop);
+        w.executeCommandText("");
+        const auto& l = static_cast<const LineEntity&>(*w.document().entities().back());
+        QCOMPARE(l.start(), Vec2(140, 100));
+        QVERIFY(nearlyEqual(l.end(), {100, 140}, 1e-12));
+
+        // One-shot override from the command line: PER from (0,0) onto that line (foot = (120,120)).
+        w.executeCommandText("L");
+        w.executeCommandText("0,0");
+        w.executeCommandText("PER");
+        const QPoint onLine = screenOf(w, {120.5, 119.5});
+        QTest::mouseMove(c, onLine);
+        QVERIFY(c->currentSnap() && c->currentSnap()->mode == SnapPerpendicular);
+        w.setTheme(ThemeKind::Dark);
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_osnap.png"));
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, onLine);
+        w.executeCommandText("");
+        const auto& per = static_cast<const LineEntity&>(*w.document().entities().back());
+        const Vec2 dir = (l.end() - l.start()).normalized();
+        QVERIFY(std::abs((per.end() - per.start()).dot(dir)) < 1e-9); // really perpendicular
+
+        // OSNAP off: no snapping.
+        c->setOsnapEnabled(false);
+        w.executeCommandText("L");
+        QTest::mouseMove(c, nearQuad);
+        QVERIFY(!c->currentSnap());
+        w.processor().cancel();
     }
 
     void toolsScreenshot() {

@@ -44,16 +44,19 @@ add_library(dyncad_core STATIC
     src/geometry/Arc.h                 src/geometry/Arc.cpp
     src/geometry/Ellipse.h             src/geometry/Ellipse.cpp
     src/geometry/Nurbs.h               src/geometry/Nurbs.cpp
+    src/geometry/Intersections.h       src/geometry/Intersections.cpp
     src/entities/Entity.h
     src/entities/LineEntity.h          src/entities/LineEntity.cpp
     src/entities/CircleEntity.h        src/entities/CircleEntity.cpp
     src/entities/PolylineEntity.h      src/entities/PolylineEntity.cpp
     src/entities/ArcEntity.h           src/entities/ArcEntity.cpp
     src/entities/CurveEntities.h       src/entities/CurveEntities.cpp
+    src/entities/EntityGeometry.h      src/entities/EntityGeometry.cpp
     src/document/UndoStack.h           src/document/UndoStack.cpp
     src/document/Document.h            src/document/Document.cpp
     src/document/EditCommands.h        src/document/EditCommands.cpp
     src/selection/SelectionSet.h       src/selection/SelectionSet.cpp
+    src/snapping/SnapEngine.h          src/snapping/SnapEngine.cpp
     src/commands/InputParser.h         src/commands/InputParser.cpp
     src/commands/InteractiveCommand.h  src/commands/InteractiveCommand.cpp
     src/commands/DrawCommands.h        src/commands/DrawCommands.cpp

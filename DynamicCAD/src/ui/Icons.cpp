@@ -118,6 +118,20 @@ void paintIcon(QPainter& p, const QString& n) {
     } else if (n == "ortho") {
         p.drawLine(QPointF(12, 52), QPointF(52, 52)); p.drawLine(QPointF(12, 52), QPointF(12, 12));
         p.setPen(QPen(gold, 4)); p.drawRect(QRectF(12, 40, 12, 12));
+    } else if (n == "osnap") {
+        p.drawLine(QPointF(8, 54), QPointF(54, 8));
+        p.setPen(QPen(gold, 4));
+        p.drawRect(QRectF(22, 22, 20, 20));
+    } else if (n == "polar") {
+        p.drawLine(QPointF(10, 52), QPointF(56, 52));
+        p.setPen(QPen(gold, 4, Qt::DashLine));
+        p.drawLine(QPointF(10, 52), QPointF(50, 12));
+        p.setPen(QPen(ink, 3));
+        p.drawArc(QRectF(-8, 34, 36, 36), 0, 45 * 16);
+    } else if (n == "dyn") {
+        p.drawLine(QPointF(14, 32), QPointF(50, 32)); p.drawLine(QPointF(32, 14), QPointF(32, 50));
+        p.setPen(QPen(gold, 3));
+        p.drawRect(QRectF(36, 38, 24, 16));
     } else if (n == "theme") {
         p.drawEllipse(QPointF(32, 32), 22, 22);
         p.setPen(Qt::NoPen); p.setBrush(gold);
