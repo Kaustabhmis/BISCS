@@ -112,6 +112,7 @@ private:
     QAction *actCutClip_{}, *actCopyClip_{}, *actPasteClip_{};
     QAction *actText_{}, *actMText_{}, *actDimLin_{}, *actDimAli_{}, *actDimAng_{}, *actDimRad_{}, *actDimDia_{}, *actLeader_{};
     QAction *actDist_{}, *actArea_{}, *actId_{};
+    QAction *actBlock_{}, *actInsert_{}, *actHatch_{}, *actPurge_{};
     QAction *actZoomExt_{}, *actZoomIn_{}, *actZoomOut_{};
     QAction *actGrid_{}, *actSnap_{}, *actOrtho_{}, *actDark_{}, *actLight_{};
     QAction *actOsnap_{}, *actPolar_{}, *actDyn_{};

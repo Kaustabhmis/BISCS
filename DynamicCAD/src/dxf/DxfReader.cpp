@@ -9,6 +9,7 @@
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
 #include "entities/Annotation.h"
+#include "entities/HatchEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "geometry/Intersections.h"
@@ -16,6 +17,7 @@
 #include <QFile>
 
 #include <charconv>
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
@@ -619,6 +621,8 @@ private:
             auto l = std::make_unique<LeaderEntity>(std::move(pts), std::string());
             l->setDimStyle(dimStyle());
             addEntity(std::move(l), xf, styleOf(e));
+        } else if (t == "HATCH") {
+            convertHatch(e, xf);
         } else if (t == "ATTDEF") {
             unsupported(t + " (attribute definition)");
         } else if (t == "MULTILEADER" || t == "TOLERANCE" || t == "ARC_DIMENSION") {
@@ -698,6 +702,117 @@ private:
             out += c;
         }
         return out;
+    }
+
+    // HATCH: boundary paths (polyline or edge paths) + pattern definition lines.
+    void convertHatch(const RawEntity& e, const Affine2D& xf) {
+        auto o = ocs(e);
+        if (!o) return;
+        const auto& G = e.groups;
+        std::size_t i = 0;
+        auto num = [&](std::size_t k) { return toDouble(G[k].value).value_or(NAN); };
+        auto seek = [&](int code) { while (i < G.size() && G[i].code != code) ++i; return i < G.size(); };
+        std::vector<HatchLoop> loops;
+        HatchPattern pat;
+        pat.name = upperName(e.str(2, "SOLID"));
+        pat.solid = e.integer(70, 0) == 1;
+        pat.scale = e.num(41, 1.0);
+        pat.angle = e.num(52, 0.0);
+        if (!seek(91)) return invalid("HATCH");
+        const long long nPaths = toInt(G[i].value).value_or(0);
+        ++i;
+        for (long long pth = 0; pth < nPaths && i < G.size(); ++pth) {
+            if (!seek(92)) break;
+            const long long flags = toInt(G[i].value).value_or(0);
+            ++i;
+            HatchLoop loop;
+            if (flags & 2) { // polyline path
+                if (!seek(72)) break;
+                const bool hasBulge = toInt(G[i].value).value_or(0) != 0;
+                ++i;
+                if (!seek(93)) break;
+                const long long nv = toInt(G[i].value).value_or(0);
+                ++i;
+                for (long long v = 0; v < nv && i < G.size(); ++v) {
+                    if (!seek(10)) break;
+                    Vec2 p{num(i), 0};
+                    ++i;
+                    if (i < G.size() && G[i].code == 20) { p.y = num(i); ++i; }
+                    double b = 0;
+                    if (hasBulge && i < G.size() && G[i].code == 42) { b = num(i); ++i; }
+                    loop.vertices.push_back(p);
+                    loop.bulges.push_back(b);
+                }
+            } else { // edge path
+                if (!seek(93)) break;
+                const long long ne = toInt(G[i].value).value_or(0);
+                ++i;
+                for (long long k = 0; k < ne && i < G.size(); ++k) {
+                    if (!seek(72)) break;
+                    const long long et = toInt(G[i].value).value_or(0);
+                    ++i;
+                    auto next = [&](int code) -> double {
+                        while (i < G.size() && G[i].code != code && G[i].code != 72 && G[i].code != 92 && G[i].code != 97) ++i;
+                        if (i < G.size() && G[i].code == code) { const double v = num(i); ++i; return v; }
+                        return NAN;
+                    };
+                    if (et == 1) { // line
+                        const Vec2 a{next(10), next(20)};
+                        next(11); // end point is the next edge's start
+                        loop.vertices.push_back(a);
+                        loop.bulges.push_back(0.0);
+                    } else if (et == 2) { // circular arc
+                        const Vec2 c{next(10), next(20)};
+                        const double r = next(40), a0 = next(50), a1 = next(51);
+                        const bool ccw = static_cast<int>(next(73)) != 0;
+                        ArcGeom g = geom::arcFromDegrees(c, r, ccw ? a0 : -a0, ccw ? a1 : -a1);
+                        if (!ccw) g.sweep = -g.sweep;
+                        loop.vertices.push_back(g.startPoint());
+                        loop.bulges.push_back(std::tan(g.sweep / 4.0));
+                    } else if (et == 3) { // elliptic arc: tessellated
+                        EllipseGeom g;
+                        g.center = {next(10), next(20)};
+                        g.major = {next(11), next(21)};
+                        g.ratio = next(40);
+                        double s0 = degToRad(next(50)), s1 = degToRad(next(51));
+                        const bool ccw = static_cast<int>(next(73)) != 0;
+                        if (!ccw) { s0 = -s0; s1 = -s1; }
+                        g.startParam = s0;
+                        g.endParam = s1 > s0 ? s1 : s1 + 2 * kPi;
+                        if (!(g.ratio > 0) || !(g.major.length() > 0)) return invalid("HATCH");
+                        auto pts = geom::tessellateEllipse(g, g.majorRadius() * 1e-4);
+                        if (!ccw) std::reverse(pts.begin(), pts.end());
+                        for (std::size_t q = 0; q + 1 < pts.size(); ++q) { loop.vertices.push_back(pts[q]); loop.bulges.push_back(0.0); }
+                    } else { // spline edge: control polygon start points (approximate)
+                        ++approxHatch_;
+                        const double x = next(10), y = next(20);
+                        if (std::isfinite(x)) { loop.vertices.push_back({x, y}); loop.bulges.push_back(0.0); }
+                    }
+                }
+            }
+            for (const Vec2& p : loop.vertices) if (!p.isFinite()) return invalid("HATCH");
+            if (loop.vertices.size() >= 3 || (loop.vertices.size() == 2 && loop.bulges[0] != 0)) loops.push_back(std::move(loop));
+        }
+        if (loops.empty()) return invalid("HATCH");
+        if (!pat.solid) {
+            // Pattern definition lines: 53 angle, 43/44 base, 45/46 offset, 79 + 49 dashes.
+            for (std::size_t k = 0; k < G.size(); ++k) {
+                if (G[k].code != 53) continue;
+                HatchLineFamily f;
+                f.angleDeg = num(k);
+                std::size_t m = k + 1;
+                auto val = [&](int code) { while (m < G.size() && G[m].code != code && G[m].code != 53) ++m; return m < G.size() && G[m].code == code ? num(m++) : NAN; };
+                f.origin = {val(43), val(44)};
+                f.offset = {val(45), val(46)};
+                const double nd = val(79);
+                for (int d = 0; d < static_cast<int>(nd); ++d) f.dashes.push_back(val(49));
+                if (!f.origin.isFinite() || !f.offset.isFinite()) continue;
+                for (double& dd : f.dashes) if (!std::isfinite(dd)) dd = 0;
+                pat.families.push_back(f);
+            }
+            if (pat.families.empty()) pat = makeHatchPattern(pat.name, pat.scale, pat.angle);
+        }
+        addEntity(std::make_unique<HatchEntity>(std::move(loops), std::move(pat)), xf * *o, styleOf(e));
     }
 
     void convertText(const RawEntity& e, const Affine2D& xf) {
@@ -853,6 +968,8 @@ public:
             for (const auto& n : missingLinetypes_) names += (names.empty() ? "" : ", ") + n;
             r_.warnings.push_back("Linetype(s) not defined in the file are drawn continuous: " + names + ".");
         }
+        if (approxHatch_)
+            r_.warnings.push_back(std::to_string(approxHatch_) + " hatch boundary edge(s) were splines and are approximated.");
         if (approxMText_)
             r_.warnings.push_back(std::to_string(approxMText_) +
                                   " multiline text(s) use an attachment point that is placed approximately.");
@@ -882,6 +999,7 @@ private:
     std::string clayer_;
     std::size_t varyingWidth_ = 0;
     std::size_t approxMText_ = 0;
+    std::size_t approxHatch_ = 0;
     std::set<std::string> xrefs_;
 };
 

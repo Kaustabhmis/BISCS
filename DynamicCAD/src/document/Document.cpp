@@ -3,6 +3,8 @@
 
 #include "document/EditCommands.h"
 
+#include <set>
+
 namespace dyncad {
 
 EntityPtr Document::findEntity(EntityId id) const {
@@ -76,7 +78,8 @@ std::vector<std::pair<EntityId, EntityPtr>> Document::swapEntities(const std::ve
     return out;
 }
 
-void Document::reset(std::vector<EntityPtr> entities, std::string units, StyleTables styles) {
+void Document::reset(std::vector<EntityPtr> entities, std::string units, StyleTables styles, BlockTable blocks) {
+    blocks_ = std::move(blocks);
     entities_.clear();
     index_.clear();
     nextId_ = 1;
@@ -103,6 +106,10 @@ void Document::appendEntities(const std::vector<EntityPtr>& entities) {
             Layer l;
             l.name = e->layer();
             if (!styles_.addLayer(l)) e->setLayer("0");
+        }
+        if (e->type() == EntityType::Insert) { // pasted/imported block references bring their definition
+            const auto& b = static_cast<const InsertEntity&>(*e).block();
+            if (b && !blocks_.count(upperName(b->name))) blocks_[upperName(b->name)] = b;
         }
         assignId(*e);
         index_[e->id()] = e;
@@ -195,6 +202,63 @@ bool Document::deleteLayerWithUndo(const std::string& name) {
     if (!t.removeLayer(name)) return false;
     setStylesWithUndo(std::move(t), "Delete layer");
     return true;
+}
+
+namespace {
+class BlocksCommand final : public UndoCommand {
+public:
+    BlocksCommand(Document& doc, Document::BlockTable t, std::string text) : doc_(doc), other_(std::move(t)), text_(std::move(text)) {}
+    void redo() override { swap(); }
+    void undo() override { swap(); }
+    std::string text() const override { return text_; }
+
+private:
+    void swap() {
+        Document::BlockTable cur = doc_.blocks();
+        doc_.setBlocksNoUndo(other_);
+        other_ = std::move(cur);
+    }
+    Document& doc_;
+    Document::BlockTable other_;
+    std::string text_;
+};
+
+void collectUsedBlocks(const Entity& e, std::set<std::string>& used) {
+    if (e.type() != EntityType::Insert) return;
+    const auto& ins = static_cast<const InsertEntity&>(e);
+    if (!ins.block() || !used.insert(upperName(ins.block()->name)).second) return;
+    for (const auto& sub : ins.block()->entities) collectUsedBlocks(*sub, used);
+}
+} // namespace
+
+BlockDefPtr Document::findBlock(const std::string& name) const {
+    auto it = blocks_.find(upperName(name));
+    return it == blocks_.end() ? nullptr : it->second;
+}
+
+void Document::defineBlockWithUndo(BlockDefPtr block, const std::vector<EntityId>& erase, std::vector<EntityPtr> add) {
+    BlockTable t = blocks_;
+    t[upperName(block->name)] = block;
+    auto group = std::make_unique<CompositeCommand>(*this, "Block");
+    group->add(std::make_unique<BlocksCommand>(*this, std::move(t), "Block"));
+    std::unordered_set<EntityId> existing;
+    for (EntityId id : erase) if (index_.count(id)) existing.insert(id);
+    if (!existing.empty()) group->add(std::make_unique<EraseEntitiesCommand>(*this, std::move(existing)));
+    if (!add.empty()) group->add(std::make_unique<AddEntitiesCommand>(*this, std::move(add), "Block"));
+    undo_.push(std::move(group));
+}
+
+std::vector<std::string> Document::purgeBlocksWithUndo() {
+    std::set<std::string> used;
+    for (const auto& e : entities_) collectUsedBlocks(*e, used);
+    BlockTable t;
+    std::vector<std::string> removed;
+    for (const auto& [k, b] : blocks_) {
+        if (used.count(k)) t[k] = b;
+        else removed.push_back(b->name);
+    }
+    if (!removed.empty()) undo_.push(std::make_unique<BlocksCommand>(*this, std::move(t), "Purge"));
+    return removed;
 }
 
 Document::Resolved Document::resolve(const Entity& e) const {

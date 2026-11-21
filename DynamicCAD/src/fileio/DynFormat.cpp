@@ -6,6 +6,8 @@
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
 #include "entities/Annotation.h"
+#include "entities/BlockEntities.h"
+#include "entities/HatchEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "version.h"
@@ -18,7 +20,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <map>
+#include <set>
 
 namespace dyncad {
 
@@ -167,6 +171,51 @@ QJsonObject entityToJson(const Entity& e) {
         o["style"] = dimStyleToJson(l.dimStyle());
         break;
     }
+    case EntityType::Insert: {
+        const auto& ins = static_cast<const InsertEntity&>(e);
+        o["type"] = "INSERT";
+        o["block"] = QString::fromStdString(ins.blockName());
+        o["position"] = toJson(ins.position());
+        if (ins.scaleX() != 1.0 || ins.scaleY() != 1.0) o["scale"] = QJsonArray{ins.scaleX(), ins.scaleY()};
+        if (ins.rotationDeg() != 0) o["rotation"] = ins.rotationDeg();
+        break;
+    }
+    case EntityType::Hatch: {
+        const auto& h = static_cast<const HatchEntity&>(e);
+        o["type"] = "HATCH";
+        QJsonArray loops;
+        for (const auto& l : h.loops()) {
+            QJsonObject lo;
+            QJsonArray v, b;
+            for (const Vec2& p : l.vertices) v.append(toJson(p));
+            bool arcs = false;
+            for (double x : l.bulges) { b.append(x); arcs |= x != 0; }
+            lo["vertices"] = v;
+            if (arcs) lo["bulges"] = b;
+            loops.append(lo);
+        }
+        o["loops"] = loops;
+        const HatchPattern& pat = h.pattern();
+        QJsonObject po;
+        po["name"] = QString::fromStdString(pat.name);
+        po["solid"] = pat.solid;
+        po["scale"] = pat.scale;
+        po["angle"] = pat.angle;
+        QJsonArray fams;
+        for (const auto& f : pat.families) {
+            QJsonObject fo;
+            fo["angle"] = f.angleDeg;
+            fo["origin"] = toJson(f.origin);
+            fo["offset"] = toJson(f.offset);
+            QJsonArray d;
+            for (double x : f.dashes) d.append(x);
+            if (!d.isEmpty()) fo["dashes"] = d;
+            fams.append(fo);
+        }
+        if (!pat.solid) po["families"] = fams;
+        o["pattern"] = po;
+        break;
+    }
     case EntityType::Point: {
         o["type"] = "POINT";
         o["position"] = toJson(static_cast<const PointEntity&>(e).position());
@@ -193,7 +242,9 @@ QJsonObject entityToJson(const Entity& e) {
 }
 
 // Returns nullptr and fills reason if the object is not a valid entity.
-EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
+using BlockResolver = std::function<BlockDefPtr(const std::string&)>;
+
+EntityPtr entityFromJson(const QJsonObject& o, std::string& reason, const BlockResolver& blocks = nullptr) {
     const QString type = o.value("type").toString();
     EntityPtr e;
     if (type == "LINE") {
@@ -240,6 +291,53 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
             return nullptr;
         }
         e = std::make_shared<ArcEntity>(c, r, a0.toDouble(), a1.toDouble());
+    } else if (type == "INSERT") {
+        Vec2 pos;
+        const std::string name = o.value("block").toString().toStdString();
+        BlockDefPtr def = blocks ? blocks(name) : nullptr;
+        if (!def) { reason = "INSERT refers to an unknown block \"" + name + "\""; return nullptr; }
+        if (!fromJson(o.value("position"), pos)) { reason = "INSERT has an invalid position"; return nullptr; }
+        double sx = 1, sy = 1;
+        if (o.contains("scale")) {
+            const QJsonArray sc = o.value("scale").toArray();
+            if (sc.size() != 2 || !sc[0].isDouble() || !sc[1].isDouble() || sc[0].toDouble() == 0 || sc[1].toDouble() == 0) {
+                reason = "INSERT has an invalid scale";
+                return nullptr;
+            }
+            sx = sc[0].toDouble();
+            sy = sc[1].toDouble();
+        }
+        e = std::make_shared<InsertEntity>(def, pos, sx, sy, o.value("rotation").toDouble(0));
+    } else if (type == "HATCH") {
+        std::vector<HatchLoop> loops;
+        for (const auto& lv : o.value("loops").toArray()) {
+            HatchLoop l;
+            for (const auto& v : lv.toObject().value("vertices").toArray()) {
+                Vec2 p;
+                if (!fromJson(v, p)) { reason = "HATCH has an invalid vertex"; return nullptr; }
+                l.vertices.push_back(p);
+            }
+            for (const auto& b : lv.toObject().value("bulges").toArray()) l.bulges.push_back(b.toDouble(0));
+            if (l.vertices.size() < 3 && !(l.vertices.size() == 2 && l.bulges.size() == 2)) { reason = "HATCH loop needs 3 vertices"; return nullptr; }
+            loops.push_back(std::move(l));
+        }
+        if (loops.empty()) { reason = "HATCH has no boundary"; return nullptr; }
+        const QJsonObject po = o.value("pattern").toObject();
+        HatchPattern pat;
+        pat.name = po.value("name").toString("SOLID").toStdString();
+        pat.solid = po.value("solid").toBool(true);
+        pat.scale = po.value("scale").toDouble(1.0);
+        pat.angle = po.value("angle").toDouble(0.0);
+        for (const auto& fv : po.value("families").toArray()) {
+            const QJsonObject fo = fv.toObject();
+            HatchLineFamily f;
+            f.angleDeg = fo.value("angle").toDouble(0);
+            if (!fromJson(fo.value("origin"), f.origin) || !fromJson(fo.value("offset"), f.offset)) { reason = "HATCH pattern is invalid"; return nullptr; }
+            for (const auto& d : fo.value("dashes").toArray()) f.dashes.push_back(d.toDouble(0));
+            pat.families.push_back(f);
+        }
+        if (!pat.solid && pat.families.empty()) pat = makeHatchPattern(pat.name, pat.scale, pat.angle);
+        e = std::make_shared<HatchEntity>(std::move(loops), std::move(pat));
     } else if (type == "TEXT" || type == "MTEXT") {
         Vec2 ins;
         const double h = o.value("height").toDouble(-1);
@@ -414,6 +512,72 @@ StyleTables tablesFromJson(const QJsonObject& root, std::vector<std::string>& wa
 }
 } // namespace
 
+namespace {
+// Every block definition used by the entities, including blocks nested
+// inside other blocks.
+void collectBlocks(const Entity& e, std::map<std::string, BlockDefPtr>& out) {
+    if (e.type() != EntityType::Insert) return;
+    const auto& b = static_cast<const InsertEntity&>(e).block();
+    if (!b || out.count(upperName(b->name))) return;
+    out[upperName(b->name)] = b;
+    for (const auto& sub : b->entities) collectBlocks(*sub, out);
+}
+
+// Completes a block map with the definitions its blocks refer to.
+void closeOverNested(std::map<std::string, BlockDefPtr>& blocks) {
+    std::vector<BlockDefPtr> todo;
+    for (const auto& kv : blocks) todo.push_back(kv.second);
+    for (const auto& b : todo)
+        for (const auto& sub : b->entities) collectBlocks(*sub, blocks);
+}
+
+QJsonArray blocksToJson(const std::map<std::string, BlockDefPtr>& blocks) {
+    QJsonArray arr;
+    for (const auto& [k, b] : blocks) {
+        QJsonObject o;
+        o["name"] = QString::fromStdString(b->name);
+        if (!b->description.empty()) o["description"] = QString::fromStdString(b->description);
+        QJsonArray ents;
+        for (const auto& e : b->entities) ents.append(entityToJson(*e));
+        o["entities"] = ents;
+        arr.append(o);
+    }
+    return arr;
+}
+
+// Parses block definitions (nested references in any order, cycles rejected).
+std::map<std::string, BlockDefPtr> blocksFromJson(const QJsonArray& arr, std::vector<std::string>& warnings) {
+    std::map<std::string, QJsonObject> raw;
+    for (const auto& v : arr) {
+        const QJsonObject o = v.toObject();
+        const std::string n = o.value("name").toString().toStdString();
+        if (!n.empty()) raw[upperName(n)] = o;
+    }
+    std::map<std::string, BlockDefPtr> done;
+    std::set<std::string> building;
+    std::function<BlockDefPtr(const std::string&)> get = [&](const std::string& name) -> BlockDefPtr {
+        const std::string k = upperName(name);
+        if (auto it = done.find(k); it != done.end()) return it->second;
+        auto it = raw.find(k);
+        if (it == raw.end() || building.count(k)) return nullptr; // missing or circular
+        building.insert(k);
+        auto def = std::make_shared<BlockDef>();
+        def->name = it->second.value("name").toString().toStdString();
+        def->description = it->second.value("description").toString().toStdString();
+        for (const auto& ev : it->second.value("entities").toArray()) {
+            std::string why;
+            if (auto e = ev.isObject() ? entityFromJson(ev.toObject(), why, get) : nullptr) def->entities.push_back(e);
+            else warnings.push_back("Block \"" + def->name + "\": entity skipped (" + why + ").");
+        }
+        building.erase(k);
+        done[k] = def;
+        return def;
+    };
+    for (const auto& [k, o] : raw) get(k);
+    return done;
+}
+} // namespace
+
 QByteArray serializeDyn(const Document& doc) {
     QJsonObject root;
     root["format"] = kFormatId;
@@ -421,6 +585,10 @@ QByteArray serializeDyn(const Document& doc) {
     root["application"] = QStringLiteral("DYNAMIC CAD %1").arg(DYNCAD_VERSION_STRING);
     root["units"] = QString::fromStdString(doc.units());
     root = tablesToJson(doc.styles(), root);
+    std::map<std::string, BlockDefPtr> blocks = doc.blocks();
+    closeOverNested(blocks);
+    for (const auto& e : doc.entities()) collectBlocks(*e, blocks);
+    if (!blocks.empty()) root["blocks"] = blocksToJson(blocks);
     QJsonArray ents;
     for (const auto& e : doc.entities()) ents.append(entityToJson(*e));
     root["entities"] = ents;
@@ -448,13 +616,18 @@ FileResult deserializeDyn(const QByteArray& data, Document& doc) {
     }
     if (!root.value("entities").isArray()) { r.error = "Drawing has no entity list."; return r; }
 
+    std::map<std::string, BlockDefPtr> blocks = blocksFromJson(root.value("blocks").toArray(), r.warnings);
+    const BlockResolver resolver = [&](const std::string& n) -> BlockDefPtr {
+        auto it = blocks.find(upperName(n));
+        return it == blocks.end() ? nullptr : it->second;
+    };
     std::vector<EntityPtr> entities;
     const QJsonArray arr = root.value("entities").toArray();
     entities.reserve(static_cast<std::size_t>(arr.size()));
     int index = 0;
     for (const auto& v : arr) {
         std::string reason;
-        EntityPtr e = v.isObject() ? entityFromJson(v.toObject(), reason) : nullptr;
+        EntityPtr e = v.isObject() ? entityFromJson(v.toObject(), reason, resolver) : nullptr;
         if (!v.isObject()) reason = "entry is not an object";
         if (e) entities.push_back(std::move(e));
         else r.warnings.push_back("Entity #" + std::to_string(index) + " skipped: " + reason + ".");
@@ -462,7 +635,7 @@ FileResult deserializeDyn(const QByteArray& data, Document& doc) {
     }
     QString units = root.value("units").toString("mm");
     StyleTables tables = tablesFromJson(root, r.warnings);
-    doc.reset(std::move(entities), units.isEmpty() ? "mm" : units.toStdString(), std::move(tables));
+    doc.reset(std::move(entities), units.isEmpty() ? "mm" : units.toStdString(), std::move(tables), std::move(blocks));
     r.ok = true;
     return r;
 }
@@ -471,6 +644,9 @@ QByteArray serializeEntities(const std::vector<EntityPtr>& entities) {
     QJsonObject root;
     root["format"] = "DynamicCAD-Clipboard";
     root["formatVersion"] = kDynFormatVersion;
+    std::map<std::string, BlockDefPtr> blocks;
+    for (const auto& e : entities) collectBlocks(*e, blocks);
+    if (!blocks.empty()) root["blocks"] = blocksToJson(blocks);
     QJsonArray ents;
     for (const auto& e : entities) ents.append(entityToJson(*e));
     root["entities"] = ents;
@@ -481,9 +657,15 @@ std::vector<EntityPtr> deserializeEntities(const QByteArray& data, std::vector<s
     std::vector<EntityPtr> out;
     const QJsonDocument jd = QJsonDocument::fromJson(data);
     if (!jd.isObject() || jd.object().value("format").toString() != "DynamicCAD-Clipboard") return out;
+    std::vector<std::string> w;
+    auto blocks = blocksFromJson(jd.object().value("blocks").toArray(), w);
+    const BlockResolver resolver = [&](const std::string& n) -> BlockDefPtr {
+        auto it = blocks.find(upperName(n));
+        return it == blocks.end() ? nullptr : it->second;
+    };
     for (const auto& v : jd.object().value("entities").toArray()) {
         std::string why;
-        if (auto e = v.isObject() ? entityFromJson(v.toObject(), why) : nullptr) out.push_back(e);
+        if (auto e = v.isObject() ? entityFromJson(v.toObject(), why, resolver) : nullptr) out.push_back(e);
         else if (warnings) warnings->push_back(why);
     }
     return out;

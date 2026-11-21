@@ -10,6 +10,8 @@
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
 #include "entities/Annotation.h"
+#include "entities/BlockEntities.h"
+#include "entities/HatchEntity.h"
 #include "ui/StyleWidgets.h"
 
 #include <QComboBox>
@@ -18,6 +20,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <algorithm>
 #include <cmath>
 #include <map>
 #include <set>
@@ -254,6 +257,25 @@ void PropertiesPanel::refresh() {
         addRow(g, tr("Length (approx.)"), num(sp.length()));
         break;
     }
+    case EntityType::Insert: {
+        const auto& ins = static_cast<const InsertEntity&>(*e);
+        addRow(g, tr("Block"), QString::fromStdString(ins.blockName()));
+        addEditRow(g, tr("Position"), pt(ins.position()));
+        addEditRow(g, tr("Scale X"), num(ins.scaleX()));
+        addEditRow(g, tr("Scale Y"), num(ins.scaleY()));
+        addEditRow(g, tr("Rotation (deg)"), num(ins.rotationDeg()));
+        addRow(g, tr("Objects in block"), QString::number(ins.block() ? ins.block()->entities.size() : 0));
+        break;
+    }
+    case EntityType::Hatch: {
+        const auto& h = static_cast<const HatchEntity&>(*e);
+        addEditRow(g, tr("Pattern"), QString::fromStdString(h.pattern().name));
+        addEditRow(g, tr("Pattern scale"), num(h.pattern().scale));
+        addEditRow(g, tr("Pattern angle"), num(h.pattern().angle));
+        addRow(g, tr("Boundary loops"), QString::number(h.loops().size()));
+        addRow(g, tr("Area"), num(h.area()));
+        break;
+    }
     case EntityType::Text: {
         const auto& t = static_cast<const TextEntity&>(*e);
         QString contents = QString::fromStdString(t.text());
@@ -389,6 +411,29 @@ bool PropertiesPanel::editGeometry(const QString& prop, const QString& value) {
         else if (prop == tr("Text height") && n && *n > 0) { st.textHeight = *n; d->setDimStyle(st); out = d; }
         else if (prop == tr("Arrow size") && n && *n > 0) { st.arrowSize = *n; d->setDimStyle(st); out = d; }
         else if (prop == tr("Precision") && n && *n >= 0 && *n <= 8 && *n == std::floor(*n)) { st.precision = int(*n); d->setDimStyle(st); out = d; }
+        break;
+    }
+    case EntityType::Insert: {
+        auto ins = std::make_shared<InsertEntity>(static_cast<const InsertEntity&>(*e));
+        if (prop == tr("Position") && p) { ins->setPosition(*p); out = ins; }
+        else if (prop == tr("Scale X") && n && *n != 0) { ins->setScale(*n, ins->scaleY()); out = ins; }
+        else if (prop == tr("Scale Y") && n && *n != 0) { ins->setScale(ins->scaleX(), *n); out = ins; }
+        else if (prop == tr("Rotation (deg)") && n) { ins->setRotation(*n); out = ins; }
+        break;
+    }
+    case EntityType::Hatch: {
+        auto h = std::make_shared<HatchEntity>(static_cast<const HatchEntity&>(*e));
+        HatchPattern pat = h->pattern();
+        std::string name = pat.name;
+        double sc = pat.scale, an = pat.angle;
+        if (prop == tr("Pattern")) name = upperName(value.trimmed().toStdString());
+        else if (prop == tr("Pattern scale") && n && *n > 0) sc = *n;
+        else if (prop == tr("Pattern angle") && n) an = *n;
+        else break;
+        const auto names = builtinHatchNames();
+        if (std::find(names.begin(), names.end(), name) == names.end()) break;
+        h->setPattern(makeHatchPattern(name, sc, an));
+        out = h;
         break;
     }
     case EntityType::Leader: {

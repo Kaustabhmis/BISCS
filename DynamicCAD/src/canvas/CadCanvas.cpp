@@ -5,6 +5,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
+#include "entities/HatchEntity.h"
 #include "commands/GripAndClipboard.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
@@ -374,6 +375,68 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
     case EntityType::XLine: {
         if (auto c = static_cast<const XLineEntity&>(e).clipped(clip))
             p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
+        break;
+    }
+    case EntityType::Insert: {
+        const auto& ins = static_cast<const InsertEntity&>(e);
+        const QPen keep = p.pen();
+        for (const auto& sub : ins.worldEntities()) {
+            if (!sub->isInfinite() && !clip.intersects(sub->bounds())) continue;
+            if (style) { // normal drawing: each sub-entity in its own resolved style
+                const Document::Resolved st = doc_.resolve(*sub);
+                if (!st.visible) continue;
+                p.setPen(penFor(st));
+                drawEntity(p, *sub, visible, &st);
+            } else {     // highlight: everything in the highlight pen
+                drawEntity(p, *sub, visible, nullptr);
+            }
+        }
+        p.setPen(keep);
+        break;
+    }
+    case EntityType::Hatch: {
+        const auto& h = static_cast<const HatchEntity&>(e);
+        const QColor col = p.pen().color();
+        if (h.pattern().solid || !style) {
+            QPainterPath path;
+            path.setFillRule(Qt::OddEvenFill);
+            for (const auto& poly : h.loopPolygons(view_.pixelsToWorld(0.5))) {
+                for (std::size_t i = 0; i < poly.size(); ++i) {
+                    const QPointF q = qp(view_.worldToScreen(poly[i]));
+                    if (i == 0) path.moveTo(q); else path.lineTo(q);
+                }
+                path.closeSubpath();
+            }
+            QColor fill = col;
+            if (!style) fill.setAlpha(90); // selection highlight: translucent
+            p.fillPath(path, fill);
+            break;
+        }
+        // Pattern lines; drawn as a translucent fill when too dense to see.
+        double spacingPx = 1e9;
+        for (const auto& f : h.pattern().families) {
+            const double r = degToRad(f.angleDeg);
+            spacingPx = std::min(spacingPx, std::abs(f.offset.dot(Vec2{-std::sin(r), std::cos(r)})) * view_.scale());
+        }
+        if (spacingPx < 2.0) {
+            QPainterPath path;
+            path.setFillRule(Qt::OddEvenFill);
+            for (const auto& poly : h.loopPolygons(view_.pixelsToWorld(0.5))) {
+                for (std::size_t i = 0; i < poly.size(); ++i) {
+                    const QPointF q = qp(view_.worldToScreen(poly[i]));
+                    if (i == 0) path.moveTo(q); else path.lineTo(q);
+                }
+                path.closeSubpath();
+            }
+            QColor fill = col;
+            fill.setAlpha(70);
+            p.fillPath(path, fill);
+            break;
+        }
+        for (const auto& seg : h.cachedSegments()) {
+            if (seg.first == seg.second) { p.drawPoint(qp(view_.worldToScreen(seg.first))); continue; }
+            if (auto c = geom::clipSegment(seg.first, seg.second, clip)) line(c->first, c->second);
+        }
         break;
     }
     case EntityType::Text: {

@@ -2,6 +2,7 @@
 #include "commands/ModifyCommands.h"
 
 #include "entities/ArcEntity.h"
+#include "entities/BlockEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "geometry/Geometry.h"
@@ -368,6 +369,7 @@ CommandStatus ArrayCommand::stageEnter(CommandContext& ctx) {
 
 std::vector<EntityPtr> ExplodeCommand::explode(const Entity& e) {
     std::vector<EntityPtr> out;
+    if (e.type() == EntityType::Insert) return static_cast<const InsertEntity&>(e).explode();
     if (e.type() != EntityType::Polyline) return out;
     const auto& pl = static_cast<const PolylineEntity&>(e);
     for (std::size_t i = 0; i < pl.segmentCount(); ++i) {
@@ -392,14 +394,14 @@ CommandStatus ExplodeCommand::afterSelection(CommandContext& ctx) {
     for (const auto& e : selected()) {
         auto parts = explode(*e);
         if (parts.empty()) { ++skipped; continue; }
-        if (static_cast<const PolylineEntity&>(*e).width() > 0) ++widthLost;
+        if (e->type() == EntityType::Polyline && static_cast<const PolylineEntity&>(*e).width() > 0) ++widthLost;
         erase.push_back(e->id());
         for (auto& p : parts) add.push_back(p);
     }
     ctx.doc.changeWithUndo(erase, std::move(add), "Explode");
     ctx.selection.clear();
     ctx.say(plural(erase.size(), "object", "objects") + " exploded.");
-    if (skipped) ctx.say(plural(skipped, "object", "objects") + " cannot be exploded (only polylines can, in this version).");
+    if (skipped) ctx.say(plural(skipped, "object", "objects") + " cannot be exploded (polylines and block references can).");
     if (widthLost) ctx.say("Polyline width is not kept by EXPLODE.");
     return CommandStatus::Done;
 }

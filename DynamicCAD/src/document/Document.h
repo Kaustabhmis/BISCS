@@ -4,6 +4,7 @@
 #include "document/UndoStack.h"
 #include "entities/Entity.h"
 #include "layers/LayerTable.h"
+#include "entities/BlockEntities.h"
 
 #include <functional>
 #include <map>
@@ -49,7 +50,19 @@ public:
     void markSaved() { undo_.setClean(); notifyChanged(); }
 
     // Replaces the whole drawing (used by New/Open). Clears undo history.
-    void reset(std::vector<EntityPtr> entities = {}, std::string units = "mm", StyleTables styles = StyleTables());
+    using BlockTable = std::map<std::string, BlockDefPtr>; // key: upper-case name
+    void reset(std::vector<EntityPtr> entities = {}, std::string units = "mm", StyleTables styles = StyleTables(),
+               BlockTable blocks = {});
+
+    // ---- Block definitions ----
+    const BlockTable& blocks() const { return blocks_; }
+    BlockDefPtr findBlock(const std::string& name) const;
+    // Adds/replaces a block definition and swaps entities, as ONE undo step
+    // (BLOCK: selected objects become one INSERT).
+    void defineBlockWithUndo(BlockDefPtr block, const std::vector<EntityId>& erase, std::vector<EntityPtr> add);
+    void setBlocksNoUndo(BlockTable b) { blocks_ = std::move(b); notifyChanged(); }
+    // Removes definitions not used by any INSERT (directly or nested). Returns names removed.
+    std::vector<std::string> purgeBlocksWithUndo();
 
     const std::string& units() const { return units_; }
 
@@ -97,6 +110,7 @@ private:
     UndoStack undo_;
     std::string units_ = "mm";
     StyleTables styles_;
+    BlockTable blocks_;
     std::map<int, Listener> listeners_;
     int nextListener_ = 1;
 };

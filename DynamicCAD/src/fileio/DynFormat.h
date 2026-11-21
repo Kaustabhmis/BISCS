@@ -24,8 +24,9 @@ struct FileResult {
 // Version 3 (v0.3): ELLIPSE, SPLINE, filled polylines.
 // Version 4 (v0.4): XLINE, RAY, polyline width.
 // Version 5 (v0.5): layers, linetypes, colours, lineweights.
-// Version 6 (v0.6): TEXT, MTEXT, DIMENSION, LEADER. Older versions still open.
-inline constexpr int kDynFormatVersion = 6;
+// Version 6 (v0.6): TEXT, MTEXT, DIMENSION, LEADER.
+// Version 7 (v0.7): blocks (INSERT), HATCH. Older versions still open.
+inline constexpr int kDynFormatVersion = 7;
 
 QByteArray serializeDyn(const Document& doc);
 // On success replaces the document content; on failure leaves it untouched.

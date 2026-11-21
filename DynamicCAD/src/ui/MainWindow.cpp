@@ -218,6 +218,10 @@ void MainWindow::createActions() {
         {&actDist_, "D&istance", "dist", "DIST", "Measure the distance between two points (DI)"},
         {&actArea_, "A&rea", "area", "AREA", "Measure area and perimeter (AA)"},
         {&actId_, "&ID Point", "idpoint", "ID", "Show the coordinates of a point"},
+        {&actBlock_, "&Create Block", "block", "BLOCK", "Make a reusable block from objects (B)"},
+        {&actInsert_, "&Insert Block", "insert", "INSERT", "Place a block (I)"},
+        {&actHatch_, "&Hatch", "hatch", "HATCH", "Fill a closed area with a pattern or solid (H)"},
+        {&actPurge_, "&Purge", "purge", "PURGE", "Remove unused blocks and empty layers"},
     };
     for (const Tool& t : annoTools) {
         *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
@@ -402,6 +406,8 @@ void MainWindow::createMenus() {
     draw->addActions({actPoint_, actArrow_, actDonut_, actRevcloud_});
     draw->addSeparator();
     draw->addActions({actXline_, actRay_});
+    draw->addSeparator();
+    draw->addActions({actHatch_, actBlock_, actInsert_});
 
     QMenu* annoMenu = menuBar()->addMenu(tr("&Annotate"));
     annoMenu->addActions({actText_, actMText_, actLeader_});
@@ -432,7 +438,7 @@ void MainWindow::createRibbon() {
     ribbon_ = new Ribbon(this);
     RibbonPage* home = ribbon_->addPage(tr("Home"));
     home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
-    home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
+    home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_, actHatch_});
     home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_, actDonut_, actRevcloud_});
     home->addGroup(tr("Edit"), {actErase_, actUndo_, actRedo_});
     createLayerRibbonGroup(home);
@@ -444,6 +450,8 @@ void MainWindow::createRibbon() {
     anno->addGroup(tr("Text"), {actText_, actMText_, actLeader_});
     anno->addGroup(tr("Dimensions"), {actDimLin_, actDimAli_, actDimAng_, actDimRad_, actDimDia_});
     anno->addGroup(tr("Measure"), {actDist_, actArea_, actId_});
+    RibbonPage* insertTab = ribbon_->addPage(tr("Insert"));
+    insertTab->addGroup(tr("Blocks"), {actBlock_, actInsert_, actPurge_});
     RibbonPage* construct = ribbon_->addPage(tr("Construction"));
     construct->addGroup(tr("Construction Lines"), {actXline_, actRay_});
     home->addGroup(tr("Selection"), {actSelectAll_});
@@ -652,6 +660,7 @@ void MainWindow::registerUiCommands() {
                    " Click a grip of a selected object to reshape it. Ctrl+C / Ctrl+X / Ctrl+V use the clipboard."));
         message(tr("Annotate: TEXT (DT), MTEXT (T), LEADER (LE), DIMLINEAR (DLI), DIMALIGNED (DAL), DIMANGULAR (DAN),"
                    " DIMRADIUS (DRA), DIMDIAMETER (DDI), DIST (DI), AREA (AA), ID."));
+        message(tr("Blocks & hatch: BLOCK (B), INSERT (I), HATCH (H), PURGE (PU)."));
         message(tr("Layers: LAYER (LA), MATCHPROP (MA), LTSCALE <factor>, LWDISPLAY. Use the Home ribbon drop-downs to"
                    " change the layer, colour, linetype and lineweight of selected objects."));
         message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"

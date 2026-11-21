@@ -247,6 +247,19 @@ void paintIcon(QPainter& p, const QString& n) {
     } else if (n == "idpoint") {
         p.drawLine(QPointF(32, 10), QPointF(32, 54)); p.drawLine(QPointF(10, 32), QPointF(54, 32)); dot({32, 32});
         QFont f; f.setPixelSize(16); p.setFont(f); p.setPen(gold); p.drawText(QPointF(36, 24), "xy");
+    } else if (n == "block" || n == "insert") {
+        p.drawRect(QRectF(10, 18, 32, 32)); p.drawEllipse(QPointF(26, 34), 9, 9);
+        p.setPen(QPen(gold, 4));
+        if (n == "block") { p.drawLine(QPointF(48, 8), QPointF(48, 26)); p.drawLine(QPointF(39, 17), QPointF(57, 17)); }
+        else { p.drawLine(QPointF(58, 6), QPointF(42, 22)); p.drawPolyline(QPolygonF({QPointF(42, 12), QPointF(42, 22), QPointF(52, 22)})); }
+    } else if (n == "hatch") {
+        p.drawRect(QRectF(8, 8, 48, 48));
+        p.setPen(QPen(gold, 3)); p.setClipRect(QRectF(10, 10, 44, 44));
+        for (int k = -48; k < 64; k += 10) p.drawLine(QPointF(k, 56), QPointF(k + 48, 8));
+        p.setClipping(false);
+    } else if (n == "purge") {
+        p.drawPolygon(QPolygonF({QPointF(16, 18), QPointF(48, 18), QPointF(44, 56), QPointF(20, 56)}));
+        p.drawLine(QPointF(12, 18), QPointF(52, 18)); p.setPen(QPen(gold, 4)); p.drawLine(QPointF(26, 10), QPointF(38, 10));
     } else if (n == "theme") {
         p.drawEllipse(QPointF(32, 32), 22, 22);
         p.setPen(Qt::NoPen); p.setBrush(gold);

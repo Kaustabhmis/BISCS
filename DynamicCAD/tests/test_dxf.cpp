@@ -274,7 +274,7 @@ private slots:
         const DxfImportResult r = importDxf(data, doc);
         QVERIFY(r.ok);
         QCOMPARE(doc.entityCount(), std::size_t(1));
-        QCOMPARE(r.unsupported.at("HATCH"), std::size_t(1));
+        QCOMPARE(r.unsupported.at("HATCH (invalid data)"), std::size_t(1)); // no boundary
         QCOMPARE(r.unsupported.at("DIMENSION (invalid data)"), std::size_t(1)); // no defining points
         QCOMPARE(r.unsupported.at("CIRCLE (invalid data)"), std::size_t(1));
         bool z = false, tilt = false;

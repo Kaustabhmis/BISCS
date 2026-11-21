@@ -514,6 +514,36 @@ private slots:
         QCOMPARE(dims, 5);
     }
 
+    void hatchAndBlocksScreenshot() {
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1400, 860);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        for (const char* l : {"REC", "0,0", "120,80", "C", "35,40", "15", "C", "85,40", "15",
+                              "H", "ANSI31", "S", "1.5", "60,70", "",
+                              "REC", "150,0", "@60,80", "H", "SOLID", "180,40", "",
+                              "REC", "240,0", "@60,80", "H", "NET", "S", "2", "270,40", ""})
+            w.executeCommandText(l);
+        // A block of a bolt symbol, inserted three times.
+        for (const char* l : {"C", "0,120", "6", "L", "-9,120", "9,120", "", "L", "0,111", "0,129", ""}) w.executeCommandText(l);
+        for (int i = 0; i < 3; ++i) w.selection().add(w.document().entities()[w.document().entityCount() - 1 - i]->id());
+        QLineEdit* in = w.commandLine()->input();
+        auto typeLine = [&](const char* s) { in->setFocus(); QTest::keyClicks(in, s); QTest::keyClick(in, Qt::Key_Return); };
+        typeLine("B"); typeLine("BOLT M12"); typeLine("0,120");
+        for (const char* l : {"I", ""}) (void)l;
+        typeLine("I"); typeLine("BOLT M12"); typeLine("100,120"); typeLine("1.5"); typeLine("45");
+        typeLine("I"); typeLine("BOLT M12"); typeLine("200,120"); typeLine("2"); typeLine("0");
+        w.executeCommandText("ZOOM E");
+        QTest::mouseMove(w.canvas(), QPoint(10, 10));
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_hatch_blocks.png"));
+        int inserts = 0, hatches = 0;
+        for (const auto& e : w.document().entities()) { inserts += e->type() == EntityType::Insert; hatches += e->type() == EntityType::Hatch; }
+        QCOMPARE(inserts, 3);
+        QCOMPARE(hatches, 3);
+    }
+
     void toolsScreenshot() {
         MainWindow w;
         w.setTheme(ThemeKind::Dark);

@@ -86,6 +86,8 @@ EntityPtr withGripMoved(const Entity& e, std::size_t i, const Vec2& to) {
     case EntityType::Point:
     case EntityType::XLine:
     case EntityType::Text:
+    case EntityType::Insert:
+    case EntityType::Hatch:
         return translateAll();
     case EntityType::Dimension: {
         auto d = std::make_shared<DimensionEntity>(static_cast<const DimensionEntity&>(e));

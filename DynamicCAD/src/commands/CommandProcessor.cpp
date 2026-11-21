@@ -6,6 +6,7 @@
 #include "commands/ModifyCommands.h"
 #include "commands/CurveEdit.h"
 #include "commands/AnnotationCommands.h"
+#include "commands/BlockHatchCommands.h"
 #include "geometry/Geometry.h"
 
 #include <sstream>
@@ -249,6 +250,20 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("DIST", {"DI"}, [] { return std::make_unique<DistCommand>(); });
     proc.registerCommand("AREA", {"AA"}, [] { return std::make_unique<AreaCommand>(); });
     proc.registerCommand("ID", {}, [] { return std::make_unique<IdCommand>(); });
+    proc.registerCommand("BLOCK", {"B"}, [] { return std::make_unique<BlockCommand>(); });
+    proc.registerCommand("INSERT", {"I"}, [] { return std::make_unique<InsertCommand>(); });
+    proc.registerCommand("HATCH", {"H", "BH"}, [] { return std::make_unique<HatchCommand>(); });
+    proc.registerAction("PURGE", {"PU"}, [&doc, &proc](const std::vector<std::string>&) {
+        const auto removed = doc.purgeBlocksWithUndo();
+        // Unused layers (not 0, not current).
+        StyleTables t = doc.styles();
+        std::vector<std::string> layers;
+        for (const auto& l : doc.styles().layers())
+            if (doc.countOnLayer(l.name) == 0 && t.removeLayer(l.name)) layers.push_back(l.name);
+        if (!layers.empty()) doc.setStylesWithUndo(t, "Purge layers");
+        if (proc.onMessage)
+            proc.onMessage("Purged " + std::to_string(removed.size()) + " unused block(s) and " + std::to_string(layers.size()) + " empty layer(s).");
+    });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

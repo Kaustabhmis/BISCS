@@ -8,6 +8,7 @@
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
 #include "entities/Annotation.h"
+#include "entities/BlockEntities.h"
 
 #include <cmath>
 
@@ -80,6 +81,14 @@ std::vector<Primitive> entityPrimitives(const Entity& e, const BoundingBox& regi
         }
         break;
     }
+    case EntityType::Insert:
+        for (const auto& sub : static_cast<const InsertEntity&>(e).worldEntities()) {
+            auto prims = entityPrimitives(*sub, region, relTol);
+            out.insert(out.end(), prims.begin(), prims.end());
+        }
+        break;
+    case EntityType::Hatch: // hatches give no snap or cutting geometry (CAD default)
+        break;
     case EntityType::Dimension:
     case EntityType::Leader: {
         const AnnotationGraphics g = e.type() == EntityType::Dimension ? static_cast<const DimensionEntity&>(e).graphics()
@@ -186,6 +195,21 @@ EntityKeyPoints entityKeyPoints(const Entity& e) {
     }
     case EntityType::Leader:
         k.endpoints = static_cast<const LeaderEntity&>(e).points();
+        break;
+    case EntityType::Insert: {
+        const auto& ins = static_cast<const InsertEntity&>(e);
+        k.nodes.push_back(ins.position()); // insertion point
+        for (const auto& sub : ins.worldEntities()) {
+            const EntityKeyPoints s = entityKeyPoints(*sub);
+            k.endpoints.insert(k.endpoints.end(), s.endpoints.begin(), s.endpoints.end());
+            k.midpoints.insert(k.midpoints.end(), s.midpoints.begin(), s.midpoints.end());
+            k.centers.insert(k.centers.end(), s.centers.begin(), s.centers.end());
+            k.quadrants.insert(k.quadrants.end(), s.quadrants.begin(), s.quadrants.end());
+            k.nodes.insert(k.nodes.end(), s.nodes.begin(), s.nodes.end());
+        }
+        break;
+    }
+    case EntityType::Hatch:
         break;
     }
     return k;

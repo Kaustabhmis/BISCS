@@ -9,6 +9,7 @@
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
 #include "entities/Annotation.h"
+#include "entities/HatchEntity.h"
 #include "geometry/Geometry.h"
 
 #include <algorithm>
@@ -807,6 +808,16 @@ EntityPtr StretchCommand::stretched(const Entity& e, const BoundingBox& w, const
         for (std::size_t i = 0; i < l->points().size(); ++i)
             if (w.contains(l->points()[i])) l->setPoint(i, l->points()[i] + d);
         out = l;
+        break;
+    }
+    case EntityType::Insert:
+        if (w.contains(static_cast<const InsertEntity&>(e).position())) out = EntityPtr(e.transformed(Affine2D::translation(d)));
+        break;
+    case EntityType::Hatch: { // boundary vertices inside the window move
+        const auto& h = static_cast<const HatchEntity&>(e);
+        auto loops = h.loops();
+        for (auto& l : loops) for (Vec2& v : l.vertices) if (w.contains(v)) v += d;
+        out = std::make_shared<HatchEntity>(std::move(loops), h.pattern());
         break;
     }
     }
