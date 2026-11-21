@@ -1,6 +1,10 @@
 // DYNAMIC CAD - command-line parsing and interactive command tests.
 #include "commands/CommandProcessor.h"
+#include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
+#include "commands/DrawCommands.h"
+#include "commands/ShapeCommands.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -152,6 +156,150 @@ private slots:
         QCOMPARE(f.doc.entityCount(), std::size_t(1));
     }
 
+
+    void plineWithArcs() {
+        Fixture f;
+        // Straight 10 east, then a tangent semicircle up to (10,10), straight back west, close.
+        f.type({"PL", "0,0", "10,0", "A", "10,10", "L", "0,10", "C"});
+        QVERIFY(!f.proc.isActive());
+        QCOMPARE(f.doc.entityCount(), std::size_t(1));
+        const auto& p = f.at<PolylineEntity>(0);
+        QVERIFY(p.isClosed());
+        QCOMPARE(p.vertices().size(), std::size_t(4));
+        QVERIFY(std::abs(p.bulges()[1] - 1.0) < 1e-12); // tangent semicircle
+        QVERIFY(std::abs(p.area() - (100 + kPi * 25 / 2)) < 1e-9);
+        QVERIFY(std::abs(p.bounds().max.x - 15) < 1e-12);
+        // Undo inside PLINE, Enter finishes open; Esc keeps what was drawn.
+        f.type({"PL", "0,0", "5,0", "5,5", "U", "8,0", ""});
+        QCOMPARE(f.at<PolylineEntity>(1).vertices().back(), Vec2(8, 0));
+        QVERIFY(!f.at<PolylineEntity>(1).isClosed());
+        f.type({"PL", "0,0", "1,1", "2,0"});
+        f.proc.cancel();
+        QCOMPARE(f.doc.entityCount(), std::size_t(3));
+        f.type({"U"}); // one undo step removes the whole polyline
+        QCOMPARE(f.doc.entityCount(), std::size_t(2));
+    }
+
+    void arcVariants() {
+        Fixture f;
+        f.type({"A", "10,0", "0,10", "-10,0"});            // 3 points, counter-clockwise
+        f.type({"ARC", "-10,0", "0,10", "10,0"});          // same arc picked clockwise
+        f.type({"A", "C", "0,0", "5,0", "0,5"});            // centre, start, end
+        f.type({"A", "C", "0,0", "5,0", "-90"});            // included angle, clockwise
+        QCOMPARE(f.doc.entityCount(), std::size_t(4));
+        for (int i : {0, 1}) {
+            const auto& a = f.at<ArcEntity>(std::size_t(i));
+            QVERIFY(nearlyEqual(a.center(), {0, 0}, 1e-12));
+            QVERIFY(std::abs(a.radius() - 10) < 1e-12);
+            QVERIFY(std::abs(a.startDeg() - 0) < 1e-9 && std::abs(a.endDeg() - 180) < 1e-9);
+        }
+        QCOMPARE(f.at<ArcEntity>(2).startDeg(), 0.0);
+        QCOMPARE(f.at<ArcEntity>(2).endDeg(), 90.0);
+        QCOMPARE(f.at<ArcEntity>(3).startDeg(), -90.0);
+        QCOMPARE(f.at<ArcEntity>(3).endDeg(), 0.0);
+        f.type({"A", "0,0", "1,1", "2,2"}); // collinear rejected, still active
+        QVERIFY(f.proc.isActive());
+    }
+
+    void polygonVariants() {
+        Fixture f;
+        f.type({"POL", "6", "0,0", "I", "10"});      // hexagon inscribed r=10
+        f.type({"POLYGON", "4", "0,0", "C", "5"});   // square circumscribed apothem 5
+        f.type({"POL", "", "E", "0,0", "10,0"});     // Enter keeps 4 sides; by edge
+        f.type({"POL", "3", "0,0", "", "10,0"});      // Enter = Inscribed; vertex at (10,0)
+        QCOMPARE(f.doc.entityCount(), std::size_t(4));
+        const auto& hex = f.at<PolylineEntity>(0);
+        QCOMPARE(hex.vertices().size(), std::size_t(6));
+        QVERIFY(std::abs(hex.area() - 3 * std::sqrt(3.0) / 2 * 100) < 1e-9);
+        QVERIFY(std::abs(hex.bounds().min.y - (-std::sqrt(75.0))) < 1e-9); // bottom edge horizontal
+        QVERIFY(std::abs(f.at<PolylineEntity>(1).area() - 100) < 1e-9);
+        const auto& edge = f.at<PolylineEntity>(2);
+        QVERIFY(std::abs(edge.area() - 100) < 1e-9);
+        QVERIFY(nearlyEqual(edge.bounds().max, {10, 10}, 1e-9));
+        QVERIFY(nearlyEqual(f.at<PolylineEntity>(3).vertices()[0], {10, 0}, 1e-12));
+        f.type({"POL", "2"}); // invalid side count
+        QVERIFY(f.proc.isActive());
+    }
+
+    void ellipseVariants() {
+        Fixture f;
+        f.type({"EL", "-10,0", "10,0", "4"});         // axis ends + half other axis
+        f.type({"ELLIPSE", "C", "0,0", "0,3", "8"});   // centre; the longer axis becomes major
+        f.type({"EL", "0,0", "10,0", "5,2"});          // other axis by point (distance 2)
+        QCOMPARE(f.doc.entityCount(), std::size_t(3));
+        const EllipseGeom& a = static_cast<const EllipseEntity&>(*f.doc.entities()[0]).geom();
+        QVERIFY(std::abs(a.majorRadius() - 10) < 1e-12 && std::abs(a.minorRadius() - 4) < 1e-12);
+        const EllipseGeom& b = static_cast<const EllipseEntity&>(*f.doc.entities()[1]).geom();
+        QVERIFY(std::abs(b.majorRadius() - 8) < 1e-12 && std::abs(b.minorRadius() - 3) < 1e-12);
+        QVERIFY(std::abs(std::abs(b.major.x) - 8) < 1e-12); // major axis is horizontal
+        const EllipseGeom& c = static_cast<const EllipseEntity&>(*f.doc.entities()[2]).geom();
+        QCOMPARE(c.center, Vec2(5, 0));
+        QVERIFY(std::abs(c.minorRadius() - 2) < 1e-12);
+    }
+
+    void splineVariants() {
+        Fixture f;
+        f.type({"SPL", "0,0", "10,10", "20,0", "30,10", ""});
+        f.type({"SPLINE", "M", "0,0", "10,10", "20,0", "30,10", ""});  // control vertices
+        f.type({"SPL", "0,0", "10,0", "10,10", "0,10", "C"});           // closed fit curve
+        QCOMPARE(f.doc.entityCount(), std::size_t(3));
+        const auto& fit = f.at<SplineEntity>(0);
+        for (Vec2 p : {Vec2{0, 0}, Vec2{10, 10}, Vec2{20, 0}, Vec2{30, 10}}) QVERIFY(fit.distanceTo(p) < 1e-6);
+        const auto& cv = f.at<SplineEntity>(1);
+        QCOMPARE(cv.curve().ctrl.size(), std::size_t(4));
+        QVERIFY(cv.distanceTo({10, 10}) > 1.0); // CV curve does not pass through inner vertices
+        QVERIFY(f.at<SplineEntity>(2).isClosed());
+        f.type({"SPL", "1,1", ""}); // a single point cannot make a spline
+        QCOMPARE(f.doc.entityCount(), std::size_t(3));
+    }
+
+    void pointSquareArrow() {
+        Fixture f;
+        f.type({"PO", "3,4"});
+        f.type({"SQ", "0,0", "7,3"});            // side = larger of dx, dy
+        f.proc.setCursor({-1, -1});
+        f.type({"SQUARE", "10,10", "5"});        // typed side, direction from cursor
+        QCOMPARE(f.doc.entityCount(), std::size_t(3));
+        QCOMPARE(static_cast<const PointEntity&>(*f.doc.entities()[0]).position(), Vec2(3, 4));
+        QCOMPARE(f.at<PolylineEntity>(1).area(), 49.0);
+        QVERIFY(nearlyEqual(f.at<PolylineEntity>(2).bounds().min, {5, 5}, 0));
+
+        ArrowCommand::setHeadSize(5);
+        f.type({"ARW", "0,0", "20,0"});
+        QCOMPARE(f.doc.entityCount(), std::size_t(5)); // shaft + filled head, one undo step
+        QCOMPARE(f.at<LineEntity>(3).end(), Vec2(15, 0));
+        const auto& head = f.at<PolylineEntity>(4);
+        QVERIFY(head.isFilled());
+        QCOMPARE(head.vertices()[0], Vec2(20, 0));
+        f.type({"ARW", "S", "2", "D", "0,0", "0,10"}); // size 2, double-headed
+        QCOMPARE(f.doc.entityCount(), std::size_t(8));
+        QCOMPARE(ArrowCommand::headSize(), 2.0);
+        f.type({"ARW", "D", "0,0", "1,0"}); // back to single; too short for its head
+        QVERIFY(f.proc.isActive());
+        f.proc.cancel();
+        f.type({"U"});
+        QCOMPARE(f.doc.entityCount(), std::size_t(5));
+    }
+
+    void rectangleOptions() {
+        Fixture f;
+        RectangleCommand::resetCornerOptions();
+        f.type({"REC", "F", "5", "0,0", "40,20"});           // rounded corners r=5
+        const auto& r = f.at<PolylineEntity>(0);
+        QCOMPARE(r.vertices().size(), std::size_t(8));
+        QVERIFY(std::abs(r.area() - (800 - 4 * (25 - kPi * 25 / 4))) < 1e-9);
+        QVERIFY(nearlyEqual(r.bounds().max, {40, 20}, 1e-12));
+        f.type({"REC", "C", "3", "0,0", "10,10"});          // chamfer 3
+        QVERIFY(std::abs(f.at<PolylineEntity>(1).area() - (100 - 4 * 4.5)) < 1e-9);
+        f.type({"REC", "F", "0", "0,0", "D", "30", "12", "-1,-1"}); // dimensions, placed down-left
+        const auto& d = f.at<PolylineEntity>(2);
+        QCOMPARE(d.vertices().size(), std::size_t(4));
+        QVERIFY(nearlyEqual(d.bounds().min, {-30, -12}, 0));
+        f.type({"REC", "F", "50", "0,0", "10,10"}); // fillet too large: sharp corners
+        QCOMPARE(f.at<PolylineEntity>(3).vertices().size(), std::size_t(4));
+        RectangleCommand::resetCornerOptions();
+    }
+
     void eraseWithPreselectionAndUndo() {
         Fixture f;
         f.type({"L", "0,0", "10,0", "", "C", "0,0", "3"});
@@ -177,6 +325,26 @@ private slots:
         QCOMPARE(f.doc.entityCount(), std::size_t(0));
         f.type({"ERASE", ""}); // nothing selected -> cancelled, no undo step
         QVERIFY(!f.proc.isActive());
+    }
+
+    void transparentActions() {
+        Fixture f;
+        int zooms = 0;
+        std::vector<std::string> lastArgs;
+        f.proc.registerAction("ZOOM", {"Z"}, [&](const std::vector<std::string>& a) { ++zooms; lastArgs = a; }, true);
+        f.type({"L", "0,0", "ZOOM E", "'Z 2", "10,0", ""});
+        QCOMPARE(zooms, 2);
+        QCOMPARE(QString::fromStdString(lastArgs.at(0)), QString("2"));
+        QCOMPARE(f.doc.entityCount(), std::size_t(1)); // LINE kept going through both zooms
+        // Short aliases are not captured without the apostrophe (they may be options).
+        f.type({"L", "0,0", "Z"});
+        QVERIFY(f.proc.isActive());
+        QCOMPARE(zooms, 2);
+        f.proc.cancel();
+        // Non-transparent actions (UNDO) are never run mid-command; "U" stays LINE's Undo option.
+        f.type({"L", "0,0", "5,0", "U"});
+        QVERIFY(f.proc.isActive());
+        f.proc.cancel();
     }
 
     void unknownAndInvalidInput() {

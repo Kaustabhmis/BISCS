@@ -3,6 +3,7 @@
 
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "geometry/Geometry.h"
@@ -162,6 +163,9 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
             p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
     };
     // Arcs are tessellated to within 0.25 px of the true curve, then clipped.
+    auto drawPolylinePts = [&](const std::vector<Vec2>& pts) {
+        for (std::size_t i = 1; i < pts.size(); ++i) drawSeg(pts[i - 1], pts[i]);
+    };
     auto drawArc = [&](const ArcGeom& g) {
         if (!clip.intersects(geom::arcBounds(g))) return;
         const auto pts = geom::tessellateArc(g, view_.pixelsToWorld(0.25));
@@ -205,9 +209,35 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         p.drawLine(QPointF(s.x, s.y - 4), QPointF(s.x, s.y + 4));
         break;
     }
+    case EntityType::Ellipse: {
+        const EllipseGeom& g = static_cast<const EllipseEntity&>(e).geom();
+        if (!clip.intersects(geom::ellipseBounds(g))) break;
+        drawPolylinePts(geom::tessellateEllipse(g, view_.pixelsToWorld(0.25)));
+        break;
+    }
+    case EntityType::Spline: {
+        const auto& sp = static_cast<const SplineEntity&>(e);
+        // Re-tessellate for the current zoom, but never finer than needed on screen.
+        drawPolylinePts(sp.curve().tessellate(view_.pixelsToWorld(0.25)));
+        break;
+    }
     case EntityType::Polyline: {
         const auto& pl = static_cast<const PolylineEntity&>(e);
         const std::size_t n = pl.segmentCount();
+        if (pl.isFilled()) {
+            QPainterPath path;
+            for (std::size_t i = 0; i < n; ++i) {
+                std::vector<Vec2> pts;
+                if (auto a = pl.segmentArc(i)) pts = geom::tessellateArc(*a, view_.pixelsToWorld(0.25));
+                else pts = {pl.segmentStart(i), pl.segmentEnd(i)};
+                for (std::size_t k = (i == 0 ? 0 : 1); k < pts.size(); ++k) {
+                    const QPointF q = qp(view_.worldToScreen(pts[k]));
+                    if (i == 0 && k == 0) path.moveTo(q); else path.lineTo(q);
+                }
+            }
+            path.closeSubpath();
+            p.fillPath(path, p.pen().color());
+        }
         for (std::size_t i = 0; i < n; ++i) {
             if (auto a = pl.segmentArc(i)) drawArc(*a);
             else drawSeg(pl.segmentStart(i), pl.segmentEnd(i));

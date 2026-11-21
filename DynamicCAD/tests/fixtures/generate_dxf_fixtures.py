@@ -67,6 +67,32 @@ def build(version: str) -> ezdxf.document.Drawing:
     return doc
 
 
+def curves() -> ezdxf.document.Drawing:
+    """Ellipses, splines, solids and stretched blocks (expectations in test_dxf.cpp)."""
+    import math
+    doc = ezdxf.new("R2010")
+    doc.header["$INSUNITS"] = 4
+    msp = doc.modelspace()
+    # 1: ellipse arc, upper half, major 20 along X, ratio 0.5
+    msp.add_ellipse((0, 0), major_axis=(20, 0), ratio=0.5, start_param=0, end_param=math.pi)
+    # 2: the same arc mirrored the AutoCAD way (extrusion 0,0,-1) -> lower-left... see test
+    e = msp.add_ellipse((100, 0), major_axis=(20, 0), ratio=0.5, start_param=0, end_param=math.pi / 2)
+    e.dxf.extrusion = (0, 0, -1)
+    # 3: rational quadratic spline = exact quarter circle of radius 10 about (200,0)
+    msp.add_rational_spline(control_points=[(210, 0), (210, 10), (200, 10)], weights=[1, math.sqrt(0.5), 1],
+                            degree=2, knots=[0, 0, 0, 1, 1, 1])
+    # 4: open cubic B-spline by control points
+    msp.add_open_spline(control_points=[(0, 100), (10, 120), (30, 80), (40, 100)], degree=3)
+    # 5: SOLID triangle (corners 3 and 4 equal) and 6: SOLID quad in DXF 1-2-4-3 order
+    msp.add_solid([(300, 0), (320, 0), (310, 20)])
+    msp.add_solid([(400, 0), (420, 0), (400, 10), (420, 10)])
+    # 7: circle r=5 in a block inserted with scale (3, 1) -> ellipse 15 x 5
+    blk = doc.blocks.new("DOT")
+    blk.add_circle((0, 0), 5)
+    msp.add_blockref("DOT", (500, 0), dxfattribs={"xscale": 3, "yscale": 1})
+    return doc
+
+
 def sample_flange() -> ezdxf.document.Drawing:
     """Illustrative flange drawing for users to try DXF import (not a real design)."""
     import math
@@ -109,6 +135,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     for version in VERSIONS:
         build(version).saveas(os.path.join(out, f"mixed_{version}.dxf"))
+    curves().saveas(os.path.join(out, "curves_R2010.dxf"))
     samples = os.path.join(HERE, "..", "..", "docs", "samples")
     sample_flange().saveas(os.path.join(samples, "sample-flange.dxf"))
     print("written to", out, "and", os.path.normpath(samples))

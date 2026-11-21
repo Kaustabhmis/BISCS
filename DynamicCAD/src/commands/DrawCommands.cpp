@@ -177,33 +177,106 @@ std::vector<Vec2> rectangleVertices(const Vec2& a, const Vec2& b) {
     return {a, {b.x, a.y}, b, {a.x, b.y}};
 }
 
-CommandStatus RectangleCommand::start(CommandContext&) { return CommandStatus::Continue; }
+double RectangleCommand::fillet_ = 0.0;
+double RectangleCommand::chamfer_ = 0.0;
+
+std::unique_ptr<Entity> RectangleCommand::make(const Vec2& a, const Vec2& b, double fillet, double chamfer) {
+    const double w = std::abs(b.x - a.x), h = std::abs(b.y - a.y);
+    const double r = fillet > 0 ? fillet : chamfer;
+    if (r <= 0 || 2 * r > std::min(w, h) + 1e-12)
+        return std::make_unique<PolylineEntity>(rectangleVertices(a, b), true);
+    const double x0 = std::min(a.x, b.x), x1 = std::max(a.x, b.x), y0 = std::min(a.y, b.y), y1 = std::max(a.y, b.y);
+    const double bulge = fillet > 0 ? std::tan(kPi / 8.0) : 0.0; // quarter circle, counter-clockwise
+    std::vector<Vec2> v{{x0 + r, y0}, {x1 - r, y0}, {x1, y0 + r}, {x1, y1 - r},
+                        {x1 - r, y1}, {x0 + r, y1}, {x0, y1 - r}, {x0, y0 + r}};
+    std::vector<double> bl{0, bulge, 0, bulge, 0, bulge, 0, bulge};
+    return std::make_unique<PolylineEntity>(std::move(v), std::move(bl), true);
+}
+
+CommandStatus RectangleCommand::start(CommandContext& ctx) {
+    if (fillet_ > 0) ctx.say("Current rectangle mode: Fillet=" + std::to_string(fillet_));
+    else if (chamfer_ > 0) ctx.say("Current rectangle mode: Chamfer=" + std::to_string(chamfer_));
+    return CommandStatus::Continue;
+}
 
 std::string RectangleCommand::prompt() const {
-    return corner_ ? "RECTANGLE  Specify other corner (or @width,height):" : "RECTANGLE  Specify first corner point:";
+    switch (stage_) {
+    case Stage::Corner1: return "RECTANGLE  Specify first corner point or [Fillet/Chamfer]:";
+    case Stage::Corner2: return "RECTANGLE  Specify other corner (or @width,height) or [Dimensions]:";
+    case Stage::FilletR: return "RECTANGLE  Specify fillet radius for rectangles (0 = sharp corners):";
+    case Stage::ChamferD: return "RECTANGLE  Specify chamfer distance for rectangles (0 = sharp corners):";
+    case Stage::Length: return "RECTANGLE  Specify length (X) for rectangles:";
+    case Stage::Width: return "RECTANGLE  Specify width (Y) for rectangles:";
+    case Stage::Side: return "RECTANGLE  Click on the side to place the rectangle (Enter = up-right):";
+    }
+    return {};
+}
+
+CommandStatus RectangleCommand::create(CommandContext& ctx, const Vec2& b) {
+    if (b.x == corner_.x || b.y == corner_.y) {
+        ctx.say("Rectangle width and height must both be non-zero.");
+        return CommandStatus::Continue;
+    }
+    const double r = std::max(fillet_, chamfer_);
+    if (r > 0 && 2 * r > std::min(std::abs(b.x - corner_.x), std::abs(b.y - corner_.y)) + 1e-12)
+        ctx.say("Rectangle is too small for the fillet/chamfer; drawn with sharp corners.");
+    ctx.doc.addWithUndo({EntityPtr(make(corner_, b, fillet_, chamfer_))}, "Rectangle");
+    return CommandStatus::Done;
 }
 
 CommandStatus RectangleCommand::point(CommandContext& ctx, const Vec2& p) {
     if (!p.isFinite()) { ctx.say("Invalid point."); return CommandStatus::Continue; }
-    if (!corner_) { corner_ = p; return CommandStatus::Continue; }
-    if (p.x == corner_->x || p.y == corner_->y) {
-        ctx.say("Rectangle width and height must both be non-zero.");
+    switch (stage_) {
+    case Stage::Corner1: corner_ = p; stage_ = Stage::Corner2; return CommandStatus::Continue;
+    case Stage::Corner2: return create(ctx, p);
+    case Stage::Side: {
+        const double sx = p.x < corner_.x ? -1 : 1, sy = p.y < corner_.y ? -1 : 1;
+        return create(ctx, corner_ + Vec2{sx * length_, sy * width_});
+    }
+    default: ctx.say("Please type a value."); return CommandStatus::Continue;
+    }
+}
+
+CommandStatus RectangleCommand::number(CommandContext& ctx, double v, const std::optional<Vec2>&) {
+    switch (stage_) {
+    case Stage::FilletR:
+    case Stage::ChamferD:
+        if (v < 0) { ctx.say("Value cannot be negative."); return CommandStatus::Continue; }
+        if (stage_ == Stage::FilletR) { fillet_ = v; chamfer_ = 0; } else { chamfer_ = v; fillet_ = 0; }
+        stage_ = Stage::Corner1;
+        return CommandStatus::Continue;
+    case Stage::Length:
+        if (!(v > 0)) { ctx.say("Length must be greater than zero."); return CommandStatus::Continue; }
+        length_ = v; stage_ = Stage::Width; return CommandStatus::Continue;
+    case Stage::Width:
+        if (!(v > 0)) { ctx.say("Width must be greater than zero."); return CommandStatus::Continue; }
+        width_ = v; stage_ = Stage::Side; return CommandStatus::Continue;
+    default:
+        ctx.say(stage_ == Stage::Corner2 ? "Enter the other corner as x,y or @width,height, or D for dimensions."
+                                         : "Enter the corner as x,y.");
         return CommandStatus::Continue;
     }
-    ctx.doc.addWithUndo({std::make_shared<PolylineEntity>(rectangleVertices(*corner_, p), true)}, "Rectangle");
-    return CommandStatus::Done;
 }
 
-CommandStatus RectangleCommand::number(CommandContext& ctx, double, const std::optional<Vec2>&) {
-    ctx.say(corner_ ? "Enter the other corner as x,y or @width,height." : "Enter the corner as x,y.");
-    return CommandStatus::Continue;
+CommandStatus RectangleCommand::keyword(CommandContext& ctx, const std::string& kw) {
+    if (stage_ == Stage::Corner1 && (kw == "F" || kw == "FILLET")) { stage_ = Stage::FilletR; return CommandStatus::Continue; }
+    if (stage_ == Stage::Corner1 && (kw == "C" || kw == "CHAMFER")) { stage_ = Stage::ChamferD; return CommandStatus::Continue; }
+    if (stage_ == Stage::Corner2 && (kw == "D" || kw == "DIMENSIONS")) { stage_ = Stage::Length; return CommandStatus::Continue; }
+    return InteractiveCommand::keyword(ctx, kw);
 }
 
-CommandStatus RectangleCommand::enter(CommandContext&) { return CommandStatus::Cancelled; }
+CommandStatus RectangleCommand::enter(CommandContext& ctx) {
+    if (stage_ == Stage::Side) return create(ctx, corner_ + Vec2{length_, width_});
+    return CommandStatus::Cancelled;
+}
 
 void RectangleCommand::preview(const Vec2& cursor, std::vector<std::unique_ptr<Entity>>& out) const {
-    if (corner_ && cursor.x != corner_->x && cursor.y != corner_->y)
-        out.push_back(std::make_unique<PolylineEntity>(rectangleVertices(*corner_, cursor), true));
+    if (stage_ == Stage::Corner2 && cursor.x != corner_.x && cursor.y != corner_.y)
+        out.push_back(make(corner_, cursor, fillet_, chamfer_));
+    if (stage_ == Stage::Side) {
+        const double sx = cursor.x < corner_.x ? -1 : 1, sy = cursor.y < corner_.y ? -1 : 1;
+        out.push_back(make(corner_, corner_ + Vec2{sx * length_, sy * width_}, fillet_, chamfer_));
+    }
 }
 
 // ---------------------------------------------------------------- ERASE

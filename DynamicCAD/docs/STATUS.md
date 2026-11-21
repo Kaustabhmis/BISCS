@@ -1,4 +1,4 @@
-# DYNAMIC CAD: Status Report (v0.2.0)
+# DYNAMIC CAD: Status Report (v0.3.0)
 
 ## Environment used
 
@@ -9,6 +9,29 @@
 * **Windows CI result (run #1): build, all 8 test programs and windeployqt packaging passed** on
   `windows-2022` with MSVC and Qt 6.5.3. The Linux ASan/UBSan job also passed.
   Hands-on testing on a Windows 10/11 desktop (real mouse, display scaling, an ordinary office PC) is still outstanding.
+
+## Milestone 3: 2D drawing tools (done)
+
+| Tool | Options | Verified by |
+|---|---|---|
+| PLINE | line/arc segments (arcs tangent to the previous segment), Close, Undo, Esc keeps the drawn part | `test_commands::plineWithArcs` (area incl. arc = 100 + 12.5π) |
+| ARC | 3 points (either direction), Center-start-end, included angle (±) | `test_commands::arcVariants` |
+| ELLIPSE | axis end points, Center; longer "other axis" becomes the major axis | `test_commands::ellipseVariants`, `test_geometry::ellipseGeometry` (perimeter vs Ramanujan) |
+| SPLINE | through fit points (global cubic interpolation), control vertices, Close | passes through every fit point to < 1e-6 |
+| RECTANGLE | Fillet (rounded), Chamfer, Dimensions + side; too-large fillet falls back to sharp with a message | exact areas |
+| SQUARE | click or typed side; direction from cursor | |
+| POLYGON | 3–1024 sides, Inscribed/Circumscribed, Edge; typed radius gives a horizontal bottom edge | hexagon area 150√3 |
+| POINT, ARROW | arrow: filled head (3:1), Size, Double, one undo step | arrow tip exactly at the clicked point (`test_gui`) |
+| New geometry | Ellipse/elliptical arc (exact under any affine transform), NURBS (rational, exact circles), filled polylines | `test_geometry` (21 cases) |
+| DXF | ELLIPSE (incl. mirrored extrusion), SPLINE (rational, control or fit points), SOLID/TRACE (filled), circles in stretched blocks → exact ellipses | `test_dxf::curvesEllipsesSplinesSolids` |
+| Transparent commands | ZOOM, GRID, SNAP, ORTHO, HELP work mid-command (`'ZOOM` too) without capturing options like `C`/`U` | `test_commands::transparentActions` |
+| Ribbon | Draw (6) + Shapes (5) groups; every button starts a real command | `test_gui::ribbonDrawToolsWithMouse` |
+
+**Found and fixed during this milestone:** spline hit-testing was only accurate to ~2e-4 (now refined on the exact
+curve, needed for object snaps); `ZOOM` was rejected while a command waited for input.
+
+**Not in this milestone:** elliptical-arc option of ELLIPSE (imported ones work), XLINE/RAY, DONUT, REVCLOUD,
+MLINE, polyline widths, hatch patterns (arrowheads use solid fill).
 
 ## Milestone 2: DXF import (done)
 

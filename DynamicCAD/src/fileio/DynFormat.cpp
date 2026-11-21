@@ -3,6 +3,7 @@
 
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "version.h"
@@ -59,6 +60,33 @@ QJsonObject entityToJson(const Entity& e) {
         o["endAngle"] = a.endDeg();
         break;
     }
+    case EntityType::Ellipse: {
+        const EllipseGeom& g = static_cast<const EllipseEntity&>(e).geom();
+        o["type"] = "ELLIPSE";
+        o["center"] = toJson(g.center);
+        o["majorAxis"] = toJson(g.major);
+        o["ratio"] = g.ratio;
+        if (!g.isFull()) {
+            o["startParam"] = g.startParam;
+            o["endParam"] = g.endParam;
+        }
+        break;
+    }
+    case EntityType::Spline: {
+        const NurbsCurve& c = static_cast<const SplineEntity&>(e).curve();
+        o["type"] = "SPLINE";
+        o["degree"] = c.degree;
+        QJsonArray knots, ctrl, weights;
+        for (double k : c.knots) knots.append(k);
+        for (const Vec2& p : c.ctrl) ctrl.append(toJson(p));
+        o["knots"] = knots;
+        o["controlPoints"] = ctrl;
+        if (!c.weights.empty()) {
+            for (double w : c.weights) weights.append(w);
+            o["weights"] = weights;
+        }
+        break;
+    }
     case EntityType::Point: {
         o["type"] = "POINT";
         o["position"] = toJson(static_cast<const PointEntity&>(e).position());
@@ -76,6 +104,7 @@ QJsonObject entityToJson(const Entity& e) {
             for (double b : p.bulges()) bulges.append(b);
             o["bulges"] = bulges;
         }
+        if (p.isFilled()) o["filled"] = true;
         break;
     }
     }
@@ -114,7 +143,9 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
                 bulges.push_back(b.toDouble());
             }
         }
-        e = std::make_shared<PolylineEntity>(std::move(verts), std::move(bulges), o.value("closed").toBool(false));
+        auto pl = std::make_shared<PolylineEntity>(std::move(verts), std::move(bulges), o.value("closed").toBool(false));
+        pl->setFilled(o.value("filled").toBool(false));
+        e = pl;
     } else if (type == "ARC") {
         Vec2 c;
         const double r = o.value("radius").toDouble(-1.0);
@@ -125,6 +156,33 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
             return nullptr;
         }
         e = std::make_shared<ArcEntity>(c, r, a0.toDouble(), a1.toDouble());
+    } else if (type == "ELLIPSE") {
+        EllipseGeom g;
+        g.ratio = o.value("ratio").toDouble(-1.0);
+        if (!fromJson(o.value("center"), g.center) || !fromJson(o.value("majorAxis"), g.major) || !(g.ratio > 0.0) ||
+            g.ratio > 1.0 || !(g.major.length() > 0.0)) {
+            reason = "ELLIPSE has invalid center/axis/ratio";
+            return nullptr;
+        }
+        if (o.contains("startParam") || o.contains("endParam")) {
+            g.startParam = o.value("startParam").toDouble(NAN);
+            g.endParam = o.value("endParam").toDouble(NAN);
+            if (!std::isfinite(g.startParam) || !std::isfinite(g.endParam)) { reason = "ELLIPSE has invalid parameters"; return nullptr; }
+        }
+        e = std::make_shared<EllipseEntity>(g);
+    } else if (type == "SPLINE") {
+        NurbsCurve c;
+        c.degree = o.value("degree").toInt(-1);
+        for (const auto& k : o.value("knots").toArray()) c.knots.push_back(k.isDouble() ? k.toDouble() : NAN);
+        for (const auto& v : o.value("controlPoints").toArray()) {
+            Vec2 p;
+            if (!fromJson(v, p)) { reason = "SPLINE has an invalid control point"; return nullptr; }
+            c.ctrl.push_back(p);
+        }
+        for (const auto& w : o.value("weights").toArray()) c.weights.push_back(w.isDouble() ? w.toDouble() : NAN);
+        std::string why;
+        if (!c.isValid(&why)) { reason = "SPLINE is invalid (" + why + ")"; return nullptr; }
+        e = std::make_shared<SplineEntity>(std::move(c));
     } else if (type == "POINT") {
         Vec2 p;
         if (!fromJson(o.value("position"), p)) { reason = "POINT has invalid position"; return nullptr; }

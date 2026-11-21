@@ -2,6 +2,8 @@
 // Drives the real MainWindow with simulated mouse and keyboard input.
 #include "canvas/CadCanvas.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
+#include "entities/PolylineEntity.h"
 #include "entities/LineEntity.h"
 #include "ui/CommandLine.h"
 #include "ui/MainWindow.h"
@@ -176,7 +178,7 @@ private slots:
         w.show();
         QVERIFY(QTest::qWaitForWindowExposed(&w));
         QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
-        QCOMPARE(w.document().entityCount(), std::size_t(11));
+        QCOMPARE(w.document().entityCount(), std::size_t(13));
         QVERIFY(w.currentFile().isEmpty()); // never overwrite the DXF on Save
         QVERIFY(w.windowTitle().contains("mixed_R2010.dxf (imported)"));
         QVERIFY(w.commandLine()->history().contains("Not imported yet"));
@@ -194,7 +196,91 @@ private slots:
         QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
         // A broken file reports an error and keeps the current drawing.
         QVERIFY(!w.importDxfPath("/nonexistent/broken.dxf", false));
-        QCOMPARE(w.document().entityCount(), std::size_t(11));
+        QCOMPARE(w.document().entityCount(), std::size_t(13));
+    }
+
+    void ribbonDrawToolsWithMouse() {
+        MainWindow w;
+        w.resize(1300, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        auto* c = w.canvas();
+        // Every Draw/Shapes action is a real, enabled command (no dead buttons).
+        const QStringList tools{"Line", "Polyline", "Arc", "Circle", "Ellipse", "Spline", "Rectangle", "Square", "Polygon", "Point", "Arrow"};
+        QStringList seen;
+        for (QAction* a : w.findChildren<QAction*>()) {
+            const QString t = a->text().remove('&');
+            if (!tools.contains(t)) continue;
+            QVERIFY(a->isEnabled());
+            a->trigger();
+            QVERIFY2(w.processor().isActive(), qPrintable(t));
+            w.processor().cancel();
+            seen << t;
+        }
+        seen.removeDuplicates();
+        QCOMPARE(seen.size(), tools.size());
+
+        auto click = [&](QPoint p) { QTest::mouseMove(c, p); QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, p); };
+        w.executeCommandText("ARROW");
+        click({200, 400}); click({500, 400});
+        w.executeCommandText("POLYGON");
+        w.executeCommandText("5");
+        click({700, 300}); w.executeCommandText(""); click({760, 300});
+        w.executeCommandText("ELLIPSE");
+        click({300, 200}); click({500, 200}); click({400, 160});
+        w.executeCommandText("SPLINE");
+        click({600, 500}); click({650, 450}); click({700, 520}); click({760, 470});
+        QTest::mouseClick(c, Qt::RightButton, Qt::NoModifier, QPoint(760, 470)); // right-click = Enter
+        QVERIFY(!w.processor().isActive());
+        int arrows = 0, polygons = 0, ellipses = 0, splines = 0;
+        for (const auto& e : w.document().entities()) {
+            if (e->type() == EntityType::Ellipse) ++ellipses;
+            if (e->type() == EntityType::Spline) ++splines;
+            if (e->type() == EntityType::Polyline) {
+                const auto& p = static_cast<const PolylineEntity&>(*e);
+                if (p.isFilled()) ++arrows;
+                else if (p.vertices().size() == 5) ++polygons;
+            }
+        }
+        QCOMPARE(arrows, 1);
+        QCOMPARE(polygons, 1);
+        QCOMPARE(ellipses, 1);
+        QCOMPARE(splines, 1);
+        // The arrow tip lands exactly where the mouse clicked.
+        const Vec2 tip = c->view().screenToWorld({500, 400});
+        bool found = false;
+        for (const auto& e : w.document().entities())
+            if (e->type() == EntityType::Polyline && static_cast<const PolylineEntity&>(*e).isFilled())
+                found = nearlyEqual(static_cast<const PolylineEntity&>(*e).vertices()[0], tip, 1e-9);
+        QVERIFY(found);
+    }
+
+    void toolsScreenshot() {
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1400, 860);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        for (const char* l : {"L", "0,0", "60,40", "",
+                              "PL", "80,0", "120,0", "A", "120,40", "L", "80,40", "C",
+                              "A", "140,0", "160,30", "190,10",
+                              "C", "230,20", "20",
+                              "EL", "C", "300,20", "330,20", "15",
+                              "SPL", "350,0", "370,40", "390,0", "410,40", "430,10", "",
+                              "REC", "F", "6", "0,70", "60,110",
+                              "REC", "F", "0", "80,70", "@40,40",
+                              "SQ", "140,70", "40",
+                              "POL", "6", "230,90", "I", "22",
+                              "POL", "3", "300,90", "C", "15",
+                              "PO", "360,90",
+                              "ARW", "S", "8", "380,75", "440,105",
+                              "ARW", "D", "380,120", "440,120", "ARW", "D", "", ""})
+            w.executeCommandText(l);
+        w.executeCommandText("ZOOM E");
+        QTest::mouseMove(w.canvas(), QPoint(10, 10));
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_draw_tools.png"));
+        QVERIFY(w.document().entityCount() >= 14);
     }
 
     void renderScreenshot() {

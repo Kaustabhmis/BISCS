@@ -20,8 +20,9 @@ struct FileResult {
     std::vector<std::string> warnings;
 };
 
-// Version 2 (v0.2): adds ARC, POINT and polyline bulges. Version 1 files still open.
-inline constexpr int kDynFormatVersion = 2;
+// Version 2 (v0.2): ARC, POINT, polyline bulges.
+// Version 3 (v0.3): ELLIPSE, SPLINE, filled polylines. Older versions still open.
+inline constexpr int kDynFormatVersion = 3;
 
 QByteArray serializeDyn(const Document& doc);
 // On success replaces the document content; on failure leaves it untouched.

@@ -2,9 +2,9 @@
 
 Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engineers**.
 
-![DYNAMIC CAD main window](docs/screenshots/phase1-main-window.png)
+![DYNAMIC CAD drawing tools](docs/screenshots/m3-draw-tools.png)
 
-> **Status: version 0.2.0. Milestone 1 (core + first commands) and Milestone 2 (DXF import) done.**
+> **Status: version 0.3.0. Core, DXF import and the complete set of 2D drawing tools are done.**
 > See [docs/STATUS.md](docs/STATUS.md) for exactly what works and what does not yet.
 
 ## What works today
@@ -14,12 +14,12 @@ Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engi
 | Window | Ribbon (Home / View), menus, Properties panel, command line, status bar, dark (default) and light theme |
 | Canvas | Adaptive grid, X/Y axes, crosshair cursor with pick box, UCS icon, live X,Y coordinates |
 | Navigation | Wheel zoom at cursor, middle-drag pan, middle double-click = zoom extents, `ZOOM E/IN/OUT/factor` |
-| Drawing | `LINE` (Undo/Close), `CIRCLE` (centre-radius, Diameter, 2P, 3P), `RECTANGLE` |
+| Drawing | `LINE`, `PLINE` (lines + arcs), `ARC` (3P, centre), `CIRCLE` (radius, Diameter, 2P, 3P), `ELLIPSE`, `SPLINE` (fit points / control vertices), `RECTANGLE` (Fillet, Chamfer, Dimensions), `SQUARE`, `POLYGON` (inscribed, circumscribed, edge), `POINT`, `ARROW` (filled head, size, double) |
 | Input | `x,y`  `@dx,dy`  `@dist<angle`  `dist<angle`  direct distance entry, GRID (F7), ORTHO (F8), SNAP (F9) |
 | Selection | Click, Shift+click to remove, window (drag left to right), crossing (drag right to left), hover highlight, grips |
 | Editing | `ERASE` / Delete key, unlimited Undo (Ctrl+Z) / Redo (Ctrl+Y) |
 | Files | New, Open, Save, Save As in the native `.dyn` format (bit-exact coordinates, atomic save, unsaved-changes prompt) |
-| DXF import | AutoCAD R12 to 2018 ASCII DXF: lines, circles, arcs, polylines (incl. curved segments), points, layers, units, blocks (nested, scaled, rotated, mirrored, arrays). Everything not imported is listed in a report. |
+| DXF import | AutoCAD R12 to 2018 ASCII DXF: lines, circles, arcs, ellipses, splines, solid fills, polylines (incl. curved segments), points, layers, units, blocks (nested, scaled, rotated, mirrored, arrays). Everything not imported is listed in a report. |
 
 ## Opening AutoCAD drawings
 
@@ -28,7 +28,7 @@ DYNAMIC CAD imports **DXF**. It cannot read **DWG** (AutoCAD's closed format). T
 1. In AutoCAD: **Save As → AutoCAD 2010 DXF** (or 2013/2018 DXF), keeping the default ASCII format.
 2. In DYNAMIC CAD: **File → Open** (or **Import DXF**) and pick the `.dxf` file.
 3. Read the import report. It lists anything that was **not** imported in this version (text, dimensions,
-   hatches, splines, ellipses, paper-space layouts, external references), and you should check the drawing
+   hatches, paper-space layouts, external references), and you should check the drawing
    against the original before using it.
 4. **File → Save As** stores it as a `.dyn` drawing. The original DXF is never overwritten.
 
@@ -43,15 +43,24 @@ Type commands on the keyboard at any time; the text goes to the command line.
 | Command | Alias | Example |
 |---|---|---|
 | LINE | `L` | `L` → `0,0` → `100,0` → `@0,50` → `C` (close) |
+| PLINE | `PL` | `PL` → `0,0` → `100,0` → `A` (arc mode) → `100,50` → `L` (line mode) → `0,50` → `C` |
+| ARC | `A` | `A` → 3 points · `A` → `C` → centre → start → end (or included angle, e.g. `-90`) |
 | CIRCLE | `C` | `C` → `50,50` → `25` (radius) · `C` → `0,0` → `D` → `40` · `C` → `3P` … |
-| RECTANGLE | `REC` | `REC` → `0,0` → `@200,150` |
+| ELLIPSE | `EL` | `EL` → axis end → other axis end → half-length of other axis · `EL` → `C` → centre … |
+| SPLINE | `SPL` | `SPL` → points → Enter (curve passes through them) · `SPL` → `M` (control vertices) · `C` closes |
+| RECTANGLE | `REC` | `REC` → `0,0` → `@200,150` · `REC` → `F` → `5` (rounded) · `REC` → `0,0` → `D` → `200` → `150` |
+| SQUARE | `SQ` | `SQ` → `0,0` → `50` (side) or click the opposite corner |
+| POLYGON | `POL` | `POL` → `6` → centre → `I`/`C` → `25` · `POL` → `5` → `E` → two edge points |
+| POINT | `PO` | `PO` → `10,20` |
+| ARROW | `ARW` | `ARW` → tail → tip · `S` sets head length · `D` toggles double-headed |
 | ERASE | `E` | select objects, then `E` or the Delete key |
 | UNDO / REDO | `U` | Ctrl+Z / Ctrl+Y |
 | ZOOM | `Z` | `Z E` (extents), `Z 2`, `Z 0.5` |
 | DXFIN | `IMPORT` | import a DXF file |
 | HELP | `?` | lists all commands |
 
-Enter, Space or right-click finishes or repeats a command; Esc cancels.
+Enter, Space or right-click finishes or repeats a command; Esc cancels. ZOOM, GRID, SNAP and ORTHO also work in the
+middle of a command (as does the AutoCAD-style `'ZOOM`).
 
 ## Building
 

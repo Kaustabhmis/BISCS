@@ -4,6 +4,7 @@
 #include "dxf/DxfReader.h"
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "fileio/DynFormat.h"
@@ -61,8 +62,10 @@ private slots:
         const DxfImportResult r = importDxfFile(QString(DYNCAD_DXF_FIXTURES) + "/" + file, doc);
         QVERIFY2(r.ok, r.error.c_str());
         QCOMPARE(QString::fromStdString(r.acadVersion), acadver);
-        QCOMPARE(r.imported, std::size_t(11));
-        QCOMPARE(doc.entityCount(), std::size_t(11));
+        // 11 basic objects, plus SPLINE and ELLIPSE in the 2000+ files.
+        const std::size_t expected = modern ? 13 : 11;
+        QCOMPARE(r.imported, expected);
+        QCOMPARE(doc.entityCount(), expected);
         QVERIFY(!doc.isModified());
         QCOMPARE(QString::fromStdString(r.units), QString("mm"));
         QCOMPARE(r.unitsAssumed, !modern); // R12 cannot store $INSUNITS
@@ -71,8 +74,16 @@ private slots:
         QCOMPARE(r.unsupported.at("TEXT (text)"), std::size_t(1));
         if (modern) {
             QCOMPARE(r.unsupported.at("MTEXT (text)"), std::size_t(1));
-            QCOMPARE(r.unsupported.at("SPLINE"), std::size_t(1));
-            QCOMPARE(r.unsupported.at("ELLIPSE"), std::size_t(1));
+            QVERIFY(!r.unsupported.count("SPLINE"));
+            QVERIFY(!r.unsupported.count("ELLIPSE"));
+            auto sp = all<SplineEntity>(doc);
+            auto el = all<EllipseEntity>(doc);
+            QCOMPARE(sp.size(), std::size_t(1));
+            QCOMPARE(el.size(), std::size_t(1));
+            for (Vec2 fp : {Vec2{0, 0}, Vec2{10, 10}, Vec2{20, 0}, Vec2{30, 10}}) // passes through fit points
+                QVERIFY2(sp[0]->distanceTo(fp) < 1e-3, qPrintable(QString::number(sp[0]->distanceTo(fp))));
+            QVERIFY(nearlyEqual(el[0]->bounds().min, {-10, -5}, 1e-12));
+            QVERIFY(nearlyEqual(el[0]->bounds().max, {10, 5}, 1e-12));
         }
         QVERIFY(r.layerCount >= 4);
         bool offWarning = false;
@@ -126,6 +137,47 @@ private slots:
         QVERIFY(near(m->center(), {-100, 200}));
         QVERIFY(near(m->startDeg(), 90.0, 1e-9));
         QVERIFY(near(m->endDeg(), 180.0, 1e-9));
+    }
+
+    void curvesEllipsesSplinesSolids() {
+        Document doc;
+        const DxfImportResult r = importDxfFile(QString(DYNCAD_DXF_FIXTURES) + "/curves_R2010.dxf", doc);
+        QVERIFY2(r.ok, r.error.c_str());
+        QCOMPARE(r.imported, std::size_t(7));
+        QCOMPARE(r.unsupportedTotal(), std::size_t(0));
+        auto el = all<EllipseEntity>(doc);
+        auto sp = all<SplineEntity>(doc);
+        auto pl = all<PolylineEntity>(doc);
+        QCOMPARE(el.size(), std::size_t(3));
+        QCOMPARE(sp.size(), std::size_t(2));
+        QCOMPARE(pl.size(), std::size_t(2));
+        // 1: upper half ellipse
+        QVERIFY(nearlyEqual(el[0]->bounds().min, {-20, 0}, 1e-12));
+        QVERIFY(nearlyEqual(el[0]->bounds().max, {20, 10}, 1e-12));
+        // 2: extrusion (0,0,-1) flips the minor axis: arc from (120,0) down to (100,-10)
+        QVERIFY(nearlyEqual(el[1]->bounds().min, {100, -10}, 1e-12));
+        QVERIFY(nearlyEqual(el[1]->bounds().max, {120, 0}, 1e-12));
+        QVERIFY(el[1]->distanceTo({120, 0}) < 1e-9 && el[1]->distanceTo({100, -10}) < 1e-9);
+        // 7: circle r=5 in a block scaled (3,1) is an exact 15 x 5 ellipse
+        QVERIFY(nearlyEqual(el[2]->geom().center, {500, 0}, 1e-12));
+        QVERIFY(std::abs(el[2]->geom().majorRadius() - 15) < 1e-12);
+        QVERIFY(std::abs(el[2]->geom().minorRadius() - 5) < 1e-12);
+        // 3: rational spline is an exact quarter circle about (200,0)
+        QVERIFY(!sp[0]->curve().weights.empty());
+        for (const Vec2& p : sp[0]->approximation()) QVERIFY(std::abs(distance(p, {200, 0}) - 10) < 1e-12);
+        // 4: clamped B-spline passes through its end control points
+        QVERIFY(sp[1]->distanceTo({0, 100}) < 1e-12 && sp[1]->distanceTo({40, 100}) < 1e-12);
+        // 5/6: SOLIDs become filled outlines with the right area (corner order 1-2-4-3)
+        QVERIFY(pl[0]->isFilled() && pl[1]->isFilled());
+        QCOMPARE(pl[0]->vertices().size(), std::size_t(3));
+        QCOMPARE(pl[0]->area(), 200.0);
+        QCOMPARE(pl[1]->area(), 200.0);
+        // Round trip through .dyn keeps every curve exactly.
+        QTemporaryDir dir;
+        QVERIFY(saveDynFile(doc, dir.filePath("c.dyn")).ok);
+        Document back;
+        QVERIFY(loadDynFile(back, dir.filePath("c.dyn")).ok);
+        QCOMPARE(serializeDyn(back), serializeDyn(doc));
     }
 
     void minsertArrayAndMirroredBlock() {

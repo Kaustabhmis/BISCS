@@ -2,6 +2,7 @@
 #include "commands/CommandProcessor.h"
 
 #include "commands/DrawCommands.h"
+#include "commands/ShapeCommands.h"
 #include "geometry/Geometry.h"
 
 #include <sstream>
@@ -15,13 +16,14 @@ CommandProcessor::~CommandProcessor() = default;
 
 void CommandProcessor::registerCommand(const std::string& name, const std::vector<std::string>& aliases, Factory factory) {
     const std::string n = toUpper(name);
-    entries_[n] = Entry{n, std::move(factory), nullptr};
+    entries_[n] = Entry{n, std::move(factory), nullptr, false};
     for (const auto& a : aliases) aliases_[toUpper(a)] = n;
 }
 
-void CommandProcessor::registerAction(const std::string& name, const std::vector<std::string>& aliases, Action action) {
+void CommandProcessor::registerAction(const std::string& name, const std::vector<std::string>& aliases, Action action,
+                                      bool transparent) {
     const std::string n = toUpper(name);
-    entries_[n] = Entry{n, nullptr, std::move(action)};
+    entries_[n] = Entry{n, nullptr, std::move(action), transparent};
     for (const auto& a : aliases) aliases_[toUpper(a)] = n;
 }
 
@@ -98,6 +100,24 @@ void CommandProcessor::cancel() {
     stateChanged();
 }
 
+bool CommandProcessor::tryTransparent(const std::string& text) {
+    std::string t = text;
+    const bool apostrophe = !t.empty() && t[0] == '\'';
+    if (apostrophe) t = trim(t.substr(1));
+    std::istringstream iss(t);
+    std::string word;
+    iss >> word;
+    std::vector<std::string> args;
+    for (std::string a; iss >> a;) args.push_back(a);
+    const Entry* e = lookup(word);
+    // Plain names only for full words (>= 3 letters) so command options such
+    // as "C" or "U" are never captured.
+    if (!e || !e->action || !e->transparent || (!apostrophe && toUpper(word) != e->name)) return false;
+    e->action(args);
+    stateChanged();
+    return true;
+}
+
 bool CommandProcessor::submit(const std::string& rawText) {
     const std::string text = trim(rawText);
 
@@ -120,6 +140,8 @@ bool CommandProcessor::submit(const std::string& rawText) {
         }
         return runCommand(word);
     }
+
+    if (tryTransparent(text)) return true;
 
     // Relative input (@) is measured from the command's current base point
     // (e.g. the end of the line chain after an in-command Undo), else last point.
@@ -156,6 +178,14 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("LINE", {"L"}, [] { return std::make_unique<LineCommand>(); });
     proc.registerCommand("CIRCLE", {"C"}, [] { return std::make_unique<CircleCommand>(); });
     proc.registerCommand("RECTANGLE", {"REC", "RECTANG"}, [] { return std::make_unique<RectangleCommand>(); });
+    proc.registerCommand("PLINE", {"PL"}, [] { return std::make_unique<PlineCommand>(); });
+    proc.registerCommand("ARC", {"A"}, [] { return std::make_unique<ArcCommand>(); });
+    proc.registerCommand("POLYGON", {"POL"}, [] { return std::make_unique<PolygonCommand>(); });
+    proc.registerCommand("ELLIPSE", {"EL"}, [] { return std::make_unique<EllipseCommand>(); });
+    proc.registerCommand("SPLINE", {"SPL"}, [] { return std::make_unique<SplineCommand>(); });
+    proc.registerCommand("POINT", {"PO"}, [] { return std::make_unique<PointCommand>(); });
+    proc.registerCommand("SQUARE", {"SQ"}, [] { return std::make_unique<SquareCommand>(); });
+    proc.registerCommand("ARROW", {"ARW"}, [] { return std::make_unique<ArrowCommand>(); });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

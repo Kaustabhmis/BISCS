@@ -91,6 +91,28 @@ private slots:
         QVERIFY(QString::fromStdString(r.warnings[1]).contains("SPLINE"));
     }
 
+    void newEntityTypesValidated() {
+        const QByteArray data = R"({"format":"DynamicCAD-Drawing","formatVersion":3,"units":"mm","entities":[
+            {"type":"ELLIPSE","center":[0,0],"majorAxis":[10,0],"ratio":0.5},
+            {"type":"ELLIPSE","center":[0,0],"majorAxis":[10,0],"ratio":1.5},
+            {"type":"ELLIPSE","center":[0,0],"majorAxis":[0,0],"ratio":0.5},
+            {"type":"SPLINE","degree":3,"knots":[0,0,0,0,1,1,1,1],"controlPoints":[[0,0],[1,1],[2,0],[3,1]]},
+            {"type":"SPLINE","degree":3,"knots":[0,0,1],"controlPoints":[[0,0],[1,1],[2,0],[3,1]]},
+            {"type":"SPLINE","degree":2,"knots":[0,0,0,1,1,1],"controlPoints":[[0,0],[1,1],[2,0]],"weights":[1,-1,1]},
+            {"type":"POLYLINE","closed":true,"filled":true,"vertices":[[0,0],[1,0],[0,1]]}
+        ]})";
+        Document doc;
+        const FileResult r = deserializeDyn(data, doc);
+        QVERIFY(r.ok);
+        QCOMPARE(doc.entityCount(), std::size_t(3));
+        QCOMPARE(r.warnings.size(), std::size_t(4));
+        QVERIFY(QString::fromStdString(r.warnings[2]).contains("knot"));
+        QVERIFY(QString::fromStdString(r.warnings[3]).contains("weight"));
+        // Version 1 files from v0.1.0 still open.
+        Document v1;
+        QVERIFY(deserializeDyn(R"({"format":"DynamicCAD-Drawing","formatVersion":1,"entities":[]})", v1).ok);
+    }
+
     void sampleDrawingsLoad() {
         QDir dir(DYNCAD_SAMPLES_DIR);
         const QStringList files = dir.entryList({"*.dyn"});

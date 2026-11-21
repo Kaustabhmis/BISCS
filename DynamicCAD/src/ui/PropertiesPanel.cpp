@@ -3,6 +3,7 @@
 
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -10,6 +11,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <cmath>
 #include <map>
 
 namespace dyncad {
@@ -93,6 +95,31 @@ void PropertiesPanel::refresh() {
         add(tr("End point"), pt(g.endPoint()));
         break;
     }
+    case EntityType::Ellipse: {
+        const auto& el = static_cast<const EllipseEntity&>(*e);
+        const EllipseGeom& g = el.geom();
+        add(tr("Center"), pt(g.center));
+        add(tr("Major radius"), num(g.majorRadius()));
+        add(tr("Minor radius"), num(g.minorRadius()));
+        add(tr("Major axis angle (deg)"), num(radToDeg(std::atan2(g.major.y, g.major.x))));
+        add(tr("Radius ratio"), num(g.ratio));
+        if (!g.isFull()) {
+            add(tr("Start parameter (deg)"), num(radToDeg(g.startParam)));
+            add(tr("End parameter (deg)"), num(radToDeg(g.endParam)));
+        }
+        add(tr("Length"), num(el.length()));
+        if (g.isFull()) add(tr("Area"), num(el.area()));
+        break;
+    }
+    case EntityType::Spline: {
+        const auto& sp = static_cast<const SplineEntity&>(*e);
+        add(tr("Degree"), QString::number(sp.curve().degree));
+        add(tr("Control points"), QString::number(sp.curve().ctrl.size()));
+        add(tr("Rational"), sp.curve().weights.empty() ? tr("No") : tr("Yes"));
+        add(tr("Closed"), sp.isClosed() ? tr("Yes") : tr("No"));
+        add(tr("Length (approx.)"), num(sp.length()));
+        break;
+    }
     case EntityType::Point: {
         add(tr("Position"), pt(static_cast<const PointEntity&>(*e).position()));
         break;
@@ -102,6 +129,7 @@ void PropertiesPanel::refresh() {
         add(tr("Vertices"), QString::number(p.vertices().size()));
         add(tr("Arc segments"), p.hasArcs() ? tr("Yes") : tr("No"));
         add(tr("Closed"), p.isClosed() ? tr("Yes") : tr("No"));
+        if (p.isFilled()) add(tr("Fill"), tr("Solid"));
         add(tr("Length"), num(p.length()));
         if (p.isClosed()) add(tr("Area"), num(p.area()));
         const BoundingBox b = p.bounds();

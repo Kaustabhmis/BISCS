@@ -6,6 +6,7 @@
 
 #include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
+#include "entities/CurveEntities.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 
@@ -361,6 +362,19 @@ private:
     void addEntity(std::unique_ptr<Entity> local, const Affine2D& xf, const std::string& layer) {
         if (!local) return;
         std::unique_ptr<Entity> world = xf.isIdentity() ? std::move(local) : local->transformed(xf);
+        if (!world) {
+            // Circles and arcs in non-uniformly scaled blocks become exact ellipses.
+            std::optional<EllipseGeom> g;
+            if (local->type() == EntityType::Circle) {
+                const auto& c = static_cast<const CircleEntity&>(*local);
+                g = EllipseGeom{c.center(), {c.radius(), 0}, 1.0, 0.0, 2.0 * kPi};
+            } else if (local->type() == EntityType::Arc) {
+                const auto& a = static_cast<const ArcEntity&>(*local);
+                const ArcGeom ag = a.geom();
+                g = EllipseGeom{a.center(), {a.radius(), 0}, 1.0, ag.startAngle, ag.startAngle + ag.sweep};
+            }
+            if (g) world = EllipseEntity(*g).transformed(xf);
+        }
         if (!world) { ++nonUniform_; return; }
         world->setLayer(layer);
         out_.push_back(EntityPtr(std::move(world)));
@@ -431,6 +445,66 @@ private:
                 else if (g.code == 42 && !b.empty()) b.back() = toDouble(g.value).value_or(0.0);
             }
             addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, layerOf(e, inherit));
+        } else if (t == "ELLIPSE") {
+            EllipseGeom g;
+            g.center = {e.num(10, NAN), e.num(20, NAN)};
+            g.major = {e.num(11, NAN), e.num(21, NAN)};
+            g.ratio = e.num(40, -1.0);
+            g.startParam = e.num(41, 0.0);
+            g.endParam = e.num(42, 2.0 * kPi);
+            if (!g.center.isFinite() || !g.major.isFinite() || !(g.major.length() > 0) || !(g.ratio > 0) || g.ratio > 1.0 + 1e-9)
+                return invalid(t);
+            g.ratio = std::min(g.ratio, 1.0);
+            const double nx = e.num(210, 0.0), ny = e.num(220, 0.0), nz = e.num(230, 1.0);
+            if (std::abs(nx) > 1e-9 || std::abs(ny) > 1e-9) { ++nonPlanar_; return; }
+            if (nz < 0) { // minor axis = N x major: reversed for N = (0,0,-1)
+                const double s0 = g.startParam, e0 = g.endParam;
+                g.startParam = -e0;
+                g.endParam = -s0;
+            }
+            checkZ(e, {30});
+            addEntity(std::make_unique<EllipseEntity>(g), xf, layerOf(e, inherit));
+        } else if (t == "SPLINE") {
+            NurbsCurve c;
+            c.degree = static_cast<int>(e.integer(71, 3));
+            std::vector<Vec2> fit;
+            for (const Group& g : e.groups) {
+                switch (g.code) {
+                case 40: c.knots.push_back(toDouble(g.value).value_or(NAN)); break;
+                case 41: c.weights.push_back(toDouble(g.value).value_or(NAN)); break;
+                case 10: c.ctrl.push_back({toDouble(g.value).value_or(NAN), 0.0}); break;
+                case 20: if (!c.ctrl.empty()) c.ctrl.back().y = toDouble(g.value).value_or(NAN); break;
+                case 11: fit.push_back({toDouble(g.value).value_or(NAN), 0.0}); break;
+                case 21: if (!fit.empty()) fit.back().y = toDouble(g.value).value_or(NAN); break;
+                case 30: case 31: if (toDouble(g.value).value_or(0.0) != 0.0) zSpline_ = true; break;
+                default: break;
+                }
+            }
+            bool allOne = true;
+            for (double w : c.weights) allOne &= (w == 1.0);
+            if (allOne) c.weights.clear();
+            if (c.ctrl.empty() && fit.size() >= 2) {
+                auto ic = geom::interpolateSpline(fit, c.degree);
+                if (!ic) return invalid(t);
+                c = std::move(*ic);
+            }
+            if (!c.isValid()) return invalid(t);
+            if (zSpline_) { ++nonZeroZ_; zSpline_ = false; }
+            addEntity(std::make_unique<SplineEntity>(std::move(c)), xf, layerOf(e, inherit));
+        } else if (t == "SOLID" || t == "TRACE") {
+            auto o = ocs(e);
+            if (!o) return;
+            const Vec2 p0{e.num(10, NAN), e.num(20, NAN)}, p1{e.num(11, NAN), e.num(21, NAN)};
+            const Vec2 p2{e.num(12, NAN), e.num(22, NAN)};
+            const Vec2 p3 = e.has(13) ? Vec2{e.num(13, NAN), e.num(23, NAN)} : p2;
+            // DXF corner order 1-2-4-3 is the outline order 1-2-3-4.
+            std::vector<Vec2> v{p0, p1, p3};
+            if (!nearlyEqual(p2, p3, 0.0)) v.push_back(p2);
+            for (const Vec2& q : v)
+                if (!q.isFinite()) return invalid(t);
+            auto pl = std::make_unique<PolylineEntity>(std::move(v), true);
+            pl->setFilled(true);
+            addEntity(std::move(pl), xf * *o, layerOf(e, inherit));
         } else if (t == "SEQEND" || t == "VERTEX" || t == "ENDBLK") {
             // structural; handled by their parents
         } else if (t == "TEXT" || t == "MTEXT" || t == "ATTDEF") {
@@ -506,8 +580,8 @@ public:
                                   " object(s) lie in a tilted 3D plane (unusual extrusion direction) and were skipped.");
         if (nonUniform_)
             r_.warnings.push_back(std::to_string(nonUniform_) +
-                                  " curved object(s) inside non-uniformly scaled blocks would become ellipses and were "
-                                  "skipped.");
+                                  " curved polyline(s) inside non-uniformly scaled blocks cannot be represented exactly "
+                                  "and were skipped.");
         if (tooDeep_) r_.warnings.push_back("Block nesting deeper than 32 levels (possibly circular) was skipped.");
         for (const auto& x : xrefs_)
             r_.warnings.push_back("External reference \"" + x + "\" was not loaded (xrefs are not supported yet).");
@@ -525,6 +599,7 @@ private:
     std::vector<RawEntity> entities_;
     std::vector<EntityPtr> out_;
     std::size_t nonZeroZ_ = 0, nonPlanar_ = 0, nonUniform_ = 0, tooDeep_ = 0;
+    bool zSpline_ = false;
     std::set<std::string> xrefs_;
 };
 

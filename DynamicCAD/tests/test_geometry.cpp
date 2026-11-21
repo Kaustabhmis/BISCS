@@ -3,6 +3,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
+#include "entities/CurveEntities.h"
 #include "geometry/Arc.h"
 #include "geometry/Geometry.h"
 
@@ -179,6 +180,108 @@ private slots:
         LineEntity l({0, 0}, {1, 0});
         l.setLayer("X");
         QCOMPARE(l.transformed(Affine2D::rotationDeg(90))->layer(), std::string("X"));
+    }
+
+    void ellipseGeometry() {
+        EllipseGeom e{{1, 2}, {10, 0}, 0.5, 0.0, 2 * kPi};
+        QVERIFY(e.isFull());
+        QVERIFY(nearlyEqual(e.pointAt(kPi / 2), {1, 7}, 1e-12));
+        const BoundingBox b = geom::ellipseBounds(e);
+        QVERIFY(nearlyEqual(b.min, {-9, -3}, 1e-12) && nearlyEqual(b.max, {11, 7}, 1e-12));
+        // Rotated 30 degrees: analytic half-extents.
+        EllipseGeom r{{0, 0}, Vec2::fromPolar(10, degToRad(30)), 0.5};
+        const BoundingBox rb = geom::ellipseBounds(r);
+        const double hx = std::hypot(10 * std::cos(degToRad(30)), 5 * std::sin(degToRad(30)));
+        QVERIFY(std::abs(rb.max.x - hx) < 1e-12);
+        for (const Vec2& p : geom::tessellateEllipse(r, 1e-6)) QVERIFY(rb.inflated(1e-9).contains(p));
+        // Perimeter of a=10, b=5 (Ramanujan II is accurate to ~1e-9 here).
+        const double a = 10, bb = 5, h = (a - bb) * (a - bb) / ((a + bb) * (a + bb));
+        const double ram = kPi * (a + bb) * (1 + 3 * h / (10 + std::sqrt(4 - 3 * h)));
+        QVERIFY(std::abs(geom::ellipseLength(e) - ram) < 1e-6);
+        // Distances: on the curve, at the centre, outside along the major axis.
+        QVERIFY(geom::distancePointToEllipse(e.pointAt(1.234), e) < 1e-9);
+        QVERIFY(std::abs(geom::distancePointToEllipse({1, 2}, e) - 5.0) < 1e-9);
+        QVERIFY(std::abs(geom::distancePointToEllipse({14, 2}, e) - 3.0) < 1e-9);
+        // Elliptical arc: upper half only.
+        EllipseGeom half{{0, 0}, {10, 0}, 0.5, 0.0, kPi};
+        QVERIFY(!half.isFull());
+        QVERIFY(std::abs(geom::ellipseBounds(half).min.y) < 1e-12);
+        QVERIFY(std::abs(geom::distancePointToEllipse({0, -5}, half) - 10.0) < 1e-9); // nearest = top of arc
+        QVERIFY(geom::ellipseIntersectsRect(half, BoundingBox({-1, 4}, {1, 6})));
+        QVERIFY(!geom::ellipseIntersectsRect(half, BoundingBox({-1, -6}, {1, -4})));
+        QVERIFY(!geom::ellipseIntersectsRect(e, BoundingBox({-2, 0}, {2, 3}))); // inside, untouched
+    }
+    void ellipseTransforms() {
+        EllipseEntity e(EllipseGeom{{0, 0}, {10, 0}, 0.5});
+        // Non-uniform scale of a circle gives an ellipse with exact axes.
+        EllipseEntity circle(EllipseGeom{{0, 0}, {2, 0}, 1.0});
+        auto s = circle.transformed(Affine2D::scaling(3, 1));
+        const EllipseGeom& g = static_cast<const EllipseEntity&>(*s).geom();
+        QVERIFY(std::abs(g.majorRadius() - 6) < 1e-12 && std::abs(g.minorRadius() - 2) < 1e-12);
+        // Shear: area scales by |det|.
+        Affine2D shear; shear.c = 0.7;
+        auto sh = e.transformed(shear);
+        QVERIFY(std::abs(static_cast<const EllipseEntity&>(*sh).area() - e.area()) < 1e-9);
+        // Mirrored elliptical arc keeps the same point set.
+        EllipseEntity arc(EllipseGeom{{0, 0}, {10, 0}, 0.5, 0.2, 1.3});
+        const Affine2D mx = Affine2D::scaling(-1, 1);
+        auto m = arc.transformed(mx);
+        const EllipseGeom& mg = static_cast<const EllipseEntity&>(*m).geom();
+        for (double t : {0.2, 0.5, 1.0, 1.3}) {
+            const Vec2 q = mx.apply(arc.geom().pointAt(t));
+            QVERIFY2(geom::distancePointToEllipse(q, mg) < 1e-9, qPrintable(QString::number(t)));
+        }
+        QVERIFY(std::abs(radToDeg(mg.sweep()) - radToDeg(1.1)) < 1e-9);
+        QVERIFY(!e.transformed(Affine2D::scaling(1, 0)));
+    }
+    void nurbs() {
+        // Degree-1 clamped spline = the control polygon.
+        auto lin = geom::clampedUniformSpline({{0, 0}, {10, 0}, {10, 10}}, 1);
+        QVERIFY(lin.isValid());
+        QVERIFY(nearlyEqual(lin.eval(0.5), {10, 0}, 1e-12));
+        // Clamped cubic passes through its end points.
+        auto c = geom::clampedUniformSpline({{0, 0}, {5, 10}, {15, -10}, {20, 0}, {30, 5}});
+        QVERIFY(c.isValid());
+        QCOMPARE(c.eval(c.tMin()), Vec2(0, 0));
+        QVERIFY(nearlyEqual(c.eval(c.tMax()), {30, 5}, 1e-12));
+        // Rational quadratic NURBS reproduces a circle exactly (quarter arc).
+        NurbsCurve q;
+        q.degree = 2;
+        q.ctrl = {{1, 0}, {1, 1}, {0, 1}};
+        q.weights = {1, std::sqrt(0.5), 1};
+        q.knots = {0, 0, 0, 1, 1, 1};
+        QVERIFY(q.isValid());
+        for (double t = 0; t <= 1.0; t += 0.05) QVERIFY(std::abs(q.eval(t).length() - 1.0) < 1e-12);
+        for (const Vec2& p : q.tessellate(1e-4)) QVERIFY(std::abs(p.length() - 1.0) < 1e-12);
+        // Interpolation passes exactly through every fit point.
+        std::vector<Vec2> fit{{0, 0}, {10, 10}, {20, 0}, {30, 10}, {45, -3}, {50, 0}};
+        auto ip = geom::interpolateSpline(fit, 3);
+        QVERIFY(ip && ip->isValid());
+        SplineEntity se(*ip);
+        for (const Vec2& f : fit) QVERIFY2(se.distanceTo(f) < 1e-6, qPrintable(QString::number(se.distanceTo(f))));
+        // Two points: a straight line.
+        auto two = geom::interpolateSpline({{0, 0}, {4, 3}}, 3);
+        QVERIFY(two && std::abs(SplineEntity(*two).length() - 5.0) < 1e-9);
+        QVERIFY(!geom::interpolateSpline({{1, 1}, {1, 1}}, 3));
+        // Closed spline is smooth and closed.
+        auto cl = geom::closedUniformSpline({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        QVERIFY(cl.isValid());
+        QVERIFY(nearlyEqual(cl.eval(cl.tMin()), cl.eval(cl.tMax()), 1e-12));
+        // Invalid definitions are rejected.
+        NurbsCurve bad = c;
+        bad.knots.pop_back();
+        QVERIFY(!bad.isValid());
+        // Affine transform moves the curve exactly.
+        auto moved = se.transformed(Affine2D::translation({100, 0}));
+        for (const Vec2& f : fit) QVERIFY(moved->distanceTo(f + Vec2{100, 0}) < 1e-6);
+    }
+    void filledPolylinePicking() {
+        PolylineEntity tri({{0, 0}, {10, 0}, {5, 10}}, true);
+        QVERIFY(tri.distanceTo({5, 3}) > 2.0); // outline only: inside is empty
+        tri.setFilled(true);
+        QCOMPARE(tri.distanceTo({5, 3}), 0.0);  // filled: clicking inside selects it
+        QVERIFY(tri.distanceTo({20, 3}) > 9.0);
+        QVERIFY(tri.transformed(Affine2D::translation({1, 1}))->distanceTo({6, 4}) == 0.0); // fill kept
     }
     void entities() {
         LineEntity l({0, 0}, {3, 4});

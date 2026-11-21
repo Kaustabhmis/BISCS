@@ -30,6 +30,9 @@ public:
     const std::vector<double>& bulges() const { return bulges_; }
     bool hasArcs() const;
     bool isClosed() const { return closed_; }
+    // Solid fill (closed polylines only): arrowheads, DXF SOLID/TRACE.
+    bool isFilled() const { return filled_ && closed_; }
+    void setFilled(bool on) { filled_ = on; }
     std::size_t segmentCount() const;
     // Segment i as an arc, or nullopt if it is straight.
     std::optional<ArcGeom> segmentArc(std::size_t i) const;
@@ -43,6 +46,7 @@ private:
     std::vector<Vec2> vertices_;
     std::vector<double> bulges_; // same size as vertices_
     bool closed_;
+    bool filled_ = false;
 };
 
 } // namespace dyncad

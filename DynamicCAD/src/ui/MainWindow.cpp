@@ -150,6 +150,22 @@ void MainWindow::createActions() {
     connect(actLine_, &QAction::triggered, this, [this] { startCommand("LINE"); });
     connect(actCircle_, &QAction::triggered, this, [this] { startCommand("CIRCLE"); });
     connect(actRect_, &QAction::triggered, this, [this] { startCommand("RECTANGLE"); });
+    struct Tool { QAction** act; const char* text; const char* icon; const char* cmd; const char* tip; };
+    const Tool tools[] = {
+        {&actPline_, "&Polyline", "pline", "PLINE", "Draw a polyline of lines and arcs (PL)"},
+        {&actArc_, "&Arc", "arc", "ARC", "Draw an arc through 3 points, or from a center (A)"},
+        {&actPolygon_, "Pol&ygon", "polygon", "POLYGON", "Draw a regular polygon (POL)"},
+        {&actEllipse_, "&Ellipse", "ellipse", "ELLIPSE", "Draw an ellipse (EL)"},
+        {&actSpline_, "&Spline", "spline", "SPLINE", "Draw a smooth curve through points (SPL)"},
+        {&actPoint_, "Poin&t", "point", "POINT", "Place a point (PO)"},
+        {&actSquare_, "S&quare", "square", "SQUARE", "Draw a square (SQ)"},
+        {&actArrow_, "Arro&w", "arrow", "ARROW", "Draw an arrow with a filled head (ARW)"},
+    };
+    for (const Tool& t : tools) {
+        *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
+        const QString cmd = t.cmd;
+        connect(*t.act, &QAction::triggered, this, [this, cmd] { startCommand(cmd); });
+    }
 
     actZoomExt_ = make(tr("Zoom &Extents"), "zoom-extents", QKeySequence(Qt::CTRL | Qt::Key_0), tr("Fit the whole drawing in the view"));
     actZoomIn_ = make(tr("Zoom &In"), "zoom-in", QKeySequence::ZoomIn, tr("Zoom in"));
@@ -205,7 +221,11 @@ void MainWindow::createMenus() {
     edit->addActions({actErase_, actSelectAll_, actDeselect_});
 
     QMenu* draw = menuBar()->addMenu(tr("&Draw"));
-    draw->addActions({actLine_, actCircle_, actRect_});
+    draw->addActions({actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
+    draw->addSeparator();
+    draw->addActions({actRect_, actSquare_, actPolygon_});
+    draw->addSeparator();
+    draw->addActions({actPoint_, actArrow_});
 
     QMenu* view = menuBar()->addMenu(tr("&View"));
     view->addActions({actZoomExt_, actZoomIn_, actZoomOut_});
@@ -227,7 +247,8 @@ void MainWindow::createRibbon() {
     ribbon_ = new Ribbon(this);
     RibbonPage* home = ribbon_->addPage(tr("Home"));
     home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
-    home->addGroup(tr("Draw"), {actLine_, actCircle_, actRect_});
+    home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
+    home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_});
     home->addGroup(tr("Modify"), {actErase_, actUndo_, actRedo_});
     home->addGroup(tr("Selection"), {actSelectAll_});
     RibbonPage* view = ribbon_->addPage(tr("View"));
@@ -287,21 +308,24 @@ void MainWindow::registerUiCommands() {
         else if (a == "OUT") canvas_->zoomBy(1.0 / 1.5);
         else if (auto f = parseNumber(a); f && *f > 0) canvas_->zoomBy(*f);
         else message(tr("ZOOM options: E (extents), IN, OUT, or a factor such as 2 or 0.5."));
-    });
+    }, true);
     proc_.registerAction("NEW", {}, [this](const std::vector<std::string>&) { newDrawing(); });
     proc_.registerAction("OPEN", {}, [this](const std::vector<std::string>&) { openDrawing(); });
     proc_.registerAction("DXFIN", {"IMPORT"}, [this](const std::vector<std::string>&) { actImportDxf_->trigger(); });
     proc_.registerAction("SAVE", {"QSAVE"}, [this](const std::vector<std::string>&) { save(); });
     proc_.registerAction("SAVEAS", {}, [this](const std::vector<std::string>&) { saveAs(); });
-    proc_.registerAction("GRID", {}, [this](const std::vector<std::string>&) { actGrid_->toggle(); });
-    proc_.registerAction("SNAP", {}, [this](const std::vector<std::string>&) { actSnap_->toggle(); });
-    proc_.registerAction("ORTHO", {}, [this](const std::vector<std::string>&) { actOrtho_->toggle(); });
+    proc_.registerAction("GRID", {}, [this](const std::vector<std::string>&) { actGrid_->toggle(); }, true);
+    proc_.registerAction("SNAP", {}, [this](const std::vector<std::string>&) { actSnap_->toggle(); }, true);
+    proc_.registerAction("ORTHO", {}, [this](const std::vector<std::string>&) { actOrtho_->toggle(); }, true);
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
-        message(tr("Commands: LINE (L), CIRCLE (C), RECTANGLE (REC), ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
+        message(tr("Draw: LINE (L), PLINE (PL), ARC (A), CIRCLE (C), ELLIPSE (EL), SPLINE (SPL), RECTANGLE (REC),"
+                   " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW)."));
+        message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
                    " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"
                    " while moving the cursor. Enter/Space/right-click = Enter, Esc = cancel."));
-    });
+        message(tr("ZOOM, GRID, SNAP, ORTHO and HELP also work in the middle of a command."));
+    }, true);
 }
 
 // ------------------------------------------------------------------ commands

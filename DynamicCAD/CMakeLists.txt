@@ -1,7 +1,7 @@
 # DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 cmake_minimum_required(VERSION 3.21)
 
-project(DynamicCAD VERSION 0.2.0 LANGUAGES CXX
+project(DynamicCAD VERSION 0.3.0 LANGUAGES CXX
         DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -42,11 +42,14 @@ add_library(dyncad_core STATIC
     src/geometry/Geometry.h            src/geometry/Geometry.cpp
     src/geometry/Affine2D.h
     src/geometry/Arc.h                 src/geometry/Arc.cpp
+    src/geometry/Ellipse.h             src/geometry/Ellipse.cpp
+    src/geometry/Nurbs.h               src/geometry/Nurbs.cpp
     src/entities/Entity.h
     src/entities/LineEntity.h          src/entities/LineEntity.cpp
     src/entities/CircleEntity.h        src/entities/CircleEntity.cpp
     src/entities/PolylineEntity.h      src/entities/PolylineEntity.cpp
     src/entities/ArcEntity.h           src/entities/ArcEntity.cpp
+    src/entities/CurveEntities.h       src/entities/CurveEntities.cpp
     src/document/UndoStack.h           src/document/UndoStack.cpp
     src/document/Document.h            src/document/Document.cpp
     src/document/EditCommands.h        src/document/EditCommands.cpp
@@ -54,6 +57,7 @@ add_library(dyncad_core STATIC
     src/commands/InputParser.h         src/commands/InputParser.cpp
     src/commands/InteractiveCommand.h  src/commands/InteractiveCommand.cpp
     src/commands/DrawCommands.h        src/commands/DrawCommands.cpp
+    src/commands/ShapeCommands.h       src/commands/ShapeCommands.cpp
     src/commands/CommandProcessor.h    src/commands/CommandProcessor.cpp
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp

@@ -7,6 +7,7 @@
 #include <QPainterPath>
 #include <QPixmap>
 
+#include <cmath>
 #include <functional>
 
 namespace dyncad::Icons {
@@ -33,6 +34,38 @@ void paintIcon(QPainter& p, const QString& n) {
     } else if (n == "rectangle") {
         p.drawRect(QRectF(10, 16, 44, 32));
         dot({10, 48}); dot({54, 16});
+    } else if (n == "pline") {
+        QPainterPath path;
+        path.moveTo(8, 52); path.lineTo(26, 20); path.lineTo(40, 40);
+        path.arcTo(QRectF(36, 14, 20, 26), 200, -200);
+        p.drawPath(path);
+        dot({8, 52}); dot({26, 20}); dot({40, 40});
+    } else if (n == "arc") {
+        p.drawArc(QRectF(10, 14, 44, 44), 0 * 16, 180 * 16);
+        dot({10, 36}); dot({32, 14}); dot({54, 36});
+    } else if (n == "polygon") {
+        QPolygonF poly;
+        for (int i = 0; i < 6; ++i) poly << QPointF(32 + 24 * std::cos(i * 3.14159265 / 3), 32 + 24 * std::sin(i * 3.14159265 / 3));
+        p.drawPolygon(poly);
+        dot({32, 32});
+    } else if (n == "ellipse") {
+        p.drawEllipse(QPointF(32, 32), 26, 15);
+        dot({32, 32});
+    } else if (n == "spline") {
+        QPainterPath path;
+        path.moveTo(6, 46); path.cubicTo(18, 4, 36, 60, 58, 16);
+        p.drawPath(path);
+        dot({6, 46}); dot({58, 16});
+    } else if (n == "point") {
+        p.drawLine(QPointF(32, 14), QPointF(32, 50)); p.drawLine(QPointF(14, 32), QPointF(50, 32));
+        dot({32, 32});
+    } else if (n == "square") {
+        p.drawRect(QRectF(13, 13, 38, 38));
+        dot({13, 51}); dot({51, 13});
+    } else if (n == "arrow") {
+        p.drawLine(QPointF(8, 52), QPointF(42, 22));
+        p.setPen(Qt::NoPen); p.setBrush(gold);
+        p.drawPolygon(QPolygonF({QPointF(56, 10), QPointF(36, 18), QPointF(48, 32)}));
     } else if (n == "erase") {
         p.drawLine(QPointF(14, 50), QPointF(50, 14));
         p.setPen(QPen(QColor(0xE0, 0x50, 0x50), 6, Qt::SolidLine, Qt::RoundCap));

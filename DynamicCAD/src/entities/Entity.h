@@ -15,7 +15,7 @@ namespace dyncad {
 using EntityId = std::uint64_t;
 inline constexpr EntityId kInvalidEntityId = 0;
 
-enum class EntityType { Line, Circle, Arc, Polyline, Point };
+enum class EntityType { Line, Circle, Arc, Polyline, Point, Ellipse, Spline };
 
 // Base class for every drawing object. Entities hold geometry in world units
 // (double precision) and know how to answer the hit-testing questions used by

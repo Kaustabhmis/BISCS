@@ -7,9 +7,10 @@ report, and preserved working code. A feature counts as done only when it works 
 |---|---|---|---|
 | M1 | Core application | Window, ribbon, menus, canvas (grid, crosshair, zoom, pan, coordinates), command line, status bar, New/Open/Save/Save As (.dyn), undo/redo, shortcuts, LINE, CIRCLE, RECTANGLE, selection (click/window/crossing), ERASE | **Done** (see STATUS.md) |
 | M2 | **DXF import** (moved forward at the owner's request) | Own DXF reader R12–2018: LINE, CIRCLE, ARC, LWPOLYLINE/POLYLINE with bulges, POINT, INSERT (nested, scaled, rotated, mirrored, MINSERT), layers, units, OCS; import report; ARC/POINT/bulge entities; .dyn format v2 | **Done** |
-| M2b | Drawing engine I | Object snaps (endpoint, midpoint, centre, intersection, perpendicular, tangent, nearest) with markers; POLYLINE and ARC drawing commands, POINT command; editable Properties panel; grip editing | Next |
+| M3 | **2D drawing tools** (owner's request) | PLINE (arcs), ARC, ELLIPSE, SPLINE (fit/CV, NURBS), POLYGON, SQUARE, POINT, ARROW, RECTANGLE Fillet/Chamfer/Dimensions; DXF ELLIPSE/SPLINE/SOLID import; transparent ZOOM/GRID/SNAP/ORTHO; .dyn v3 | **Done** |
+| M3b | Drafting aids | Object snaps (endpoint, midpoint, centre, quadrant, intersection, perpendicular, tangent, nearest) with markers; polar tracking; editable Properties panel; grip editing; XLINE/RAY, DONUT, REVCLOUD, elliptical-arc option | Next |
 | M3 | Editing I | MOVE, COPY, ROTATE, MIRROR, SCALE, OFFSET, ERASE improvements, EXPLODE, JOIN; clipboard copy/paste | |
-| M4 | Editing II + geometry | TRIM, EXTEND, FILLET, CHAMFER, STRETCH, ARRAY (rect/polar); ELLIPSE, POLYGON, SPLINE | |
+| M4 | Editing II | TRIM, EXTEND, FILLET, CHAMFER, STRETCH, ARRAY (rect/polar), BREAK, LENGTHEN | |
 | M5 | Layers & properties | Layer manager panel (on/off, freeze, lock, colour), colours, linetypes (CENTER, HIDDEN...), lineweights, polar tracking, dynamic input tooltip | |
 | M6 | Annotation | TEXT, MTEXT, dimension styles, linear/aligned/angular/radius/diameter dimensions, leaders, MEASURE/DIST/AREA | |
 | M7 | Blocks & hatch | Block definitions/insertions with attributes, HATCH (ANSI31 etc. own pattern definitions), spatial index | |

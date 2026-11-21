@@ -32,8 +32,8 @@ struct DxfImportResult {
 };
 
 // Imports an ASCII DXF (R12 ... R2018) into doc, replacing its content.
-// Supported: LINE, CIRCLE, ARC, LWPOLYLINE, POLYLINE (2D, incl. bulges),
-// POINT, INSERT (blocks expanded, incl. nested, scaled, rotated, mirrored and
+// Supported: LINE, CIRCLE, ARC, ELLIPSE, SPLINE, LWPOLYLINE, POLYLINE (2D,
+// incl. bulges), POINT, SOLID/TRACE (filled), INSERT (blocks expanded, incl. nested, scaled, rotated, mirrored and
 // MINSERT arrays), layers, units, OCS extrusion (0,0,±1). Model space only.
 // On failure the document is left unchanged.
 DxfImportResult importDxf(const QByteArray& data, Document& doc);

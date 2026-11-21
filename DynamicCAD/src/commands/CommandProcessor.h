@@ -26,7 +26,10 @@ public:
     // Interactive multi-step command (LINE, CIRCLE, ...).
     void registerCommand(const std::string& name, const std::vector<std::string>& aliases, Factory factory);
     // Immediate action (UNDO, ZOOM, ...). Extra words on the line become args.
-    void registerAction(const std::string& name, const std::vector<std::string>& aliases, Action action);
+    // Transparent actions (ZOOM, GRID, ...) also run in the middle of another
+    // command without cancelling it, typed plainly or with a leading apostrophe.
+    void registerAction(const std::string& name, const std::vector<std::string>& aliases, Action action,
+                        bool transparent = false);
     bool isKnownCommand(const std::string& nameOrAlias) const;
     std::vector<std::string> commandNames() const;
 
@@ -62,7 +65,9 @@ private:
         std::string name;
         Factory factory;
         Action action;
+        bool transparent = false;
     };
+    bool tryTransparent(const std::string& text);
     void say(const std::string& m) const { if (onMessage) onMessage(m); }
     void finishIf(CommandStatus st);
     void deliverPoint(const Vec2& p);

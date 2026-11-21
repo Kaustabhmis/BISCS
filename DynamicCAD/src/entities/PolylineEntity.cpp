@@ -46,8 +46,32 @@ BoundingBox PolylineEntity::bounds() const {
     return b;
 }
 
+namespace {
+// Even-odd point-in-polygon test on an outline approximated to tol.
+bool insideOutline(const PolylineEntity& pl, const Vec2& p) {
+    std::vector<Vec2> poly;
+    const std::size_t n = pl.segmentCount();
+    for (std::size_t i = 0; i < n; ++i) {
+        if (auto a = pl.segmentArc(i)) {
+            auto pts = geom::tessellateArc(*a, a->radius * 1e-4);
+            poly.insert(poly.end(), pts.begin(), pts.end() - 1);
+        } else {
+            poly.push_back(pl.segmentStart(i));
+        }
+    }
+    bool in = false;
+    for (std::size_t i = 0, j = poly.size() - 1; i < poly.size(); j = i++) {
+        if (((poly[i].y > p.y) != (poly[j].y > p.y)) &&
+            (p.x < (poly[j].x - poly[i].x) * (p.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x))
+            in = !in;
+    }
+    return in;
+}
+} // namespace
+
 double PolylineEntity::distanceTo(const Vec2& p) const {
     if (vertices_.empty()) return std::numeric_limits<double>::infinity();
+    if (isFilled() && vertices_.size() >= 3 && bounds().contains(p) && insideOutline(*this, p)) return 0.0;
     if (vertices_.size() == 1) return distance(p, vertices_.front());
     double best = std::numeric_limits<double>::infinity();
     const std::size_t n = segmentCount();
@@ -103,6 +127,7 @@ std::unique_ptr<Entity> PolylineEntity::transformed(const Affine2D& xf) const {
     if (xf.det() < 0)
         for (double& x : b) x = -x; // mirroring reverses arc direction
     auto out = std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed_);
+    out->setFilled(filled_);
     out->setLayer(layer());
     return out;
 }
