@@ -23,5 +23,8 @@ are listed at https://doc.qt.io/qt-6/licenses-used-in-qt.html.
 The complete notices are installed in the "licenses" folder and shown in
 Help > Third-Party Notices.
 
+The Microsoft Visual C++ runtime is installed if it is missing (redistributed
+under Microsoft's Visual C++ Redistributable licence terms).
+
 This installer was created with NSIS (Nullsoft Scriptable Install System),
 which is distributed under the zlib/libpng licence.

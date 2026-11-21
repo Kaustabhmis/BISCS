@@ -24,6 +24,7 @@ SetCompressor /SOLID lzma
 !include "MUI2.nsh"
 !include "x64.nsh"
 !include "FileFunc.nsh"
+!include "LogicLib.nsh"
 
 Name "${PRODUCT} ${VERSION}"
 OutFile "${OUTFILE}"
@@ -73,6 +74,18 @@ Section "${PRODUCT} (required)" SecMain
   SetOutPath "$INSTDIR"
   File /r "${SRCDIR}\*.*"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+  ; Microsoft Visual C++ runtime (redistributable per Microsoft's licence):
+  ; installed silently only when it is not already present.
+  ${If} ${FileExists} "$INSTDIR\vc_redist.x64.exe"
+    ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
+    ${If} $0 != 1
+      DetailPrint "Installing the Microsoft Visual C++ runtime..."
+      ExecWait '"$INSTDIR\vc_redist.x64.exe" /install /quiet /norestart' $1
+      DetailPrint "Visual C++ runtime installer finished (code $1)."
+    ${EndIf}
+    Delete "$INSTDIR\vc_redist.x64.exe"
+  ${EndIf}
 
   WriteRegStr HKLM "Software\${COMPANY}\${PRODUCT}" "InstallDir" "$INSTDIR"
   WriteRegStr HKLM "${UNINSTKEY}" "DisplayName" "${PRODUCT} ${VERSION}"
