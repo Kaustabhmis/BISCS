@@ -31,6 +31,10 @@ FileResult deserializeDyn(const QByteArray& data, Document& doc);
 
 // Atomic save (writes a temporary file, then renames) so a crash during
 // saving cannot destroy the previous file.
+// Entity lists for the clipboard (same JSON entity schema as .dyn files).
+QByteArray serializeEntities(const std::vector<EntityPtr>& entities);
+std::vector<EntityPtr> deserializeEntities(const QByteArray& data, std::vector<std::string>* warnings = nullptr);
+
 FileResult saveDynFile(const Document& doc, const QString& path);
 FileResult loadDynFile(Document& doc, const QString& path);
 

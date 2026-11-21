@@ -10,6 +10,7 @@
 #include "ui/MainWindow.h"
 
 #include <QLineEdit>
+#include <QTabWidget>
 #include <QTemporaryDir>
 #include <QtTest>
 
@@ -305,6 +306,67 @@ private slots:
         QTest::mouseMove(c, nearQuad);
         QVERIFY(!c->currentSnap());
         w.processor().cancel();
+    }
+
+    void gripDragAndClipboard() {
+        MainWindow w;
+        w.resize(1200, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        auto* c = w.canvas();
+        c->setOsnapEnabled(false);
+        w.executeCommandText("L");
+        w.executeCommandText("0,0");
+        w.executeCommandText("100,0");
+        w.executeCommandText("");
+        w.executeCommandText("ZOOM E");
+        const EntityId id = w.document().entities()[0]->id();
+        // Select the line, click its end grip, click the new position.
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {30, 0}));
+        QCOMPARE(w.selection().size(), std::size_t(1));
+        QTest::mouseClick(c, Qt::LeftButton, Qt::NoModifier, screenOf(w, {100, 0}));
+        QCOMPARE(QString::fromStdString(w.processor().activeName()), QString("GRIP"));
+        w.executeCommandText("100,40");
+        const auto& l = static_cast<const LineEntity&>(*w.document().findEntity(id));
+        QCOMPARE(l.end(), Vec2(100, 40));
+        QCOMPARE(l.start(), Vec2(0, 0));
+
+        // Ctrl+C / Ctrl+V through the real clipboard.
+        w.selection().clear();
+        w.selection().add(id);
+        c->setFocus();
+        QTest::keyClick(c, Qt::Key_C, Qt::ControlModifier);
+        QTest::keyClick(c, Qt::Key_V, Qt::ControlModifier);
+        QCOMPARE(QString::fromStdString(w.processor().activeName()), QString("PASTECLIP"));
+        w.executeCommandText("500,500");
+        QCOMPARE(w.document().entityCount(), std::size_t(2));
+        const auto& pasted = static_cast<const LineEntity&>(*w.document().entities()[1]);
+        QCOMPARE(pasted.start(), Vec2(500, 500)); // lower-left corner at the insertion point
+        QCOMPARE(pasted.end(), Vec2(600, 540));
+        // Ctrl+X removes the original.
+        w.selection().add(id);
+        QTest::keyClick(c, Qt::Key_X, Qt::ControlModifier);
+        QCOMPARE(w.document().entityCount(), std::size_t(1));
+        // Modify ribbon: every editing action starts a real command.
+        int checked = 0;
+        for (QAction* a : w.findChildren<QAction*>()) {
+            const QString t = a->text().remove('&');
+            static const QStringList tools{"Move", "Copy", "Rotate", "Scale", "Mirror", "Stretch", "Array", "Offset",
+                                           "Trim", "Extend", "Fillet", "Chamfer", "Break", "Join", "Explode"};
+            if (!tools.contains(t)) continue;
+            w.selection().clear();
+            a->trigger();
+            QVERIFY2(w.processor().isActive(), qPrintable(t));
+            w.processor().cancel();
+            ++checked;
+        }
+        QCOMPARE(checked, 15);
+        if (auto* rib = w.findChild<QTabWidget*>("Ribbon")) {
+            rib->setCurrentIndex(1); // Modify tab
+            w.setTheme(ThemeKind::Dark);
+            QApplication::processEvents();
+            w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_modify_tab.png"));
+        }
     }
 
     void toolsScreenshot() {

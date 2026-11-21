@@ -37,6 +37,45 @@ std::size_t Document::eraseWithUndo(const std::vector<EntityId>& ids) {
     return n;
 }
 
+void Document::modifyWithUndo(std::vector<std::pair<EntityId, EntityPtr>> repl, const std::string& description) {
+    std::vector<std::pair<EntityId, EntityPtr>> valid;
+    for (auto& r : repl)
+        if (r.second && index_.count(r.first)) valid.push_back(std::move(r));
+    if (valid.empty()) return;
+    undo_.push(std::make_unique<ModifyEntitiesCommand>(*this, std::move(valid), description));
+}
+
+void Document::changeWithUndo(const std::vector<EntityId>& erase, std::vector<EntityPtr> add, const std::string& description) {
+    std::unordered_set<EntityId> existing;
+    for (EntityId id : erase)
+        if (index_.count(id)) existing.insert(id);
+    if (existing.empty() && add.empty()) return;
+    auto group = std::make_unique<CompositeCommand>(*this, description);
+    if (!existing.empty()) group->add(std::make_unique<EraseEntitiesCommand>(*this, std::move(existing)));
+    if (!add.empty()) group->add(std::make_unique<AddEntitiesCommand>(*this, std::move(add), description));
+    undo_.push(std::move(group));
+}
+
+std::vector<std::pair<EntityId, EntityPtr>> Document::swapEntities(const std::vector<std::pair<EntityId, EntityPtr>>& repl) {
+    std::unordered_map<EntityId, EntityPtr> next;
+    for (const auto& [id, e] : repl) next[id] = e;
+    std::unordered_map<EntityId, EntityPtr> prev;
+    for (auto& slot : entities_) { // one pass: O(n) for any number of replacements
+        auto it = next.find(slot->id());
+        if (it == next.end()) continue;
+        prev[slot->id()] = slot;
+        it->second->setId(slot->id());
+        slot = it->second;
+        index_[slot->id()] = slot;
+    }
+    std::vector<std::pair<EntityId, EntityPtr>> out;
+    for (const auto& [id, e] : repl) {
+        auto it = prev.find(id);
+        if (it != prev.end()) out.emplace_back(id, it->second);
+    }
+    return out;
+}
+
 void Document::reset(std::vector<EntityPtr> entities, std::string units) {
     entities_.clear();
     index_.clear();

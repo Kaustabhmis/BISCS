@@ -5,6 +5,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
+#include "commands/GripAndClipboard.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "geometry/Geometry.h"
@@ -91,6 +92,7 @@ void CadCanvas::refreshTracking() {
     }
     effective_ = eff;
     proc_.setCursor(raw);
+    proc_.setPickTolerance(pickTolerance());
     if (proc_.isActive()) proc_.setTrackedCursor(eff);
 }
 
@@ -381,9 +383,10 @@ void CadCanvas::drawGrips(QPainter& p, const Entity& e) const {
     p.save();
     p.setRenderHint(QPainter::Antialiasing, false);
     p.setPen(QPen(Qt::white, 1));
-    p.setBrush(colors_.grip);
     for (const Vec2& g : e.gripPoints()) {
         const Vec2 s = view_.worldToScreen(g);
+        const bool hot = mouseInside_ && std::abs(s.x - mousePos_.x()) <= kPickBoxPx && std::abs(s.y - mousePos_.y()) <= kPickBoxPx;
+        p.setBrush(hot ? QColor(0xE0, 0x40, 0x40) : colors_.grip); // hovered grip turns red
         p.drawRect(QRectF(std::round(s.x) - 3.5, std::round(s.y) - 3.5, 7, 7));
     }
     p.restore();
@@ -486,6 +489,24 @@ void CadCanvas::mousePressEvent(QMouseEvent* ev) {
     if (windowActive_) { // second click of click-click window
         finishWindow(pos, ev->modifiers() & Qt::ShiftModifier);
         return;
+    }
+    // Clicking a grip of a selected object starts grip editing (Shift+click
+    // always means "deselect", even on a grip).
+    if (!proc_.isActive() && !(ev->modifiers() & Qt::ShiftModifier) && !selection_.empty() && selection_.size() <= 500) {
+        for (EntityId id : selection_.ids()) {
+            auto e = doc_.findEntity(id);
+            if (!e) continue;
+            const auto grips = e->gripPoints();
+            for (std::size_t i = 0; i < grips.size(); ++i) {
+                const Vec2 s = view_.worldToScreen(grips[i]);
+                if (std::abs(s.x - pos.x()) <= kPickBoxPx && std::abs(s.y - pos.y()) <= kPickBoxPx) {
+                    proc_.runCommandInstance(std::make_unique<GripCommand>(id, i, grips[i]));
+                    refreshTracking();
+                    update();
+                    return;
+                }
+            }
+        }
     }
     const EntityId hit = pickEntity(doc_, view_.screenToWorld(v2(pos)), pickTolerance());
     if (hit != kInvalidEntityId) {

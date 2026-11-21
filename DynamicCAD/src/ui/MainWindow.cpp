@@ -3,6 +3,7 @@
 
 #include "canvas/CadCanvas.h"
 #include "dxf/DxfReader.h"
+#include "commands/GripAndClipboard.h"
 #include "fileio/DynFormat.h"
 #include "ui/CommandLine.h"
 #include "ui/Icons.h"
@@ -21,7 +22,10 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QClipboard>
+#include <QGuiApplication>
 #include <QLabel>
+#include <QMimeData>
 #include <QLineEdit>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -173,6 +177,34 @@ void MainWindow::createActions() {
         const QString cmd = t.cmd;
         connect(*t.act, &QAction::triggered, this, [this, cmd] { startCommand(cmd); });
     }
+    const Tool editTools[] = {
+        {&actMove_, "&Move", "move", "MOVE", "Move objects (M)"},
+        {&actCopy_, "&Copy", "copy", "COPY", "Copy objects, multiple placements (CO)"},
+        {&actRotate_, "&Rotate", "rotate", "ROTATE", "Rotate objects about a base point (RO)"},
+        {&actScale_, "&Scale", "scale", "SCALE", "Scale objects, or by Reference length (SC)"},
+        {&actMirror_, "M&irror", "mirror", "MIRROR", "Mirror objects about a line (MI)"},
+        {&actStretch_, "S&tretch", "stretch", "STRETCH", "Stretch objects with a crossing window (S)"},
+        {&actArray_, "&Array", "array", "ARRAY", "Rectangular or polar array (AR)"},
+        {&actOffset_, "&Offset", "offset", "OFFSET", "Parallel copy at a distance (O)"},
+        {&actTrim_, "&Trim", "trim", "TRIM", "Trim objects at their intersections (TR)"},
+        {&actExtend_, "E&xtend", "extend", "EXTEND", "Extend objects to the nearest boundary (EX)"},
+        {&actFillet_, "&Fillet", "fillet", "FILLET", "Round a corner between two lines (F)"},
+        {&actChamfer_, "C&hamfer", "chamfer", "CHAMFER", "Bevel a corner between two lines (CHA)"},
+        {&actBreak_, "&Break", "break", "BREAK", "Break an object between two points (BR)"},
+        {&actJoin_, "&Join", "join", "JOIN", "Join touching lines, arcs and polylines (J)"},
+        {&actExplode_, "Ex&plode", "explode", "EXPLODE", "Split polylines into lines and arcs (X)"},
+    };
+    for (const Tool& t : editTools) {
+        *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
+        const QString cmd = t.cmd;
+        connect(*t.act, &QAction::triggered, this, [this, cmd] { startCommand(cmd); });
+    }
+    actCutClip_ = make(tr("Cu&t"), "cut", QKeySequence::Cut, tr("Cut selected objects to the clipboard"));
+    actCopyClip_ = make(tr("Copy C&lip"), "copyclip", QKeySequence::Copy, tr("Copy selected objects to the clipboard"));
+    actPasteClip_ = make(tr("&Paste"), "paste", QKeySequence::Paste, tr("Paste objects from the clipboard"));
+    connect(actCutClip_, &QAction::triggered, this, [this] { copyToClipboard(true); });
+    connect(actCopyClip_, &QAction::triggered, this, [this] { copyToClipboard(false); });
+    connect(actPasteClip_, &QAction::triggered, this, &MainWindow::pasteFromClipboard);
 
     actZoomExt_ = make(tr("Zoom &Extents"), "zoom-extents", QKeySequence(Qt::CTRL | Qt::Key_0), tr("Fit the whole drawing in the view"));
     actZoomIn_ = make(tr("Zoom &In"), "zoom-in", QKeySequence::ZoomIn, tr("Zoom in"));
@@ -211,7 +243,7 @@ void MainWindow::createActions() {
 
     // Shortcuts must work while the canvas has focus.
     addActions({actNew_, actOpen_, actSave_, actSaveAs_, actUndo_, actRedo_, actSelectAll_, actZoomExt_, actZoomIn_,
-                actZoomOut_, actGrid_, actSnap_, actOrtho_, actHelp_});
+                actZoomOut_, actGrid_, actSnap_, actOrtho_, actHelp_, actCutClip_, actCopyClip_, actPasteClip_});
 }
 
 void MainWindow::createDraftingAids() {
@@ -311,7 +343,14 @@ void MainWindow::createMenus() {
     QMenu* edit = menuBar()->addMenu(tr("&Edit"));
     edit->addActions({actUndo_, actRedo_});
     edit->addSeparator();
+    edit->addActions({actCutClip_, actCopyClip_, actPasteClip_});
+    edit->addSeparator();
     edit->addActions({actErase_, actSelectAll_, actDeselect_});
+
+    QMenu* modify = menuBar()->addMenu(tr("&Modify"));
+    modify->addActions({actMove_, actCopy_, actRotate_, actScale_, actMirror_, actStretch_, actArray_});
+    modify->addSeparator();
+    modify->addActions({actOffset_, actTrim_, actExtend_, actFillet_, actChamfer_, actBreak_, actJoin_, actExplode_});
 
     QMenu* draw = menuBar()->addMenu(tr("&Draw"));
     draw->addActions({actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
@@ -346,9 +385,13 @@ void MainWindow::createRibbon() {
     home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
     home->addGroup(tr("Draw"), {actLine_, actPline_, actArc_, actCircle_, actEllipse_, actSpline_});
     home->addGroup(tr("Shapes"), {actRect_, actSquare_, actPolygon_, actPoint_, actArrow_, actDonut_, actRevcloud_});
+    home->addGroup(tr("Edit"), {actErase_, actUndo_, actRedo_});
+    RibbonPage* mod = ribbon_->addPage(tr("Modify"));
+    mod->addGroup(tr("Transform"), {actMove_, actCopy_, actRotate_, actScale_, actMirror_, actStretch_, actArray_});
+    mod->addGroup(tr("Edit Geometry"), {actOffset_, actTrim_, actExtend_, actFillet_, actChamfer_, actBreak_, actJoin_, actExplode_});
+    mod->addGroup(tr("Clipboard"), {actCutClip_, actCopyClip_, actPasteClip_});
     RibbonPage* construct = ribbon_->addPage(tr("Construction"));
     construct->addGroup(tr("Construction Lines"), {actXline_, actRay_});
-    home->addGroup(tr("Modify"), {actErase_, actUndo_, actRedo_});
     home->addGroup(tr("Selection"), {actSelectAll_});
     RibbonPage* view = ribbon_->addPage(tr("View"));
     view->addGroup(tr("Navigate"), {actZoomExt_, actZoomIn_, actZoomOut_});
@@ -429,9 +472,15 @@ void MainWindow::registerUiCommands() {
         setPolarIncrement(*v);
         message(tr("Polar angle increment: %1\u00B0").arg(*v));
     }, true);
+    proc_.registerAction("COPYCLIP", {}, [this](const std::vector<std::string>&) { copyToClipboard(false); });
+    proc_.registerAction("CUTCLIP", {}, [this](const std::vector<std::string>&) { copyToClipboard(true); });
+    proc_.registerAction("PASTECLIP", {}, [this](const std::vector<std::string>&) { pasteFromClipboard(); });
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
         message(tr("Draw: LINE (L), PLINE (PL), ARC (A), CIRCLE (C), ELLIPSE (EL), SPLINE (SPL), RECTANGLE (REC),"
                    " SQUARE (SQ), POLYGON (POL), POINT (PO), ARROW (ARW), DONUT (DO), REVCLOUD (RC), XLINE (XL), RAY."));
+        message(tr("Modify: MOVE (M), COPY (CO), ROTATE (RO), SCALE (SC), MIRROR (MI), STRETCH (S), ARRAY (AR), OFFSET (O),"
+                   " TRIM (TR), EXTEND (EX), FILLET (F), CHAMFER (CHA), BREAK (BR), JOIN (J), EXPLODE (X)."
+                   " Click a grip of a selected object to reshape it. Ctrl+C / Ctrl+X / Ctrl+V use the clipboard."));
         message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
                    " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"
@@ -664,5 +713,39 @@ void MainWindow::showNotices() {
 }
 
 void MainWindow::showHelp() { proc_.runCommand("HELP"); }
+
+namespace {
+const char* kClipMime = "application/x-dynamiccad-entities";
+}
+
+void MainWindow::copyToClipboard(bool cut) {
+    std::vector<EntityPtr> ents;
+    for (EntityId id : selection_.ids())
+        if (auto e = doc_.findEntity(id)) ents.push_back(e);
+    if (ents.empty()) { message(tr("Select objects first, then copy.")); return; }
+    auto* mime = new QMimeData;
+    const QByteArray data = serializeEntities(ents);
+    mime->setData(kClipMime, data);
+    mime->setText(QString::fromUtf8(data));
+    QGuiApplication::clipboard()->setMimeData(mime);
+    message(tr("%n object(s) copied to the clipboard.", "", int(ents.size())));
+    if (cut) {
+        doc_.eraseWithUndo(selection_.ids());
+        selection_.clear();
+    }
+}
+
+void MainWindow::pasteFromClipboard() {
+    const QMimeData* mime = QGuiApplication::clipboard()->mimeData();
+    QByteArray data;
+    if (mime && mime->hasFormat(kClipMime)) data = mime->data(kClipMime);
+    else if (mime && mime->hasText()) data = mime->text().toUtf8();
+    auto ents = deserializeEntities(data);
+    if (ents.empty()) { message(tr("The clipboard does not contain DYNAMIC CAD objects.")); return; }
+    if (proc_.isActive()) proc_.cancel();
+    message(QStringLiteral("Command: PASTECLIP"));
+    proc_.runCommandInstance(std::make_unique<PasteCommand>(std::move(ents)));
+    canvas_->setFocus();
+}
 
 } // namespace dyncad

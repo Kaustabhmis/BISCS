@@ -82,6 +82,62 @@ void paintIcon(QPainter& p, const QString& n) {
         }
         p.drawArc(QRectF(2, 18, 12, 28), 90 * 16, 180 * 16);
         p.drawArc(QRectF(50, 18, 12, 28), -90 * 16, 180 * 16);
+    } else if (n == "move") {
+        p.drawRect(QRectF(8, 30, 20, 20));
+        p.setPen(QPen(gold, 4, Qt::SolidLine, Qt::RoundCap)); p.drawLine(QPointF(24, 26), QPointF(52, 12));
+        p.drawPolyline(QPolygonF({QPointF(42, 10), QPointF(52, 12), QPointF(48, 22)}));
+    } else if (n == "copy") {
+        p.drawRect(QRectF(8, 24, 22, 22)); p.drawRect(QRectF(34, 10, 22, 22));
+        p.setPen(QPen(gold, 4)); p.drawLine(QPointF(30, 30), QPointF(40, 22));
+    } else if (n == "rotate") {
+        p.drawArc(QRectF(10, 10, 44, 44), 30 * 16, 280 * 16);
+        p.setPen(Qt::NoPen); p.setBrush(gold); p.drawPolygon(QPolygonF({QPointF(52, 10), QPointF(54, 26), QPointF(40, 20)}));
+    } else if (n == "scale") {
+        p.drawRect(QRectF(6, 34, 18, 18)); p.drawRect(QRectF(6, 10, 46, 42));
+        p.setPen(QPen(gold, 4)); p.drawLine(QPointF(24, 34), QPointF(46, 16));
+    } else if (n == "mirror") {
+        p.setPen(QPen(gold, 3, Qt::DashLine)); p.drawLine(QPointF(32, 4), QPointF(32, 60));
+        p.setPen(QPen(ink, 5)); p.drawPolygon(QPolygonF({QPointF(26, 14), QPointF(8, 50), QPointF(26, 50)}));
+        p.drawPolygon(QPolygonF({QPointF(38, 14), QPointF(56, 50), QPointF(38, 50)}));
+    } else if (n == "stretch") {
+        p.drawPolyline(QPolygonF({QPointF(8, 20), QPointF(40, 20), QPointF(40, 48), QPointF(8, 48)}));
+        p.setPen(QPen(gold, 4)); p.drawLine(QPointF(40, 34), QPointF(58, 34));
+    } else if (n == "array") {
+        for (int x = 0; x < 3; ++x) for (int y = 0; y < 3; ++y) p.drawRect(QRectF(8 + x * 18, 8 + y * 18, 11, 11));
+    } else if (n == "offset") {
+        p.drawLine(QPointF(8, 44), QPointF(56, 44));
+        p.setPen(QPen(gold, 5)); p.drawLine(QPointF(8, 24), QPointF(56, 24));
+    } else if (n == "trim") {
+        p.drawLine(QPointF(32, 6), QPointF(32, 58)); p.drawLine(QPointF(6, 32), QPointF(32, 32));
+        p.setPen(QPen(QColor(0xE0, 0x50, 0x50), 4, Qt::DashLine)); p.drawLine(QPointF(32, 32), QPointF(58, 32));
+    } else if (n == "extend") {
+        p.drawLine(QPointF(52, 6), QPointF(52, 58)); p.drawLine(QPointF(6, 32), QPointF(28, 32));
+        p.setPen(QPen(gold, 4, Qt::DashLine)); p.drawLine(QPointF(28, 32), QPointF(52, 32));
+    } else if (n == "fillet") {
+        QPainterPath path; path.moveTo(10, 56); path.lineTo(10, 30); path.arcTo(QRectF(10, 10, 40, 40), 180, -90); path.lineTo(56, 10);
+        p.drawPath(path);
+    } else if (n == "chamfer") {
+        p.drawPolyline(QPolygonF({QPointF(10, 56), QPointF(10, 28), QPointF(28, 10), QPointF(56, 10)}));
+        p.setPen(QPen(gold, 4)); p.drawLine(QPointF(10, 28), QPointF(28, 10));
+    } else if (n == "break") {
+        p.drawLine(QPointF(6, 32), QPointF(24, 32)); p.drawLine(QPointF(40, 32), QPointF(58, 32));
+        dot({24, 32}); dot({40, 32});
+    } else if (n == "join") {
+        p.drawLine(QPointF(6, 40), QPointF(32, 24)); p.drawLine(QPointF(32, 24), QPointF(58, 40));
+        dot({32, 24});
+    } else if (n == "explode") {
+        p.drawLine(QPointF(10, 20), QPointF(26, 12)); p.drawLine(QPointF(38, 12), QPointF(54, 20));
+        p.drawLine(QPointF(10, 44), QPointF(26, 52)); p.drawLine(QPointF(38, 52), QPointF(54, 44));
+        dot({32, 32});
+    } else if (n == "cut") {
+        p.drawEllipse(QPointF(18, 48), 8, 8); p.drawEllipse(QPointF(46, 48), 8, 8);
+        p.drawLine(QPointF(22, 42), QPointF(46, 8)); p.drawLine(QPointF(42, 42), QPointF(18, 8));
+    } else if (n == "copyclip") {
+        p.drawRoundedRect(QRectF(12, 10, 40, 48), 4, 4);
+        p.setPen(QPen(gold, 4)); p.drawRect(QRectF(22, 4, 20, 10));
+    } else if (n == "paste") {
+        p.drawRoundedRect(QRectF(10, 10, 38, 48), 4, 4);
+        p.setPen(Qt::NoPen); p.setBrush(gold); p.drawRect(QRectF(28, 28, 28, 30));
     } else if (n == "erase") {
         p.drawLine(QPointF(14, 50), QPointF(50, 14));
         p.setPen(QPen(QColor(0xE0, 0x50, 0x50), 6, Qt::SolidLine, Qt::RoundCap));

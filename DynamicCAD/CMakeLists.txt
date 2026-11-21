@@ -62,6 +62,9 @@ add_library(dyncad_core STATIC
     src/commands/InteractiveCommand.h  src/commands/InteractiveCommand.cpp
     src/commands/DrawCommands.h        src/commands/DrawCommands.cpp
     src/commands/ShapeCommands.h       src/commands/ShapeCommands.cpp
+    src/commands/ModifyCommands.h      src/commands/ModifyCommands.cpp
+    src/commands/CurveEdit.h           src/commands/CurveEdit.cpp
+    src/commands/GripAndClipboard.h    src/commands/GripAndClipboard.cpp
     src/commands/CommandProcessor.h    src/commands/CommandProcessor.cpp
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp

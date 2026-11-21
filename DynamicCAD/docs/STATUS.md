@@ -1,5 +1,31 @@
 # DYNAMIC CAD: Status Report (v0.4.0, in progress)
 
+## Milestone 5: editing (done)
+
+| Command | Options / behaviour | Verified by (`test_modify`, 16 cases) |
+|---|---|---|
+| MOVE, COPY | pre- or post-selection; `@dx,dy` = displacement from the base point; COPY repeats until Enter | ids and draw order kept; one undo step |
+| ROTATE | angle typed or picked; Copy | exact 90° |
+| SCALE | factor typed or picked; Reference (old → new length); Copy | |
+| MIRROR | any mirror line; erase source Y/N | arcs stay counter-clockwise |
+| ARRAY | Rectangular (rows, columns, spacings); Polar (items, fill angle, rotate Y/N) | positions exact |
+| OFFSET | distance or Through; lines, circles, arcs, xlines, polylines incl. arc segments and closed shapes | rounded-rectangle offset area exact |
+| TRIM | quick mode (every object cuts); lines, arcs, circles → arcs, polylines (width kept); no edge → erase | |
+| EXTEND | to the nearest boundary; lines, arcs, open polylines | |
+| FILLET / CHAMFER | two lines (radius/distances, 0 = sharp corner), Polyline option (all corners) | tangent points and centre exact |
+| BREAK | two points, or `@` to split; circles become arcs | |
+| STRETCH | crossing window; vertices inside move, objects fully inside move | |
+| JOIN | lines/arcs/open polylines touching end to end, any order/direction; collinear lines → one line | |
+| EXPLODE | polylines → lines and arcs | |
+| Grips | click a grip of a selected object: endpoints, vertices, radius, arc shape, ellipse axes, spline control points; Shift+click still deselects | `test_gui::gripDragAndClipboard` |
+| Clipboard | Ctrl+C / Ctrl+X / Ctrl+V (also between two DYNAMIC CAD windows); paste with insertion point | |
+| UI | Modify ribbon tab and menu; every button starts a real command | `test_gui` |
+
+**Found and fixed during this milestone:** Shift+click on a grip started grip editing instead of deselecting.
+
+**Not yet:** TRIM/EXTEND/BREAK of ellipses and splines, fence/crossing trim, associative arrays, LENGTHEN,
+multiple hot grips.
+
 ## Milestone 4: remaining drawing commands (done)
 
 | Command | Options | Verified by |

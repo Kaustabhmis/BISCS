@@ -3,6 +3,8 @@
 
 #include "commands/DrawCommands.h"
 #include "commands/ShapeCommands.h"
+#include "commands/ModifyCommands.h"
+#include "commands/CurveEdit.h"
 #include "geometry/Geometry.h"
 
 #include <sstream>
@@ -75,6 +77,14 @@ bool CommandProcessor::runCommand(const std::string& nameOrAlias) {
     finishIf(active_->start(ctx_));
     stateChanged();
     return true;
+}
+
+void CommandProcessor::runCommandInstance(std::unique_ptr<InteractiveCommand> cmd) {
+    if (!cmd) return;
+    if (active_) cancel();
+    active_ = std::move(cmd);
+    finishIf(active_->start(ctx_));
+    stateChanged();
 }
 
 void CommandProcessor::finishIf(CommandStatus st) {
@@ -204,6 +214,21 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("RAY", {}, [] { return std::make_unique<XLineCommand>(true); });
     proc.registerCommand("DONUT", {"DO"}, [] { return std::make_unique<DonutCommand>(); });
     proc.registerCommand("REVCLOUD", {"RC"}, [] { return std::make_unique<RevcloudCommand>(); });
+    proc.registerCommand("MOVE", {"M"}, [] { return std::make_unique<MoveCommand>(false); });
+    proc.registerCommand("COPY", {"CO", "CP"}, [] { return std::make_unique<MoveCommand>(true); });
+    proc.registerCommand("ROTATE", {"RO"}, [] { return std::make_unique<RotateCommand>(); });
+    proc.registerCommand("SCALE", {"SC"}, [] { return std::make_unique<ScaleCommand>(); });
+    proc.registerCommand("MIRROR", {"MI"}, [] { return std::make_unique<MirrorCommand>(); });
+    proc.registerCommand("ARRAY", {"AR"}, [] { return std::make_unique<ArrayCommand>(); });
+    proc.registerCommand("EXPLODE", {"X"}, [] { return std::make_unique<ExplodeCommand>(); });
+    proc.registerCommand("JOIN", {"J"}, [] { return std::make_unique<JoinCommand>(); });
+    proc.registerCommand("OFFSET", {"O"}, [] { return std::make_unique<OffsetCommand>(); });
+    proc.registerCommand("TRIM", {"TR"}, [] { return std::make_unique<TrimCommand>(false); });
+    proc.registerCommand("EXTEND", {"EX"}, [] { return std::make_unique<TrimCommand>(true); });
+    proc.registerCommand("BREAK", {"BR"}, [] { return std::make_unique<BreakCommand>(); });
+    proc.registerCommand("FILLET", {"F"}, [] { return std::make_unique<CornerCommand>(false); });
+    proc.registerCommand("CHAMFER", {"CHA"}, [] { return std::make_unique<CornerCommand>(true); });
+    proc.registerCommand("STRETCH", {"S"}, [] { return std::make_unique<StretchCommand>(); });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

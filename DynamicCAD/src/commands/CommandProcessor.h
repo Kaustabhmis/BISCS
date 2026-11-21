@@ -38,6 +38,8 @@ public:
     // input was rejected (unknown command, invalid syntax).
     bool submit(const std::string& text);
     bool runCommand(const std::string& nameOrAlias);
+    // Starts a ready-made command object (grip edit, paste...).
+    void runCommandInstance(std::unique_ptr<InteractiveCommand> cmd);
     // A point picked with the mouse (already grid-snapped). ORTHO is applied here.
     void pointInput(const Vec2& world);
     // A point that has already been resolved by snapping/tracking (canvas).
@@ -48,6 +50,7 @@ public:
     void cancel();
 
     void setCursor(const Vec2& world) { cursor_ = world; tracked_.reset(); }
+    void setPickTolerance(double world) { if (world > 0) ctx_.pickTolerance = world; }
     // Cursor position after ORTHO, used for previews and direct distance.
     Vec2 constrainedCursor(const Vec2& raw) const;
 

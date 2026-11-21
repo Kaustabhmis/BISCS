@@ -268,6 +268,28 @@ FileResult deserializeDyn(const QByteArray& data, Document& doc) {
     return r;
 }
 
+QByteArray serializeEntities(const std::vector<EntityPtr>& entities) {
+    QJsonObject root;
+    root["format"] = "DynamicCAD-Clipboard";
+    root["formatVersion"] = kDynFormatVersion;
+    QJsonArray ents;
+    for (const auto& e : entities) ents.append(entityToJson(*e));
+    root["entities"] = ents;
+    return QJsonDocument(root).toJson(QJsonDocument::Compact);
+}
+
+std::vector<EntityPtr> deserializeEntities(const QByteArray& data, std::vector<std::string>* warnings) {
+    std::vector<EntityPtr> out;
+    const QJsonDocument jd = QJsonDocument::fromJson(data);
+    if (!jd.isObject() || jd.object().value("format").toString() != "DynamicCAD-Clipboard") return out;
+    for (const auto& v : jd.object().value("entities").toArray()) {
+        std::string why;
+        if (auto e = v.isObject() ? entityFromJson(v.toObject(), why) : nullptr) out.push_back(e);
+        else if (warnings) warnings->push_back(why);
+    }
+    return out;
+}
+
 FileResult saveDynFile(const Document& doc, const QString& path) {
     FileResult r;
     QSaveFile f(path);

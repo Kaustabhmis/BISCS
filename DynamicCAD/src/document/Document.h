@@ -34,6 +34,10 @@ public:
     void addWithUndo(std::vector<EntityPtr> entities, const std::string& description);
     // Returns the number of entities actually erased.
     std::size_t eraseWithUndo(const std::vector<EntityId>& ids);
+    // Replaces entities in place (same id, same draw order), e.g. MOVE / ROTATE.
+    void modifyWithUndo(std::vector<std::pair<EntityId, EntityPtr>> replacements, const std::string& description);
+    // Erases some entities and adds others as ONE undo step (TRIM, EXPLODE, JOIN...).
+    void changeWithUndo(const std::vector<EntityId>& erase, std::vector<EntityPtr> add, const std::string& description);
 
     UndoStack& undoStack() { return undo_; }
     const UndoStack& undoStack() const { return undo_; }
@@ -52,6 +56,8 @@ public:
     void appendEntities(const std::vector<EntityPtr>& entities);
     std::vector<IndexedEntity> removeEntities(const std::unordered_set<EntityId>& ids);
     void restoreEntities(const std::vector<IndexedEntity>& removed); // must be sorted by index
+    // Swaps entity objects in place; returns the previous objects (same order as input).
+    std::vector<std::pair<EntityId, EntityPtr>> swapEntities(const std::vector<std::pair<EntityId, EntityPtr>>& repl);
 
     // ---- Change notification ----
     int addListener(Listener listener);

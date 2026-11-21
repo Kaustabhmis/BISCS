@@ -68,6 +68,8 @@ private:
     void showAbout();
     void showNotices();
     void showHelp();
+    void copyToClipboard(bool cut);
+    void pasteFromClipboard();
 
     Document doc_;
     SelectionSet selection_;
@@ -89,6 +91,9 @@ private:
     QAction *actLine_{}, *actCircle_{}, *actRect_{};
     QAction *actPline_{}, *actArc_{}, *actPolygon_{}, *actEllipse_{}, *actSpline_{}, *actPoint_{}, *actSquare_{}, *actArrow_{};
     QAction *actXline_{}, *actRay_{}, *actDonut_{}, *actRevcloud_{};
+    QAction *actMove_{}, *actCopy_{}, *actRotate_{}, *actScale_{}, *actMirror_{}, *actStretch_{}, *actArray_{};
+    QAction *actOffset_{}, *actTrim_{}, *actExtend_{}, *actFillet_{}, *actChamfer_{}, *actBreak_{}, *actJoin_{}, *actExplode_{};
+    QAction *actCutClip_{}, *actCopyClip_{}, *actPasteClip_{};
     QAction *actZoomExt_{}, *actZoomIn_{}, *actZoomOut_{};
     QAction *actGrid_{}, *actSnap_{}, *actOrtho_{}, *actDark_{}, *actLight_{};
     QAction *actOsnap_{}, *actPolar_{}, *actDyn_{};

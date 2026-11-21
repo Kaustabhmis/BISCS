@@ -18,6 +18,9 @@ struct CommandContext {
     Document& doc;
     SelectionSet& selection;
     std::function<void(const std::string&)> message;
+    // Pick-box size in world units (updated by the canvas with the zoom level);
+    // used by commands that pick an object with a point (TRIM, BREAK, ...).
+    double pickTolerance = 1.0;
     void say(const std::string& m) const { if (message) message(m); }
 };
 
