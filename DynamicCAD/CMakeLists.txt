@@ -91,7 +91,14 @@ add_library(dyncad_ui STATIC
 target_link_libraries(dyncad_ui PUBLIC dyncad_core Qt6::Gui Qt6::Widgets)
 
 # ---------------------------------------------------------------- application
-add_executable(DynamicCAD WIN32 src/app/main.cpp)
+set(DYNCAD_APP_SOURCES src/app/main.cpp)
+if(WIN32)
+    set(DYNCAD_ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/branding/dynamic-cad.ico")
+    file(TO_CMAKE_PATH "${DYNCAD_ICON_PATH}" DYNCAD_ICON_PATH)
+    configure_file(resources/windows/DynamicCAD.rc.in ${CMAKE_CURRENT_BINARY_DIR}/generated/DynamicCAD.rc @ONLY)
+    list(APPEND DYNCAD_APP_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/generated/DynamicCAD.rc)
+endif()
+add_executable(DynamicCAD WIN32 ${DYNCAD_APP_SOURCES})
 target_link_libraries(DynamicCAD PRIVATE dyncad_ui)
 set_target_properties(DynamicCAD PROPERTIES OUTPUT_NAME "DynamicCAD")
 

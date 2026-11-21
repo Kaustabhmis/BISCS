@@ -41,6 +41,21 @@ jobs:
         with:
           name: DynamicCAD-windows-x64
           path: dist
+      - name: Build installer (NSIS)
+        shell: pwsh
+        run: |
+          $ver = (Select-String -Path DynamicCAD/CMakeLists.txt -Pattern 'project\(DynamicCAD VERSION ([0-9.]+)').Matches[0].Groups[1].Value
+          Copy-Item -Recurse dist DynamicCAD/dist
+          Push-Location DynamicCAD/installer
+          makensis /V2 /DVERSION=$ver /DSRCDIR=..\dist DynamicCAD.nsi
+          Pop-Location
+          New-Item -ItemType Directory -Force setup | Out-Null
+          Move-Item DynamicCAD/installer/DynamicCAD-Setup-*.exe setup/
+          Get-ChildItem setup
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DynamicCAD-Setup-windows-x64
+          path: setup
 
   linux:
     name: Linux (GCC, sanitizers)
