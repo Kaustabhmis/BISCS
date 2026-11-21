@@ -9,12 +9,12 @@
 | Rendering | QPainter (raster) now; OpenGL renderer later, **only if measurements show a need** | QPainter already draws 100k entities in about 40 ms (see §6). Simpler and works on every office PC and over Remote Desktop. | Part of Qt (LGPL) |
 | Geometry | Own 2D engine (`src/geometry`) | Full control of precision; no licence risk | Proprietary (ours) |
 | Future 3D | Open CASCADE Technology | Only mature open B-rep kernel | LGPL 2.1 **with OCCT exception**: dynamic linking, notices. Evaluate when 3D starts. |
-| DXF | **Own reader/writer** (planned, Phase 5) | DXF is a documented text format. Common free libraries are GPL (libdxfrw, dxflib GPL edition), which would force us to publish our source. | Proprietary (ours) |
+| DXF | **Own reader** (`src/dxf`, done in v0.2); writer planned | DXF is a documented text format. Common free libraries are GPL (libdxfrw, dxflib GPL edition), which would force us to publish our source. | Proprietary (ours) |
 | DWG | Separate workstream (Phase 5) | Options: ODA Teigha (paid membership), LibreDWG (**GPL v3, cannot be used**), or DXF-only. | Decision needed before any spend |
 | Database | SQLite (when needed: libraries, licence cache) | Embedded, zero admin | Public domain |
 | Native format | JSON `.dyn` (`docs/FILE_FORMAT.md`) | Human-readable, diff-able, versioned, exact doubles | Ours |
 | Build | CMake 3.21+, Ninja | Works with Visual Studio, VS Code, CI | BSD |
-| Tests | Qt Test + CTest | Ships with Qt; GUI tests run headless | LGPL (test-only) |
+| Tests | Qt Test + CTest; ezdxf for generating DXF fixtures | Ships with Qt; GUI tests run headless | LGPL / MIT (test-only, not shipped) |
 | Compiler (Windows) | MSVC (Visual Studio 2022 Community / Build Tools) | Best Windows debugging, matches official Qt binaries | Free for individuals and small organisations; larger companies need a VS licence or can use the free Build Tools under its terms. **Check your eligibility.** |
 | Installer | **Inno Setup** (planned) | Free, permits commercial use, signs well, simple scripts | Inno Setup licence (free, commercial use allowed) |
 | CI | GitHub Actions (Windows MSVC + Linux sanitizer builds) | Real Windows builds without a local Windows PC | n/a |
@@ -37,6 +37,7 @@ without a commercial Qt licence). Copying from AutoCAD or using Autodesk SDKs, a
  geometry/   Vec2, BoundingBox, Geometry algorithms                        (pure C++)
  canvas/ViewTransform  world <-> screen math                               (pure C++)
  fileio/     DynFormat                                                     (QtCore JSON)
+ dxf/        DxfReader (tokenizer -> sections -> blocks -> entities)       (QtCore)
  ---------------------------------------------------------------------- dyncad_core
 ```
 

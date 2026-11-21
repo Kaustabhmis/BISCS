@@ -53,6 +53,11 @@ void paintIcon(QPainter& p, const QString& n) {
     } else if (n == "open") {
         p.drawPolygon(QPolygonF({QPointF(6, 16), QPointF(24, 16), QPointF(28, 22), QPointF(52, 22), QPointF(52, 52), QPointF(6, 52)}));
         p.setPen(QPen(gold, 5)); p.drawLine(QPointF(14, 36), QPointF(58, 36));
+    } else if (n == "import-dxf") {
+        p.drawPolygon(QPolygonF({QPointF(14, 6), QPointF(40, 6), QPointF(52, 18), QPointF(52, 58), QPointF(14, 58)}));
+        p.setPen(QPen(gold, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        p.drawLine(QPointF(33, 22), QPointF(33, 48));
+        p.drawPolyline(QPolygonF({QPointF(23, 38), QPointF(33, 48), QPointF(43, 38)}));
     } else if (n == "save") {
         p.drawRoundedRect(QRectF(8, 8, 48, 48), 4, 4);
         p.drawRect(QRectF(18, 8, 26, 16));

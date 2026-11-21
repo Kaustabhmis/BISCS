@@ -1,6 +1,7 @@
 // DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 #include "fileio/DynFormat.h"
 
+#include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
@@ -49,6 +50,20 @@ QJsonObject entityToJson(const Entity& e) {
         o["radius"] = c.radius();
         break;
     }
+    case EntityType::Arc: {
+        const auto& a = static_cast<const ArcEntity&>(e);
+        o["type"] = "ARC";
+        o["center"] = toJson(a.center());
+        o["radius"] = a.radius();
+        o["startAngle"] = a.startDeg();
+        o["endAngle"] = a.endDeg();
+        break;
+    }
+    case EntityType::Point: {
+        o["type"] = "POINT";
+        o["position"] = toJson(static_cast<const PointEntity&>(e).position());
+        break;
+    }
     case EntityType::Polyline: {
         const auto& p = static_cast<const PolylineEntity&>(e);
         o["type"] = "POLYLINE";
@@ -56,6 +71,11 @@ QJsonObject entityToJson(const Entity& e) {
         QJsonArray verts;
         for (const Vec2& v : p.vertices()) verts.append(toJson(v));
         o["vertices"] = verts;
+        if (p.hasArcs()) {
+            QJsonArray bulges;
+            for (double b : p.bulges()) bulges.append(b);
+            o["bulges"] = bulges;
+        }
         break;
     }
     }
@@ -85,7 +105,30 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
             verts.push_back(p);
         }
         if (verts.size() < 2) { reason = "POLYLINE needs at least 2 vertices"; return nullptr; }
-        e = std::make_shared<PolylineEntity>(std::move(verts), o.value("closed").toBool(false));
+        std::vector<double> bulges;
+        if (o.contains("bulges")) {
+            const QJsonArray ba = o.value("bulges").toArray();
+            if (ba.size() != va.size()) { reason = "POLYLINE bulge count does not match vertex count"; return nullptr; }
+            for (const auto& b : ba) {
+                if (!b.isDouble() || !std::isfinite(b.toDouble())) { reason = "POLYLINE has an invalid bulge"; return nullptr; }
+                bulges.push_back(b.toDouble());
+            }
+        }
+        e = std::make_shared<PolylineEntity>(std::move(verts), std::move(bulges), o.value("closed").toBool(false));
+    } else if (type == "ARC") {
+        Vec2 c;
+        const double r = o.value("radius").toDouble(-1.0);
+        const QJsonValue a0 = o.value("startAngle"), a1 = o.value("endAngle");
+        if (!fromJson(o.value("center"), c) || !(r > 0.0) || !std::isfinite(r) || !a0.isDouble() || !a1.isDouble() ||
+            !std::isfinite(a0.toDouble()) || !std::isfinite(a1.toDouble())) {
+            reason = "ARC has invalid center/radius/angles";
+            return nullptr;
+        }
+        e = std::make_shared<ArcEntity>(c, r, a0.toDouble(), a1.toDouble());
+    } else if (type == "POINT") {
+        Vec2 p;
+        if (!fromJson(o.value("position"), p)) { reason = "POINT has invalid position"; return nullptr; }
+        e = std::make_shared<PointEntity>(p);
     } else {
         reason = "unsupported entity type \"" + type.toStdString() + "\"";
         return nullptr;

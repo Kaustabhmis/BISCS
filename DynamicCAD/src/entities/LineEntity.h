@@ -15,6 +15,7 @@ public:
     double distanceTo(const Vec2& p) const override;
     bool crossesRect(const BoundingBox& rect) const override;
     std::vector<Vec2> gripPoints() const override;
+    std::unique_ptr<Entity> transformed(const Affine2D& xf) const override;
     std::unique_ptr<Entity> clone() const override { return std::make_unique<LineEntity>(*this); }
 
     const Vec2& start() const { return start_; }

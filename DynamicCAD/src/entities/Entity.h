@@ -1,6 +1,7 @@
 // DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 #pragma once
 
+#include "geometry/Affine2D.h"
 #include "geometry/BoundingBox.h"
 #include "geometry/Vec2.h"
 
@@ -14,7 +15,7 @@ namespace dyncad {
 using EntityId = std::uint64_t;
 inline constexpr EntityId kInvalidEntityId = 0;
 
-enum class EntityType { Line, Circle, Polyline };
+enum class EntityType { Line, Circle, Arc, Polyline, Point };
 
 // Base class for every drawing object. Entities hold geometry in world units
 // (double precision) and know how to answer the hit-testing questions used by
@@ -33,6 +34,10 @@ public:
     // Characteristic points (endpoints, centres, vertices) shown as grips.
     virtual std::vector<Vec2> gripPoints() const = 0;
     virtual std::unique_ptr<Entity> clone() const = 0;
+    // Copy of the entity mapped through xf, or nullptr if the result cannot be
+    // represented exactly by this entity type (e.g. a circle under non-uniform
+    // scaling, which would become an ellipse).
+    virtual std::unique_ptr<Entity> transformed(const Affine2D& xf) const = 0;
 
     // True if the entity lies entirely within rect (window selection).
     bool insideRect(const BoundingBox& rect) const { return rect.contains(bounds()); }

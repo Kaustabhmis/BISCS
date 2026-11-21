@@ -1,6 +1,7 @@
 // DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 #include "ui/PropertiesPanel.h"
 
+#include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
@@ -79,9 +80,27 @@ void PropertiesPanel::refresh() {
         add(tr("Area"), num(c.area()));
         break;
     }
+    case EntityType::Arc: {
+        const auto& a = static_cast<const ArcEntity&>(*e);
+        const ArcGeom g = a.geom();
+        add(tr("Center"), pt(a.center()));
+        add(tr("Radius"), num(a.radius()));
+        add(tr("Start angle (deg)"), num(a.startDeg()));
+        add(tr("End angle (deg)"), num(a.endDeg()));
+        add(tr("Included angle (deg)"), num(a.sweepDeg()));
+        add(tr("Arc length"), num(a.length()));
+        add(tr("Start point"), pt(g.startPoint()));
+        add(tr("End point"), pt(g.endPoint()));
+        break;
+    }
+    case EntityType::Point: {
+        add(tr("Position"), pt(static_cast<const PointEntity&>(*e).position()));
+        break;
+    }
     case EntityType::Polyline: {
         const auto& p = static_cast<const PolylineEntity&>(*e);
         add(tr("Vertices"), QString::number(p.vertices().size()));
+        add(tr("Arc segments"), p.hasArcs() ? tr("Yes") : tr("No"));
         add(tr("Closed"), p.isClosed() ? tr("Yes") : tr("No"));
         add(tr("Length"), num(p.length()));
         if (p.isClosed()) add(tr("Area"), num(p.area()));

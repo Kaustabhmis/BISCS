@@ -1,15 +1,36 @@
-# DYNAMIC CAD: Status Report (Milestone 1, v0.1.0)
+# DYNAMIC CAD: Status Report (v0.2.0)
 
 ## Environment used
 
 * Linux cloud container (Ubuntu 24.04), GCC 13.3, CMake 3.28, Ninja, Qt 6.4.2 (Ubuntu packages).
+* DXF test fixtures generated with ezdxf 1.4.5 (MIT licence; test tool only, not shipped).
 * **No Windows machine was available.** The code is portable C++17/Qt 6 and a GitHub Actions job compiles and tests
   it with MSVC + Qt 6.5.3 on Windows Server 2022.
 * **Windows CI result (run #1): build, all 8 test programs and windeployqt packaging passed** on
   `windows-2022` with MSVC and Qt 6.5.3. The Linux ASan/UBSan job also passed.
   Hands-on testing on a Windows 10/11 desktop (real mouse, display scaling, an ordinary office PC) is still outstanding.
 
-## Completed and tested
+## Milestone 2: DXF import (done)
+
+| Feature | How it was verified |
+|---|---|
+| Own DXF tokenizer + reader (R12, 2000, 2010, 2018); CRLF, BOM, ANSI/UTF-8 names | `test_dxf`: identical expectations pass on fixtures in all 4 versions |
+| LINE, CIRCLE, ARC, POINT, LWPOLYLINE, old POLYLINE/VERTEX/SEQEND, bulges | exact coordinates, polyline area incl. arc segments |
+| Blocks: nested INSERT, scale, rotation, MINSERT arrays, mirroring, layer-0 inheritance | expected world coordinates checked to 1e-9 |
+| OCS extrusion (0,0,-1) (AutoCAD's mirrored arcs/circles) | mirrored arc 0..90 → 90..180 at (-100,200) |
+| Units ($INSUNITS, $MEASUREMENT fallback) with "assumed" warning | R12 (no units) vs 2000+ |
+| Honest report: unsupported types counted (TEXT, MTEXT, DIMENSION, HATCH, SPLINE, ELLIPSE, ATTRIB...), paper space, Z-projection, tilted planes, xrefs, missing blocks, off/frozen layers, truncated files | `test_dxf` + GUI dialog/command-line report |
+| Robustness: binary DXF and renamed DWG detected; malformed/truncated files rejected without touching the open drawing; ~3,000 corrupted variants never crash (also under AddressSanitizer) | `test_dxf::survivesCorruptedFiles` |
+| Imported drawing saves to `.dyn` v2 and reopens bit-exactly; DXF never overwritten | `test_dxf`, `test_gui` |
+| Performance: 200,000-line DXF (8 MB) imports in about 0.2 s | `test_dxf::largeFilePerformance` |
+| ARC / POINT entities and polyline arc segments: selection, rendering (≤0.25 px deviation), properties | `test_geometry` (17 cases), `test_gui` (click-select an imported arc) |
+
+**DXF limitations (honest list):** text, dimensions, leaders, hatches, splines, ellipses, solids, images and
+xrefs are reported but not imported yet; only model space; colours/linetypes/lineweights are not yet displayed
+(all geometry draws in one colour); layer on/off is not yet respected. Test files were generated with ezdxf; **no
+DXF saved by AutoCAD itself has been tested yet.** Please send a few real drawings.
+
+## Milestone 1: completed and tested
 
 | Feature | How it was verified |
 |---|---|
@@ -35,7 +56,7 @@
 * Object snaps (endpoint/midpoint/centre/...), polar tracking, dynamic input tooltip.
 * Layers UI, colours, linetypes, lineweights (entities already store a layer name, saved in files).
 * Properties panel is **read-only** (shows true geometry: lengths, areas, radii).
-* All other drawing/editing commands, text, dimensions, blocks, hatch, sheets, PDF, DXF, licensing, installer.
+* All other drawing/editing commands, text, dimensions, blocks (as editable objects), hatch, sheets, PDF, DXF export, DWG, licensing, installer.
 * Autosave / crash recovery; recent-files list; application `.ico` resource (the window icon is set at runtime).
 
 ## Known limitations

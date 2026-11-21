@@ -2,6 +2,7 @@
 #include "ui/MainWindow.h"
 
 #include "canvas/CadCanvas.h"
+#include "dxf/DxfReader.h"
 #include "fileio/DynFormat.h"
 #include "ui/CommandLine.h"
 #include "ui/Icons.h"
@@ -110,12 +111,20 @@ void MainWindow::createActions() {
         return a;
     };
     actNew_ = make(tr("&New"), "new", QKeySequence::New, tr("Start a new drawing"));
-    actOpen_ = make(tr("&Open..."), "open", QKeySequence::Open, tr("Open a DYNAMIC CAD drawing (*.dyn)"));
+    actOpen_ = make(tr("&Open..."), "open", QKeySequence::Open, tr("Open a drawing (*.dyn) or import a DXF file"));
+    actImportDxf_ = make(tr("&Import DXF..."), "import-dxf", QKeySequence(), tr("Import an AutoCAD DXF file"));
     actSave_ = make(tr("&Save"), "save", QKeySequence::Save, tr("Save the drawing"));
     actSaveAs_ = make(tr("Save &As..."), "", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S), tr("Save the drawing under a new name"));
     actExit_ = make(tr("E&xit"), "", QKeySequence(Qt::ALT | Qt::Key_F4), tr("Exit DYNAMIC CAD"));
     connect(actNew_, &QAction::triggered, this, &MainWindow::newDrawing);
     connect(actOpen_, &QAction::triggered, this, &MainWindow::openDrawing);
+    connect(actImportDxf_, &QAction::triggered, this, [this] {
+        if (!maybeSave()) return;
+        QSettings s;
+        const QString path = QFileDialog::getOpenFileName(this, tr("Import DXF"), s.value("files/lastDir").toString(),
+                                                          tr("AutoCAD DXF (*.dxf);;All Files (*)"));
+        if (!path.isEmpty()) importDxfPath(path);
+    });
     connect(actSave_, &QAction::triggered, this, &MainWindow::save);
     connect(actSaveAs_, &QAction::triggered, this, &MainWindow::saveAs);
     connect(actExit_, &QAction::triggered, this, &QWidget::close);
@@ -186,6 +195,8 @@ void MainWindow::createMenus() {
     QMenu* file = menuBar()->addMenu(tr("&File"));
     file->addActions({actNew_, actOpen_, actSave_, actSaveAs_});
     file->addSeparator();
+    file->addAction(actImportDxf_);
+    file->addSeparator();
     file->addAction(actExit_);
 
     QMenu* edit = menuBar()->addMenu(tr("&Edit"));
@@ -215,7 +226,7 @@ void MainWindow::createMenus() {
 void MainWindow::createRibbon() {
     ribbon_ = new Ribbon(this);
     RibbonPage* home = ribbon_->addPage(tr("Home"));
-    home->addGroup(tr("File"), {actNew_, actOpen_, actSave_});
+    home->addGroup(tr("File"), {actNew_, actOpen_, actSave_, actImportDxf_});
     home->addGroup(tr("Draw"), {actLine_, actCircle_, actRect_});
     home->addGroup(tr("Modify"), {actErase_, actUndo_, actRedo_});
     home->addGroup(tr("Selection"), {actSelectAll_});
@@ -263,8 +274,9 @@ void MainWindow::createStatusBar() {
         b->setAutoRaise(true);
         statusBar()->addPermanentWidget(b);
     }
-    auto* units = new QLabel(tr("Units: mm"), this);
-    statusBar()->addPermanentWidget(units);
+    unitsLabel_ = new QLabel(this);
+    unitsLabel_->setToolTip(tr("Drawing units"));
+    statusBar()->addPermanentWidget(unitsLabel_);
 }
 
 void MainWindow::registerUiCommands() {
@@ -278,6 +290,7 @@ void MainWindow::registerUiCommands() {
     });
     proc_.registerAction("NEW", {}, [this](const std::vector<std::string>&) { newDrawing(); });
     proc_.registerAction("OPEN", {}, [this](const std::vector<std::string>&) { openDrawing(); });
+    proc_.registerAction("DXFIN", {"IMPORT"}, [this](const std::vector<std::string>&) { actImportDxf_->trigger(); });
     proc_.registerAction("SAVE", {"QSAVE"}, [this](const std::vector<std::string>&) { save(); });
     proc_.registerAction("SAVEAS", {}, [this](const std::vector<std::string>&) { saveAs(); });
     proc_.registerAction("GRID", {}, [this](const std::vector<std::string>&) { actGrid_->toggle(); });
@@ -285,7 +298,7 @@ void MainWindow::registerUiCommands() {
     proc_.registerAction("ORTHO", {}, [this](const std::vector<std::string>&) { actOrtho_->toggle(); });
     proc_.registerAction("HELP", {"?"}, [this](const std::vector<std::string>&) {
         message(tr("Commands: LINE (L), CIRCLE (C), RECTANGLE (REC), ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
-                   " NEW, OPEN, SAVE, SAVEAS, GRID, SNAP, ORTHO, HELP."));
+                   " NEW, OPEN, SAVE, SAVEAS, DXFIN (IMPORT), GRID, SNAP, ORTHO, HELP."));
         message(tr("Coordinates: x,y  @dx,dy (relative)  @dist<angle (relative polar)  dist<angle  or a distance typed"
                    " while moving the cursor. Enter/Space/right-click = Enter, Esc = cancel."));
     });
@@ -325,8 +338,11 @@ void MainWindow::onDocumentChanged() {
 }
 
 void MainWindow::updateTitle() {
-    const QString name = currentFile_.isEmpty() ? tr("Drawing1.dyn") : QFileInfo(currentFile_).fileName();
+    QString name = currentFile_.isEmpty() ? tr("Drawing1.dyn") : QFileInfo(currentFile_).fileName();
+    if (currentFile_.isEmpty() && !importedFrom_.isEmpty())
+        name = tr("%1 (imported)").arg(QFileInfo(importedFrom_).fileName());
     setWindowTitle(QStringLiteral("%1[*] - DYNAMIC CAD").arg(name));
+    if (unitsLabel_) unitsLabel_->setText(tr("Units: %1").arg(QString::fromStdString(doc_.units())));
     setWindowModified(doc_.isModified());
 }
 
@@ -346,6 +362,7 @@ void MainWindow::newDrawing() {
     selection_.clear();
     doc_.reset();
     currentFile_.clear();
+    importedFrom_.clear();
     canvas_->resetView();
     updateTitle();
     message(tr("New drawing."));
@@ -355,11 +372,13 @@ void MainWindow::openDrawing() {
     if (!maybeSave()) return;
     QSettings s;
     const QString path = QFileDialog::getOpenFileName(this, tr("Open Drawing"), s.value("files/lastDir").toString(),
-                                                      tr("DYNAMIC CAD Drawing (*.dyn);;All Files (*)"));
+                                                      tr("All Drawings (*.dyn *.dxf);;DYNAMIC CAD Drawing (*.dyn);;"
+                                                         "AutoCAD DXF (*.dxf);;All Files (*)"));
     if (!path.isEmpty()) openFile(path);
 }
 
 bool MainWindow::openFile(const QString& path) {
+    if (QFileInfo(path).suffix().compare("dxf", Qt::CaseInsensitive) == 0) return importDxfPath(path);
     proc_.cancel();
     selection_.clear();
     const FileResult r = loadDynFile(doc_, path);
@@ -369,6 +388,7 @@ bool MainWindow::openFile(const QString& path) {
         return false;
     }
     currentFile_ = QFileInfo(path).absoluteFilePath();
+    importedFrom_.clear();
     QSettings().setValue("files/lastDir", QFileInfo(path).absolutePath());
     for (const auto& w : r.warnings) message(tr("Warning: %1").arg(QString::fromStdString(w)));
     if (!r.warnings.empty())
@@ -381,6 +401,52 @@ bool MainWindow::openFile(const QString& path) {
     return true;
 }
 
+bool MainWindow::importDxfPath(const QString& path, bool showReport) {
+    proc_.cancel();
+    selection_.clear();
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    const DxfImportResult r = importDxfFile(path, doc_);
+    QApplication::restoreOverrideCursor();
+    if (!r.ok) {
+        message(tr("DXF import failed: %1").arg(QString::fromStdString(r.error)));
+        if (showReport) QMessageBox::critical(this, tr("Import DXF"), QString::fromStdString(r.error));
+        return false;
+    }
+    currentFile_.clear(); // never overwrite the DXF: Save asks for a .dyn name
+    importedFrom_ = QFileInfo(path).absoluteFilePath();
+    QSettings().setValue("files/lastDir", QFileInfo(path).absolutePath());
+    canvas_->zoomExtents();
+    updateTitle();
+
+    QStringList lines;
+    lines << tr("Source: %1").arg(QString::fromStdString(describeAcadVersion(r.acadVersion)));
+    lines << tr("Imported: %1 objects on %2 layers (%3 block insertions expanded)")
+                 .arg(r.imported).arg(r.layerCount).arg(r.blockInsertsExpanded);
+    lines << tr("Units: %1%2").arg(QString::fromStdString(r.units), r.unitsAssumed ? tr(" (assumed)") : QString());
+    QStringList details;
+    if (r.unsupportedTotal()) {
+        details << tr("Not imported yet (not supported in this version):");
+        for (const auto& [type, n] : r.unsupported) details << tr("  %1 x %2").arg(n).arg(QString::fromStdString(type));
+    }
+    if (r.paperSpaceSkipped) details << tr("%1 paper-space (layout) objects skipped; only model space is imported.").arg(r.paperSpaceSkipped);
+    for (const auto& w : r.warnings) details << QString::fromStdString(w);
+
+    message(tr("Imported DXF %1").arg(QDir::toNativeSeparators(importedFrom_)));
+    for (const QString& l : lines + details) message(QStringLiteral("  ") + l);
+
+    if (showReport) {
+        QMessageBox box(details.isEmpty() ? QMessageBox::Information : QMessageBox::Warning, tr("Import DXF"),
+                        lines.join("\n"), QMessageBox::Ok, this);
+        if (!details.isEmpty()) {
+            box.setInformativeText(tr("Some content was not imported. Check the drawing against the original before use. "
+                                      "Click \"Show Details\" for the list."));
+            box.setDetailedText(details.join("\n"));
+        }
+        box.exec();
+    }
+    return true;
+}
+
 bool MainWindow::saveToFile(const QString& path) {
     const FileResult r = saveDynFile(doc_, path);
     if (!r.ok) {
@@ -388,6 +454,7 @@ bool MainWindow::saveToFile(const QString& path) {
         return false;
     }
     currentFile_ = QFileInfo(path).absoluteFilePath();
+    importedFrom_.clear();
     QSettings().setValue("files/lastDir", QFileInfo(path).absolutePath());
     doc_.markSaved();
     updateTitle();
@@ -402,8 +469,13 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
     QSettings s;
-    QString path = QFileDialog::getSaveFileName(this, tr("Save Drawing As"),
-                                                currentFile_.isEmpty() ? s.value("files/lastDir").toString() : currentFile_,
+    QString suggestion = currentFile_;
+    if (suggestion.isEmpty() && !importedFrom_.isEmpty()) {
+        const QFileInfo fi(importedFrom_);
+        suggestion = fi.absoluteDir().filePath(fi.completeBaseName() + ".dyn");
+    }
+    if (suggestion.isEmpty()) suggestion = s.value("files/lastDir").toString();
+    QString path = QFileDialog::getSaveFileName(this, tr("Save Drawing As"), suggestion,
                                                 tr("DYNAMIC CAD Drawing (*.dyn)"));
     if (path.isEmpty()) return false;
     if (QFileInfo(path).suffix().isEmpty()) path += ".dyn";

@@ -170,6 +170,33 @@ private slots:
         QVERIFY(!w2.document().isModified());
     }
 
+    void importDxfIntoWindow() {
+        MainWindow w;
+        w.resize(1200, 800);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
+        QCOMPARE(w.document().entityCount(), std::size_t(11));
+        QVERIFY(w.currentFile().isEmpty()); // never overwrite the DXF on Save
+        QVERIFY(w.windowTitle().contains("mixed_R2010.dxf (imported)"));
+        QVERIFY(w.commandLine()->history().contains("Not imported yet"));
+        // Imported arcs are selectable: pick the quarter arc r=20 at 45 degrees.
+        const Vec2 onArc = Vec2::fromPolar(20, degToRad(45));
+        QTest::mouseClick(w.canvas(), Qt::LeftButton, Qt::NoModifier, screenOf(w, onArc));
+        QCOMPARE(w.selection().size(), std::size_t(1));
+        QCOMPARE(w.document().findEntity(w.selection().ids().front())->type(), EntityType::Arc);
+        // Screenshot of the sample flange for visual review.
+        w.setTheme(ThemeKind::Dark);
+        QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/../../../docs/samples/sample-flange.dxf", false));
+        QTest::mouseMove(w.canvas(), screenOf(w, {60, 60}));
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_dxf_import.png"));
+        QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
+        // A broken file reports an error and keeps the current drawing.
+        QVERIFY(!w.importDxfPath("/nonexistent/broken.dxf", false));
+        QCOMPARE(w.document().entityCount(), std::size_t(11));
+    }
+
     void renderScreenshot() {
         // Renders the full window for visual review (written to the build dir).
         MainWindow w;

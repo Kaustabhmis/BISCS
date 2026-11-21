@@ -25,7 +25,9 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
+    // Opens a .dyn drawing or imports a .dxf file (chosen by extension).
     bool openFile(const QString& path);
+    bool importDxfPath(const QString& path, bool showReport = true);
     bool saveToFile(const QString& path);
     // Executes one command-line string exactly as if typed by the user.
     void executeCommandText(const QString& text);
@@ -76,8 +78,10 @@ private:
     PropertiesPanel* props_ = nullptr;
     Ribbon* ribbon_ = nullptr;
     QLabel* coordLabel_ = nullptr;
+    QLabel* unitsLabel_ = nullptr;
+    QString importedFrom_; // source DXF of an imported, not-yet-saved drawing
 
-    QAction *actNew_{}, *actOpen_{}, *actSave_{}, *actSaveAs_{}, *actExit_{};
+    QAction *actNew_{}, *actOpen_{}, *actImportDxf_{}, *actSave_{}, *actSaveAs_{}, *actExit_{};
     QAction *actUndo_{}, *actRedo_{}, *actErase_{}, *actSelectAll_{}, *actDeselect_{};
     QAction *actLine_{}, *actCircle_{}, *actRect_{};
     QAction *actZoomExt_{}, *actZoomIn_{}, *actZoomOut_{};

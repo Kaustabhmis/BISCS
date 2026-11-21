@@ -1,6 +1,7 @@
 // DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 #include "canvas/CadCanvas.h"
 
+#include "entities/ArcEntity.h"
 #include "entities/CircleEntity.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
@@ -160,6 +161,12 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         if (auto c = geom::clipSegment(a, b, clip))
             p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
     };
+    // Arcs are tessellated to within 0.25 px of the true curve, then clipped.
+    auto drawArc = [&](const ArcGeom& g) {
+        if (!clip.intersects(geom::arcBounds(g))) return;
+        const auto pts = geom::tessellateArc(g, view_.pixelsToWorld(0.25));
+        for (std::size_t i = 1; i < pts.size(); ++i) drawSeg(pts[i - 1], pts[i]);
+    };
     switch (e.type()) {
     case EntityType::Line: {
         const auto& l = static_cast<const LineEntity&>(e);
@@ -187,11 +194,24 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         }
         break;
     }
+    case EntityType::Arc: {
+        const ArcGeom g = static_cast<const ArcEntity&>(e).geom();
+        drawArc(g);
+        break;
+    }
+    case EntityType::Point: {
+        const Vec2 s = view_.worldToScreen(static_cast<const PointEntity&>(e).position());
+        p.drawLine(QPointF(s.x - 4, s.y), QPointF(s.x + 4, s.y));
+        p.drawLine(QPointF(s.x, s.y - 4), QPointF(s.x, s.y + 4));
+        break;
+    }
     case EntityType::Polyline: {
         const auto& pl = static_cast<const PolylineEntity&>(e);
-        const auto& v = pl.vertices();
         const std::size_t n = pl.segmentCount();
-        for (std::size_t i = 0; i < n; ++i) drawSeg(v[i], v[(i + 1) % v.size()]);
+        for (std::size_t i = 0; i < n; ++i) {
+            if (auto a = pl.segmentArc(i)) drawArc(*a);
+            else drawSeg(pl.segmentStart(i), pl.segmentEnd(i));
+        }
         break;
     }
     }

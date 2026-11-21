@@ -4,7 +4,7 @@ Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engi
 
 ![DYNAMIC CAD main window](docs/screenshots/phase1-main-window.png)
 
-> **Status: Milestone 1 (Phase 1 core + first drawing commands), version 0.1.0.**
+> **Status: version 0.2.0. Milestone 1 (core + first commands) and Milestone 2 (DXF import) done.**
 > See [docs/STATUS.md](docs/STATUS.md) for exactly what works and what does not yet.
 
 ## What works today
@@ -19,6 +19,22 @@ Professional 2D CAD for engineers, fabricators and architects, by **Dynamic Engi
 | Selection | Click, Shift+click to remove, window (drag left to right), crossing (drag right to left), hover highlight, grips |
 | Editing | `ERASE` / Delete key, unlimited Undo (Ctrl+Z) / Redo (Ctrl+Y) |
 | Files | New, Open, Save, Save As in the native `.dyn` format (bit-exact coordinates, atomic save, unsaved-changes prompt) |
+| DXF import | AutoCAD R12 to 2018 ASCII DXF: lines, circles, arcs, polylines (incl. curved segments), points, layers, units, blocks (nested, scaled, rotated, mirrored, arrays). Everything not imported is listed in a report. |
+
+## Opening AutoCAD drawings
+
+DYNAMIC CAD imports **DXF**. It cannot read **DWG** (AutoCAD's closed format). To bring a DWG across:
+
+1. In AutoCAD: **Save As → AutoCAD 2010 DXF** (or 2013/2018 DXF), keeping the default ASCII format.
+2. In DYNAMIC CAD: **File → Open** (or **Import DXF**) and pick the `.dxf` file.
+3. Read the import report. It lists anything that was **not** imported in this version (text, dimensions,
+   hatches, splines, ellipses, paper-space layouts, external references), and you should check the drawing
+   against the original before using it.
+4. **File → Save As** stores it as a `.dyn` drawing. The original DXF is never overwritten.
+
+Try it with `docs/samples/sample-flange.dxf`.
+
+![DXF import](docs/screenshots/m2-dxf-import.png)
 
 ## Using it
 
@@ -32,6 +48,7 @@ Type commands on the keyboard at any time; the text goes to the command line.
 | ERASE | `E` | select objects, then `E` or the Delete key |
 | UNDO / REDO | `U` | Ctrl+Z / Ctrl+Y |
 | ZOOM | `Z` | `Z E` (extents), `Z 2`, `Z 0.5` |
+| DXFIN | `IMPORT` | import a DXF file |
 | HELP | `?` | lists all commands |
 
 Enter, Space or right-click finishes or repeats a command; Esc cancels.
@@ -87,9 +104,10 @@ src/commands   Input parser, command processor, LINE/CIRCLE/RECTANGLE/ERASE
 src/selection  Selection set, picking, window/crossing selection
 src/canvas     View transform (zoom/pan math), CadCanvas widget
 src/fileio     Native .dyn format
+src/dxf        DXF reader (own implementation)
 src/ui         Main window, ribbon, command line, properties panel, theme, icons
 src/app        main()
-tests/         8 automated test programs (Qt Test, run via CTest)
+tests/         9 automated test programs (Qt Test, run via CTest) + DXF fixtures
 docs/          Architecture, roadmap, status, file format, drawing standard
 LICENSES/      Third-party notices (shipped with the application)
 ```

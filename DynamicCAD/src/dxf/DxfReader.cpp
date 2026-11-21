@@ -1,0 +1,574 @@
+// DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
+//
+// Independent implementation of a DXF reader, written from the publicly
+// documented DXF reference. No third-party DXF code is used.
+#include "dxf/DxfReader.h"
+
+#include "entities/ArcEntity.h"
+#include "entities/CircleEntity.h"
+#include "entities/LineEntity.h"
+#include "entities/PolylineEntity.h"
+
+#include <QFile>
+
+#include <charconv>
+#include <cstring>
+#include <cmath>
+#include <optional>
+#include <set>
+#include <string_view>
+#include <unordered_map>
+
+namespace dyncad {
+
+std::size_t DxfImportResult::unsupportedTotal() const {
+    std::size_t n = 0;
+    for (const auto& [k, v] : unsupported) n += v;
+    return n;
+}
+
+std::string describeAcadVersion(const std::string& v) {
+    static const std::map<std::string, std::string> names = {
+        {"AC1009", "AutoCAD R11/R12"},      {"AC1012", "AutoCAD R13"},
+        {"AC1014", "AutoCAD R14"},          {"AC1015", "AutoCAD 2000-2002"},
+        {"AC1018", "AutoCAD 2004-2006"},    {"AC1021", "AutoCAD 2007-2009"},
+        {"AC1024", "AutoCAD 2010-2012"},    {"AC1027", "AutoCAD 2013-2017"},
+        {"AC1032", "AutoCAD 2018 or later"}};
+    auto it = names.find(v);
+    if (it != names.end()) return it->second + " (" + v + ")";
+    return v.empty() ? std::string("unknown version") : v;
+}
+
+namespace {
+
+constexpr qint64 kMaxDxfSize = 1024LL * 1024 * 1024; // 1 GB
+constexpr int kMaxBlockDepth = 32;
+
+// ------------------------------------------------------------ tokenizer
+
+struct Group {
+    int code;
+    std::string_view value;
+    std::size_t line; // 1-based line number of the code
+};
+
+std::string_view trimView(std::string_view s) {
+    while (!s.empty() && (s.front() == ' ' || s.front() == '\t')) s.remove_prefix(1);
+    while (!s.empty() && (s.back() == ' ' || s.back() == '\t' || s.back() == '\r')) s.remove_suffix(1);
+    return s;
+}
+
+std::optional<double> toDouble(std::string_view s) {
+    s = trimView(s);
+    if (!s.empty() && s.front() == '+') s.remove_prefix(1);
+    if (s.empty()) return std::nullopt;
+    double v = 0;
+    auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), v, std::chars_format::general);
+    if (ec != std::errc() || p != s.data() + s.size() || !std::isfinite(v)) return std::nullopt;
+    return v;
+}
+
+std::optional<long long> toInt(std::string_view s) {
+    s = trimView(s);
+    if (!s.empty() && s.front() == '+') s.remove_prefix(1);
+    long long v = 0;
+    auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), v);
+    if (ec != std::errc() || p != s.data() + s.size()) return std::nullopt;
+    return v;
+}
+
+bool tokenize(const QByteArray& data, std::vector<Group>& out, std::string& error, bool& sawEof) {
+    sawEof = false;
+    const char* p = data.constData();
+    const char* end = p + data.size();
+    // Skip UTF-8 BOM.
+    if (end - p >= 3 && static_cast<unsigned char>(p[0]) == 0xEF && static_cast<unsigned char>(p[1]) == 0xBB &&
+        static_cast<unsigned char>(p[2]) == 0xBF)
+        p += 3;
+    std::size_t line = 0;
+    auto nextLine = [&](std::string_view& sv) -> bool {
+        if (p >= end) return false;
+        const char* nl = static_cast<const char*>(memchr(p, '\n', static_cast<std::size_t>(end - p)));
+        const char* e = nl ? nl : end;
+        sv = std::string_view(p, static_cast<std::size_t>(e - p));
+        if (!sv.empty() && sv.back() == '\r') sv.remove_suffix(1);
+        p = nl ? nl + 1 : end;
+        ++line;
+        return true;
+    };
+    out.reserve(static_cast<std::size_t>(data.size() / 12));
+    std::string_view codeLine, valueLine;
+    while (nextLine(codeLine)) {
+        const std::string_view trimmed = trimView(codeLine);
+        if (trimmed.empty() && p >= end) break; // trailing blank line
+        const std::size_t codeLineNo = line;
+        auto code = toInt(trimmed);
+        if (!code || *code < 0 || *code > 1071) {
+            error = "Invalid DXF group code \"" + std::string(trimmed.substr(0, 40)) + "\" at line " +
+                    std::to_string(codeLineNo) + ".";
+            return false;
+        }
+        if (!nextLine(valueLine)) {
+            error = "The DXF file is truncated (missing value after line " + std::to_string(codeLineNo) + ").";
+            return false;
+        }
+        out.push_back({static_cast<int>(*code), valueLine, codeLineNo});
+        if (*code == 0 && trimView(valueLine) == "EOF") { sawEof = true; break; }
+    }
+    return true;
+}
+
+bool isValidUtf8(std::string_view s) {
+    std::size_t i = 0;
+    while (i < s.size()) {
+        const unsigned char c = static_cast<unsigned char>(s[i]);
+        int n = c < 0x80 ? 0 : (c >> 5) == 0x6 ? 1 : (c >> 4) == 0xE ? 2 : (c >> 3) == 0x1E ? 3 : -1;
+        if (n < 0 || i + static_cast<std::size_t>(n) >= s.size() + (n == 0 ? 1 : 0)) return false;
+        for (int k = 1; k <= n; ++k)
+            if ((static_cast<unsigned char>(s[i + static_cast<std::size_t>(k)]) >> 6) != 0x2) return false;
+        i += static_cast<std::size_t>(n) + 1;
+    }
+    return true;
+}
+
+// ------------------------------------------------------------ raw entities
+
+struct RawEntity {
+    std::string type;
+    std::vector<Group> groups;
+
+    const Group* find(int code) const {
+        for (const auto& g : groups)
+            if (g.code == code) return &g;
+        return nullptr;
+    }
+    double num(int code, double def = 0.0) const {
+        if (const Group* g = find(code))
+            if (auto v = toDouble(g->value)) return *v;
+        return def;
+    }
+    bool has(int code) const { return find(code) != nullptr; }
+    bool numValid(int code) const {
+        const Group* g = find(code);
+        return g && toDouble(g->value).has_value();
+    }
+    long long integer(int code, long long def = 0) const {
+        if (const Group* g = find(code))
+            if (auto v = toInt(g->value)) return *v;
+        return def;
+    }
+    std::string str(int code, const std::string& def = {}) const {
+        if (const Group* g = find(code)) return std::string(trimView(g->value));
+        return def;
+    }
+};
+
+struct Block {
+    std::string name;
+    Vec2 base;
+    bool xref = false;
+    std::vector<RawEntity> entities;
+};
+
+// ------------------------------------------------------------ importer
+
+class Importer {
+public:
+    explicit Importer(DxfImportResult& r) : r_(r) {}
+
+    bool run(const std::vector<Group>& groups) {
+        g_ = &groups;
+        pos_ = 0;
+        while (pos_ < groups.size()) {
+            const Group& g = groups[pos_];
+            if (g.code == 0 && trimView(g.value) == "EOF") break;
+            if (g.code == 0 && trimView(g.value) == "SECTION") {
+                ++pos_;
+                if (pos_ >= groups.size() || groups[pos_].code != 2) return fail("SECTION without a name", g.line);
+                const std::string name(trimView(groups[pos_].value));
+                ++pos_;
+                if (name == "HEADER") parseHeader();
+                else if (name == "TABLES") parseTables();
+                else if (name == "BLOCKS") { if (!parseBlocks()) return false; }
+                else if (name == "ENTITIES") { readEntityList(entities_, "ENDSEC"); sawEntities_ = true; }
+                else skipToEndSec();
+                continue;
+            }
+            ++pos_;
+        }
+        if (!sawEntities_) return fail("The file has no ENTITIES section; it does not look like a DXF drawing.", 0);
+        finishHeader();
+        convertList(entities_, Affine2D{}, 0, std::string(), true);
+        return true;
+    }
+
+    std::vector<EntityPtr> takeEntities() { return std::move(out_); }
+
+private:
+    bool fail(const std::string& msg, std::size_t line) {
+        r_.error = line ? msg + " (line " + std::to_string(line) + ")." : msg;
+        return false;
+    }
+    const Group& cur() const { return (*g_)[pos_]; }
+    bool atEnd() const { return pos_ >= g_->size(); }
+    bool atMarker(const char* marker) const {
+        return !atEnd() && cur().code == 0 && trimView(cur().value) == marker;
+    }
+
+    void skipToEndSec() {
+        while (!atEnd() && !atMarker("ENDSEC") && !atMarker("EOF")) ++pos_;
+        if (atMarker("ENDSEC")) ++pos_;
+    }
+
+    std::string decode(std::string_view s) const {
+        s = trimView(s);
+        if (utf8_ || isValidUtf8(s)) return std::string(s);
+        // Pre-2007 files use the Windows ANSI code page; map Latin-1 range.
+        std::string out;
+        for (unsigned char c : s) {
+            if (c < 0x80) out += static_cast<char>(c);
+            else { out += static_cast<char>(0xC0 | (c >> 6)); out += static_cast<char>(0x80 | (c & 0x3F)); }
+        }
+        return out;
+    }
+
+    // ---- HEADER
+    void parseHeader() {
+        std::string var;
+        while (!atEnd() && !atMarker("ENDSEC") && !atMarker("EOF")) {
+            const Group& g = cur();
+            if (g.code == 9) var = std::string(trimView(g.value));
+            else if (var == "$ACADVER" && g.code == 1) r_.acadVersion = std::string(trimView(g.value));
+            else if (var == "$INSUNITS" && g.code == 70) insUnits_ = toInt(g.value);
+            else if (var == "$MEASUREMENT" && g.code == 70) measurement_ = toInt(g.value);
+            ++pos_;
+        }
+        if (atMarker("ENDSEC")) ++pos_;
+        utf8_ = r_.acadVersion >= "AC1021";
+    }
+
+    void finishHeader() {
+        static const std::map<long long, std::string> units = {
+            {1, "in"}, {2, "ft"}, {3, "mi"}, {4, "mm"}, {5, "cm"}, {6, "m"}, {7, "km"}, {8, "uin"},
+            {9, "mil"}, {10, "yd"}, {11, "A"}, {12, "nm"}, {13, "um"}, {14, "dm"}, {15, "dam"}, {16, "hm"}};
+        if (insUnits_ && units.count(*insUnits_)) {
+            r_.units = units.at(*insUnits_);
+        } else {
+            r_.unitsAssumed = true;
+            r_.units = (measurement_ && *measurement_ == 0) ? "in" : "mm";
+            r_.warnings.push_back("The file does not specify drawing units; assuming " +
+                                  std::string(r_.units == "in" ? "inches (imperial drawing)." : "millimetres."));
+        }
+    }
+
+    // ---- TABLES (layers)
+    void parseTables() {
+        std::size_t off = 0, frozen = 0;
+        while (!atEnd() && !atMarker("ENDSEC") && !atMarker("EOF")) {
+            if (atMarker("LAYER")) {
+                ++pos_;
+                std::string name;
+                long long color = 7, flags = 0;
+                while (!atEnd() && cur().code != 0) {
+                    if (cur().code == 2) name = decode(cur().value);
+                    else if (cur().code == 62) color = toInt(cur().value).value_or(7);
+                    else if (cur().code == 70) flags = toInt(cur().value).value_or(0);
+                    ++pos_;
+                }
+                if (!name.empty() && layers_.insert(name).second) {
+                    if (color < 0) ++off;
+                    if (flags & 1) ++frozen;
+                }
+                continue;
+            }
+            ++pos_;
+        }
+        if (atMarker("ENDSEC")) ++pos_;
+        r_.layerCount = layers_.size();
+        if (off || frozen)
+            r_.warnings.push_back(std::to_string(off + frozen) +
+                                  " layer(s) are turned off or frozen in the source drawing. DYNAMIC CAD currently shows "
+                                  "all layers (layer visibility control is planned).");
+    }
+
+    // ---- entity lists (ENTITIES section and block bodies)
+    void readEntityList(std::vector<RawEntity>& list, const char* terminator) {
+        while (!atEnd() && !atMarker(terminator) && !atMarker("EOF") && !atMarker("ENDSEC")) {
+            if (cur().code != 0) { ++pos_; continue; }
+            RawEntity e;
+            e.type = std::string(trimView(cur().value));
+            ++pos_;
+            while (!atEnd() && cur().code != 0) e.groups.push_back(cur()), ++pos_;
+            list.push_back(std::move(e));
+        }
+        if (atMarker(terminator)) ++pos_;
+    }
+
+    bool parseBlocks() {
+        while (!atEnd() && !atMarker("ENDSEC") && !atMarker("EOF")) {
+            if (!atMarker("BLOCK")) { ++pos_; continue; }
+            ++pos_;
+            RawEntity header;
+            while (!atEnd() && cur().code != 0) header.groups.push_back(cur()), ++pos_;
+            Block b;
+            b.name = decode(header.str(2));
+            b.base = {header.num(10), header.num(20)};
+            b.xref = (header.integer(70) & 4) != 0;
+            readEntityList(b.entities, "ENDBLK");
+            // Skip the ENDBLK entity's own groups.
+            while (!atEnd() && cur().code != 0) ++pos_;
+            if (!b.name.empty()) blocks_[toUpperAscii(b.name)] = std::move(b);
+        }
+        if (atMarker("ENDSEC")) ++pos_;
+        return true;
+    }
+
+    static std::string toUpperAscii(std::string s) {
+        for (char& c : s)
+            if (c >= 'a' && c <= 'z') c = static_cast<char>(c - 'a' + 'A');
+        return s;
+    }
+
+    // ---- conversion
+    void unsupported(const std::string& type) { r_.unsupported[type]++; }
+
+    // OCS -> WCS for the extrusion directions that keep geometry in the XY plane.
+    std::optional<Affine2D> ocs(const RawEntity& e) {
+        const double nx = e.num(210, 0.0), ny = e.num(220, 0.0), nz = e.num(230, 1.0);
+        const double len = std::sqrt(nx * nx + ny * ny + nz * nz);
+        if (!(len > 0)) return Affine2D{};
+        if (std::abs(nx / len) < 1e-9 && std::abs(ny / len) < 1e-9) {
+            if (nz > 0) return Affine2D{};
+            return Affine2D::scaling(-1.0, 1.0); // (0,0,-1): mirrored about the Y axis
+        }
+        ++nonPlanar_;
+        return std::nullopt;
+    }
+
+    void checkZ(const RawEntity& e, std::initializer_list<int> codes) {
+        for (int c : codes)
+            if (e.num(c, 0.0) != 0.0) { ++nonZeroZ_; return; }
+    }
+
+    std::string layerOf(const RawEntity& e, const std::string& inherit) {
+        std::string layer = e.has(8) ? decode(e.find(8)->value) : std::string("0");
+        if (layer.empty()) layer = "0";
+        if (layer == "0" && !inherit.empty()) layer = inherit; // block content on layer 0 takes the INSERT's layer
+        if (!layers_.count(layer)) { layers_.insert(layer); r_.layerCount = layers_.size(); }
+        return layer;
+    }
+
+    void addEntity(std::unique_ptr<Entity> local, const Affine2D& xf, const std::string& layer) {
+        if (!local) return;
+        std::unique_ptr<Entity> world = xf.isIdentity() ? std::move(local) : local->transformed(xf);
+        if (!world) { ++nonUniform_; return; }
+        world->setLayer(layer);
+        out_.push_back(EntityPtr(std::move(world)));
+    }
+
+    void convertList(const std::vector<RawEntity>& list, const Affine2D& xf, int depth, const std::string& inheritLayer,
+                     bool topLevel) {
+        for (std::size_t i = 0; i < list.size(); ++i) {
+            const RawEntity& e = list[i];
+            if (topLevel && e.integer(67, 0) == 1) {
+                ++r_.paperSpaceSkipped;
+                if (e.type == "POLYLINE") while (i + 1 < list.size() && list[i + 1].type != "SEQEND") ++i;
+                continue;
+            }
+            if (e.type == "POLYLINE") {
+                std::vector<const RawEntity*> verts;
+                while (i + 1 < list.size() && list[i + 1].type == "VERTEX") verts.push_back(&list[++i]);
+                if (i + 1 < list.size() && list[i + 1].type == "SEQEND") ++i;
+                convertPolyline(e, verts, xf, inheritLayer);
+                continue;
+            }
+            if (e.type == "INSERT") {
+                convertInsert(e, xf, depth, inheritLayer);
+                if (e.integer(66, 0) == 1) { // attributes follow
+                    while (i + 1 < list.size() && list[i + 1].type == "ATTRIB") { ++i; unsupported("ATTRIB (block attribute text)"); }
+                    if (i + 1 < list.size() && list[i + 1].type == "SEQEND") ++i;
+                }
+                continue;
+            }
+            convertSimple(e, xf, inheritLayer);
+        }
+    }
+
+    void invalid(const std::string& type) { r_.unsupported[type + " (invalid data)"]++; }
+
+    void convertSimple(const RawEntity& e, const Affine2D& xf, const std::string& inherit) {
+        const std::string& t = e.type;
+        if (t == "LINE") {
+            if (!e.numValid(10) || !e.numValid(20) || !e.numValid(11) || !e.numValid(21)) return invalid(t);
+            checkZ(e, {30, 31});
+            addEntity(std::make_unique<LineEntity>(Vec2{e.num(10), e.num(20)}, Vec2{e.num(11), e.num(21)}), xf, layerOf(e, inherit));
+        } else if (t == "CIRCLE" || t == "ARC") {
+            const double r = e.num(40, -1.0);
+            if (!e.numValid(10) || !e.numValid(20) || !(r > 0.0)) return invalid(t);
+            auto o = ocs(e);
+            if (!o) return;
+            const Vec2 c{e.num(10), e.num(20)};
+            std::unique_ptr<Entity> local;
+            if (t == "CIRCLE") local = std::make_unique<CircleEntity>(c, r);
+            else {
+                const double a0 = e.num(50), a1 = e.num(51);
+                if (std::fmod(std::abs(a1 - a0), 360.0) == 0.0) return invalid(t); // zero-length arc
+                local = std::make_unique<ArcEntity>(c, r, a0, a1);
+            }
+            addEntity(std::move(local), xf * *o, layerOf(e, inherit));
+        } else if (t == "POINT") {
+            if (!e.numValid(10) || !e.numValid(20)) return invalid(t);
+            checkZ(e, {30});
+            addEntity(std::make_unique<PointEntity>(Vec2{e.num(10), e.num(20)}), xf, layerOf(e, inherit));
+        } else if (t == "LWPOLYLINE") {
+            auto o = ocs(e);
+            if (!o) return;
+            std::vector<Vec2> v;
+            std::vector<double> b;
+            for (const Group& g : e.groups) {
+                if (g.code == 10) { v.push_back({toDouble(g.value).value_or(NAN), 0.0}); b.push_back(0.0); }
+                else if (g.code == 20 && !v.empty()) v.back().y = toDouble(g.value).value_or(NAN);
+                else if (g.code == 42 && !b.empty()) b.back() = toDouble(g.value).value_or(0.0);
+            }
+            addPolyline(t, std::move(v), std::move(b), (e.integer(70) & 1) != 0, xf * *o, layerOf(e, inherit));
+        } else if (t == "SEQEND" || t == "VERTEX" || t == "ENDBLK") {
+            // structural; handled by their parents
+        } else if (t == "TEXT" || t == "MTEXT" || t == "ATTDEF") {
+            unsupported(t + " (text)");
+        } else if (t == "DIMENSION" || t == "LEADER" || t == "MULTILEADER" || t == "TOLERANCE" || t == "ARC_DIMENSION") {
+            unsupported(t + " (annotation)");
+        } else {
+            unsupported(t);
+        }
+    }
+
+    void addPolyline(const std::string& type, std::vector<Vec2> v, std::vector<double> b, bool closed, const Affine2D& xf,
+                     const std::string& layer) {
+        for (const Vec2& p : v)
+            if (!p.isFinite()) return invalid(type);
+        if (v.size() < 2) return invalid(type);
+        addEntity(std::make_unique<PolylineEntity>(std::move(v), std::move(b), closed), xf, layer);
+    }
+
+    void convertPolyline(const RawEntity& e, const std::vector<const RawEntity*>& verts, const Affine2D& xf,
+                         const std::string& inherit) {
+        const long long flags = e.integer(70);
+        if (flags & (16 | 64)) { unsupported(flags & 64 ? "POLYLINE (polyface mesh)" : "POLYLINE (3D mesh)"); return; }
+        const bool is3d = (flags & 8) != 0;
+        std::optional<Affine2D> o = is3d ? std::optional<Affine2D>(Affine2D{}) : ocs(e);
+        if (!o) return;
+        std::vector<Vec2> v;
+        std::vector<double> b;
+        for (const RawEntity* vx : verts) {
+            if (vx->integer(70) & 16) continue; // spline frame control point (not on the curve)
+            if (is3d) checkZ(*vx, {30});
+            v.push_back({vx->num(10, NAN), vx->num(20, NAN)});
+            b.push_back(is3d ? 0.0 : vx->num(42, 0.0));
+        }
+        addPolyline("POLYLINE", std::move(v), std::move(b), (flags & 1) != 0, xf * *o, layerOf(e, inherit));
+    }
+
+    void convertInsert(const RawEntity& e, const Affine2D& parent, int depth, const std::string& inherit) {
+        const std::string name = decode(e.str(2));
+        auto it = blocks_.find(toUpperAscii(name));
+        if (it == blocks_.end()) {
+            r_.warnings.push_back("Block \"" + name + "\" is referenced but not defined; insertion skipped.");
+            return;
+        }
+        const Block& blk = it->second;
+        if (blk.xref) { xrefs_.insert(name); return; }
+        if (depth >= kMaxBlockDepth) { ++tooDeep_; return; }
+        auto o = ocs(e);
+        if (!o) return;
+        const double sx = e.num(41, 1.0), sy = e.num(42, 1.0);
+        if (sx == 0.0 || sy == 0.0) return invalid("INSERT");
+        const long long cols = std::max(1LL, e.integer(70, 1)), rows = std::max(1LL, e.integer(71, 1));
+        if (cols * rows > 100000) return invalid("INSERT");
+        const double dx = e.num(44, 0.0), dy = e.num(45, 0.0);
+        const Affine2D place = Affine2D::translation({e.num(10), e.num(20)}) * Affine2D::rotationDeg(e.num(50, 0.0));
+        const Affine2D local = Affine2D::scaling(sx, sy) * Affine2D::translation(-blk.base);
+        const std::string layer = layerOf(e, inherit);
+        for (long long r = 0; r < rows; ++r)
+            for (long long c = 0; c < cols; ++c) {
+                const Affine2D xf = parent * *o * place * Affine2D::translation({c * dx, r * dy}) * local;
+                convertList(blk.entities, xf, depth + 1, layer, false);
+                ++r_.blockInsertsExpanded;
+            }
+    }
+
+public:
+    void finishWarnings() {
+        if (nonZeroZ_)
+            r_.warnings.push_back(std::to_string(nonZeroZ_) +
+                                  " object(s) had non-zero Z coordinates and were projected onto the XY plane.");
+        if (nonPlanar_)
+            r_.warnings.push_back(std::to_string(nonPlanar_) +
+                                  " object(s) lie in a tilted 3D plane (unusual extrusion direction) and were skipped.");
+        if (nonUniform_)
+            r_.warnings.push_back(std::to_string(nonUniform_) +
+                                  " curved object(s) inside non-uniformly scaled blocks would become ellipses and were "
+                                  "skipped.");
+        if (tooDeep_) r_.warnings.push_back("Block nesting deeper than 32 levels (possibly circular) was skipped.");
+        for (const auto& x : xrefs_)
+            r_.warnings.push_back("External reference \"" + x + "\" was not loaded (xrefs are not supported yet).");
+    }
+
+private:
+    DxfImportResult& r_;
+    const std::vector<Group>* g_ = nullptr;
+    std::size_t pos_ = 0;
+    bool sawEntities_ = false;
+    bool utf8_ = false;
+    std::optional<long long> insUnits_, measurement_;
+    std::set<std::string> layers_;
+    std::unordered_map<std::string, Block> blocks_;
+    std::vector<RawEntity> entities_;
+    std::vector<EntityPtr> out_;
+    std::size_t nonZeroZ_ = 0, nonPlanar_ = 0, nonUniform_ = 0, tooDeep_ = 0;
+    std::set<std::string> xrefs_;
+};
+
+} // namespace
+
+DxfImportResult importDxf(const QByteArray& data, Document& doc) {
+    DxfImportResult r;
+    if (data.startsWith("AutoCAD Binary DXF")) {
+        r.error = "This is a binary DXF file. Only ASCII DXF is supported; in AutoCAD use Save As > DXF with the "
+                  "default (ASCII) format.";
+        return r;
+    }
+    if (data.startsWith("AC10") || data.startsWith("AC1.")) {
+        r.error = "This looks like a DWG file renamed to .dxf. DWG is not supported; save it as DXF in AutoCAD.";
+        return r;
+    }
+    std::vector<Group> groups;
+    bool sawEof = false;
+    if (!tokenize(data, groups, r.error, sawEof)) return r;
+    if (groups.empty()) { r.error = "The file is empty."; return r; }
+
+    Importer imp(r);
+    if (!imp.run(groups)) return r;
+    imp.finishWarnings();
+    if (!sawEof)
+        r.warnings.insert(r.warnings.begin(),
+                          "The file ends without the DXF end-of-file marker, so it may be incomplete (truncated "
+                          "download or copy). Compare with the original drawing.");
+    std::vector<EntityPtr> ents = imp.takeEntities();
+    r.imported = ents.size();
+    doc.reset(std::move(ents), r.units);
+    r.ok = true;
+    return r;
+}
+
+DxfImportResult importDxfFile(const QString& path, Document& doc) {
+    DxfImportResult r;
+    QFile f(path);
+    if (!f.open(QIODevice::ReadOnly)) {
+        r.error = "Cannot open \"" + path.toStdString() + "\": " + f.errorString().toStdString();
+        return r;
+    }
+    if (f.size() > kMaxDxfSize) { r.error = "The DXF file is larger than 1 GB and cannot be imported."; return r; }
+    return importDxf(f.readAll(), doc);
+}
+
+} // namespace dyncad

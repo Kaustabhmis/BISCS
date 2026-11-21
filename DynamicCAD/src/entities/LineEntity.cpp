@@ -14,3 +14,11 @@ std::vector<Vec2> LineEntity::gripPoints() const { return {start_, (start_ + end
 double LineEntity::angleDeg() const { return geom::angleDeg(start_, end_); }
 
 } // namespace dyncad
+
+namespace dyncad {
+std::unique_ptr<Entity> LineEntity::transformed(const Affine2D& xf) const {
+    auto e = std::make_unique<LineEntity>(xf.apply(start_), xf.apply(end_));
+    e->setLayer(layer());
+    return e;
+}
+} // namespace dyncad
