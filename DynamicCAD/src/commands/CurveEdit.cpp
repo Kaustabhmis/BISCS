@@ -8,6 +8,7 @@
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "geometry/Geometry.h"
 
 #include <algorithm>
@@ -790,6 +791,24 @@ EntityPtr StretchCommand::stretched(const Entity& e, const BoundingBox& w, const
     }
     case EntityType::Arc: // arcs move only when completely inside
         break;
+    case EntityType::Text:
+        if (w.contains(static_cast<const TextEntity&>(e).insert())) out = EntityPtr(e.transformed(Affine2D::translation(d)));
+        break;
+    case EntityType::Dimension: { // defining points inside the window move: the value updates
+        auto dim = std::make_shared<DimensionEntity>(static_cast<const DimensionEntity&>(e));
+        const auto grips = dim->gripPoints();
+        for (std::size_t i = 0; i < grips.size(); ++i)
+            if (w.contains(grips[i])) dim->setPoint(i, grips[i] + d);
+        out = dim;
+        break;
+    }
+    case EntityType::Leader: {
+        auto l = std::make_shared<LeaderEntity>(static_cast<const LeaderEntity&>(e));
+        for (std::size_t i = 0; i < l->points().size(); ++i)
+            if (w.contains(l->points()[i])) l->setPoint(i, l->points()[i] + d);
+        out = l;
+        break;
+    }
     }
     if (out) out->copyStyleFrom(e);
     return out;

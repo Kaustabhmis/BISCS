@@ -69,7 +69,8 @@ public:
     double polarIncrement() const { return polarInc_; }
     // One-shot object snap typed at a point prompt (END, MID, CEN ...).
     std::optional<SnapMode> snapOverride() const { return snapOverride_; }
-    bool wantsPoint() const { return active_ && !active_->wantsSelection(); }
+    bool wantsPoint() const { return active_ && !active_->wantsSelection() && !active_->wantsText(); }
+    bool isTextInput() const { return active_ && active_->wantsText(); }
     const std::optional<Vec2>& lastPoint() const { return lastPoint_; }
     const std::string& lastCommand() const { return lastCommand_; }
 

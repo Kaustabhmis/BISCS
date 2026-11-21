@@ -4,6 +4,7 @@
 #include "canvas/ViewTransform.h"
 #include "commands/CommandProcessor.h"
 #include "snapping/SnapEngine.h"
+#include "entities/Annotation.h"
 #include "ui/Theme.h"
 
 #include <QWidget>
@@ -11,6 +12,10 @@
 class QPainter;
 
 namespace dyncad {
+
+// Font pixel size per unit of cap height, and the GUI text-width provider.
+double capHeightRatio(const std::string& font);
+void installTextMetrics();
 
 // Model-space drawing canvas: grid, crosshair, entities, selection, previews.
 // Mouse: wheel = zoom at cursor, middle-drag = pan, middle double-click =
@@ -85,6 +90,9 @@ private:
     void drawAxes(QPainter& p) const;
     void drawEntity(QPainter& p, const Entity& e, const BoundingBox& visible, const Document::Resolved* style = nullptr) const;
     QPen penFor(const Document::Resolved& r) const;
+    void drawText(QPainter& p, const std::string& text, const Vec2& insert, double rotationDeg, double height,
+                  TextJustify justify, const std::string& font, double wrap) const;
+    void drawAnnotation(QPainter& p, const AnnotationGraphics& g) const;
     void drawGrips(QPainter& p, const Entity& e) const;
     void drawSelectionWindow(QPainter& p) const;
     void drawCrosshair(QPainter& p) const;

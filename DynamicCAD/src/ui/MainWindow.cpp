@@ -46,6 +46,7 @@ namespace dyncad {
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selection_) {
     setWindowIcon(Icons::appIcon());
+    installTextMetrics(); // text boxes use the real font metrics
     registerCoreCommands(proc_, doc_);
 
     canvas_ = new CadCanvas(doc_, selection_, proc_, this);
@@ -86,7 +87,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), proc_(doc_, selec
         if (!selection_.empty()) startCommand("ERASE");
     });
     connect(canvas_, &CadCanvas::cursorMoved, this, [this](double x, double y) {
-        coordLabel_->setText(QStringLiteral("%1, %2").arg(x, 0, 'f', 4).arg(y, 0, 'f', 4));
+        auto z = [](double v) { return std::abs(v) < 5e-5 ? 0.0 : v; }; // avoid "-0.0000"
+        coordLabel_->setText(QStringLiteral("%1, %2").arg(z(x), 0, 'f', 4).arg(z(y), 0, 'f', 4));
     });
 
     QSettings s;
@@ -204,6 +206,24 @@ void MainWindow::createActions() {
         {&actJoin_, "&Join", "join", "JOIN", "Join touching lines, arcs and polylines (J)"},
         {&actExplode_, "Ex&plode", "explode", "EXPLODE", "Split polylines into lines and arcs (X)"},
     };
+    const Tool annoTools[] = {
+        {&actText_, "&Text", "text", "TEXT", "Single-line text (DT)"},
+        {&actMText_, "&Multiline Text", "mtext", "MTEXT", "Multiline text in a box (T)"},
+        {&actDimLin_, "&Linear", "dimlinear", "DIMLINEAR", "Horizontal / vertical dimension (DLI)"},
+        {&actDimAli_, "&Aligned", "dimaligned", "DIMALIGNED", "Aligned dimension (DAL)"},
+        {&actDimAng_, "An&gular", "dimangular", "DIMANGULAR", "Angle between lines, of an arc, or by 3 points (DAN)"},
+        {&actDimRad_, "&Radius", "dimradius", "DIMRADIUS", "Radius of an arc or circle (DRA)"},
+        {&actDimDia_, "&Diameter", "dimdiameter", "DIMDIAMETER", "Diameter of an arc or circle (DDI)"},
+        {&actLeader_, "L&eader", "leader", "LEADER", "Arrow with a note (LE)"},
+        {&actDist_, "D&istance", "dist", "DIST", "Measure the distance between two points (DI)"},
+        {&actArea_, "A&rea", "area", "AREA", "Measure area and perimeter (AA)"},
+        {&actId_, "&ID Point", "idpoint", "ID", "Show the coordinates of a point"},
+    };
+    for (const Tool& t : annoTools) {
+        *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
+        const QString cmd = t.cmd;
+        connect(*t.act, &QAction::triggered, this, [this, cmd] { startCommand(cmd); });
+    }
     for (const Tool& t : editTools) {
         *t.act = make(tr(t.text), t.icon, QKeySequence(), tr(t.tip));
         const QString cmd = t.cmd;
@@ -383,6 +403,13 @@ void MainWindow::createMenus() {
     draw->addSeparator();
     draw->addActions({actXline_, actRay_});
 
+    QMenu* annoMenu = menuBar()->addMenu(tr("&Annotate"));
+    annoMenu->addActions({actText_, actMText_, actLeader_});
+    annoMenu->addSeparator();
+    annoMenu->addActions({actDimLin_, actDimAli_, actDimAng_, actDimRad_, actDimDia_});
+    annoMenu->addSeparator();
+    annoMenu->addActions({actDist_, actArea_, actId_});
+
     QMenu* view = menuBar()->addMenu(tr("&View"));
     view->addActions({actZoomExt_, actZoomIn_, actZoomOut_});
     view->addSeparator();
@@ -413,6 +440,10 @@ void MainWindow::createRibbon() {
     mod->addGroup(tr("Transform"), {actMove_, actCopy_, actRotate_, actScale_, actMirror_, actStretch_, actArray_});
     mod->addGroup(tr("Edit Geometry"), {actOffset_, actTrim_, actExtend_, actFillet_, actChamfer_, actBreak_, actJoin_, actExplode_});
     mod->addGroup(tr("Clipboard"), {actCutClip_, actCopyClip_, actPasteClip_});
+    RibbonPage* anno = ribbon_->addPage(tr("Annotate"));
+    anno->addGroup(tr("Text"), {actText_, actMText_, actLeader_});
+    anno->addGroup(tr("Dimensions"), {actDimLin_, actDimAli_, actDimAng_, actDimRad_, actDimDia_});
+    anno->addGroup(tr("Measure"), {actDist_, actArea_, actId_});
     RibbonPage* construct = ribbon_->addPage(tr("Construction"));
     construct->addGroup(tr("Construction Lines"), {actXline_, actRay_});
     home->addGroup(tr("Selection"), {actSelectAll_});
@@ -619,6 +650,8 @@ void MainWindow::registerUiCommands() {
         message(tr("Modify: MOVE (M), COPY (CO), ROTATE (RO), SCALE (SC), MIRROR (MI), STRETCH (S), ARRAY (AR), OFFSET (O),"
                    " TRIM (TR), EXTEND (EX), FILLET (F), CHAMFER (CHA), BREAK (BR), JOIN (J), EXPLODE (X)."
                    " Click a grip of a selected object to reshape it. Ctrl+C / Ctrl+X / Ctrl+V use the clipboard."));
+        message(tr("Annotate: TEXT (DT), MTEXT (T), LEADER (LE), DIMLINEAR (DLI), DIMALIGNED (DAL), DIMANGULAR (DAN),"
+                   " DIMRADIUS (DRA), DIMDIAMETER (DDI), DIST (DI), AREA (AA), ID."));
         message(tr("Layers: LAYER (LA), MATCHPROP (MA), LTSCALE <factor>, LWDISPLAY. Use the Home ribbon drop-downs to"
                    " change the layer, colour, linetype and lineweight of selected objects."));
         message(tr("Other: ERASE (E), UNDO (U), REDO, ZOOM (Z) [E|IN|OUT|factor],"
@@ -652,6 +685,7 @@ void MainWindow::message(const QString& m) {
 
 void MainWindow::onProcessorState() {
     cmdLine_->setPrompt(QString::fromStdString(proc_.prompt()));
+    cmdLine_->setTextMode(proc_.isTextInput());
     canvas_->update();
 }
 

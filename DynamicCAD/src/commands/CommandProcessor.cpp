@@ -5,6 +5,7 @@
 #include "commands/ShapeCommands.h"
 #include "commands/ModifyCommands.h"
 #include "commands/CurveEdit.h"
+#include "commands/AnnotationCommands.h"
 #include "geometry/Geometry.h"
 
 #include <sstream>
@@ -134,6 +135,13 @@ bool CommandProcessor::tryTransparent(const std::string& text) {
 }
 
 bool CommandProcessor::submit(const std::string& rawText) {
+    if (active_ && active_->wantsText()) { // free text: no parsing, no transparent commands
+        std::string t = rawText;
+        while (!t.empty() && (t.back() == '\r' || t.back() == '\n')) t.pop_back();
+        finishIf(t.empty() ? active_->enter(ctx_) : active_->text(ctx_, t));
+        stateChanged();
+        return true;
+    }
     const std::string text = trim(rawText);
 
     if (!active_) {
@@ -230,6 +238,17 @@ void registerCoreCommands(CommandProcessor& proc, Document& doc) {
     proc.registerCommand("CHAMFER", {"CHA"}, [] { return std::make_unique<CornerCommand>(true); });
     proc.registerCommand("STRETCH", {"S"}, [] { return std::make_unique<StretchCommand>(); });
     proc.registerCommand("MATCHPROP", {"MA"}, [] { return std::make_unique<MatchPropCommand>(); });
+    proc.registerCommand("TEXT", {"DT", "DTEXT"}, [] { return std::make_unique<TextCommand>(); });
+    proc.registerCommand("MTEXT", {"T", "MT"}, [] { return std::make_unique<MTextCommand>(); });
+    proc.registerCommand("DIMLINEAR", {"DLI"}, [] { return std::make_unique<DimLinearCommand>(false); });
+    proc.registerCommand("DIMALIGNED", {"DAL"}, [] { return std::make_unique<DimLinearCommand>(true); });
+    proc.registerCommand("DIMANGULAR", {"DAN"}, [] { return std::make_unique<DimAngularCommand>(); });
+    proc.registerCommand("DIMRADIUS", {"DRA"}, [] { return std::make_unique<DimRadialCommand>(false); });
+    proc.registerCommand("DIMDIAMETER", {"DDI"}, [] { return std::make_unique<DimRadialCommand>(true); });
+    proc.registerCommand("LEADER", {"LE", "QLEADER", "MLEADER"}, [] { return std::make_unique<LeaderCommand>(); });
+    proc.registerCommand("DIST", {"DI"}, [] { return std::make_unique<DistCommand>(); });
+    proc.registerCommand("AREA", {"AA"}, [] { return std::make_unique<AreaCommand>(); });
+    proc.registerCommand("ID", {}, [] { return std::make_unique<IdCommand>(); });
     proc.registerCommand("ERASE", {"E", "DELETE"}, [] { return std::make_unique<EraseCommand>(); });
     proc.registerAction("UNDO", {"U"}, [&doc, &proc](const std::vector<std::string>&) {
         if (!doc.undoStack().canUndo()) { if (proc.onMessage) proc.onMessage("Nothing to undo."); return; }

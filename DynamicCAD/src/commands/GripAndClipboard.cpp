@@ -7,6 +7,7 @@
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "geometry/Geometry.h"
 
 #include <cmath>
@@ -84,7 +85,20 @@ EntityPtr withGripMoved(const Entity& e, std::size_t i, const Vec2& to) {
     }
     case EntityType::Point:
     case EntityType::XLine:
+    case EntityType::Text:
         return translateAll();
+    case EntityType::Dimension: {
+        auto d = std::make_shared<DimensionEntity>(static_cast<const DimensionEntity&>(e));
+        d->setPoint(i, to);
+        out = d;
+        break;
+    }
+    case EntityType::Leader: {
+        auto l = std::make_shared<LeaderEntity>(static_cast<const LeaderEntity&>(e));
+        l->setPoint(i, to);
+        out = l;
+        break;
+    }
     }
     if (out) out->copyStyleFrom(e);
     return out;

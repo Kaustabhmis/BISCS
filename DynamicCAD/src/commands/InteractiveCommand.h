@@ -49,6 +49,10 @@ public:
     virtual void preview(const Vec2& cursor, std::vector<std::unique_ptr<Entity>>& out) const;
     // True while the command is collecting objects with the pick box.
     virtual bool wantsSelection() const { return false; }
+    // True while the command expects free text (TEXT contents): the command
+    // line then passes input unparsed and Space types a space.
+    virtual bool wantsText() const { return false; }
+    virtual CommandStatus text(CommandContext&, const std::string&) { return CommandStatus::Continue; }
 };
 
 } // namespace dyncad

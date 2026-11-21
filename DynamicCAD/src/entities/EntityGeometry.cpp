@@ -7,6 +7,7 @@
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 
 #include <cmath>
 
@@ -71,6 +72,24 @@ std::vector<Primitive> entityPrimitives(const Entity& e, const BoundingBox& regi
     }
     case EntityType::Point:
         break;
+    case EntityType::Text: {
+        const auto c = static_cast<const TextEntity&>(e).corners();
+        for (int i = 0; i < 4; ++i) {
+            Primitive p = Primitive::segment(c[i], c[(i + 1) % 4]);
+            if (keep(p, region)) out.push_back(p);
+        }
+        break;
+    }
+    case EntityType::Dimension:
+    case EntityType::Leader: {
+        const AnnotationGraphics g = e.type() == EntityType::Dimension ? static_cast<const DimensionEntity&>(e).graphics()
+                                                                        : static_cast<const LeaderEntity&>(e).graphics();
+        for (const auto& l : g.lines) {
+            Primitive p = Primitive::segment(l.first, l.second);
+            if (keep(p, region)) out.push_back(p);
+        }
+        break;
+    }
     }
     return out;
 }
@@ -157,6 +176,17 @@ EntityKeyPoints entityKeyPoints(const Entity& e) {
         else k.midpoints = {x.base()};
         break;
     }
+    case EntityType::Text:
+        k.nodes = {static_cast<const TextEntity&>(e).insert()}; // insertion point
+        break;
+    case EntityType::Dimension: {
+        const auto& d = static_cast<const DimensionEntity&>(e);
+        k.endpoints = {d.a(), d.b()};
+        break;
+    }
+    case EntityType::Leader:
+        k.endpoints = static_cast<const LeaderEntity&>(e).points();
+        break;
     }
     return k;
 }

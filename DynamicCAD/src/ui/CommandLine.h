@@ -23,6 +23,8 @@ public:
     void insertText(const QString& text);
     QString history() const;
     QLineEdit* input() const { return input_; }
+    // While typing free text (TEXT, MTEXT), Space inserts a space instead of submitting.
+    void setTextMode(bool on) { textMode_ = on; }
 
 signals:
     void submitted(const QString& text);
@@ -39,6 +41,7 @@ private:
     QLineEdit* input_;
     QStringList recall_;
     int recallPos_ = 0;
+    bool textMode_ = false;
 };
 
 } // namespace dyncad

@@ -1,7 +1,7 @@
 # DYNAMIC CAD - Copyright (c) Dynamic Engineers. All rights reserved.
 cmake_minimum_required(VERSION 3.21)
 
-project(DynamicCAD VERSION 0.5.0 LANGUAGES CXX
+project(DynamicCAD VERSION 0.6.0 LANGUAGES CXX
         DESCRIPTION "DYNAMIC CAD - professional 2D CAD by Dynamic Engineers")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -53,6 +53,7 @@ add_library(dyncad_core STATIC
     src/entities/CurveEntities.h       src/entities/CurveEntities.cpp
     src/entities/EntityGeometry.h      src/entities/EntityGeometry.cpp
     src/entities/XLineEntity.h         src/entities/XLineEntity.cpp
+    src/entities/Annotation.h          src/entities/Annotation.cpp
     src/layers/Style.h                 src/layers/Style.cpp
     src/layers/LayerTable.h            src/layers/LayerTable.cpp
     src/document/UndoStack.h           src/document/UndoStack.cpp
@@ -67,6 +68,7 @@ add_library(dyncad_core STATIC
     src/commands/ModifyCommands.h      src/commands/ModifyCommands.cpp
     src/commands/CurveEdit.h           src/commands/CurveEdit.cpp
     src/commands/GripAndClipboard.h    src/commands/GripAndClipboard.cpp
+    src/commands/AnnotationCommands.h  src/commands/AnnotationCommands.cpp
     src/commands/CommandProcessor.h    src/commands/CommandProcessor.cpp
     src/canvas/ViewTransform.h         src/canvas/ViewTransform.cpp
     src/fileio/DynFormat.h             src/fileio/DynFormat.cpp

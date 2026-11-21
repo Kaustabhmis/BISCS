@@ -18,6 +18,7 @@
 #include <QWheelEvent>
 
 #include <cmath>
+#include <map>
 
 namespace dyncad {
 
@@ -375,6 +376,17 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
             p.drawLine(qp(view_.worldToScreen(c->first)), qp(view_.worldToScreen(c->second)));
         break;
     }
+    case EntityType::Text: {
+        const auto& t = static_cast<const TextEntity&>(e);
+        drawText(p, t.text(), t.insert(), t.rotationDeg(), t.height(), t.justify(), t.font(), t.wrapWidth());
+        break;
+    }
+    case EntityType::Dimension:
+        drawAnnotation(p, static_cast<const DimensionEntity&>(e).graphics());
+        break;
+    case EntityType::Leader:
+        drawAnnotation(p, static_cast<const LeaderEntity&>(e).graphics());
+        break;
     case EntityType::Ellipse: {
         const EllipseGeom& g = static_cast<const EllipseEntity&>(e).geom();
         if (!clip.intersects(geom::ellipseBounds(g))) break;
@@ -432,6 +444,66 @@ void CadCanvas::drawEntity(QPainter& p, const Entity& e, const BoundingBox& visi
         break;
     }
     }
+}
+
+void CadCanvas::drawText(QPainter& p, const std::string& text, const Vec2& insert, double rotationDeg, double height,
+                         TextJustify justify, const std::string& font, double wrap) const {
+    const double hpx = height * view_.scale();
+    const TextLayout lay = layoutText(text, height, justify, font, wrap);
+    const QColor col = p.pen().color();
+    p.save();
+    const Vec2 s = view_.worldToScreen(insert);
+    p.translate(s.x, s.y);
+    p.rotate(-rotationDeg);
+    if (hpx < 3.0) {
+        // Too small to read: show the text block as a thin box (greeking).
+        const BoundingBox b = lay.box;
+        p.setPen(QPen(col, 1));
+        p.setBrush(Qt::NoBrush);
+        p.drawRect(QRectF(QPointF(b.min.x * view_.scale(), -b.max.y * view_.scale()),
+                          QPointF(b.max.x * view_.scale(), -b.min.y * view_.scale())));
+        p.restore();
+        return;
+    }
+    QFont f(QString::fromStdString(font));
+    f.setPixelSize(std::max(1, int(std::lround(hpx * capHeightRatio(font)))));
+    p.setFont(f);
+    p.setPen(col);
+    for (const auto& line : lay.lines)
+        p.drawText(QPointF(line.start.x * view_.scale(), -line.start.y * view_.scale()), QString::fromStdString(line.text));
+    p.restore();
+}
+
+void CadCanvas::drawAnnotation(QPainter& p, const AnnotationGraphics& g) const {
+    for (const auto& l : g.lines) p.drawLine(qp(view_.worldToScreen(l.first)), qp(view_.worldToScreen(l.second)));
+    p.save();
+    p.setBrush(p.pen().color());
+    for (const auto& a : g.arrows)
+        p.drawPolygon(QPolygonF({qp(view_.worldToScreen(a[0])), qp(view_.worldToScreen(a[1])), qp(view_.worldToScreen(a[2]))}));
+    p.restore();
+    for (const auto& t : g.texts) drawText(p, t.text, t.position, t.rotationDeg, t.height, t.justify, t.font, 0.0);
+}
+
+double capHeightRatio(const std::string& font) {
+    static std::map<std::string, double> cache;
+    auto it = cache.find(font);
+    if (it != cache.end()) return it->second;
+    QFont f(QString::fromStdString(font));
+    f.setPixelSize(100);
+    const double cap = QFontMetricsF(f).capHeight();
+    const double ratio = cap > 1 ? 100.0 / cap : 1.4;
+    cache[font] = ratio;
+    return ratio;
+}
+
+void installTextMetrics() {
+    // Real font metrics for text layout (selection boxes match what is drawn).
+    setTextWidthFunction([](const std::string& line, const std::string& font, double height) {
+        QFont f(QString::fromStdString(font));
+        f.setPixelSize(100);
+        const double w = QFontMetricsF(f).horizontalAdvance(QString::fromStdString(line));
+        return w / 100.0 * height * capHeightRatio(font);
+    });
 }
 
 void CadCanvas::drawGrips(QPainter& p, const Entity& e) const {
@@ -619,9 +691,12 @@ void CadCanvas::keyPressEvent(QKeyEvent* ev) {
         update();
         return;
     case Qt::Key_Delete: emit deleteRequested(); return;
+    case Qt::Key_Space:
+        if (proc_.isTextInput()) { emit textTyped(QStringLiteral(" ")); return; }
+        emit enterRequested();
+        return;
     case Qt::Key_Return:
-    case Qt::Key_Enter:
-    case Qt::Key_Space: emit enterRequested(); return;
+    case Qt::Key_Enter: emit enterRequested(); return;
     default: break;
     }
     const QString t = ev->text();

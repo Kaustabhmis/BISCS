@@ -215,6 +215,38 @@ void paintIcon(QPainter& p, const QString& n) {
         p.drawRoundedRect(QRectF(30, 8, 24, 24), 4, 4);
     } else if (n == "lwt") {
         for (int i = 0; i < 3; ++i) { p.setPen(QPen(ink, 2 + i * 3)); p.drawLine(QPointF(10, 16 + i * 16), QPointF(54, 16 + i * 16)); }
+    } else if (n == "text" || n == "mtext") {
+        QFont f; f.setPixelSize(n == "text" ? 40 : 22); f.setBold(true);
+        p.setFont(f); p.setPen(ink);
+        if (n == "text") p.drawText(QRectF(4, 4, 56, 56), Qt::AlignCenter, "A");
+        else { p.drawText(QRectF(6, 6, 52, 26), Qt::AlignLeft, "Ab"); p.setPen(QPen(ink, 4));
+               p.drawLine(QPointF(8, 40), QPointF(56, 40)); p.drawLine(QPointF(8, 52), QPointF(44, 52)); }
+    } else if (n == "dimlinear" || n == "dimaligned") {
+        if (n == "dimaligned") { p.translate(32, 32); p.rotate(-30); p.translate(-32, -32); }
+        p.setPen(QPen(ink, 3)); p.drawLine(QPointF(10, 20), QPointF(10, 50)); p.drawLine(QPointF(54, 20), QPointF(54, 50));
+        p.setPen(QPen(gold, 3)); p.drawLine(QPointF(12, 28), QPointF(52, 28));
+        p.setPen(Qt::NoPen); p.setBrush(gold);
+        p.drawPolygon(QPolygonF({QPointF(10, 28), QPointF(20, 24), QPointF(20, 32)}));
+        p.drawPolygon(QPolygonF({QPointF(54, 28), QPointF(44, 24), QPointF(44, 32)}));
+    } else if (n == "dimangular") {
+        p.drawLine(QPointF(8, 56), QPointF(58, 56)); p.drawLine(QPointF(8, 56), QPointF(46, 12));
+        p.setPen(QPen(gold, 3)); p.drawArc(QRectF(-24, 24, 64, 64), 0, 49 * 16);
+    } else if (n == "dimradius" || n == "dimdiameter") {
+        p.drawEllipse(QPointF(32, 32), 24, 24);
+        p.setPen(QPen(gold, 3));
+        if (n == "dimradius") p.drawLine(QPointF(32, 32), QPointF(49, 15));
+        else p.drawLine(QPointF(15, 49), QPointF(49, 15));
+    } else if (n == "leader") {
+        p.drawPolyline(QPolygonF({QPointF(12, 52), QPointF(36, 22), QPointF(58, 22)}));
+        p.setPen(Qt::NoPen); p.setBrush(gold); p.drawPolygon(QPolygonF({QPointF(8, 58), QPointF(14, 42), QPointF(22, 50)}));
+    } else if (n == "dist") {
+        p.drawLine(QPointF(8, 44), QPointF(56, 20)); dot({8, 44}); dot({56, 20});
+    } else if (n == "area") {
+        p.setPen(QPen(ink, 3)); p.setBrush(QColor(0x9C, 0xC8, 0xF0, 90));
+        p.drawPolygon(QPolygonF({QPointF(8, 50), QPointF(22, 12), QPointF(56, 20), QPointF(48, 54)}));
+    } else if (n == "idpoint") {
+        p.drawLine(QPointF(32, 10), QPointF(32, 54)); p.drawLine(QPointF(10, 32), QPointF(54, 32)); dot({32, 32});
+        QFont f; f.setPixelSize(16); p.setFont(f); p.setPen(gold); p.drawText(QPointF(36, 24), "xy");
     } else if (n == "theme") {
         p.drawEllipse(QPointF(32, 32), 22, 22);
         p.setPen(Qt::NoPen); p.setBrush(gold);

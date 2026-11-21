@@ -9,6 +9,7 @@
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "ui/StyleWidgets.h"
 
 #include <QComboBox>
@@ -24,7 +25,7 @@
 namespace dyncad {
 
 namespace {
-QString num(double v) { return QString::number(v, 'f', 4); }
+QString num(double v) { return QString::number(std::abs(v) < 5e-5 ? 0.0 : v, 'f', 4); } // no "-0.0000"
 QString pt(const Vec2& p) { return num(p.x) + ", " + num(p.y); }
 std::optional<Vec2> parsePoint(const QString& s) {
     const QStringList parts = s.split(',');
@@ -253,6 +254,37 @@ void PropertiesPanel::refresh() {
         addRow(g, tr("Length (approx.)"), num(sp.length()));
         break;
     }
+    case EntityType::Text: {
+        const auto& t = static_cast<const TextEntity&>(*e);
+        QString contents = QString::fromStdString(t.text());
+        contents.replace('\n', QStringLiteral("\\P"));
+        addEditRow(g, tr("Contents"), contents);
+        addEditRow(g, tr("Position"), pt(t.insert()));
+        addEditRow(g, tr("Height"), num(t.height()));
+        addEditRow(g, tr("Rotation (deg)"), num(t.rotationDeg()));
+        addRow(g, tr("Justify"), QString::fromLatin1(justifyName(t.justify())));
+        if (t.wrapWidth() > 0) addEditRow(g, tr("Wrap width"), num(t.wrapWidth()));
+        break;
+    }
+    case EntityType::Dimension: {
+        const auto& d = static_cast<const DimensionEntity&>(*e);
+        addRow(g, tr("Kind"), QString::fromLatin1(dimKindName(d.kind())));
+        addRow(g, tr("Measurement"), num(d.measurement()));
+        addEditRow(g, tr("Text override"), QString::fromStdString(d.textOverride()));
+        addEditRow(g, tr("Text height"), num(d.dimStyle().textHeight));
+        addEditRow(g, tr("Arrow size"), num(d.dimStyle().arrowSize));
+        addEditRow(g, tr("Precision"), QString::number(d.dimStyle().precision));
+        break;
+    }
+    case EntityType::Leader: {
+        const auto& l = static_cast<const LeaderEntity&>(*e);
+        QString contents = QString::fromStdString(l.text());
+        contents.replace('\n', QStringLiteral("\\P"));
+        addEditRow(g, tr("Contents"), contents);
+        addRow(g, tr("Points"), QString::number(l.points().size()));
+        addEditRow(g, tr("Text height"), num(l.dimStyle().textHeight));
+        break;
+    }
     case EntityType::Polyline: {
         const auto& p = static_cast<const PolylineEntity&>(*e);
         addRow(g, tr("Vertices"), QString::number(p.vertices().size()));
@@ -340,6 +372,33 @@ bool PropertiesPanel::editGeometry(const QString& prop, const QString& value) {
     }
     case EntityType::Spline:
         break;
+    case EntityType::Text: {
+        auto t = std::make_shared<TextEntity>(static_cast<const TextEntity&>(*e));
+        QString v = value;
+        if (prop == tr("Contents")) { v.replace(QStringLiteral("\\P"), QStringLiteral("\n")); t->setText(v.toStdString()); out = t; }
+        else if (prop == tr("Position") && p) { t->setInsert(*p); out = t; }
+        else if (prop == tr("Height") && n && *n > 0) { t->setHeight(*n); out = t; }
+        else if (prop == tr("Rotation (deg)") && n) { t->setRotation(*n); out = t; }
+        else if (prop == tr("Wrap width") && n && *n >= 0) { t->setWrapWidth(*n); out = t; }
+        break;
+    }
+    case EntityType::Dimension: {
+        auto d = std::make_shared<DimensionEntity>(static_cast<const DimensionEntity&>(*e));
+        DimStyle st = d->dimStyle();
+        if (prop == tr("Text override")) { d->setTextOverride(value.toStdString()); out = d; }
+        else if (prop == tr("Text height") && n && *n > 0) { st.textHeight = *n; d->setDimStyle(st); out = d; }
+        else if (prop == tr("Arrow size") && n && *n > 0) { st.arrowSize = *n; d->setDimStyle(st); out = d; }
+        else if (prop == tr("Precision") && n && *n >= 0 && *n <= 8 && *n == std::floor(*n)) { st.precision = int(*n); d->setDimStyle(st); out = d; }
+        break;
+    }
+    case EntityType::Leader: {
+        auto l = std::make_shared<LeaderEntity>(static_cast<const LeaderEntity&>(*e));
+        DimStyle st = l->dimStyle();
+        QString v = value;
+        if (prop == tr("Contents")) { v.replace(QStringLiteral("\\P"), QStringLiteral("\n")); l->setText(v.toStdString()); out = l; }
+        else if (prop == tr("Text height") && n && *n > 0) { st.textHeight = *n; l->setDimStyle(st); out = l; }
+        break;
+    }
     }
     if (!out) return false;
     out->copyStyleFrom(*e);

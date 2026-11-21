@@ -1,6 +1,7 @@
 // DYNAMIC CAD - GUI integration tests (headless, offscreen platform).
 // Drives the real MainWindow with simulated mouse and keyboard input.
 #include "canvas/CadCanvas.h"
+#include "entities/Annotation.h"
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/PolylineEntity.h"
@@ -184,10 +185,10 @@ private slots:
         w.show();
         QVERIFY(QTest::qWaitForWindowExposed(&w));
         QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
-        QCOMPARE(w.document().entityCount(), std::size_t(13));
+        QCOMPARE(w.document().entityCount(), std::size_t(15));
         QVERIFY(w.currentFile().isEmpty()); // never overwrite the DXF on Save
         QVERIFY(w.windowTitle().contains("mixed_R2010.dxf (imported)"));
-        QVERIFY(w.commandLine()->history().contains("Not imported yet"));
+        QVERIFY(w.commandLine()->history().contains("paper-space"));
         // Imported arcs are selectable: pick the quarter arc r=20 at 45 degrees.
         const Vec2 onArc = Vec2::fromPolar(20, degToRad(45));
         QTest::mouseClick(w.canvas(), Qt::LeftButton, Qt::NoModifier, screenOf(w, onArc));
@@ -202,7 +203,7 @@ private slots:
         QVERIFY(w.importDxfPath(QString(DYNCAD_DXF_FIXTURES) + "/mixed_R2010.dxf", false));
         // A broken file reports an error and keeps the current drawing.
         QVERIFY(!w.importDxfPath("/nonexistent/broken.dxf", false));
-        QCOMPARE(w.document().entityCount(), std::size_t(13));
+        QCOMPARE(w.document().entityCount(), std::size_t(15));
     }
 
     void ribbonDrawToolsWithMouse() {
@@ -470,6 +471,47 @@ private slots:
         QApplication::processEvents();
         w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_layers.png"));
         w.executeCommandText("LWDISPLAY");
+    }
+
+    void annotationInWindow() {
+        MainWindow w;
+        w.setTheme(ThemeKind::Dark);
+        w.resize(1400, 860);
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        QLineEdit* in = w.commandLine()->input();
+        auto typeLine = [&](const char* s) { in->setFocus(); QTest::keyClicks(in, s); QTest::keyClick(in, Qt::Key_Return); };
+        // A flange-like part with dimensions and notes.
+        for (const char* l : {"REC", "F", "10", "0,0", "200,120", "C", "100,60", "30", "C", "25,25", "8.75",
+                              "C", "175,25", "8.75", "C", "25,95", "8.75", "C", "175,95", "8.75", "REC", "F", "0", ""})
+            w.executeCommandText(l);
+        w.processor().cancel();
+        for (const char* l : {"DLI", "0,0", "200,0", "100,-20", "DLI", "200,0", "200,120", "225,60",
+                              "DLI", "25,25", "175,25", "100,10", "DDI", "130,60", "150,85", "DRA", "33.75,95", "60,115"})
+            w.executeCommandText(l);
+        // TEXT typed through the command line: Space must be a space here.
+        typeLine("DT");
+        typeLine("0,-45");
+        typeLine("5");
+        typeLine("0");
+        typeLine("BASE PLATE - PL 10 THK");
+        typeLine("");
+        QVERIFY(!w.processor().isActive());
+        const auto* t = dynamic_cast<const TextEntity*>(w.document().entities().back().get());
+        QVERIFY(t);
+        QCOMPARE(QString::fromStdString(t->text()), QString("BASE PLATE - PL 10 THK"));
+        for (const char* l : {"LE", "181.2,31.2", "215,-20", "235,-20", ""}) w.executeCommandText(l);
+        typeLine("4 HOLES DIA 17.5");
+        typeLine("");
+        w.executeCommandText("ZOOM E");
+        QTest::mouseMove(w.canvas(), QPoint(10, 10));
+        QApplication::processEvents();
+        if (auto* rib = w.findChild<QTabWidget*>("Ribbon")) rib->setCurrentIndex(2); // Annotate
+        QApplication::processEvents();
+        w.grab().toImage().save(QDir(QCoreApplication::applicationDirPath()).filePath("screenshot_annotation.png"));
+        int dims = 0;
+        for (const auto& e : w.document().entities()) dims += e->type() == EntityType::Dimension;
+        QCOMPARE(dims, 5);
     }
 
     void toolsScreenshot() {

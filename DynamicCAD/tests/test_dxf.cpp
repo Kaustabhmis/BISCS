@@ -6,6 +6,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "fileio/DynFormat.h"
@@ -63,8 +64,8 @@ private slots:
         const DxfImportResult r = importDxfFile(QString(DYNCAD_DXF_FIXTURES) + "/" + file, doc);
         QVERIFY2(r.ok, r.error.c_str());
         QCOMPARE(QString::fromStdString(r.acadVersion), acadver);
-        // 11 basic objects, plus SPLINE and ELLIPSE in the 2000+ files.
-        const std::size_t expected = modern ? 13 : 11;
+        // 11 basic objects + TEXT, plus SPLINE, ELLIPSE and MTEXT in the 2000+ files.
+        const std::size_t expected = modern ? 15 : 12;
         QCOMPARE(r.imported, expected);
         QCOMPARE(doc.entityCount(), expected);
         QVERIFY(!doc.isModified());
@@ -72,9 +73,13 @@ private slots:
         QCOMPARE(r.unitsAssumed, !modern); // R12 cannot store $INSUNITS
         QCOMPARE(r.blockInsertsExpanded, std::size_t(3)); // BOLT, PLATE, nested BOLT
         QCOMPARE(r.paperSpaceSkipped, std::size_t(1));
-        QCOMPARE(r.unsupported.at("TEXT (text)"), std::size_t(1));
+        QCOMPARE(r.unsupportedTotal(), std::size_t(0));
+        auto texts = all<TextEntity>(doc);
+        QCOMPARE(texts.size(), std::size_t(modern ? 2 : 1));
+        QCOMPARE(QString::fromStdString(texts[0]->text()), QString("HELLO"));
+        QCOMPARE(texts[0]->height(), 3.5);
         if (modern) {
-            QCOMPARE(r.unsupported.at("MTEXT (text)"), std::size_t(1));
+            QCOMPARE(QString::fromStdString(texts[1]->text()), QString("NOTE"));
             QVERIFY(!r.unsupported.count("SPLINE"));
             QVERIFY(!r.unsupported.count("ELLIPSE"));
             auto sp = all<SplineEntity>(doc);
@@ -181,6 +186,43 @@ private slots:
         QCOMPARE(serializeDyn(back), serializeDyn(doc));
     }
 
+    void textMtextDimensions() {
+        const QByteArray data = dxf({
+            "0\nTEXT\n8\n0\n10\n0\n20\n0\n40\n5\n1\n%%c20 %%p0.1 30%%d\n50\n0\n",
+            "0\nTEXT\n8\n0\n10\n0\n20\n0\n11\n50\n21\n10\n40\n2.5\n1\nMID\n72\n1\n73\n2\n",
+            "0\nMTEXT\n8\n0\n10\n100\n20\n50\n40\n3\n41\n80\n71\n1\n3\n{\\fArial|b0;First}\\P\n1\nSecond \\S1^2;\n",
+            "0\nDIMENSION\n8\nDIM\n2\n*D1\n10\n0\n20\n20\n13\n0\n23\n0\n14\n100\n24\n0\n70\n32\n50\n0\n1\n<>\n",
+            "0\nDIMENSION\n8\nDIM\n10\n50\n20\n50\n15\n60\n25\n50\n11\n70\n21\n50\n70\n36\n",
+            "0\nDIMENSION\n8\nDIM\n10\n10\n20\n0\n15\n-10\n25\n0\n11\n0\n21\n15\n70\n35\n1\nTYP <>\n",
+            "0\nDIMENSION\n8\nDIM\n13\n0\n23\n0\n14\n10\n24\n0\n15\n0\n25\n0\n10\n0\n20\n10\n16\n7\n26\n7\n70\n34\n",
+            "0\nDIMENSION\n8\nDIM\n70\n38\n10\n0\n20\n0\n13\n1\n23\n1\n14\n2\n24\n2\n"},
+            "9\n$DIMTXT\n40\n0.18\n9\n$DIMSCALE\n40\n10\n9\n$DIMDEC\n70\n1\n");
+        Document doc;
+        const DxfImportResult r = importDxf(data, doc);
+        QVERIFY2(r.ok, r.error.c_str());
+        auto texts = all<TextEntity>(doc);
+        QCOMPARE(texts.size(), std::size_t(3));
+        QCOMPARE(QString::fromStdString(texts[0]->text()), QString::fromUtf8("\u00D820 \u00B10.1 30\u00B0"));
+        QVERIFY(texts[1]->justify() == TextJustify::Middle && texts[1]->insert() == Vec2(50, 10));
+        QCOMPARE(QString::fromStdString(texts[2]->text()), QString("First\nSecond 1/2"));
+        QVERIFY(texts[2]->justify() == TextJustify::TopLeft && texts[2]->wrapWidth() == 80);
+        auto dims = all<DimensionEntity>(doc);
+        QCOMPARE(dims.size(), std::size_t(4));
+        QVERIFY(dims[0]->kind() == DimKind::Linear);
+        QCOMPARE(dims[0]->measurement(), 100.0);
+        QCOMPARE(dims[0]->dimStyle().textHeight, 1.8);       // DIMTXT x DIMSCALE
+        QCOMPARE(QString::fromStdString(dims[0]->displayText()), QString("100"));
+        QVERIFY(dims[1]->kind() == DimKind::Radius);
+        QCOMPARE(dims[1]->measurement(), 10.0);
+        QVERIFY(dims[2]->kind() == DimKind::Diameter);
+        QCOMPARE(dims[2]->measurement(), 20.0);
+        QCOMPARE(QString::fromStdString(dims[2]->displayText()), QString::fromUtf8("TYP \u00D820"));
+        QVERIFY(dims[3]->kind() == DimKind::Angular);
+        QVERIFY(std::abs(dims[3]->measurement() - 90.0) < 1e-9);
+        QCOMPARE(QString::fromStdString(dims[3]->layer()), QString("DIM"));
+        QCOMPARE(r.unsupported.at("DIMENSION (ordinate)"), std::size_t(1));
+    }
+
     void minsertArrayAndMirroredBlock() {
         const char* blocks =
             "0\nBLOCK\n8\n0\n2\nB\n70\n0\n10\n0\n20\n0\n"
@@ -233,7 +275,7 @@ private slots:
         QVERIFY(r.ok);
         QCOMPARE(doc.entityCount(), std::size_t(1));
         QCOMPARE(r.unsupported.at("HATCH"), std::size_t(1));
-        QCOMPARE(r.unsupported.at("DIMENSION (annotation)"), std::size_t(1));
+        QCOMPARE(r.unsupported.at("DIMENSION (invalid data)"), std::size_t(1)); // no defining points
         QCOMPARE(r.unsupported.at("CIRCLE (invalid data)"), std::size_t(1));
         bool z = false, tilt = false;
         for (auto& w : r.warnings) {
@@ -315,11 +357,12 @@ private slots:
         const DxfImportResult r = importDxfFile(QString(DYNCAD_SAMPLES_DIR) + "/sample-flange.dxf", doc);
         QVERIFY2(r.ok, r.error.c_str());
         // outline + bore + pitch circle + 6 x (hole + 2 centre lines) + 4 lines + side view + arc
-        QCOMPARE(r.imported, std::size_t(27));
+        QCOMPARE(r.imported, std::size_t(28)); // incl. the title TEXT
         QCOMPARE(r.blockInsertsExpanded, std::size_t(6));
-        QCOMPARE(r.unsupportedTotal(), std::size_t(1)); // the title TEXT
+        QCOMPARE(r.unsupportedTotal(), std::size_t(0));
         const BoundingBox ext = doc.extents();
-        QVERIFY(nearlyEqual(ext.min, {-140, -140}, 1e-9));
+        QVERIFY(std::abs(ext.min.x + 140) < 1e-9); // centre line
+        QVERIFY(ext.min.y < -164);                // the title text below the part (insert y = -165)
         QVERIFY(nearlyEqual(ext.max, {196, 140}, 1e-9));
         // Bolt holes lie exactly on the 160 mm pitch circle.
         int holes = 0;

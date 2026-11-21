@@ -55,7 +55,7 @@ void CommandLine::insertText(const QString& text) {
 QString CommandLine::history() const { return history_->toPlainText(); }
 
 void CommandLine::submit() {
-    const QString text = input_->text().trimmed();
+    const QString text = textMode_ ? input_->text() : input_->text().trimmed();
     input_->clear();
     if (!text.isEmpty()) {
         recall_.append(text);
@@ -69,9 +69,12 @@ bool CommandLine::eventFilter(QObject* obj, QEvent* ev) {
     if (obj == input_ && ev->type() == QEvent::KeyPress) {
         auto* ke = static_cast<QKeyEvent*>(ev);
         switch (ke->key()) {
+        case Qt::Key_Space:
+            if (textMode_) return false; // normal typing
+            submit();
+            return true;
         case Qt::Key_Return:
         case Qt::Key_Enter:
-        case Qt::Key_Space:
             submit();
             return true;
         case Qt::Key_Escape:

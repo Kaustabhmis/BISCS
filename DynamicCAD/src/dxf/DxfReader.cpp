@@ -8,12 +8,16 @@
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
+#include "geometry/Intersections.h"
 
 #include <QFile>
 
 #include <charconv>
+#include <cctype>
+#include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <optional>
@@ -248,6 +252,10 @@ private:
             else if (var == "$ACADVER" && g.code == 1) r_.acadVersion = std::string(trimView(g.value));
             else if (var == "$INSUNITS" && g.code == 70) insUnits_ = toInt(g.value);
             else if (var == "$LTSCALE" && g.code == 40) ltscale_ = toDouble(g.value);
+            else if (var == "$DIMTXT" && g.code == 40) dimTxt_ = toDouble(g.value);
+            else if (var == "$DIMASZ" && g.code == 40) dimAsz_ = toDouble(g.value);
+            else if (var == "$DIMSCALE" && g.code == 40) dimScale_ = toDouble(g.value);
+            else if (var == "$DIMDEC" && g.code == 70) dimDec_ = toInt(g.value);
             else if (var == "$CLAYER" && g.code == 8) clayer_ = decode(g.value);
             else if (var == "$MEASUREMENT" && g.code == 70) measurement_ = toInt(g.value);
             ++pos_;
@@ -594,13 +602,175 @@ private:
             addEntity(std::make_unique<XLineEntity>(base, dir, t == "RAY"), xf, styleOf(e));
         } else if (t == "SEQEND" || t == "VERTEX" || t == "ENDBLK") {
             // structural; handled by their parents
-        } else if (t == "TEXT" || t == "MTEXT" || t == "ATTDEF") {
-            unsupported(t + " (text)");
-        } else if (t == "DIMENSION" || t == "LEADER" || t == "MULTILEADER" || t == "TOLERANCE" || t == "ARC_DIMENSION") {
+        } else if (t == "TEXT") {
+            convertText(e, xf);
+        } else if (t == "MTEXT") {
+            convertMText(e, xf);
+        } else if (t == "DIMENSION") {
+            convertDimension(e, xf);
+        } else if (t == "LEADER") {
+            std::vector<Vec2> pts;
+            for (const Group& g : e.groups) {
+                if (g.code == 10) pts.push_back({toDouble(g.value).value_or(NAN), 0.0});
+                else if (g.code == 20 && !pts.empty()) pts.back().y = toDouble(g.value).value_or(NAN);
+            }
+            for (const Vec2& p : pts) if (!p.isFinite()) return invalid(t);
+            if (pts.size() < 2) return invalid(t);
+            auto l = std::make_unique<LeaderEntity>(std::move(pts), std::string());
+            l->setDimStyle(dimStyle());
+            addEntity(std::move(l), xf, styleOf(e));
+        } else if (t == "ATTDEF") {
+            unsupported(t + " (attribute definition)");
+        } else if (t == "MULTILEADER" || t == "TOLERANCE" || t == "ARC_DIMENSION") {
             unsupported(t + " (annotation)");
         } else {
             unsupported(t);
         }
+    }
+
+    DimStyle dimStyle() const {
+        DimStyle st;
+        const double sc = (dimScale_ && *dimScale_ > 0) ? *dimScale_ : 1.0;
+        if (dimTxt_ && *dimTxt_ > 0) st.textHeight = *dimTxt_ * sc;
+        if (dimAsz_ && *dimAsz_ > 0) st.arrowSize = *dimAsz_ * sc;
+        st.extOffset *= sc;
+        st.extBeyond *= sc;
+        st.textGap *= sc;
+        if (dimDec_ && *dimDec_ >= 0 && *dimDec_ <= 8) st.precision = static_cast<int>(*dimDec_);
+        return st;
+    }
+
+    // Text value with DXF control codes translated (%%c, %%d, %%p, \U+XXXX).
+    std::string decodeText(std::string_view raw) const {
+        std::string s = decode(raw);
+        std::string out;
+        for (std::size_t i = 0; i < s.size(); ++i) {
+            if (s.compare(i, 2, "%%") == 0 && i + 2 < s.size()) {
+                const char c = static_cast<char>(std::tolower(static_cast<unsigned char>(s[i + 2])));
+                if (c == 'c') { out += "\xC3\x98"; i += 2; continue; }
+                if (c == 'd') { out += "\xC2\xB0"; i += 2; continue; }
+                if (c == 'p') { out += "\xC2\xB1"; i += 2; continue; }
+                if (c == 'u' || c == 'o') { i += 2; continue; }
+                if (c == '%') { out += '%'; i += 2; continue; }
+            }
+            if (s.compare(i, 3, "\\U+") == 0 && i + 7 <= s.size()) {
+                const unsigned long cp = std::strtoul(s.substr(i + 3, 4).c_str(), nullptr, 16);
+                if (cp > 0) { appendUtf8(out, static_cast<unsigned>(cp)); i += 6; continue; }
+            }
+            out += s[i];
+        }
+        return out;
+    }
+
+    static void appendUtf8(std::string& out, unsigned cp) {
+        if (cp < 0x80) out += static_cast<char>(cp);
+        else if (cp < 0x800) { out += static_cast<char>(0xC0 | (cp >> 6)); out += static_cast<char>(0x80 | (cp & 0x3F)); }
+        else { out += static_cast<char>(0xE0 | (cp >> 12)); out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F)); out += static_cast<char>(0x80 | (cp & 0x3F)); }
+    }
+
+    // MTEXT inline formatting removed: \P = new paragraph, {\f..;} fonts etc.
+    std::string stripMText(const std::string& s) const {
+        std::string out;
+        for (std::size_t i = 0; i < s.size(); ++i) {
+            const char c = s[i];
+            if (c == '{' || c == '}') continue;
+            if (c == '\\' && i + 1 < s.size()) {
+                const char k = s[i + 1];
+                if (k == 'P') { out += '\n'; ++i; continue; }
+                if (k == '~') { out += ' '; ++i; continue; }
+                if (k == '\\' || k == '{' || k == '}') { out += k; ++i; continue; }
+                if (k == 'S') { // stacked fraction a^b; -> a/b
+                    const auto end = s.find(';', i);
+                    if (end == std::string::npos) { ++i; continue; }
+                    std::string frac = s.substr(i + 2, end - i - 2);
+                    for (char& ch : frac) if (ch == '^' || ch == '#') ch = '/';
+                    out += frac;
+                    i = end;
+                    continue;
+                }
+                if (std::string("LlOoKkNn").find(k) != std::string::npos) { ++i; continue; }
+                if (std::string("fFHhCcTtQqWwAap").find(k) != std::string::npos) { // codes ending with ';'
+                    const auto end = s.find(';', i);
+                    i = end == std::string::npos ? s.size() : end;
+                    continue;
+                }
+            }
+            out += c;
+        }
+        return out;
+    }
+
+    void convertText(const RawEntity& e, const Affine2D& xf) {
+        const double h = e.num(40, -1);
+        if (!e.numValid(10) || !e.numValid(20) || !(h > 0)) return invalid("TEXT");
+        auto o = ocs(e);
+        if (!o) return;
+        const int hj = static_cast<int>(e.integer(72, 0)), vj = static_cast<int>(e.integer(73, 0));
+        TextJustify j = TextJustify::Left;
+        Vec2 ins{e.num(10), e.num(20)};
+        if ((hj != 0 || vj != 0) && e.numValid(11)) {
+            const Vec2 al{e.num(11), e.num(21)};
+            if (hj == 4 || (hj == 1 && vj == 2)) { j = TextJustify::Middle; ins = al; }
+            else if (hj == 1) { j = TextJustify::Center; ins = al; }
+            else if (hj == 2) { j = TextJustify::Right; ins = al; }
+            else if (hj == 3 || hj == 5) { j = TextJustify::Left; } // aligned / fit: keep start point
+            else if (vj == 2) { j = TextJustify::Middle; ins = al; }
+        }
+        auto t = std::make_unique<TextEntity>(ins, decodeText(e.find(1) ? e.find(1)->value : std::string_view()), h, e.num(50, 0.0), j);
+        addEntity(std::move(t), xf * *o, styleOf(e));
+    }
+
+    void convertMText(const RawEntity& e, const Affine2D& xf) {
+        const double h = e.num(40, -1);
+        if (!e.numValid(10) || !e.numValid(20) || !(h > 0)) return invalid("MTEXT");
+        std::string raw;
+        for (const Group& g : e.groups) if (g.code == 3) raw += std::string(g.value);
+        if (const Group* g = e.find(1)) raw += std::string(g->value);
+        const std::string body = stripMText(decodeText(raw));
+        double rot = 0;
+        if (e.numValid(11)) rot = radToDeg(std::atan2(e.num(21), e.num(11)));
+        else if (e.numValid(50)) rot = radToDeg(e.num(50));
+        const int att = static_cast<int>(e.integer(71, 1));
+        const TextJustify j = (att >= 4 && att <= 6) ? TextJustify::Middle : (att >= 7 ? TextJustify::Left : TextJustify::TopLeft);
+        if (att != 1 && att != 5 && att != 7) ++approxMText_;
+        auto t = std::make_unique<TextEntity>(Vec2{e.num(10), e.num(20)}, body, h, rot, j);
+        t->setWrapWidth(e.num(41, 0.0));
+        addEntity(std::move(t), xf, styleOf(e));
+    }
+
+    void convertDimension(const RawEntity& e, const Affine2D& xf) {
+        const int type = static_cast<int>(e.integer(70, 0) & 0x0F);
+        auto P = [&](int code) { return Vec2{e.num(code, NAN), e.num(code + 10, NAN)}; };
+        std::unique_ptr<DimensionEntity> d;
+        switch (type) {
+        case 0: d = std::make_unique<DimensionEntity>(DimKind::Linear, P(13), P(14), P(10), e.num(50, 0.0)); break;
+        case 1: d = std::make_unique<DimensionEntity>(DimKind::Aligned, P(13), P(14), P(10)); break;
+        case 3: { // diameter: 15 and 10 are opposite ends
+            const Vec2 a = P(10), b = P(15);
+            d = std::make_unique<DimensionEntity>(DimKind::Diameter, (a + b) * 0.5, b, e.numValid(11) ? P(11) : b);
+            break;
+        }
+        case 4: d = std::make_unique<DimensionEntity>(DimKind::Radius, P(10), P(15), e.numValid(11) ? P(11) : P(15)); break;
+        case 2: { // two lines: 13-14 and 15-10, arc through 16
+            auto x = geom::intersectLines(P(13), P(14), P(15), P(10));
+            if (x.empty()) return invalid("DIMENSION");
+            const Vec2 v = x[0];
+            const Vec2 b = distance(v, P(14)) >= distance(v, P(13)) ? P(14) : P(13);
+            const Vec2 c = distance(v, P(10)) >= distance(v, P(15)) ? P(10) : P(15);
+            d = std::make_unique<DimensionEntity>(DimKind::Angular, v, b, P(16));
+            d->setC(c);
+            break;
+        }
+        case 5: d = std::make_unique<DimensionEntity>(DimKind::Angular, P(15), P(13), P(10)); d->setC(P(14)); break;
+        default: unsupported("DIMENSION (ordinate)"); return;
+        }
+        for (const Vec2& q : d->gripPoints()) if (!q.isFinite()) return invalid("DIMENSION");
+        d->setDimStyle(dimStyle());
+        if (const Group* g = e.find(1)) {
+            const std::string ov = stripMText(decodeText(g->value));
+            if (!ov.empty() && ov != "<>") d->setTextOverride(ov == " " ? std::string() : ov);
+        }
+        addEntity(std::move(d), xf, styleOf(e));
     }
 
     void addPolyline(const std::string& type, std::vector<Vec2> v, std::vector<double> b, bool closed, const Affine2D& xf,
@@ -683,6 +853,9 @@ public:
             for (const auto& n : missingLinetypes_) names += (names.empty() ? "" : ", ") + n;
             r_.warnings.push_back("Linetype(s) not defined in the file are drawn continuous: " + names + ".");
         }
+        if (approxMText_)
+            r_.warnings.push_back(std::to_string(approxMText_) +
+                                  " multiline text(s) use an attachment point that is placed approximately.");
         if (tooDeep_) r_.warnings.push_back("Block nesting deeper than 32 levels (possibly circular) was skipped.");
         for (const auto& x : xrefs_)
             r_.warnings.push_back("External reference \"" + x + "\" was not loaded (xrefs are not supported yet).");
@@ -704,9 +877,11 @@ private:
     std::vector<EntityStyle> parents_;
     std::set<std::string> missingLinetypes_;
     std::size_t linetypesImported_ = 0;
-    std::optional<double> ltscale_;
+    std::optional<double> ltscale_, dimTxt_, dimAsz_, dimScale_;
+    std::optional<long long> dimDec_;
     std::string clayer_;
     std::size_t varyingWidth_ = 0;
+    std::size_t approxMText_ = 0;
     std::set<std::string> xrefs_;
 };
 

@@ -5,6 +5,7 @@
 #include "entities/CircleEntity.h"
 #include "entities/CurveEntities.h"
 #include "entities/XLineEntity.h"
+#include "entities/Annotation.h"
 #include "entities/LineEntity.h"
 #include "entities/PolylineEntity.h"
 #include "version.h"
@@ -15,7 +16,9 @@
 #include <QJsonObject>
 #include <QSaveFile>
 
+#include <algorithm>
 #include <cmath>
+#include <map>
 
 namespace dyncad {
 
@@ -32,6 +35,35 @@ bool fromJson(const QJsonValue& val, Vec2& out) {
     if (a.size() != 2 || !a[0].isDouble() || !a[1].isDouble()) return false;
     out = {a[0].toDouble(), a[1].toDouble()};
     return out.isFinite();
+}
+
+QJsonObject dimStyleToJson(const DimStyle& s) {
+    QJsonObject o;
+    o["textHeight"] = s.textHeight;
+    o["arrowSize"] = s.arrowSize;
+    o["extOffset"] = s.extOffset;
+    o["extBeyond"] = s.extBeyond;
+    o["textGap"] = s.textGap;
+    o["precision"] = s.precision;
+    o["suppressZeros"] = s.suppressZeros;
+    o["font"] = QString::fromStdString(s.font);
+    return o;
+}
+
+DimStyle dimStyleFromJson(const QJsonObject& o) {
+    DimStyle s;
+    auto pos = [&](const char* k, double& v) { const double x = o.value(k).toDouble(v); if (x > 0 && std::isfinite(x)) v = x; };
+    pos("textHeight", s.textHeight);
+    pos("arrowSize", s.arrowSize);
+    auto nonneg = [&](const char* k, double& v) { const double x = o.value(k).toDouble(v); if (x >= 0 && std::isfinite(x)) v = x; };
+    nonneg("extOffset", s.extOffset);
+    nonneg("extBeyond", s.extBeyond);
+    nonneg("textGap", s.textGap);
+    s.precision = std::clamp(o.value("precision").toInt(s.precision), 0, 8);
+    s.suppressZeros = o.value("suppressZeros").toBool(s.suppressZeros);
+    const QString f = o.value("font").toString();
+    if (!f.isEmpty()) s.font = f.toStdString();
+    return s;
 }
 
 QJsonObject entityToJson(const Entity& e) {
@@ -98,6 +130,41 @@ QJsonObject entityToJson(const Entity& e) {
         o["type"] = x.isRay() ? "RAY" : "XLINE";
         o["base"] = toJson(x.base());
         o["direction"] = toJson(x.direction());
+        break;
+    }
+    case EntityType::Text: {
+        const auto& t = static_cast<const TextEntity&>(e);
+        o["type"] = t.multiline() ? "MTEXT" : "TEXT";
+        o["insert"] = toJson(t.insert());
+        o["text"] = QString::fromStdString(t.text());
+        o["height"] = t.height();
+        if (t.rotationDeg() != 0) o["rotation"] = t.rotationDeg();
+        o["justify"] = justifyName(t.justify());
+        if (t.font() != "Arial") o["font"] = QString::fromStdString(t.font());
+        if (t.wrapWidth() > 0) o["wrapWidth"] = t.wrapWidth();
+        break;
+    }
+    case EntityType::Dimension: {
+        const auto& d = static_cast<const DimensionEntity&>(e);
+        o["type"] = "DIMENSION";
+        o["kind"] = dimKindName(d.kind());
+        o["a"] = toJson(d.a());
+        o["b"] = toJson(d.b());
+        if (d.kind() == DimKind::Angular) o["c"] = toJson(d.c());
+        o["location"] = toJson(d.location());
+        if (d.kind() == DimKind::Linear) o["angle"] = d.angleDeg();
+        if (!d.textOverride().empty()) o["textOverride"] = QString::fromStdString(d.textOverride());
+        o["style"] = dimStyleToJson(d.dimStyle());
+        break;
+    }
+    case EntityType::Leader: {
+        const auto& l = static_cast<const LeaderEntity&>(e);
+        o["type"] = "LEADER";
+        QJsonArray pts;
+        for (const Vec2& p : l.points()) pts.append(toJson(p));
+        o["points"] = pts;
+        o["text"] = QString::fromStdString(l.text());
+        o["style"] = dimStyleToJson(l.dimStyle());
         break;
     }
     case EntityType::Point: {
@@ -173,6 +240,45 @@ EntityPtr entityFromJson(const QJsonObject& o, std::string& reason) {
             return nullptr;
         }
         e = std::make_shared<ArcEntity>(c, r, a0.toDouble(), a1.toDouble());
+    } else if (type == "TEXT" || type == "MTEXT") {
+        Vec2 ins;
+        const double h = o.value("height").toDouble(-1);
+        if (!fromJson(o.value("insert"), ins) || !(h > 0) || !std::isfinite(h)) { reason = "TEXT has invalid insert/height"; return nullptr; }
+        TextJustify j = TextJustify::Left;
+        parseJustify(upperName(o.value("justify").toString("Left").toStdString()), j);
+        auto t = std::make_shared<TextEntity>(ins, o.value("text").toString().toStdString(), h, o.value("rotation").toDouble(0), j);
+        if (o.contains("font")) t->setFont(o.value("font").toString().toStdString());
+        t->setWrapWidth(o.value("wrapWidth").toDouble(0));
+        e = t;
+    } else if (type == "DIMENSION") {
+        static const std::map<QString, DimKind> kinds = {{"Linear", DimKind::Linear}, {"Aligned", DimKind::Aligned},
+                                                         {"Angular", DimKind::Angular}, {"Radius", DimKind::Radius},
+                                                         {"Diameter", DimKind::Diameter}};
+        auto k = kinds.find(o.value("kind").toString());
+        Vec2 a, b, loc, c;
+        if (k == kinds.end() || !fromJson(o.value("a"), a) || !fromJson(o.value("b"), b) || !fromJson(o.value("location"), loc)) {
+            reason = "DIMENSION has an invalid kind or points";
+            return nullptr;
+        }
+        auto d = std::make_shared<DimensionEntity>(k->second, a, b, loc, o.value("angle").toDouble(0));
+        if (k->second == DimKind::Angular) {
+            if (!fromJson(o.value("c"), c)) { reason = "angular DIMENSION needs point c"; return nullptr; }
+            d->setC(c);
+        }
+        d->setTextOverride(o.value("textOverride").toString().toStdString());
+        d->setDimStyle(dimStyleFromJson(o.value("style").toObject()));
+        e = d;
+    } else if (type == "LEADER") {
+        std::vector<Vec2> pts;
+        for (const auto& v : o.value("points").toArray()) {
+            Vec2 p;
+            if (!fromJson(v, p)) { reason = "LEADER has an invalid point"; return nullptr; }
+            pts.push_back(p);
+        }
+        if (pts.size() < 2) { reason = "LEADER needs at least 2 points"; return nullptr; }
+        auto l = std::make_shared<LeaderEntity>(std::move(pts), o.value("text").toString().toStdString());
+        l->setDimStyle(dimStyleFromJson(o.value("style").toObject()));
+        e = l;
     } else if (type == "XLINE" || type == "RAY") {
         Vec2 b, d;
         if (!fromJson(o.value("base"), b) || !fromJson(o.value("direction"), d) || !(d.length() > 0)) {
