@@ -1,6 +1,6 @@
 # Edit plan — domebox_whatsapp
 
-**Status: preview v2 rendered (`preview_v2.mp4`). Approved: items 1 (gentle), 2, 4, 5. Not approved: 3 (hook headline).**
+**Status: preview v3 rendered (`preview_v3.mp4`, cinematic version with product screenshots and Domebox end card). v1/v2 kept for comparison.**
 
 Re-render: `python3 Work/domebox_whatsapp/render.py` from `ai-video-editor/`.
 
@@ -91,3 +91,22 @@ MP4 · H.264 · AAC · 1080×1920 (upscaled from 720×1280) · 30 fps →
   "www.domebox.in" (wording from the BISCS website). Fades in at 59.9 s (source), on "DomeBox shifts your
   entire culture…", and stays to the end.
 - Result: 62.20 s · 1866 frames; audio 62.20 s (frame-accurate trim/atrim, no drift) · −14.1 LUFS · −1.3 dBTP.
+
+### preview_v3.mp4: "absolute cinema" + product screenshots + new ending
+- **Ending (user request):** cut at 64.40 s, before the NotebookLM end card (64.43 s). Picture dips to black
+  64.00–64.40; audio fades 64.15–64.40 after the last word.
+- **Domebox end card (2.8 s):** logo cropped from the app, "Start growing this week", "14 days free · no card",
+  "www.domebox.in" (wording from the Domebox slides). Replaces the v2 CTA overlay; brand spelled **Domebox**.
+- **Product proof cards** (real screenshots, above the burned-in captions, fade + rise):
+  | Source time | Screenshot | Narration |
+  |---|---|---|
+  | 6.80–12.30 | Phone app, Tasks | "Domebox fixes this chaos…" |
+  | 14.20–19.60 | Task detail, "Submit for review" | "…until the person who assigns them verifies the work" |
+  | 24.00–28.55 | Appraisal, Delegation score 96 | "…biased annual appraisals… delegation score" |
+  | 35.40–40.00 | Leaderboard | "Third, managers are held accountable too" |
+  | 57.00–60.50 | Verified column | "…every single job to a verified timestamp" |
+- **Cinematic finish:** slow 4 % push-in on every scene (2× supersampled for smooth motion) on top of the approved
+  punch-ins; filmic S-curve, cool shadows / warm highlights, +7 % saturation, vignette, fine moving grain;
+  0.25 s fade in from black.
+- Kept: gentle pause trims, punch-in zooms, −14 LUFS.
+- Result: 61.60 s + 2.80 s end card = **64.40 s**, 1932 frames; audio 64.40 s · −14.0 LUFS · −1.3 dBTP.
