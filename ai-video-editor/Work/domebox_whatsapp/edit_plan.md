@@ -1,6 +1,8 @@
 # Edit plan — domebox_whatsapp
 
-**Status: preview v1 rendered (`preview_v1.mp4`). Approved so far: ending cut only.**
+**Status: preview v2 rendered (`preview_v2.mp4`). Approved: items 1 (gentle), 2, 4, 5. Not approved: 3 (hook headline).**
+
+Re-render: `python3 Work/domebox_whatsapp/render.py` from `ai-video-editor/`.
 
 ## Source
 `Raw Footage/domebox_whatsapp.mp4`: 67.5 s · 720×1280 vertical · 30 fps · H.264 / AAC mono 44.1 kHz ·
@@ -79,3 +81,13 @@ MP4 · H.264 · AAC · 1080×1920 (upscaled from 720×1280) · 30 fps →
 - Technical (no editorial change): loudness −19.2 → −14.1 LUFS (true peak −0.9 dBTP), mono → stereo 48 kHz,
   upscaled 720×1280 → 1080×1920, H.264/AAC, 30 fps.
 - Not applied (not approved): pause trims, hook headline, zooms.
+
+### preview_v2.mp4
+- Approved **item 1, gentle pause trims**: the 7 cuts in the table above, snapped to whole frames → 2.80 s removed.
+- Kept **item 2, ending cut** (as v1).
+- Approved **item 4, punch-in zooms** 1.0 → 1.08 (smooth ease): dashboard 31.4–34.7 s, manager score 41.8–44.87 s
+  (source times); each snaps back to 1.0 on the scene change.
+- Approved **item 5, call to action**: dark card in the upper third (y = 300 px), "Try DomeBox Today" /
+  "www.domebox.in" (wording from the BISCS website). Fades in at 59.9 s (source), on "DomeBox shifts your
+  entire culture…", and stays to the end.
+- Result: 62.20 s · 1866 frames; audio 62.20 s (frame-accurate trim/atrim, no drift) · −14.1 LUFS · −1.3 dBTP.
