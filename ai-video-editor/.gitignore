@@ -14,3 +14,6 @@
 # Render intermediates and source screenshots (kept local)
 Work/*/build/
 __pycache__/
+Work/*/scene_kit/*.png
+Work/*/scene_kit/stills/
+Work/*/scene_kit/*.zip
