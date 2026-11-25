@@ -1,6 +1,6 @@
 # Edit plan — domebox_whatsapp
 
-**Status: waiting for approval. Nothing has been cut or rendered.**
+**Status: preview v1 rendered (`preview_v1.mp4`). Approved so far: ending cut only.**
 
 ## Source
 `Raw Footage/domebox_whatsapp.mp4`: 67.5 s · 720×1280 vertical · 30 fps · H.264 / AAC mono 44.1 kHz ·
@@ -71,3 +71,11 @@ MP4 · H.264 · AAC · 1080×1920 (upscaled from 720×1280) · 30 fps →
 3. Hook headline: yes (which text?) / no
 4. Punch-in zooms: yes / no
 5. Anything else to change, e.g. a call to action at the end ("Book a demo at …")
+
+## Change log
+### preview_v1.mp4
+- Approved: **ending cut.** Removed 65.00–67.50 s; 0.4 s fade-out of picture and sound from 64.60 s.
+  The end card now shows for ~0.6 s. Duration 67.5 s → 65.0 s.
+- Technical (no editorial change): loudness −19.2 → −14.1 LUFS (true peak −0.9 dBTP), mono → stereo 48 kHz,
+  upscaled 720×1280 → 1080×1920, H.264/AAC, 30 fps.
+- Not applied (not approved): pause trims, hook headline, zooms.
