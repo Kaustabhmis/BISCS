@@ -1,0 +1,12 @@
+# Video/audio files are too large for git; keep them local.
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.webm
+*.avi
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.part

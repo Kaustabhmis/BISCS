@@ -1,0 +1,48 @@
+1
+00:00:00,000 --> 00:00:04,980
+Running a growing business on WhatsApp means lost instructions and performance reviews that
+
+2
+00:00:04,980 --> 00:00:10,920
+turn into arguments. Domebox fixes this chaos by replacing chat groups with four strict
+
+3
+00:00:10,920 --> 00:00:16,200
+rules for team accountability. First, tasks are never truly done until the person who
+
+4
+00:00:16,200 --> 00:00:20,800
+assigns them verifies the work. This stops half-finished jobs from slipping through because
+
+5
+00:00:20,800 --> 00:00:26,220
+the worker can't just tick it off themselves. Second, it kills biased annual appraisals using
+
+6
+00:00:26,220 --> 00:00:31,420
+a system-calculated delegation score. Every month, it objectively weighs how much work
+
+7
+00:00:31,420 --> 00:00:36,860
+an employee delivered on time against their rework rate. Third, managers are held accountable too.
+
+8
+00:00:37,360 --> 00:00:41,400
+If an approval sits on a manager's desk past the deadline, the manager loses points,
+
+9
+00:00:41,840 --> 00:00:47,480
+ensuring the worker is never punished for a slow checker. Finally, your data is never held hostage.
+
+10
+00:00:48,040 --> 00:00:53,100
+If a company stops paying for their subscription, the workspace simply turns read-only, keeping
+
+11
+00:00:53,100 --> 00:00:59,600
+years of crucial audit logs safe and accessible. By tying every single job to a verified timestamp,
+
+12
+00:01:00,000 --> 00:01:04,120
+Domebox shifts your entire culture from constant chasing to objective delivery.
+
