@@ -1,0 +1,12 @@
+Running a growing business on WhatsApp means lost instructions and performance reviews that
+turn into arguments. Domebox fixes this chaos by replacing chat groups with four strict
+rules for team accountability. First, tasks are never truly done until the person who
+assigns them verifies the work. This stops half-finished jobs from slipping through because
+the worker can't just tick it off themselves. Second, it kills biased annual appraisals using
+a system-calculated delegation scope. Every month, it objectively weighs how much work
+an employee delivered on time against their rework rate. Third, managers are held accountable too.
+If an approval sits on a manager's desk past the deadline, the manager loses points,
+ensuring the worker is never punished for a slow checkup. Finally, your data is never held hostage.
+If a company stops paying for their subscription, the workspace simply turns read-only, keeping
+years of crucial audit logs safe and accessible. By tying every single job to a verified timestamp,
+Domebox shifts your entire culture from constant chasing to objective delivery.

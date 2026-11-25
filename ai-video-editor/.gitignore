@@ -1,0 +1,19 @@
+# Video/audio files are too large for git; keep them local.
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.webm
+*.avi
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.part
+
+# Render intermediates and source screenshots (kept local)
+Work/*/build/
+__pycache__/
+Work/*/scene_kit/*.png
+Work/*/scene_kit/stills/
+Work/*/scene_kit/*.zip
