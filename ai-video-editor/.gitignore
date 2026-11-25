@@ -13,3 +13,4 @@
 
 # Render intermediates and source screenshots (kept local)
 Work/*/build/
+__pycache__/
